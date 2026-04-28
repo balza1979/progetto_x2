@@ -212,6 +212,8 @@ function x2_caricaJSON(nomeFile, callback) {
 
 function x2_popolaValori(param) {
 
+    console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
+
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
@@ -228,8 +230,8 @@ function x2_popolaValori(param) {
     // Carica il JSON del parametro selezionato
     x2_caricaJSON(param.PARAMETRO, function(data) {
 
-        // 1) Popola tendina valori (se esiste elenco)
-        if (data && data.valori) {
+        // 1) Popola tendina valori
+        if (data.valori) {
             data.valori.forEach(voce => {
                 const opt = document.createElement("option");
                 opt.value = voce.id;
@@ -242,7 +244,7 @@ function x2_popolaValori(param) {
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) Leggi il valore dalla tendina
+        // 3) Leggi il valore dalla tendina (SEMPRE CORRETTO)
         const id = tendina.value;
 
         /* ------------------------------------------------------------
@@ -252,7 +254,7 @@ function x2_popolaValori(param) {
             "<br><span style='color:yellow'>DEBUG → TENDINA VALUE: [" + id + "]</span>";
 
         // 4) Lista immagini (se esiste)
-        const lista = (data && data.file_parametro) ? data.file_parametro[id] : null;
+        const lista = data.file_parametro ? data.file_parametro[id] : null;
 
         /* ------------------------------------------------------------
            DEBUG LISTA TROVATA
@@ -290,6 +292,10 @@ function x2_popolaValori(param) {
         document.getElementById("val_max").value = "/";
     });
 }
+
+/* ============================================================
+   FINE FUNZIONE x2_popolaValori(param)
+   ============================================================ */
 
 /* ============================================================
    FINE FUNZIONE x2_popolaValori(param)
