@@ -226,8 +226,7 @@ if (param.PARAMETRO === "1.0.00") {
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
             opt.value = voce.id;          
-           opt.textContent = "\"" + voce.id + "\" " + voce.text;
-
+            opt.textContent = "\"" + voce.id + "\" " + voce.text;
             tendina.appendChild(opt);
         });
 
@@ -241,45 +240,45 @@ if (param.PARAMETRO === "1.0.00") {
             }
         }
 
-    /* ============================
-   INIZIO MODIFICA 28/04/2026 17:26
-   Aggiornamento pulsanti VAL1–VAL8
-   ============================ */
+        /* ============================
+           INIZIO MODIFICA 28/04/2026 17:26
+           Aggiornamento pulsanti VAL1–VAL8
+           ============================ */
 
-const pulsanti = [
-    document.getElementById("val1"),
-    document.getElementById("val2"),
-    document.getElementById("val3"),
-    document.getElementById("val4"),
-    document.getElementById("val5"),
-    document.getElementById("val6"),
-    document.getElementById("val7"),
-    document.getElementById("val8")
-];
+        // *** QUI MANCAVA ***
+        const lista = data.file_parametro[id];
 
-// Popola testo pulsanti
-for (let i = 0; i < 8; i++) {
-    if (lista && lista[i]) {
-        pulsanti[i].textContent = lista[i];   // es: "1.JPG"
-        pulsanti[i].disabled = false;
+        const pulsanti = [
+            document.getElementById("val1"),
+            document.getElementById("val2"),
+            document.getElementById("val3"),
+            document.getElementById("val4"),
+            document.getElementById("val5"),
+            document.getElementById("val6"),
+            document.getElementById("val7"),
+            document.getElementById("val8")
+        ];
 
-        // click → apre immagine
-        pulsanti[i].onclick = function () {
-            const url = "img/" + lista[i];
-            window.open(url, "_blank");
-        };
+        for (let i = 0; i < 8; i++) {
+            if (lista && lista[i]) {
+                pulsanti[i].textContent = lista[i];   // es: "1.JPG"
+                pulsanti[i].disabled = false;
 
-    } else {
-        pulsanti[i].textContent = "-";
-        pulsanti[i].disabled = true;
-        pulsanti[i].onclick = null;
-    }
-}
+                pulsanti[i].onclick = function () {
+                    const url = "img/" + lista[i];
+                    window.open(url, "_blank");
+                };
 
-/* ============================
-   FINE MODIFICA 28/04/2026 17:26
-   ============================ */
+            } else {
+                pulsanti[i].textContent = "-";
+                pulsanti[i].disabled = true;
+                pulsanti[i].onclick = null;
+            }
+        }
 
+        /* ============================
+           FINE MODIFICA 28/04/2026 17:26
+           ============================ */
 
         // 4) Campi numerici non applicabili
         document.getElementById("unita_misura").value = "/";
@@ -289,6 +288,7 @@ for (let i = 0; i < 8; i++) {
 
     return;
 }
+
 
 /* ============================
    FINE MODIFICA 28/04/2026 17:13
