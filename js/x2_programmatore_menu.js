@@ -210,47 +210,69 @@ function x2_popolaValori(param) {
     tendina.innerHTML = "";
 
     // 1) Caso speciale: parametro 1.0.00
-/* ============================
-   INIZIO MODIFICA 28/04/2026 17:26
-   Aggiornamento pulsanti VAL1–VAL8
-   ============================ */
+/* ============================================================
+   INIZIO BLOCCO 1.0.00 — 28/04/2026 17:37
+   Gestione nuovo JSON con {id, text} + pulsanti immagini
+   ============================================================ */
 
-// *** QUESTA RIGA È OBBLIGATORIA ***
-const lista = data.file_parametro[id];
+if (param.PARAMETRO === "1.0.00") {
 
-const pulsanti = [
-    document.getElementById("val1"),
-    document.getElementById("val2"),
-    document.getElementById("val3"),
-    document.getElementById("val4"),
-    document.getElementById("val5"),
-    document.getElementById("val6"),
-    document.getElementById("val7"),
-    document.getElementById("val8")
-];
+    const tendina = document.getElementById("tendina_valori");
+    tendina.innerHTML = "";
 
-for (let i = 0; i < 8; i++) {
-    if (lista && lista[i]) {
-        pulsanti[i].textContent = lista[i];   // es: "1.JPG"
-        pulsanti[i].disabled = false;
+    x2_caricaJSON("1.0.00", function(data) {
 
-        pulsanti[i].onclick = function () {
-            const url = "img/" + lista[i];
-            window.open(url, "_blank");
-        };
+        // 1) Popola tendina con ID + testo
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce.id;
+            opt.textContent = "\"" + voce.id + "\" " + voce.text;
+            tendina.appendChild(opt);
+        });
 
-    } else {
-        pulsanti[i].textContent = "-";
-        pulsanti[i].disabled = true;
-        pulsanti[i].onclick = null;
-    }
-}
+        // 2) Seleziona il valore attuale
+        const id = x2_pulisciValore(param.VALORE);
 
-/* ============================
-   FINE MODIFICA 28/04/2026 17:26
-   ============================ */
+        for (let i = 0; i < tendina.options.length; i++) {
+            if (tendina.options[i].value === id) {
+                tendina.selectedIndex = i;
+                break;
+            }
+        }
 
-        // 4) Campi numerici non applicabili
+        // 3) Carica lista immagini dal JSON
+        const lista = data.file_parametro[id];
+
+        // 4) Aggiorna pulsanti VAL1–VAL8
+        const pulsanti = [
+            document.getElementById("val1"),
+            document.getElementById("val2"),
+            document.getElementById("val3"),
+            document.getElementById("val4"),
+            document.getElementById("val5"),
+            document.getElementById("val6"),
+            document.getElementById("val7"),
+            document.getElementById("val8")
+        ];
+
+        for (let i = 0; i < 8; i++) {
+            if (lista && lista[i]) {
+                pulsanti[i].textContent = lista[i];   // es: "1.JPG"
+                pulsanti[i].disabled = false;
+
+                pulsanti[i].onclick = function () {
+                    const url = "img/" + lista[i];
+                    window.open(url, "_blank");
+                };
+
+            } else {
+                pulsanti[i].textContent = "-";
+                pulsanti[i].disabled = true;
+                pulsanti[i].onclick = null;
+            }
+        }
+
+        // 5) Campi numerici non applicabili
         document.getElementById("unita_misura").value = "/";
         document.getElementById("val_min").value = "/";
         document.getElementById("val_max").value = "/";
@@ -259,6 +281,9 @@ for (let i = 0; i < 8; i++) {
     return;
 }
 
+/* ============================================================
+   FINE BLOCCO 1.0.00 — 28/04/2026 17:37
+   ============================================================ */
 
 /* ============================
    FINE MODIFICA 28/04/2026 17:13
