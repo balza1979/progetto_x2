@@ -213,77 +213,66 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    /* ============================================================
-       BLOCCO SPECIALE — PARAMETRO 1.0.00
-       ============================================================ */
+  /* ============================================================
+   BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
+   ============================================================ */
 
-    if (param.PARAMETRO === "1.0.00") {
+if (param.PARAMETRO === "1.0.00") {
 
-        x2_caricaJSON("1.0.00", function(data) {
+    x2_caricaJSON("1.0.00", function(data) {
 
-            // 1) Popola tendina con ID + testo
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = "\"" + voce.id + "\" " + voce.text;
-                tendina.appendChild(opt);
-            });
-
-            // 2) Seleziona il valore attuale
-           // 2) Seleziona il valore attuale
-                const id = tendina.value;   // <-- USIAMO IL VALORE DELLA TENDINA, NON param.VALORE
-
-            for (let i = 0; i < tendina.options.length; i++) {
-                if (tendina.options[i].value === id) {
-                    tendina.selectedIndex = i;
-                    break;
-                }
-            }
-
-            // 3) Lista immagini dal JSON
-            const lista = data.file_parametro[id];
-
-            // 4) Aggiorna pulsanti VAL1–VAL8
-            const pulsanti = [
-                document.getElementById("val1"),
-                document.getElementById("val2"),
-                document.getElementById("val3"),
-                document.getElementById("val4"),
-                document.getElementById("val5"),
-                document.getElementById("val6"),
-                document.getElementById("val7"),
-                document.getElementById("val8")
-            ];
-
-            for (let i = 0; i < 8; i++) {
-                if (lista && lista[i]) {
-                    pulsanti[i].textContent = lista[i];
-                    pulsanti[i].disabled = false;
-
-                    pulsanti[i].onclick = function () {
-                        const url = "img/" + lista[i];
-                        window.open(url, "_blank");
-                    };
-
-                } else {
-                    pulsanti[i].textContent = "-";
-                    pulsanti[i].disabled = true;
-                    pulsanti[i].onclick = null;
-                }
-            }
-
-            // 5) Campi numerici non applicabili
-            document.getElementById("unita_misura").value = "/";
-            document.getElementById("val_min").value = "/";
-            document.getElementById("val_max").value = "/";
+        // 1) Popola tendina con ID + testo
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce.id;   // <-- QUI il valore è già "02"
+            opt.textContent = "\"" + voce.id + "\" " + voce.text;
+            tendina.appendChild(opt);
         });
 
-        return;
-    }
+        // 2) Seleziona il valore attuale nella tendina
+        const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+        tendina.value = valorePulito;
 
-    /* ============================================================
-       FINE BLOCCO SPECIALE 1.0.00
-       ============================================================ */
+        // 3) ORA prendiamo il valore dalla tendina (SEMPRE CORRETTO)
+        const id = tendina.value;   // <-- QUESTA È LA CHIAVE DEL SUCCESSO
+
+        // 4) Lista immagini per quel valore
+        const lista = data.file_parametro[id];
+
+        // 5) Aggiorna pulsanti VAL1–VAL8
+        const pulsanti = [
+            document.getElementById("val1"),
+            document.getElementById("val2"),
+            document.getElementById("val3"),
+            document.getElementById("val4"),
+            document.getElementById("val5"),
+            document.getElementById("val6"),
+            document.getElementById("val7"),
+            document.getElementById("val8")
+        ];
+
+        for (let i = 0; i < 8; i++) {
+            if (lista && lista[i]) {
+                pulsanti[i].textContent = lista[i];
+                pulsanti[i].disabled = false;
+                pulsanti[i].onclick = function () {
+                    window.open("img/" + lista[i], "_blank");
+                };
+            } else {
+                pulsanti[i].textContent = "-";
+                pulsanti[i].disabled = true;
+                pulsanti[i].onclick = null;
+            }
+        }
+
+        // 6) Campi numerici non applicabili
+        document.getElementById("unita_misura").value = "/";
+        document.getElementById("val_min").value = "/";
+        document.getElementById("val_max").value = "/";
+    });
+
+    return;
+}
 
 
     /* ============================================================
