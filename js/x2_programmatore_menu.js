@@ -230,7 +230,9 @@ function x2_popolaValori(param) {
             });
 
             // 2) Seleziona il valore attuale
-            const id = param.VALORE.toString().trim().replace(/[^0-9]/g, "").padStart(2, "0");
+           // 2) Seleziona il valore attuale
+                const id = tendina.value;   // <-- USIAMO IL VALORE DELLA TENDINA, NON param.VALORE
+
             for (let i = 0; i < tendina.options.length; i++) {
                 if (tendina.options[i].value === id) {
                     tendina.selectedIndex = i;
