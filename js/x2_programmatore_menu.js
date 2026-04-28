@@ -212,24 +212,22 @@ function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
-// DEBUG: mostra valori reali
-document.getElementById("descrizione_parametro").innerHTML += 
-    "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "] VAL: [" + param.VALORE + "]</span>";
-
-
- /* ============================================================
-   BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
+/* ============================================================
+   INIZIO BLOCCO SPECIALE 1.0.00  (DEBUG + VALORI + IMMAGINI)
    ============================================================ */
 
 if (param.PARAMETRO.toString().trim() === "1.0.00") {
 
+    // DEBUG: mostra cosa arriva davvero
+    document.getElementById("descrizione_parametro").innerHTML += 
+        "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "] VAL: [" + param.VALORE + "]</span>";
 
     x2_caricaJSON("1.0.00", function(data) {
 
         // 1) Popola tendina con ID + testo
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
-            opt.value = voce.id;   // <-- valore pulito: "00", "01", "02"...
+            opt.value = voce.id;   // <-- "00", "01", "02"...
             opt.textContent = "\"" + voce.id + "\" " + voce.text;
             tendina.appendChild(opt);
         });
@@ -238,11 +236,19 @@ if (param.PARAMETRO.toString().trim() === "1.0.00") {
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
+        // 3) ORA leggiamo il valore corretto dalla tendina
         const id = tendina.value;
 
-        // 4) Lista immagini per quel valore
+        // DEBUG: mostra valore usato per le immagini
+        document.getElementById("descrizione_parametro").innerHTML +=
+            "<br><span style='color:yellow'>DEBUG → TENDINA VALUE: [" + id + "]</span>";
+
+        // 4) Lista immagini
         const lista = data.file_parametro[id];
+
+        // DEBUG: lista trovata?
+        document.getElementById("descrizione_parametro").innerHTML +=
+            "<br><span style='color:yellow'>DEBUG → LISTA TROVATA: " + (lista ? "SI" : "NO") + "</span>";
 
         // 5) Aggiorna pulsanti VAL1–VAL8
         const pulsanti = [
@@ -260,9 +266,7 @@ if (param.PARAMETRO.toString().trim() === "1.0.00") {
             if (lista && lista[i]) {
                 pulsanti[i].textContent = lista[i];
                 pulsanti[i].disabled = false;
-                pulsanti[i].onclick = function () {
-                    window.open("img/" + lista[i], "_blank");
-                };
+                pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
             } else {
                 pulsanti[i].textContent = "-";
                 pulsanti[i].disabled = true;
@@ -279,10 +283,9 @@ if (param.PARAMETRO.toString().trim() === "1.0.00") {
     return;
 }
 
-    /* ============================================================
-       QUI SOTTO RESTA TUTTA LA TUA LOGICA NORMALE
-       (dropdown normali, numerici, ecc.)
-       ============================================================ */
+/* ============================================================
+   FINE BLOCCO SPECIALE 1.0.00
+   ============================================================ */
 
     // ... il resto della tua funzione originale ...
 
