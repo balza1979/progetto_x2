@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<!-- ========================================================= -->
+<!--  FILE: SCHERMATAPROVA.HTML                                -->
+<!--  DATA: 15/04/2026                                          -->
+<!--  ORA: 17:44                                                -->
+<!--  DESCRIZIONE:                                              -->
+<!--  Mockup completo X1 smartphone-first                       -->
+<!--  Con barra superiore (MOSTRA / TITOLO / HOME)              -->
+<!--  Con pulsanti 2×4 e sezioni MENU → SOTTOMENU → PARAM → ... -->
+<!-- ========================================================= -->
+
+<head>
+<meta charset="UTF-8">
+<title>X1 – Programmatore</title>
+
+<!-- ========================================================= -->
+<!--  CSS COMPLETO                                              -->
+<!-- ========================================================= -->
+
+
+<style>
+
+/* ============================================================
+   STRUTTURA BASE
+   ============================================================ */
+
+/* Titoli opzionali nascosti SOLO all’avvio */
+.optional-title { display:block; }
+.hidden-optional-title { display:none !important; }
+
+body {
+  font-family: Arial, sans-serif;
+  background:#0d0d0d !important;
+  color:#f5f5f5 !important;
+  margin:0;
+  padding:20px;
+}
+
+/* Contenitore principale */
+.page {
+  max-width:600px;
+  margin:0 auto;
+  background:#1a1a1a !important;
+  border:3px solid #cc0000 !important;
+  padding:16px;
+  box-sizing:border-box;
+  border-radius:10px !important;
+  box-shadow:0 0 25px rgba(255,0,0,0.45) !important;
+}
+
+/* ============================================================
+   BARRA SUPERIORE (BASE)
+   ============================================================ */
+
+.top-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:nowrap;
+  overflow:hidden;
+  background:#1a0000 !important;
+  padding:6px !important;
+  border-radius:6px !important;
+  border:2px solid #cc0000 !important;
+  box-shadow:0 0 12px rgba(255,0,0,0.35) !important;
+  box-sizing:border-box;
+}
+
+.top-title {
+  flex:1;
+  text-align:center;
+  font-size:16px;
+  color:#ff1a1a !important;
+  font-weight:bold !important;
+  text-shadow:0 0 6px rgba(255,0,0,0.5) !important;
+}
+
+/* Pulsanti MOSTRA / HOME */
+.top-btn {
+  all:unset;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+
+  background:#660000 !important;
+  border:2px solid #ff1a1a !important;
+  color:white !important;
+  font-weight:bold !important;
+  border-radius:6px !important;
+  box-shadow:0 0 10px rgba(255,0,0,0.4) !important;
+
+  width:75px;
+  min-width:75px;
+  max-width:75px;
+  height:34px;
+  font-size:12px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.top-btn:hover {
+  background:#880000 !important;
+  border-color:#ff3333 !important;
+}
+
+/* ============================================================
+   SEZIONI E CAMPI
+   ============================================================ */
+
+.section-title {
+  margin:18px 0 6px;
+  font-size:14px;
+  font-weight:bold;
+  color:#ff3333 !important;
+  border-bottom:2px solid #660000 !important;
+  padding-bottom:3px;
+  text-shadow:0 0 4px rgba(255,0,0,0.4) !important;
+}
+
+label {
+  font-size:14px;
+  color:#cccccc;
+  margin-top:6px;
+  display:block;
+}
+
+input, select, textarea {
+  background:#0d0d0d !important;
+  border:2px solid #660000 !important;
+  color:#ffcccc !important;
+  padding:6px;
+  font-size:12px;
+  width:100%;
+  box-sizing:border-box;
+  border-radius:6px !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color:#ff1a1a !important;
+  box-shadow:0 0 10px rgba(255,0,0,0.5) !important;
+}
+
+.row {
+  display:flex;
+  gap:10px;
+  margin-top:6px;
+}
+
+.field {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Pulsanti 2×4 */
+.buttons-row {
+  display:flex;
+  gap:6px;
+  margin-top:6px;
+  width:100%;
+}
+
+.btn-file {
+  flex:1 1 80px;
+  min-width:0;
+  background:#1a1a1a !important;
+  border:2px solid #cc0000 !important;
+  color:#ffffff !important;
+  font-weight:bold !important;
+  border-radius:6px !important;
+  box-shadow:0 0 10px rgba(255,0,0,0.35) !important;
+  font-size:10px;
+  padding:4px;
+  height:25px;
+  text-align:center;
+}
+
+.btn-file:hover {
+  background:#330000 !important;
+  border-color:#ff1a1a !important;
+  box-shadow:0 0 14px rgba(255,0,0,0.55) !important;
+}
+
+/* Elementi opzionali */
+.optional { display:none; }
+
+/* ============================================================
+   MOBILE — SUPER ZOOM + BARRA APP MODERNA
+   ============================================================ */
+
+@media only screen and (max-width:1100px) {
+
+  /* Zoom massiccio */
+  body { zoom:2.5; }
+
+  /* Cornice elastica */
+  .page {
+    max-width:100% !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:12px !important;
+  }
+
+  /* Barra app moderna */
+  .top-bar {
+   /* position:sticky; */
+    top:0;
+    z-index:9999;
+    background:#111 !important;
+    padding:8px 10px !important;
+    border-bottom:3px solid #ff1a1a !important;
+    box-shadow:0 4px 12px rgba(255,0,0,0.35) !important;
+    border-radius:0 0 10px 10px !important;
+  }
+
+  /* Pulsanti simmetrici */
+  .top-btn {
+    width:75px !important;
+    min-width:75px !important;
+    max-width:75px !important;
+    height:34px !important;
+    font-size:12px !important;
+  }
+
+  /* Titolo app */
+  .top-title {
+    font-size:18px !important;
+  }
+	
+.hidden-field {
+    display: none !important;
+}
+
+  /* Pulsanti 2×4 adattivi */
+  .buttons-row {
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .btn-file {
+    flex:1 1 calc(50% - 10px) !important;
+    max-width:calc(50% - 10px) !important;
+    height:35px !important;
+    font-size:16px !important;
+  }
+
+  /* Campi più grandi */
+  input, select, textarea {
+    font-size:18px !important;
+    padding:10px !important;
+  }
+
+  label { font-size:14px !important; }
+  .section-title { font-size:16px !important; }
+}
+
+/* ============================================================
+   PC — PAGINA PIÙ GRANDE E LEGGIBILE
+   ============================================================ */
+
+@media only screen and (min-width:1101px) {
+
+  .page {
+    max-width:900px !important;
+    margin:20px auto !important;
+    padding:20px !important;
+    transform:scale(1.15);
+    transform-origin:top center;
+  }
+
+  .section-title { font-size:22px !important; }
+
+  select, input, textarea {
+    font-size:18px !important;
+    height:42px !important;
+  }
+  
+/* nasconde campi parametro e descrizione usati dal codice per compilare */
+	.hidden-field {
+	display: none;
+	}
+
+
+  .btn-file {
+    font-s
+	ize:18px !important;
+    height:55px !important;
+  }
+
+  .top-bar { padding:12px 20px !important; }
+
+  .top-btn {
+    width:100px !important;
+    height:40px !important;
+    font-size:14px !important;
+  }
+
+  .top-title { font-size:24px !important; }
+}
+
+</style>
+
+
+</head>
+
+<!-- ========================================================= -->
+<!--  BODY COMPLETO                                             -->
+<!-- ========================================================= -->
+
+<body>
+<div id="screen-warning">
+  ⚠️ Formato schermo non supportato  
+  Aumenta la larghezza della finestra
+</div>
+
+<div class="page">
+
+  <!-- ========================================================= -->
+  <!--  BARRA SUPERIORE: MOSTRA / TITOLO / HOME                  -->
+  <!-- ========================================================= -->
+  <div class="top-bar">
+
+      <!-- Bottone MOSTRA (piccolo, 2 righe) -->
+      <button id="mostra_tutto_btn" class="top-btn">MOSTRA</button>
+
+      <!-- Titolo centrale -->
+      <div class="top-title">X1 – Programmatore</div>
+
+      <!-- Bottone HOME -->
+      <button id="home_btn" class="top-btn">HOME</button>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!--  MENU (X)                                                 -->
+  <!-- ========================================================= -->
+  <div class="section-title">MENU (X)</div>
+
+<select class="full" id="menu">
+  <option>— seleziona MENU —</option>
+</select>
+
+  <div class="buttons-row optional">
+    <button class="btn-file">MENU 1</button>
+    <button class="btn-file">MENU 2</button>
+    <button class="btn-file">MENU 3</button>
+    <button class="btn-file">MENU 4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">MENU 5</button>
+    <button class="btn-file">MENU 6</button>
+    <button class="btn-file">MENU 7</button>
+    <button class="btn-file">MENU 8</button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!--  SOTTOMENU (Y)                                            -->
+  <!-- ========================================================= -->
+  <div class="section-title">SOTTOMENU (Y)</div>
+
+<select class="full" id="sottomenu">
+  <option>— seleziona SOTTOMENU —</option>
+</select>
+
+  <div class="buttons-row optional">
+    <button class="btn-file">SOTTO 1</button>
+    <button class="btn-file">SOTTO 2</button>
+    <button class="btn-file">SOTTO 3</button>
+    <button class="btn-file">SOTTO 4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">SOTTO 5</button>
+    <button class="btn-file">SOTTO 6</button>
+    <button class="btn-file">SOTTO 7</button>
+    <button class="btn-file">SOTTO 8</button>
+  </div>
+
+
+<!-- PARAMETRO -->
+<div class="section-title">PARAMETRO</div>
+
+<div style="display:flex; align-items:center; gap:8px;">
+    <select class="full" id="parametro"></select>
+
+    <div style="display:flex; flex-direction:column; gap:2px;">
+        <button id="parametro_up"   style="padding:2px 6px;">▲</button>
+        <button id="parametro_down" style="padding:2px 6px;">▼</button>
+    </div>
+</div>
+
+		<!-- commentati per campo doppio in grafica -->
+		<!-- VALORE -->
+		<!-- <div class="section-title">VALORE</div> -->
+		<!-- <select class="full" id="valore"></select> -->
+		<!-- fine commentati per campo doppio in grafica -->
+<!-- INFO -->
+<div class="section-title">INFO PARAMETRO</div>
+<div id="info_parametro" class="info-box"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ========================================================= -->
+  <!--  PARAMETRO (Z / ZZZZ)                                     -->
+  <!-- ========================================================= -->
+		<!-- commentati per campo doppio in grafica -->
+		<!-- <div class="section-title">SELEZIONA PARAMETRO</div>-->
+		<!--<select class="full" id="parametro">-->
+		<!--  <option>— scegli un parametro —</option>-->
+		<!-- </select>-->
+		<!-- fine commentati per campo doppio in grafica -->
+		
+		<!-- qui si nascondono campi per non renderli visibili ma servono al codice -->
+		
+		
+
+
+		
+		
+<label class="hidden-field">Parametro:</label>
+<input class="testo_piccolo hidden-field" id="codice_parametro" type="text" readonly>
+
+<label class="hidden-field">Descrizione</label>
+<input class="testo_piccolo hidden-field" id="descrizione_parametro" type="text" readonly>
+<!-- fine nascondono campi per non renderli visibili ma servono al codice -->
+
+  <div class="buttons-row optional">
+    <button class="btn-file">PARAM 1</button>
+    <button class="btn-file">PARAM 2</button>
+    <button class="btn-file">PARAM 3</button>
+    <button class="btn-file">PARAM 4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">PARAM 5</button>
+    <button class="btn-file">PARAM 6</button>
+    <button class="btn-file">PARAM 7</button>
+    <button class="btn-file">PARAM 8</button>
+  </div> 
+  
+  <!-- ========================================================= -->
+  <!--  VALORI DEL PARAMETRO                                     -->
+  <!-- ========================================================= -->
+  <div class="section-title">VALORI DEL PARAMETRO</div>
+
+  <div class="row">
+    <div class="field" style="flex:2">
+      <label>Seleziona valore</label>
+      <select class="full" id="tendina_valori">
+        <option>— seleziona valore —</option>
+      </select>
+    </div>
+
+    <div class="field" style="flex:1">
+      <label>Unità</label>
+      <input class="full" id="unita_misura" type="text" placeholder="sec / °C / Volt">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Min</label>
+      <input class="full" id="val_min" type="text">
+    </div>
+    <div class="field">
+      <label>Max</label>
+      <input class="full" id="val_max" type="text">
+    </div>
+  </div>
+
+  <div class="buttons-row optional">
+    <button class="btn-file">VAL 1</button>
+    <button class="btn-file">VAL 2</button>
+    <button class="btn-file">VAL 3</button>
+    <button class="btn-file">VAL 4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">VAL 5</button>
+    <button class="btn-file">VAL 6</button>
+    <button class="btn-file">VAL 7</button>
+    <button class="btn-file">VAL 8</button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!--  FUNZIONI INTELLIGENTI (AI)                               -->
+  <!-- ========================================================= -->
+  <div class="section-title optional-title">FUNZIONI INTELLIGENTI (AI)</div>
+
+
+  <div class="buttons-row optional">
+    <button class="btn-file">AI1</button>
+    <button class="btn-file">AI2</button>
+    <button class="btn-file">AI3</button>
+    <button class="btn-file">AI4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">AI5</button>
+    <button class="btn-file">AI6</button>
+    <button class="btn-file">AI7</button>
+    <button class="btn-file">AI8</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">AI9</button>
+    <button class="btn-file">AI10</button>
+    <button class="btn-file">AI11</button>
+    <button class="btn-file">AI12</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">AI13</button>
+    <button class="btn-file">AI14</button>
+    <button class="btn-file">AI15</button>
+    <button class="btn-file">AI16</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">AI17</button>
+    <button class="btn-file">AI18</button>
+    <button class="btn-file">AI19</button>
+    <button class="btn-file">AI20</button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!--  CANBUS — TASTI + CAMPO TESTO                             -->
+  <!-- ========================================================= -->
+<div class="section-title optional-title">CANBUS</div>
+
+
+  <div class="buttons-row optional">
+    <button class="btn-file">CAN1</button>
+    <button class="btn-file">CAN2</button>
+    <button class="btn-file">CAN3</button>
+    <button class="btn-file">CAN4</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">CAN5</button>
+    <button class="btn-file">CAN6</button>
+    <button class="btn-file">CAN7</button>
+    <button class="btn-file">CAN8</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">CAN9</button>
+    <button class="btn-file">CAN10</button>
+    <button class="btn-file">CAN11</button>
+    <button class="btn-file">CAN12</button>
+  </div>
+  <div class="buttons-row optional">
+    <button class="btn-file">CAN13</button>
+    <button class="btn-file">CAN14</button>
+    <button class="btn-file">CAN15</button>
+    <button class="btn-file">CAN16</button>
+  </div>
+
+<textarea class="full optional" id="canbus_info" style="height:80px"></textarea>
+
+
+</div>
+
+<!-- ========================================================= -->
+<!--  SCRIPT MOSTRA TUTTO + HOME                                -->
+<!-- ========================================================= -->
+<script>
+let mostraTutto = false;
+// Nascondi titoli opzionali al primo avvio
+document.querySelectorAll(".optional-title").forEach(el => {
+  el.classList.add("hidden-optional-title");
+});
+
+document.getElementById("mostra_tutto_btn").onclick = function() {
+  mostraTutto = !mostraTutto;
+
+  const opzionali = document.querySelectorAll(".optional");
+  const titoliOpzionali = document.querySelectorAll(".optional-title");
+
+  // Mostra / nasconde pulsanti
+  opzionali.forEach(el => {
+    el.style.display = mostraTutto ? "flex" : "none";
+  });
+
+  // Mostra / nasconde titoli
+  titoliOpzionali.forEach(el => {
+    el.classList.toggle("hidden-optional-title", !mostraTutto);
+  });
+
+  // Cambia testo del bottone
+  this.innerHTML = mostraTutto ? "NASCONDI" : "MOSTRA";
+};
+
+
+document.getElementById("home_btn").onclick = function() {
+  window.location.href = "https://balza1979.github.io/Elmi-Documenti/";
+};
+
+</script>
+<script>
+function checkScreenSize() {
+  const minWidth = 500; // limite minimo reale
+  const warning = document.getElementById("screen-warning");
+  const page = document.querySelector(".page");
+
+  if (window.innerWidth < minWidth) {
+    warning.style.display = "block";
+    page.style.display = "none";
+  } else {
+    warning.style.display = "none";
+    page.style.display = "block";
+  }
+}
+
+window.addEventListener("resize", checkScreenSize);
+window.addEventListener("load", checkScreenSize);
+</script>
+<script src="x1_menu_struttura_data.js"></script>
+<script src="x1_parametri_data.js"></script>  
+<script src="x1_filtri_parametri.js"></script>
+<script src="js/valori_parametri/x1_param_1_0_00.js"></script>
+<script src="js/valori_parametri/x1_param_1_0_01.js"></script>
+<script src="x1_programmatore_menu.js"></script>
+<script>
+  x1_popolaMenu();   // <--- QUESTA È LA CHIAVE
+</script>
+
+  
+</body>
+</html>
