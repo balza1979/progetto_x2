@@ -211,13 +211,13 @@ function x2_popolaValori(param) {
 
     // 1) Caso speciale: parametro 1.0.00
 /* ============================================================
-   INIZIO BLOCCO 1.0.00 — 28/04/2026 17:37
+   INIZIO BLOCCO 1.0.00 — 28/04/2026 21:50
    Gestione nuovo JSON con {id, text} + pulsanti immagini
    ============================================================ */
 
 if (param.PARAMETRO === "1.0.00") {
 
-    // NON RIDICHIARARE tendina QUI
+    // tendina è già dichiarata fuori, NON ridichiararla
 
     x2_caricaJSON("1.0.00", function(data) {
 
@@ -281,14 +281,8 @@ if (param.PARAMETRO === "1.0.00") {
 }
 
 /* ============================================================
-   FINE BLOCCO 1.0.00 — 28/04/2026 17:37
+   FINE BLOCCO 1.0.00 — 28/04/2026 21:50
    ============================================================ */
-
-
-/* ============================
-   FINE MODIFICA 28/04/2026 17:13
-   ============================ */
-
 
 
     // 2) Caso speciale: parametro 1.0.01
