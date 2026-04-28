@@ -226,7 +226,8 @@ if (param.PARAMETRO === "1.0.00") {
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
             opt.value = voce.id;          
-            opt.textContent = voce.id + " " + voce.text;
+           opt.textContent = "\"" + voce.id + "\" " + voce.text;
+
             tendina.appendChild(opt);
         });
 
