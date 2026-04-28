@@ -213,7 +213,7 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-  /* ============================================================
+ /* ============================================================
    BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
    ============================================================ */
 
@@ -224,17 +224,17 @@ if (param.PARAMETRO === "1.0.00") {
         // 1) Popola tendina con ID + testo
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
-            opt.value = voce.id;   // <-- QUI il valore è già "02"
+            opt.value = voce.id;   // <-- valore pulito: "00", "01", "02"...
             opt.textContent = "\"" + voce.id + "\" " + voce.text;
             tendina.appendChild(opt);
         });
 
-        // 2) Seleziona il valore attuale nella tendina
+        // 2) Imposta il valore attuale del parametro nella tendina
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) ORA prendiamo il valore dalla tendina (SEMPRE CORRETTO)
-        const id = tendina.value;   // <-- QUESTA È LA CHIAVE DEL SUCCESSO
+        // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
+        const id = tendina.value;
 
         // 4) Lista immagini per quel valore
         const lista = data.file_parametro[id];
@@ -273,7 +273,6 @@ if (param.PARAMETRO === "1.0.00") {
 
     return;
 }
-
 
     /* ============================================================
        QUI SOTTO RESTA TUTTA LA TUA LOGICA NORMALE
