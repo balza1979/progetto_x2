@@ -242,9 +242,21 @@ if ( param.PARAMETRO === "1.0.00" ) {
 
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
-            const pulita = x2_pulisciValore(voce);
-            opt.value = pulita;
-            opt.textContent = pulita;
+           // ------------------------------------------------------------
+                // INIZIO MODIFICA - RIPRISTINO ID NELLA TENDINA
+                // File: /js/x2_programmatore_menu.js
+                // Data: 2026-04-28
+                // Ora: 16:20
+                // Motivo: mantenere ID (00, 01...) per selezione default corretta
+                // ------------------------------------------------------------
+                
+                opt.value = voce;          // mantiene "00 Porta lenta"
+                opt.textContent = voce;    // mostra "00 Porta lenta"
+                
+                // ------------------------------------------------------------
+                // FINE MODIFICA
+                // ------------------------------------------------------------
+
             tendina.appendChild(opt);
         });
 
