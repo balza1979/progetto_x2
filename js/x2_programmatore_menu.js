@@ -206,48 +206,59 @@ function x2_caricaJSON(nomeFile, callback) {
    28/04/2026 — 22:05
    ============================================================ */
 
+/* ============================================================
+   INIZIO FUNZIONE x2_popolaValori(param)
+   ============================================================ */
+
 function x2_popolaValori(param) {
 
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
-/* ============================================================
-   INIZIO BLOCCO SPECIALE 1.0.00  (DEBUG + VALORI + IMMAGINI)
-   ============================================================ */
-alert("PARAM ARRIVATO = [" + param.PARAMETRO + "]");
 
-if (param.PARAMETRO.toString().trim() === "1.0.00") {
+    /* ------------------------------------------------------------
+       INIZIO BLOCCO DEBUG UNIVERSALE (sempre attivo)
+       ------------------------------------------------------------ */
+    document.getElementById("descrizione_parametro").innerHTML +=
+        "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "]</span>" +
+        "<br><span style='color:yellow'>DEBUG → VALORE GREZZO: [" + param.VALORE + "]</span>";
+    /* ------------------------------------------------------------
+       FINE BLOCCO DEBUG UNIVERSALE
+       ------------------------------------------------------------ */
 
-    // DEBUG: mostra cosa arriva davvero
-    document.getElementById("descrizione_parametro").innerHTML += 
-        "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "] VAL: [" + param.VALORE + "]</span>";
+    // Carica il JSON del parametro selezionato
+    x2_caricaJSON(param.PARAMETRO, function(data) {
 
-    x2_caricaJSON("1.0.00", function(data) {
+        // 1) Popola tendina valori
+        if (data.valori) {
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = "\"" + voce.id + "\" " + voce.text;
+                tendina.appendChild(opt);
+            });
+        }
 
-        // 1) Popola tendina con ID + testo
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;   // <-- "00", "01", "02"...
-            opt.textContent = "\"" + voce.id + "\" " + voce.text;
-            tendina.appendChild(opt);
-        });
-
-        // 2) Imposta il valore attuale del parametro nella tendina
+        // 2) Imposta il valore attuale del parametro
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) ORA leggiamo il valore corretto dalla tendina
+        // 3) Leggi il valore dalla tendina (SEMPRE CORRETTO)
         const id = tendina.value;
 
-        // DEBUG: mostra valore usato per le immagini
+        /* ------------------------------------------------------------
+           DEBUG VALORE TENDINA
+           ------------------------------------------------------------ */
         document.getElementById("descrizione_parametro").innerHTML +=
             "<br><span style='color:yellow'>DEBUG → TENDINA VALUE: [" + id + "]</span>";
 
-        // 4) Lista immagini
-        const lista = data.file_parametro[id];
+        // 4) Lista immagini (se esiste)
+        const lista = data.file_parametro ? data.file_parametro[id] : null;
 
-        // DEBUG: lista trovata?
+        /* ------------------------------------------------------------
+           DEBUG LISTA TROVATA
+           ------------------------------------------------------------ */
         document.getElementById("descrizione_parametro").innerHTML +=
             "<br><span style='color:yellow'>DEBUG → LISTA TROVATA: " + (lista ? "SI" : "NO") + "</span>";
 
@@ -280,15 +291,11 @@ if (param.PARAMETRO.toString().trim() === "1.0.00") {
         document.getElementById("val_min").value = "/";
         document.getElementById("val_max").value = "/";
     });
-
-    return;
 }
 
 /* ============================================================
-   FINE BLOCCO SPECIALE 1.0.00
+   FINE FUNZIONE x2_popolaValori(param)
    ============================================================ */
-
-    // ... il resto della tua funzione originale ...
 
     // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
