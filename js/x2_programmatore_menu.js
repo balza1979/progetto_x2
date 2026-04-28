@@ -212,79 +212,107 @@ function x2_caricaJSON(nomeFile, callback) {
 
 function x2_popolaValori(param) {
 
-    console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
+    console.log("DEBUG → INGRESSO FUNZIONE x2_popolaValori");
+    console.log("DEBUG → PARAMETRO GREZZO:", param.PARAMETRO);
+    console.log("DEBUG → PARAMETRO TRIM:", param.PARAMETRO.trim());
+    console.log("DEBUG → VALORE GREZZO:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-/* ============================================================
-   BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
-   ============================================================ */
+    /* ============================================================
+       BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
+       ============================================================ */
 
-if (param.PARAMETRO.trim() === "1.0.00") {
+    if (param.PARAMETRO.trim() === "1.0.00") {
 
+        console.log("DEBUG → ENTRATO NEL BLOCCO SPECIALE 1.0.00");
 
-    x2_caricaJSON("1.0.00", function(data) {
+        x2_caricaJSON("1.0.00", function(data) {
 
-        // 1) Popola tendina con ID + testo
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;   // <-- valore pulito: "00", "01", "02"...
-            opt.textContent = "\"" + voce.id + "\" " + voce.text;
-            tendina.appendChild(opt);
+            console.log("DEBUG → JSON 1.0.00 CARICATO:", data);
+            console.log("DEBUG → data.valori:", data.valori);
+            console.log("DEBUG → data.file_parametro:", data.file_parametro);
+
+            // 1) Popola tendina con ID + testo
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = "\"" + voce.id + "\" " + voce.text;
+                tendina.appendChild(opt);
+            });
+
+            // 2) Imposta il valore attuale del parametro nella tendina
+            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
+            const id = tendina.value;
+
+            console.log("DEBUG → ID SELEZIONATO:", id);
+
+            // 4) Lista immagini per quel valore
+            const lista = data.file_parametro[id];
+
+            console.log("DEBUG → LISTA TROVATA PER ID:", lista);
+
+            // 5) Aggiorna pulsanti VAL1–VAL8
+            const pulsanti = [
+                document.getElementById("val1"),
+                document.getElementById("val2"),
+                document.getElementById("val3"),
+                document.getElementById("val4"),
+                document.getElementById("val5"),
+                document.getElementById("val6"),
+                document.getElementById("val7"),
+                document.getElementById("val8")
+            ];
+
+            console.log("DEBUG → PULSANTI:", pulsanti);
+
+            for (let i = 0; i < 8; i++) {
+                console.log("DEBUG → i:", i, "lista[i]:", lista ? lista[i] : null);
+
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+                    pulsanti[i].onclick = function () {
+                        window.open("img/" + lista[i], "_blank");
+                    };
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
+            }
+
+            // 6) Campi numerici non applicabili
+            document.getElementById("unita_misura").value = "/";
+            document.getElementById("val_min").value = "/";
+            document.getElementById("val_max").value = "/";
+
+            console.log("DEBUG → USCITA BLOCCO 1.0.00");
         });
 
-        // 2) Imposta il valore attuale del parametro nella tendina
-        const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-        tendina.value = valorePulito;
+        return;
+    }
 
-        // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
-        const id = tendina.value;
+    // ============================================================
+    // METODO STANDARD (altri parametri)
+    // ============================================================
 
-        // 4) Lista immagini per quel valore
-        const lista = data.file_parametro[id];
+    console.log("DEBUG → BLOCCO STANDARD (NON 1.0.00)");
 
-        // 5) Aggiorna pulsanti VAL1–VAL8
-        const pulsanti = [
-            document.getElementById("val1"),
-            document.getElementById("val2"),
-            document.getElementById("val3"),
-            document.getElementById("val4"),
-            document.getElementById("val5"),
-            document.getElementById("val6"),
-            document.getElementById("val7"),
-            document.getElementById("val8")
-        ];
-
-        for (let i = 0; i < 8; i++) {
-            if (lista && lista[i]) {
-                pulsanti[i].textContent = lista[i];
-                pulsanti[i].disabled = false;
-                pulsanti[i].onclick = function () {
-                    window.open("img/" + lista[i], "_blank");
-                };
-            } else {
-                pulsanti[i].textContent = "-";
-                pulsanti[i].disabled = true;
-                pulsanti[i].onclick = null;
-            }
-        }
-
-        // 6) Campi numerici non applicabili
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value = "/";
-        document.getElementById("val_max").value = "/";
-    });
-
-    return;
-}
-
-
-    // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
-    if (!raw) return;
+    console.log("DEBUG → RAW:", raw);
+
+    if (!raw) {
+        console.log("DEBUG → RAW VUOTO, USCITA");
+        return;
+    }
 
     const parti = raw.split(";").map(v => v.trim()).filter(v => v !== "");
+    console.log("DEBUG → PARTI:", parti);
 
     parti.forEach(voce => {
         const opt = document.createElement("option");
@@ -297,7 +325,14 @@ if (param.PARAMETRO.trim() === "1.0.00") {
     document.getElementById("unita_misura").value = "";
     document.getElementById("val_min").value      = "";
     document.getElementById("val_max").value      = "";
+
+    console.log("DEBUG → USCITA BLOCCO STANDARD");
 }
+
+/* ============================================================
+   FINE FUNZIONE x2_popolaValori(param)
+   ============================================================ */
+
 
 // ======================================================================
 // NAVIGAZIONE PARAMETRI (UP / DOWN)
