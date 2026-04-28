@@ -224,52 +224,38 @@ function x2_popolaValori(param) {
     tendina.innerHTML = "";
 
     // 1) Caso speciale: parametro 1.0.00
- // ------------------------------------------------------------
-// INIZIO MODIFICA - CARICAMENTO IMMAGINI DA JSON (1.0.00)
+// ------------------------------------------------------------
+// INIZIO MODIFICA - GESTIONE COMPLETA 1.0.00 DA JSON
 // File: /js/x2_programmatore_menu.js
 // Data: 2026-04-28
-// Ora: 16:18
-// Motivo: sostituzione caso speciale 1.0.00 → lettura dinamica JSON
+// Ora: 16:25
 // ------------------------------------------------------------
 
-if ( param.PARAMETRO === "1.0.00" ) {
+if (param.PARAMETRO === "1.0.00") {
 
     x2_caricaJSON("1.0.00", function(data) {
 
-        // 1) Popola la tendina con i valori del JSON
-        const tendina = document.getElementById("tendina_valori");
+        // 1) Popola la tendina con ID + testo
         tendina.innerHTML = "";
 
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
-           // ------------------------------------------------------------
-                // INIZIO MODIFICA - RIPRISTINO ID NELLA TENDINA
-                // File: /js/x2_programmatore_menu.js
-                // Data: 2026-04-28
-                // Ora: 16:20
-                // Motivo: mantenere ID (00, 01...) per selezione default corretta
-                // ------------------------------------------------------------
-                
-                opt.value = voce;          // mantiene "00 Porta lenta"
-                opt.textContent = voce;    // mostra "00 Porta lenta"
-                
-                // ------------------------------------------------------------
-                // FINE MODIFICA
-                // ------------------------------------------------------------
-
+            opt.value = voce;          // "02 Porta media"
+            opt.textContent = voce;    // "02 Porta media"
             tendina.appendChild(opt);
         });
 
         // 2) Seleziona il valore attuale
-        const id = x2_pulisciValore(param.VALORE);
+        const id = x2_pulisciValore(param.VALORE);   // "02"
+
         for (let i = 0; i < tendina.options.length; i++) {
-            if (tendina.options[i].textContent.includes(id)) {
+            if (tendina.options[i].value.startsWith(id)) {
                 tendina.selectedIndex = i;
                 break;
             }
         }
 
-        // 3) Carica le immagini dal JSON
+        // 3) Carica immagini
         const lista = data.file_parametro[id];
         x2_mostraImmagini(lista);
 
@@ -281,6 +267,11 @@ if ( param.PARAMETRO === "1.0.00" ) {
 
     return;
 }
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
 
 // ------------------------------------------------------------
 // FINE MODIFICA
