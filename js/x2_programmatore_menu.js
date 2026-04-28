@@ -224,9 +224,23 @@ function x2_popolaValori(param) {
     tendina.innerHTML = "";
 
     // 1) Caso speciale: parametro 1.0.00
-    if (param.PARAMETRO === "1.0.00") {
+ // ------------------------------------------------------------
+// INIZIO MODIFICA - CARICAMENTO IMMAGINI DA JSON (1.0.00)
+// File: /js/x2_programmatore_menu.js
+// Data: 2026-04-28
+// Ora: 16:18
+// Motivo: sostituzione caso speciale 1.0.00 → lettura dinamica JSON
+// ------------------------------------------------------------
 
-        x2_param_1_0_00.forEach(voce => {
+if ( param.PARAMETRO === "1.0.00" ) {
+
+    x2_caricaJSON("1.0.00", function(data) {
+
+        // 1) Popola la tendina con i valori del JSON
+        const tendina = document.getElementById("tendina_valori");
+        tendina.innerHTML = "";
+
+        data.valori.forEach(voce => {
             const opt = document.createElement("option");
             const pulita = x2_pulisciValore(voce);
             opt.value = pulita;
@@ -234,6 +248,7 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
+        // 2) Seleziona il valore attuale
         const id = x2_pulisciValore(param.VALORE);
         for (let i = 0; i < tendina.options.length; i++) {
             if (tendina.options[i].textContent.includes(id)) {
@@ -242,12 +257,22 @@ function x2_popolaValori(param) {
             }
         }
 
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value      = "/";
-        document.getElementById("val_max").value      = "/";
+        // 3) Carica le immagini dal JSON
+        const lista = data.file_parametro[id];
+        x2_mostraImmagini(lista);
 
-        return;
-    }
+        // 4) Campi numerici non applicabili
+        document.getElementById("unita_misura").value = "/";
+        document.getElementById("val_min").value = "/";
+        document.getElementById("val_max").value = "/";
+    });
+
+    return;
+}
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
 
     // 2) Caso speciale: parametro 1.0.01
     if (param.PARAMETRO === "1.0.01") {
