@@ -202,116 +202,82 @@ function x2_caricaJSON(nomeFile, callback) {
 
 
 function x2_popolaValori(param) {
-  
 
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // 1) Caso speciale: parametro 1.0.00
-/* ============================================================
-   INIZIO BLOCCO 1.0.00 — 28/04/2026 21:50
-   Gestione nuovo JSON con {id, text} + pulsanti immagini
-   ============================================================ */
+    /* ============================================================
+       INIZIO BLOCCO 1.0.00 — 28/04/2026 21:50
+       ============================================================ */
 
-if (param.PARAMETRO === "1.0.00") {
+    if (param.PARAMETRO === "1.0.00") {
 
-    // tendina è già dichiarata fuori, NON ridichiararla
+        x2_caricaJSON("1.0.00", function(data) {
 
-    x2_caricaJSON("1.0.00", function(data) {
+            // 1) Popola tendina
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = "\"" + voce.id + "\" " + voce.text;
+                tendina.appendChild(opt);
+            });
 
-        // 1) Popola tendina con ID + testo
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = "\"" + voce.id + "\" " + voce.text;
-            tendina.appendChild(opt);
+            // 2) Seleziona valore
+            const id = x2_pulisciValore(param.VALORE);
+
+            for (let i = 0; i < tendina.options.length; i++) {
+                if (tendina.options[i].value === id) {
+                    tendina.selectedIndex = i;
+                    break;
+                }
+            }
+
+            // 3) Lista immagini
+            const lista = data.file_parametro[id];
+
+            // 4) Pulsanti
+            const pulsanti = [
+                document.getElementById("val1"),
+                document.getElementById("val2"),
+                document.getElementById("val3"),
+                document.getElementById("val4"),
+                document.getElementById("val5"),
+                document.getElementById("val6"),
+                document.getElementById("val7"),
+                document.getElementById("val8")
+            ];
+
+            for (let i = 0; i < 8; i++) {
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+
+                    pulsanti[i].onclick = function () {
+                        const url = "img/" + lista[i];
+                        window.open(url, "_blank");
+                    };
+
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
+            }
+
+            // 5) Campi numerici
+            document.getElementById("unita_misura").value = "/";
+            document.getElementById("val_min").value = "/";
+            document.getElementById("val_max").value = "/";
         });
-
-        // 2) Seleziona il valore attuale
-        const id = x2_pulisciValore(param.VALORE);
-
-        for (let i = 0; i < tendina.options.length; i++) {
-            if (tendina.options[i].value === id) {
-                tendina.selectedIndex = i;
-                break;
-            }
-        }
-
-        // 3) Carica lista immagini dal JSON
-        const lista = data.file_parametro[id];
-
-        // 4) Aggiorna pulsanti VAL1–VAL8
-        const pulsanti = [
-            document.getElementById("val1"),
-            document.getElementById("val2"),
-            document.getElementById("val3"),
-            document.getElementById("val4"),
-            document.getElementById("val5"),
-            document.getElementById("val6"),
-            document.getElementById("val7"),
-            document.getElementById("val8")
-        ];
-
-        for (let i = 0; i < 8; i++) {
-            if (lista && lista[i]) {
-                pulsanti[i].textContent = lista[i];
-                pulsanti[i].disabled = false;
-
-                pulsanti[i].onclick = function () {
-                    const url = "img/" + lista[i];
-                    window.open(url, "_blank");
-                };
-
-            } else {
-                pulsanti[i].textContent = "-";
-                pulsanti[i].disabled = true;
-                pulsanti[i].onclick = null;
-            }
-        }
-
-        // 5) Campi numerici non applicabili
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value = "/";
-        document.getElementById("val_max").value = "/";
-    });
-
-    return;
-}
-
-/* ============================================================
-   FINE BLOCCO 1.0.00 — 28/04/2026 21:50
-   ============================================================ */
-
-
-    // 2) Caso speciale: parametro 1.0.01
-    if (param.PARAMETRO === "1.0.01") {
-
-        tendina.innerHTML = "";
-
-        x2_param_1_0_01.forEach(voce => {
-            const opt = document.createElement("option");
-            const pulita = x2_pulisciValore(voce);
-            opt.value = pulita;
-            opt.textContent = pulita;
-            tendina.appendChild(opt);
-        });
-
-        const id = x2_pulisciValore(param.VALORE);
-        for (let i = 0; i < tendina.options.length; i++) {
-            if (tendina.options[i].textContent.includes(id)) {
-                tendina.selectedIndex = i;
-                break;
-            }
-        }
-
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value      = "/";
-        document.getElementById("val_max").value      = "/";
 
         return;
     }
+
+    /* ============================================================
+       FINE BLOCCO 1.0.00 — 28/04/2026 21:50
+       ============================================================ */
 
     // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
