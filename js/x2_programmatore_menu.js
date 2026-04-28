@@ -230,7 +230,7 @@ function x2_popolaValori(param) {
             });
 
             // 2) Seleziona il valore attuale
-            const id = x2_pulisciValore(param.VALORE);
+            const id = param.VALORE.trim().padStart(2, "0");;
 
             for (let i = 0; i < tendina.options.length; i++) {
                 if (tendina.options[i].value === id) {
