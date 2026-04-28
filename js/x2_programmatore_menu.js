@@ -1,14 +1,14 @@
 // ======================================================================
-// FILE: x1_programmatore_menu.js
+// FILE: x2_programmatore_menu.js
 // DESCRIZIONE: Logica MENU → SOTTOMENU → PARAMETRI → VALORI + DEBUG MAPPE
 // AUTORE: Luca + Copilot
 // DATA: 28/04/2026 – 11:40
 // ======================================================================
 //
 // Richiede che siano già caricati:
-// - x1_menu_struttura_data.js
-// - x1_parametri_data.js
-// - (opzionale) x1_file_parametri.js per i documenti associati
+// - x2_menu_struttura_data.js
+// - x2_parametri_data.js
+// - (opzionale) x2_file_parametri.js per i documenti associati
 // ======================================================================
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -18,22 +18,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const selParametro  = document.getElementById("parametro");
     const selValore     = document.getElementById("tendina_valori");
 
-    x1_popolaMenu();
+    x2_popolaMenu();
 
     selMenu.addEventListener("change", function () {
-        x1_popolaSottomenu(this.value);
+        x2_popolaSottomenu(this.value);
     });
 
     selSottomenu.addEventListener("change", function () {
-        x1_popolaParametri(this.value);
+        x2_popolaParametri(this.value);
     });
 
     selParametro.addEventListener("change", function () {
         const codice = this.value;
-        const param = x1_parametri.find(p => p.PARAMETRO === codice);
+        const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (param) {
-            x1_mostraInfoParametro(param);
-            x1_popolaValori(param);
+            x2_mostraInfoParametro(param);
+            x2_popolaValori(param);
         }
     });
 });
@@ -42,13 +42,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // MENU
 // ======================================================================
 
-function x1_popolaMenu() {
+function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
 
     const visti = new Set();
 
-    x1_menu_struttura_data.forEach(riga => {
+    x2_menu_struttura_data.forEach(riga => {
         const cod = String(riga.cod__menu).split(".")[0];
         if (!visti.has(cod)) {
             visti.add(cod);
@@ -62,7 +62,7 @@ function x1_popolaMenu() {
 
     if (selMenu.options.length > 0) {
         selMenu.selectedIndex = 0;
-        x1_popolaSottomenu(selMenu.value);
+        x2_popolaSottomenu(selMenu.value);
     }
 }
 
@@ -70,11 +70,11 @@ function x1_popolaMenu() {
 // SOTTOMENU
 // ======================================================================
 
-function x1_popolaSottomenu(codMenu) {
+function x2_popolaSottomenu(codMenu) {
     const selSottomenu = document.getElementById("sottomenu");
     selSottomenu.innerHTML = "";
 
-    const lista = x1_menu_struttura_data.filter(riga => {
+    const lista = x2_menu_struttura_data.filter(riga => {
         return String(riga.cod__menu).startsWith(codMenu + ".");
     });
 
@@ -87,9 +87,9 @@ function x1_popolaSottomenu(codMenu) {
 
     if (selSottomenu.options.length > 0) {
         selSottomenu.selectedIndex = 0;
-        x1_popolaParametri(selSottomenu.value);
+        x2_popolaParametri(selSottomenu.value);
     } else {
-        x1_svuotaParametri();
+        x2_svuotaParametri();
     }
 }
 
@@ -97,7 +97,7 @@ function x1_popolaSottomenu(codMenu) {
 // PARAMETRI
 // ======================================================================
 
-function x1_svuotaParametri() {
+function x2_svuotaParametri() {
     document.getElementById("parametro").innerHTML = "";
     document.getElementById("info_parametro").innerHTML = "";
 }
@@ -106,7 +106,7 @@ function x1_svuotaParametri() {
 // PARAMETRI → POPOLA
 // ======================================================================
 
-function x1_popolaParametri(codMenuCompleto) {
+function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
     const selValore    = document.getElementById("tendina_valori");
     const boxInfo      = document.getElementById("info_parametro");
@@ -117,13 +117,13 @@ function x1_popolaParametri(codMenuCompleto) {
 
     const prefisso = codMenuCompleto + ".";
 
-    let lista = x1_parametri.filter(p => {
+    let lista = x2_parametri.filter(p => {
         return p.PARAMETRO && p.PARAMETRO.startsWith(prefisso);
     });
 
     if (lista.length === 0) {
         const menu = codMenuCompleto.split(".")[0];
-        lista = x1_parametri.filter(p => p.PARAMETRO.startsWith(menu + "."));
+        lista = x2_parametri.filter(p => p.PARAMETRO.startsWith(menu + "."));
     }
 
     lista.forEach(p => {
@@ -137,8 +137,8 @@ function x1_popolaParametri(codMenuCompleto) {
         selParametro.selectedIndex = 0;
         const primo = lista[0];
 
-        x1_mostraInfoParametro(primo);
-        x1_popolaValori(primo);
+        x2_mostraInfoParametro(primo);
+        x2_popolaValori(primo);
 
         document.getElementById("codice_parametro").value      = primo.PARAMETRO || "";
         document.getElementById("descrizione_parametro").value = primo.DESCRIZIONE || "";
@@ -149,13 +149,13 @@ function x1_popolaParametri(codMenuCompleto) {
 // INFO PARAMETRO
 // ======================================================================
 
-function x1_mostraInfoParametro(param) {
+function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore grezzo:</b> ${x1_pulisciValore(param.VALORE)}
+        <b>Valore grezzo:</b> ${x2_pulisciValore(param.VALORE)}
     `;
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
@@ -166,12 +166,12 @@ function x1_mostraInfoParametro(param) {
 // VALORI
 // ======================================================================
 
-function x1_pulisciValore(v) {
+function x2_pulisciValore(v) {
     if (!v) return "";
     return String(v).trim();
 }
 
-function x1_popolaValori(param) {
+function x2_popolaValori(param) {
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
@@ -180,15 +180,15 @@ function x1_popolaValori(param) {
     // 1) Caso speciale: parametro 1.0.00
     if (param.PARAMETRO === "1.0.00") {
 
-        x1_param_1_0_00.forEach(voce => {
+        x2_param_1_0_00.forEach(voce => {
             const opt = document.createElement("option");
-            const pulita = x1_pulisciValore(voce);
+            const pulita = x2_pulisciValore(voce);
             opt.value = pulita;
             opt.textContent = pulita;
             tendina.appendChild(opt);
         });
 
-        const id = x1_pulisciValore(param.VALORE);
+        const id = x2_pulisciValore(param.VALORE);
         for (let i = 0; i < tendina.options.length; i++) {
             if (tendina.options[i].textContent.includes(id)) {
                 tendina.selectedIndex = i;
@@ -208,15 +208,15 @@ function x1_popolaValori(param) {
 
         tendina.innerHTML = "";
 
-        x1_param_1_0_01.forEach(voce => {
+        x2_param_1_0_01.forEach(voce => {
             const opt = document.createElement("option");
-            const pulita = x1_pulisciValore(voce);
+            const pulita = x2_pulisciValore(voce);
             opt.value = pulita;
             opt.textContent = pulita;
             tendina.appendChild(opt);
         });
 
-        const id = x1_pulisciValore(param.VALORE);
+        const id = x2_pulisciValore(param.VALORE);
         for (let i = 0; i < tendina.options.length; i++) {
             if (tendina.options[i].textContent.includes(id)) {
                 tendina.selectedIndex = i;
@@ -239,7 +239,7 @@ function x1_popolaValori(param) {
 
     parti.forEach(voce => {
         const opt = document.createElement("option");
-        const pulita = x1_pulisciValore(voce);
+        const pulita = x2_pulisciValore(voce);
         opt.value = pulita;
         opt.textContent = pulita;
         tendina.appendChild(opt);
@@ -258,10 +258,10 @@ document.getElementById("parametro_up").addEventListener("click", () => {
     const sel = document.getElementById("parametro");
     if (sel.selectedIndex > 0) {
         sel.selectedIndex--;
-        const param = x1_parametri.find(p => p.PARAMETRO === sel.value);
+        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
         if (param) {
-            x1_mostraInfoParametro(param);
-            x1_popolaValori(param);
+            x2_mostraInfoParametro(param);
+            x2_popolaValori(param);
         }
     }
 });
@@ -270,10 +270,10 @@ document.getElementById("parametro_down").addEventListener("click", () => {
     const sel = document.getElementById("parametro");
     if (sel.selectedIndex < sel.options.length - 1) {
         sel.selectedIndex++;
-        const param = x1_parametri.find(p => p.PARAMETRO === sel.value);
+        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
         if (param) {
-            x1_mostraInfoParametro(param);
-            x1_popolaValori(param);
+            x2_mostraInfoParametro(param);
+            x2_popolaValori(param);
         }
     }
 });
@@ -283,36 +283,36 @@ document.getElementById("parametro_down").addEventListener("click", () => {
 // ======================================================================
 
 /* =========================================================
-BLOCCO: MAPPE DEBUG PROGRAMMATORE X1
+BLOCCO: MAPPE DEBUG PROGRAMMATORE X2
 VERSIONE: 28/04/2026 – 11:40
 ========================================================= */
 
 // Mappa file (puoi estenderla con i tuoi nomi reali)
 const mappaFile = {
     // Esempi tipici:
-    "menu":              "x1_programmatore_menu.js",
-    "sottomenu":         "x1_programmatore_menu.js",
-    "parametro":         "x1_programmatore_menu.js",
-    "tendina_valori":    "x1_programmatore_menu.js",
+    "menu":              "x2_programmatore_menu.js",
+    "sottomenu":         "x2_programmatore_menu.js",
+    "parametro":         "x2_programmatore_menu.js",
+    "tendina_valori":    "x2_programmatore_menu.js",
 
-    "codice_parametro":      "x1_programmatore_menu.js",
-    "descrizione_parametro": "x1_programmatore_menu.js",
-    "unita_misura":          "x1_programmatore_menu.js",
-    "val_min":               "x1_programmatore_menu.js",
-    "val_max":               "x1_programmatore_menu.js",
+    "codice_parametro":      "x2_programmatore_menu.js",
+    "descrizione_parametro": "x2_programmatore_menu.js",
+    "unita_misura":          "x2_programmatore_menu.js",
+    "val_min":               "x2_programmatore_menu.js",
+    "val_max":               "x2_programmatore_menu.js",
 
     // Bottoni documenti parametro
-    "btn_file1_parametro": "x1_parametri_data.js",
-    "btn_file2_parametro": "x1_parametri_data.js",
-    "btn_file3_parametro": "x1_parametri_data.js",
-    "btn_file4_parametro": "x1_parametri_data.js",
-    "btn_file5_parametro": "x1_parametri_data.js",
-    "btn_file6_parametro": "x1_parametri_data.js",
-    "btn_file7_parametro": "x1_parametri_data.js",
-    "btn_file8_parametro": "x1_parametri_data.js"
+    "btn_file1_parametro": "x2_parametri_data.js",
+    "btn_file2_parametro": "x2_parametri_data.js",
+    "btn_file3_parametro": "x2_parametri_data.js",
+    "btn_file4_parametro": "x2_parametri_data.js",
+    "btn_file5_parametro": "x2_parametri_data.js",
+    "btn_file6_parametro": "x2_parametri_data.js",
+    "btn_file7_parametro": "x2_parametri_data.js",
+    "btn_file8_parametro": "x2_parametri_data.js"
 };
 
-// Mappa colonne (basata su MAPPA_X1_PARAMETRI VERS1.1.HTML)
+// Mappa colonne (basata su MAPPA_X2_PARAMETRI VERS1.1.HTML)
 const mappaColonne = {
 
     // SEZIONE 1 — IDENTIFICAZIONE PARAMETRO
@@ -430,8 +430,8 @@ document.addEventListener("mouseover", function (e) {
             const parametro = document.getElementById("parametro")?.value;
             const valore    = document.getElementById("tendina_valori")?.value;
 
-            if (typeof x1_file_parametri !== "undefined" && parametro && valore) {
-                const files = x1_file_parametri[parametro]?.files?.[valore] || [];
+            if (typeof x2_file_parametri !== "undefined" && parametro && valore) {
+                const files = x2_file_parametri[parametro]?.files?.[valore] || [];
                 const index = parseInt(id.replace("btn_file", "").replace("_parametro", ""), 10) - 1;
                 const fileAssociato = files[index];
                 if (fileAssociato) {
@@ -456,4 +456,4 @@ document.addEventListener("mouseover", function (e) {
     }
 });
 
-/* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X1 ===================== */
+/* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X2 ===================== */
