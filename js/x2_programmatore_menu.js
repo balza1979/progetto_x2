@@ -171,6 +171,36 @@ function x2_pulisciValore(v) {
     return String(v).trim();
 }
 
+// ------------------------------------------------------------
+// INIZIO MODIFICA - INSERIMENTO LOADER JSON
+// File: /js/x2_programmatore_menu.js
+// Data: 2026-04-28
+// Ora: 16:05
+// Motivo: aggiunta funzione mancante per caricare i JSON X2
+// ------------------------------------------------------------
+
+function x2_caricaJSON(nomeFile, callback) {
+
+    fetch("json_tendine/" + nomeFile + ".json")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Errore fetch JSON: " + nomeFile);
+            }
+            return response.json();
+        })
+        .then(data => {
+            callback(data);
+        })
+        .catch(err => {
+            console.error("Errore:", err);
+        });
+}
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
+
 function x2_popolaValori(param) {
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
