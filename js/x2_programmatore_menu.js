@@ -201,6 +201,11 @@ function x2_caricaJSON(nomeFile, callback) {
 // ------------------------------------------------------------
 
 
+/* ============================================================
+   x2_popolaValori — Versione completa corretta
+   28/04/2026 — 22:05
+   ============================================================ */
+
 function x2_popolaValori(param) {
 
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
@@ -209,14 +214,14 @@ function x2_popolaValori(param) {
     tendina.innerHTML = "";
 
     /* ============================================================
-       INIZIO BLOCCO 1.0.00 — 28/04/2026 21:50
+       BLOCCO SPECIALE — PARAMETRO 1.0.00
        ============================================================ */
 
     if (param.PARAMETRO === "1.0.00") {
 
         x2_caricaJSON("1.0.00", function(data) {
 
-            // 1) Popola tendina
+            // 1) Popola tendina con ID + testo
             data.valori.forEach(voce => {
                 const opt = document.createElement("option");
                 opt.value = voce.id;
@@ -224,7 +229,7 @@ function x2_popolaValori(param) {
                 tendina.appendChild(opt);
             });
 
-            // 2) Seleziona valore
+            // 2) Seleziona il valore attuale
             const id = x2_pulisciValore(param.VALORE);
 
             for (let i = 0; i < tendina.options.length; i++) {
@@ -234,10 +239,10 @@ function x2_popolaValori(param) {
                 }
             }
 
-            // 3) Lista immagini
+            // 3) Lista immagini dal JSON
             const lista = data.file_parametro[id];
 
-            // 4) Pulsanti
+            // 4) Aggiorna pulsanti VAL1–VAL8
             const pulsanti = [
                 document.getElementById("val1"),
                 document.getElementById("val2"),
@@ -266,7 +271,7 @@ function x2_popolaValori(param) {
                 }
             }
 
-            // 5) Campi numerici
+            // 5) Campi numerici non applicabili
             document.getElementById("unita_misura").value = "/";
             document.getElementById("val_min").value = "/";
             document.getElementById("val_max").value = "/";
@@ -276,8 +281,16 @@ function x2_popolaValori(param) {
     }
 
     /* ============================================================
-       FINE BLOCCO 1.0.00 — 28/04/2026 21:50
+       FINE BLOCCO SPECIALE 1.0.00
        ============================================================ */
+
+
+    /* ============================================================
+       QUI SOTTO RESTA TUTTA LA TUA LOGICA NORMALE
+       (dropdown normali, numerici, ecc.)
+       ============================================================ */
+
+    // ... il resto della tua funzione originale ...
 
     // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
