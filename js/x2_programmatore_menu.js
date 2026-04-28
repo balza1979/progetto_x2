@@ -217,8 +217,7 @@ function x2_popolaValori(param) {
 
 if (param.PARAMETRO === "1.0.00") {
 
-    const tendina = document.getElementById("tendina_valori");
-    tendina.innerHTML = "";
+    // NON RIDICHIARARE tendina QUI
 
     x2_caricaJSON("1.0.00", function(data) {
 
@@ -257,7 +256,7 @@ if (param.PARAMETRO === "1.0.00") {
 
         for (let i = 0; i < 8; i++) {
             if (lista && lista[i]) {
-                pulsanti[i].textContent = lista[i];   // es: "1.JPG"
+                pulsanti[i].textContent = lista[i];
                 pulsanti[i].disabled = false;
 
                 pulsanti[i].onclick = function () {
@@ -284,6 +283,7 @@ if (param.PARAMETRO === "1.0.00") {
 /* ============================================================
    FINE BLOCCO 1.0.00 — 28/04/2026 17:37
    ============================================================ */
+
 
 /* ============================
    FINE MODIFICA 28/04/2026 17:13
