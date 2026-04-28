@@ -216,51 +216,31 @@ function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
+/* ============================================================
+   BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
+   ============================================================ */
 
-    /* ------------------------------------------------------------
-       INIZIO BLOCCO DEBUG UNIVERSALE (sempre attivo)
-       ------------------------------------------------------------ */
-    document.getElementById("descrizione_parametro").innerHTML +=
-        "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "]</span>" +
-        "<br><span style='color:yellow'>DEBUG → VALORE GREZZO: [" + param.VALORE + "]</span>";
-    /* ------------------------------------------------------------
-       FINE BLOCCO DEBUG UNIVERSALE
-       ------------------------------------------------------------ */
+if (param.PARAMETRO === "1.0.00") {
 
-    // Carica il JSON del parametro selezionato
-    x2_caricaJSON(param.PARAMETRO, function(data) {
+    x2_caricaJSON("1.0.00", function(data) {
 
-        // 1) Popola tendina valori
-        if (data.valori) {
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = "\"" + voce.id + "\" " + voce.text;
-                tendina.appendChild(opt);
-            });
-        }
+        // 1) Popola tendina con ID + testo
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce.id;   // <-- valore pulito: "00", "01", "02"...
+            opt.textContent = "\"" + voce.id + "\" " + voce.text;
+            tendina.appendChild(opt);
+        });
 
-        // 2) Imposta il valore attuale del parametro
+        // 2) Imposta il valore attuale del parametro nella tendina
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) Leggi il valore dalla tendina (SEMPRE CORRETTO)
+        // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
         const id = tendina.value;
 
-        /* ------------------------------------------------------------
-           DEBUG VALORE TENDINA
-           ------------------------------------------------------------ */
-        document.getElementById("descrizione_parametro").innerHTML +=
-            "<br><span style='color:yellow'>DEBUG → TENDINA VALUE: [" + id + "]</span>";
-
-        // 4) Lista immagini (se esiste)
-        const lista = data.file_parametro ? data.file_parametro[id] : null;
-
-        /* ------------------------------------------------------------
-           DEBUG LISTA TROVATA
-           ------------------------------------------------------------ */
-        document.getElementById("descrizione_parametro").innerHTML +=
-            "<br><span style='color:yellow'>DEBUG → LISTA TROVATA: " + (lista ? "SI" : "NO") + "</span>";
+        // 4) Lista immagini per quel valore
+        const lista = data.file_parametro[id];
 
         // 5) Aggiorna pulsanti VAL1–VAL8
         const pulsanti = [
@@ -278,7 +258,9 @@ function x2_popolaValori(param) {
             if (lista && lista[i]) {
                 pulsanti[i].textContent = lista[i];
                 pulsanti[i].disabled = false;
-                pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+                pulsanti[i].onclick = function () {
+                    window.open("img/" + lista[i], "_blank");
+                };
             } else {
                 pulsanti[i].textContent = "-";
                 pulsanti[i].disabled = true;
@@ -291,15 +273,10 @@ function x2_popolaValori(param) {
         document.getElementById("val_min").value = "/";
         document.getElementById("val_max").value = "/";
     });
+
+    return;
 }
 
-/* ============================================================
-   FINE FUNZIONE x2_popolaValori(param)
-   ============================================================ */
-
-/* ============================================================
-   FINE FUNZIONE x2_popolaValori(param)
-   ============================================================ */
 
     // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
