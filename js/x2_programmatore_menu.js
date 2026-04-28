@@ -202,21 +202,7 @@ function x2_caricaJSON(nomeFile, callback) {
 
 
 function x2_popolaValori(param) {
-        // ------------------------------------------------------------
-    // INIZIO MODIFICA - CARICAMENTO VALORI DA JSON
-    // File: /js/x2_programmatore_menu.js
-    // Data: 2026-04-28
-    // Ora: 16:14
-    // Motivo: sostituzione caso speciale 1.0.00 → lettura dinamica JSON
-    // ------------------------------------------------------------
-
-    x2_caricaJSON("1.0.00", function(data) {
-        param = data.valori;
-    });
-
-    // ------------------------------------------------------------
-    // FINE MODIFICA
-    // ------------------------------------------------------------
+  
 
     console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
