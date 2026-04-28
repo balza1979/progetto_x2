@@ -477,7 +477,7 @@ document.addEventListener("mouseover", function (e) {
     // FILE
     let file = mappaFile[id] || "—";
 
-    // Se è un bottone documento, prova a leggere dal tuo  archivio file (se esiste)
+    // Se è un bottone documento, prova a leggere dal tuo  ar chivio file (se esiste)
     if (id.startsWith("btn_file")) {
         try {
             const parametro = document.getElementById("parametro")?.value;
