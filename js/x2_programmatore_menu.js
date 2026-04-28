@@ -213,11 +213,9 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 // DEBUG: mostra valori reali
-document.getElementById("debug_area").innerHTML = 
-    "<b>PARAMETRO:</b> [" + param.PARAMETRO + "]<br>" +
-    "<b>VALORE:</b> [" + param.VALORE + "]<br>" +
-    "<b>VALORE PULITO:</b> [" + param.VALORE.toString().trim().padStart(2,'0') + "]<br>" +
-    "<b>TENDINA VALUE:</b> [" + tendina.value + "]";
+document.getElementById("descrizione_parametro").innerHTML += 
+    "<br><span style='color:yellow'>DEBUG → PARAM: [" + param.PARAMETRO + "] VAL: [" + param.VALORE + "]</span>";
+
 
  /* ============================================================
    BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
