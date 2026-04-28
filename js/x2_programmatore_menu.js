@@ -215,6 +215,7 @@ function x2_popolaValori(param) {
 /* ============================================================
    INIZIO BLOCCO SPECIALE 1.0.00  (DEBUG + VALORI + IMMAGINI)
    ============================================================ */
+alert("PARAM ARRIVATO = [" + param.PARAMETRO + "]");
 
 if (param.PARAMETRO.toString().trim() === "1.0.00") {
 
