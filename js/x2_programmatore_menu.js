@@ -241,9 +241,45 @@ if (param.PARAMETRO === "1.0.00") {
             }
         }
 
-        // 3) Carica immagini
-        const lista = data.file_parametro[id];
-        x2_mostraImmagini(lista);
+    /* ============================
+   INIZIO MODIFICA 28/04/2026 17:26
+   Aggiornamento pulsanti VAL1–VAL8
+   ============================ */
+
+const pulsanti = [
+    document.getElementById("val1"),
+    document.getElementById("val2"),
+    document.getElementById("val3"),
+    document.getElementById("val4"),
+    document.getElementById("val5"),
+    document.getElementById("val6"),
+    document.getElementById("val7"),
+    document.getElementById("val8")
+];
+
+// Popola testo pulsanti
+for (let i = 0; i < 8; i++) {
+    if (lista && lista[i]) {
+        pulsanti[i].textContent = lista[i];   // es: "1.JPG"
+        pulsanti[i].disabled = false;
+
+        // click → apre immagine
+        pulsanti[i].onclick = function () {
+            const url = "img/" + lista[i];
+            window.open(url, "_blank");
+        };
+
+    } else {
+        pulsanti[i].textContent = "-";
+        pulsanti[i].disabled = true;
+        pulsanti[i].onclick = null;
+    }
+}
+
+/* ============================
+   FINE MODIFICA 28/04/2026 17:26
+   ============================ */
+
 
         // 4) Campi numerici non applicabili
         document.getElementById("unita_misura").value = "/";
