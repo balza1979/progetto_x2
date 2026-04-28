@@ -217,7 +217,8 @@ function x2_popolaValori(param) {
    BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
    ============================================================ */
 
-if (param.PARAMETRO === "1.0.00") {
+if (param.PARAMETRO.toString().trim() === "1.0.00") {
+
 
     x2_caricaJSON("1.0.00", function(data) {
 
