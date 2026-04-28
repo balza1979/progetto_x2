@@ -211,19 +211,20 @@ function x2_popolaValori(param) {
 
     // 1) Caso speciale: parametro 1.0.00
 // ------------------------------------------------------------
-// INIZIO MODIFICA - GESTIONE COMPLETA 1.0.00 DA JSON
+// GESTIONE PARAMETRO 1.0.00 DA JSON
 // File: /js/x2_programmatore_menu.js
 // Data: 2026-04-28
-// Ora: 16:25
+// Ora: 16:38
 // ------------------------------------------------------------
 
 if (param.PARAMETRO === "1.0.00") {
 
+    const tendina = document.getElementById("tendina_valori");
+    tendina.innerHTML = "";
+
     x2_caricaJSON("1.0.00", function(data) {
 
-        // 1) Popola la tendina con ID + testo
-        tendina.innerHTML = "";
-
+        // 1) Popola tendina con ID + testo
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
             opt.value = voce;          // "02 Porta media"
@@ -254,14 +255,6 @@ if (param.PARAMETRO === "1.0.00") {
     return;
 }
 
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
-
-
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
 
     // 2) Caso speciale: parametro 1.0.01
     if (param.PARAMETRO === "1.0.01") {
