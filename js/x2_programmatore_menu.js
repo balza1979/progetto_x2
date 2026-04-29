@@ -119,7 +119,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (param) {
             x2_mostraInfoParametro(param);
-            x2_popolaValori(param);                        // ★ FIX VALORI
+            x2_popolaValori(param);    // ★ FIX VALORI
+            x2_aggiornaParamButtons(codice);
+
         }
     });
 
