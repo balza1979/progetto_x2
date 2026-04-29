@@ -31,23 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
             x2_mostraInfoParametro(param);
             x2_popolaValori(param);                        // ★ FIX VALORI
         }
-        // ------------------------------------------------------------
-// INIZIO MODIFICA - RESET PULSANTI AL CAMBIO PARAMETRO
-// File: x2_programmatore_menu.js
-// Data: 2026-04-29
-// Motivo: evitare che i pulsanti mostrino file del parametro precedente
-// ------------------------------------------------------------
 
-const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-for (let i = 0; i < 8; i++) {
-    pulsanti[i].textContent = "-";
-    pulsanti[i].disabled = true;
-    pulsanti[i].onclick = null;
-}
-
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
 
     });
 
@@ -254,6 +238,24 @@ function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
+    
+    // ------------------------------------------------------------
+    // INIZIO MODIFICA - RESET PULSANTI AD OGNI CAMBIO PARAMETRO/VALORE
+    // File: x2_programmatore_menu.js
+    // Data: 2026-04-29
+    // Motivo: evitare che i pulsanti mostrino file del parametro precedente
+    // ------------------------------------------------------------
+
+    const pulsantiReset = [val1,val2,val3,val4,val5,val6,val7,val8];
+    for (let i = 0; i < 8; i++) {
+        pulsantiReset[i].textContent = "-";
+        pulsantiReset[i].disabled = true;
+        pulsantiReset[i].onclick = null;
+    }
+
+    // ------------------------------------------------------------
+    // FINE MODIFICA
+    // ------------------------------------------------------------
 
     // ============================================================
     // CASO SPECIALE 1.0.00 (JSON)
