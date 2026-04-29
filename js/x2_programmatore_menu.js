@@ -31,6 +31,24 @@ document.addEventListener("DOMContentLoaded", function () {
             x2_mostraInfoParametro(param);
             x2_popolaValori(param);                        // ★ FIX VALORI
         }
+        // ------------------------------------------------------------
+// INIZIO MODIFICA - RESET PULSANTI AL CAMBIO PARAMETRO
+// File: x2_programmatore_menu.js
+// Data: 2026-04-29
+// Motivo: evitare che i pulsanti mostrino file del parametro precedente
+// ------------------------------------------------------------
+
+const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+for (let i = 0; i < 8; i++) {
+    pulsanti[i].textContent = "-";
+    pulsanti[i].disabled = true;
+    pulsanti[i].onclick = null;
+}
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
     });
 
 
