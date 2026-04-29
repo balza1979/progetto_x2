@@ -346,87 +346,48 @@ function x2_popolaValori(param) {
     // FINE MODIFICA
     // ------------------------------------------------------------
 
-    // ============================================================
-    // CASO SPECIALE 1.0.00 (JSON)
-    // ============================================================
+// ============================================================
+// CARICAMENTO DINAMICO JSON PARAMETRO
+// ============================================================
 
-    if (param.PARAMETRO.trim() === "1.0.00") {
+x2_caricaJSON(param.PARAMETRO.trim(), function(data) {
 
-        x2_caricaJSON("1.0.00", function(data) {
+    // 1) Popola tendina valori
+    tendina.innerHTML = "";
+    data.valori.forEach(voce => {
+        const opt = document.createElement("option");
+        opt.value = voce.id;
+        opt.textContent = `"${voce.id}" ${voce.text}`;
+        tendina.appendChild(opt);
+    });
 
-            // 1) Popola tendina con ID + testo
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = "\"" + voce.id + "\" " + voce.text;
-                tendina.appendChild(opt);
-            });
+    // 2) Imposta valore attuale
+    const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+    tendina.value = valorePulito;
 
-            // 2) Imposta valore attuale
-            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-            tendina.value = valorePulito;
+    // 3) Lista immagini
+    const lista = data.file_parametro[valorePulito];
 
-            // 3) Lista immagini
-            const lista = data.file_parametro[valorePulito];
+    // 4) Pulsanti VAL1–VAL8
+    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
-            // 4) Pulsanti VAL1–VAL8
-            const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-
-            for (let i = 0; i < 8; i++) {
-                if (lista && lista[i]) {
-                    pulsanti[i].textContent = lista[i];
-                    pulsanti[i].disabled = false;
-                    pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
-                } else {
-                    pulsanti[i].textContent = "-";
-                    pulsanti[i].disabled = true;
-                    pulsanti[i].onclick = null;
-                }
-            }
-
-            // 5) Campi numerici non applicabili
-            unita_misura.value = "/";
-            val_min.value = "/";
-            val_max.value = "/";
-        });
-
-        return;
-    }
-
-    // ============================================================
-    // CASO SPECIALE 1.0.01
-    // ============================================================
-
-    if (param.PARAMETRO === "1.0.01") {
-
-        tendina.innerHTML = "";
-
-        x2_param_1_0_01.forEach(voce => {
-            const opt = document.createElement("option");
-            const pulita = x2_pulisciValore(voce);
-            opt.value = pulita;
-            opt.textContent = pulita;
-            tendina.appendChild(opt);
-        });
-
-        const id = x2_pulisciValore(param.VALORE);
-        for (let i = 0; i < tendina.options.length; i++) {
-            if (tendina.options[i].textContent.includes(id)) {
-                tendina.selectedIndex = i;
-                break;
-            }
+    for (let i = 0; i < 8; i++) {
+        if (lista && lista[i]) {
+            pulsanti[i].textContent = lista[i];
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
         }
-
-        unita_misura.value = "/";
-        val_min.value      = "/";
-        val_max.value      = "/";
-
-        return;
     }
 
-    // ============================================================
-    // METODO STANDARD
-    // ============================================================
+    // 5) Campi numerici non applicabili
+    unita_misura.value = "/";
+    val_min.value = "/";
+    val_max.value = "/";
+});
 
     const raw = param.VALORE || "";
     if (!raw) return;
