@@ -1,6 +1,6 @@
 // ======================================================================
 // FILE: x2_programmatore_menu.js
-// DESCRIZIONE: Logica MENU → SOTTOMENU → PARAMETRI → VALORI + DEBUG MAPPE
+// DESCRIZIONE: Logica MENU  → SOTTOMENU → PARAMETRI → VALORI + DEBUG MAPPE
 // AUTORE: Luca + Copilot
 // DATA: 28/04/2026 – 11:40
 // ======================================================================
