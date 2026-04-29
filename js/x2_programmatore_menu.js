@@ -61,6 +61,36 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     }
 }
 
+// ------------------------------------------------------------
+// INIZIO MODIFICA - AGGIORNA PULSANTI PARAM 1–8
+// ------------------------------------------------------------
+function x2_aggiornaParamButtons(parametroCodice) {
+
+    const record = x2_parametri.find(p => p.PARAMETRO === parametroCodice);
+
+    const pulsanti = [];
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("btn_param" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "FILE" + (i + 1);   // es: FILE1, FILE2, FILE3…
+        const file = record ? record[nomeCampo] : "/";
+
+        if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+// ------------------------------------------------------------
+// FINE MODIFICA - AGGIORNA PULSANTI PARAM 1–8
+// ------------------------------------------------------------
 
 
 document.addEventListener("DOMContentLoaded", function () {
