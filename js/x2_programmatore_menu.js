@@ -361,7 +361,55 @@ document.getElementById("parametro_down").addEventListener("click", () => {
         }
     }
 });
+// ======================================================================
+// INIZIO MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
+// File: /js/x2_programmatore_menu.js
+// Versione: 29/04/2026 – 07:12
+// Motivo: aggiornare i pulsanti VAL1–VAL8 quando cambia il valore selezionato
+// ======================================================================
 
+document.getElementById("tendina_valori").addEventListener("change", function () {
+
+    console.log("DEBUG → CAMBIO VALORE TENDINA:", this.value);
+
+    // Ricarica il JSON del parametro 1.0.00
+    x2_caricaJSON("1.0.00", function(data) {
+
+        const id = document.getElementById("tendina_valori").value;
+        const lista = data.file_parametro[id];
+
+        console.log("DEBUG → LISTA DOPO CAMBIO VALORE:", lista);
+
+        const pulsanti = [
+            document.getElementById("val1"),
+            document.getElementById("val2"),
+            document.getElementById("val3"),
+            document.getElementById("val4"),
+            document.getElementById("val5"),
+            document.getElementById("val6"),
+            document.getElementById("val7"),
+            document.getElementById("val8")
+        ];
+
+        for (let i = 0; i < 8; i++) {
+            if (lista && lista[i]) {
+                pulsanti[i].textContent = lista[i];
+                pulsanti[i].disabled = false;
+                pulsanti[i].onclick = function () {
+                    window.open("img/" + lista[i], "_blank");
+                };
+            } else {
+                pulsanti[i].textContent = "-";
+                pulsanti[i].disabled = true;
+                pulsanti[i].onclick = null;
+            }
+        }
+    });
+});
+
+// ======================================================================
+// FINE MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
+// ======================================================================
 // ======================================================================
 // DEBUG: MAPPA FILE + MAPPA COLONNE + MOUSEOVER
 // ======================================================================
