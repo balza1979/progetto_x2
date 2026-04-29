@@ -333,55 +333,60 @@ function x2_popolaValori(param) {
    FINE FUNZIONE x2_popolaValori(param)
    ============================================================ */
 // ======================================================================
-// INIZIO MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
-// File: /js/x2_programmatore_menu.js
-// Versione: 29/04/2026 – 07:12
-// Motivo: aggiornare i pulsanti VAL1–VAL8 quando cambia il valore selezionato
+// INIZIO MODIFICA - EVENTO CHANGE TENDINA_VALORI
+// Versione: 29/04/2026 – 07:32
 // ======================================================================
 
-document.getElementById("tendina_valori").addEventListener("change", function () {
+window.addEventListener("DOMContentLoaded", function () {
 
-    console.log("DEBUG → CAMBIO VALORE TENDINA:", this.value);
+    const tv = document.getElementById("tendina_valori");
+    if (!tv) {
+        console.log("DEBUG → tendina_valori NON trovata al DOMContentLoaded");
+        return;
+    }
 
-    // Ricarica il JSON del parametro 1.0.00
-    x2_caricaJSON("1.0.00", function(data) {
+    tv.addEventListener("change", function () {
 
-        const id = document.getElementById("tendina_valori").value;
-        const lista = data.file_parametro[id];
+        console.log("DEBUG → CAMBIO VALORE TENDINA:", this.value);
 
-        console.log("DEBUG → LISTA DOPO CAMBIO VALORE:", lista);
+        x2_caricaJSON("1.0.00", function(data) {
 
-        const pulsanti = [
-            document.getElementById("val1"),
-            document.getElementById("val2"),
-            document.getElementById("val3"),
-            document.getElementById("val4"),
-            document.getElementById("val5"),
-            document.getElementById("val6"),
-            document.getElementById("val7"),
-            document.getElementById("val8")
-        ];
+            const id = tv.value;
+            const lista = data.file_parametro[id];
 
-        for (let i = 0; i < 8; i++) {
-            if (lista && lista[i]) {
-                pulsanti[i].textContent = lista[i];
-                pulsanti[i].disabled = false;
-                pulsanti[i].onclick = function () {
-                    window.open("img/" + lista[i], "_blank");
-                };
-            } else {
-                pulsanti[i].textContent = "-";
-                pulsanti[i].disabled = true;
-                pulsanti[i].onclick = null;
+            console.log("DEBUG → LISTA DOPO CAMBIO VALORE:", lista);
+
+            const pulsanti = [
+                document.getElementById("val1"),
+                document.getElementById("val2"),
+                document.getElementById("val3"),
+                document.getElementById("val4"),
+                document.getElementById("val5"),
+                document.getElementById("val6"),
+                document.getElementById("val7"),
+                document.getElementById("val8")
+            ];
+
+            for (let i = 0; i < 8; i++) {
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+                    pulsanti[i].onclick = function () {
+                        window.open("img/" + lista[i], "_blank");
+                    };
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
             }
-        }
+        });
     });
 });
 
 // ======================================================================
-// FINE MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
+// FINE MODIFICA
 // ======================================================================
-//
 
 // ======================================================================
 // NAVIGAZIONE PARAMETRI (UP / DOWN)
