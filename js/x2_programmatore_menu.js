@@ -332,35 +332,6 @@ function x2_popolaValori(param) {
 /* ============================================================
    FINE FUNZIONE x2_popolaValori(param)
    ============================================================ */
-
-
-// ======================================================================
-// NAVIGAZIONE PARAMETRI (UP / DOWN)
-// ======================================================================
-
-document.getElementById("parametro_up").addEventListener("click", () => {
-    const sel = document.getElementById("parametro");
-    if (sel.selectedIndex > 0) {
-        sel.selectedIndex--;
-        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
-        if (param) {
-            x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
-        }
-    }
-});
-
-document.getElementById("parametro_down").addEventListener("click", () => {
-    const sel = document.getElementById("parametro");
-    if (sel.selectedIndex < sel.options.length - 1) {
-        sel.selectedIndex++;
-        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
-        if (param) {
-            x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
-        }
-    }
-});
 // ======================================================================
 // INIZIO MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
 // File: /js/x2_programmatore_menu.js
@@ -410,7 +381,36 @@ document.getElementById("tendina_valori").addEventListener("change", function ()
 // ======================================================================
 // FINE MODIFICA - AGGIUNTA EVENTO CHANGE TENDINA_VALORI
 // ======================================================================
+//
+
 // ======================================================================
+// NAVIGAZIONE PARAMETRI (UP / DOWN)
+// ======================================================================
+
+document.getElementById("parametro_up").addEventListener("click", () => {
+    const sel = document.getElementById("parametro");
+    if (sel.selectedIndex > 0) {
+        sel.selectedIndex--;
+        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
+        if (param) {
+            x2_mostraInfoParametro(param);
+            x2_popolaValori(param);
+        }
+    }
+});
+
+document.getElementById("parametro_down").addEventListener("click", () => {
+    const sel = document.getElementById("parametro");
+    if (sel.selectedIndex < sel.options.length - 1) {
+        sel.selectedIndex++;
+        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
+        if (param) {
+            x2_mostraInfoParametro(param);
+            x2_popolaValori(param);
+        }
+    }
+});
+ ======================================================================
 // DEBUG: MAPPA FILE + MAPPA COLONNE + MOUSEOVER
 // ======================================================================
 
