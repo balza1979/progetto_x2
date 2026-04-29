@@ -5,6 +5,63 @@
 // DATA: 28/04/2026 – 11:40
 // ======================================================================
 
+// ------------------------------------------------------------
+// INIZIO MODIFICA - FUNZIONI PULSANTI MENU / SOTTOMENU
+// ------------------------------------------------------------
+function x2_aggiornaMenuButtons(codMenu) {
+
+    const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
+
+    const pulsanti = [];
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("menu_btn" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "file" + (i + 1) + "_menu";
+        const file = record ? record[nomeCampo] : "/";
+
+        if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+
+function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
+
+    const codice = codMenu + "." + codSottomenu;
+    const record = x2_menu_struttura_data.find(r => r.cod__menu === codice);
+
+    const pulsanti = [];
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("sottomenu_btn" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "file" + (i + 1) + "_sottomenu";
+        const file = record ? record[nomeCampo] : "/";
+
+        if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+// ------------------------------------------------------------
+// FINE MODIFICA - FUNZIONI PULSANTI MENU / SOTTOMENU
+// ------------------------------------------------------------
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const selMenu       = document.getElementById("menu");
@@ -17,11 +74,13 @@ document.addEventListener("DOMContentLoaded", function () {
     selMenu.addEventListener("change", function () {
         x2_popolaSottomenu(this.value);
         selSottomenu.dispatchEvent(new Event("change"));   // ★ FIX VALORI
+        x2_aggiornaMenuButtons(this.value);                // ★ PULSANTI MENU
     });
 
     selSottomenu.addEventListener("change", function () {
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));   // ★ FIX VALORI
+        x2_aggiornaSottomenuButtons(selMenu.value, this.value); // ★ PULSANTI SOTTOMENU
     });
 
     selParametro.addEventListener("change", function () {
@@ -31,16 +90,13 @@ document.addEventListener("DOMContentLoaded", function () {
             x2_mostraInfoParametro(param);
             x2_popolaValori(param);                        // ★ FIX VALORI
         }
-
-
     });
 
-
-// ------------------------------------------------------------
-// INIZIO MODIFICA - AGGIORNAMENTO VAL1–VAL8 AL CAMBIO VALORE
-// File: x2_programmatore_menu.js
-// Data: 2026-04-29
-// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // INIZIO MODIFICA - AGGIORNAMENTO VAL1–VAL8 AL CAMBIO VALORE
+    // File: x2_programmatore_menu.js
+    // Data: 2026-04-29
+    // ------------------------------------------------------------
 
 document.getElementById("tendina_valori").addEventListener("change", function () {
 
