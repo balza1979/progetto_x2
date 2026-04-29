@@ -32,6 +32,61 @@ document.addEventListener("DOMContentLoaded", function () {
             x2_popolaValori(param);                        // ★ FIX VALORI
         }
     });
+
+
+// ------------------------------------------------------------
+// INIZIO MODIFICA - AGGIORNAMENTO VAL1–VAL8 AL CAMBIO VALORE
+// File: x2_programmatore_menu.js
+// Data: 2026-04-29
+// ------------------------------------------------------------
+
+document.getElementById("tendina_valori").addEventListener("change", function () {
+
+    const codice = document.getElementById("parametro").value;
+    const param = x2_parametri.find(p => p.PARAMETRO === codice);
+    if (!param) return;
+
+    const id = this.value;
+
+    // Caso speciale 1.0.00 → aggiorna SOLO i pulsanti
+    if (param.PARAMETRO.trim() === "1.0.00") {
+
+        x2_caricaJSON("1.0.00", function(data) {
+
+            const lista = data.file_parametro[id];
+            const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+
+            for (let i = 0; i < 8; i++) {
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+                    pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
+            }
+        });
+
+        return;
+    }
+
+    // Parametri normali → aggiorna valore e ricarica tendina
+    param.VALORE = id;
+    x2_popolaValori(param);
+});
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
+
+
+
+
+
+    
 });
 
 // ======================================================================
