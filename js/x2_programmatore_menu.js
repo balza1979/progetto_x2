@@ -35,10 +35,8 @@ function x2_aggiornaMenuButtons(codMenu) {
 
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
 
-    // Estrae solo il numero prima del "="
-    const soloNumero = codSottomenu.split("=")[0].trim();
-
-    const codice = codMenu + "." + soloNumero;
+    // Il valore del sottomenu è già il codice completo (es: "1.0")
+    const codice = codSottomenu;
 
     const record = x2_menu_struttura_data.find(r => r.cod__menu === codice);
 
@@ -62,6 +60,7 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
         }
     }
 }
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
