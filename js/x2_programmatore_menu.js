@@ -332,61 +332,6 @@ function x2_popolaValori(param) {
 /* ============================================================
    FINE FUNZIONE x2_popolaValori(param)
    ============================================================ */
-// ======================================================================
-// INIZIO MODIFICA - EVENTO CHANGE TENDINA_VALORI
-// Versione: 29/04/2026 – 07:32
-// ======================================================================
-
-window.addEventListener("DOMContentLoaded", function () {
-
-    const tv = document.getElementById("tendina_valori");
-    if (!tv) {
-        console.log("DEBUG → tendina_valori NON trovata al DOMContentLoaded");
-        return;
-    }
-
-    tv.addEventListener("change", function () {
-
-        console.log("DEBUG → CAMBIO VALORE TENDINA:", this.value);
-
-        x2_caricaJSON("1.0.00", function(data) {
-
-            const id = tv.value;
-            const lista = data.file_parametro[id];
-
-            console.log("DEBUG → LISTA DOPO CAMBIO VALORE:", lista);
-
-            const pulsanti = [
-                document.getElementById("val1"),
-                document.getElementById("val2"),
-                document.getElementById("val3"),
-                document.getElementById("val4"),
-                document.getElementById("val5"),
-                document.getElementById("val6"),
-                document.getElementById("val7"),
-                document.getElementById("val8")
-            ];
-
-            for (let i = 0; i < 8; i++) {
-                if (lista && lista[i]) {
-                    pulsanti[i].textContent = lista[i];
-                    pulsanti[i].disabled = false;
-                    pulsanti[i].onclick = function () {
-                        window.open("img/" + lista[i], "_blank");
-                    };
-                } else {
-                    pulsanti[i].textContent = "-";
-                    pulsanti[i].disabled = true;
-                    pulsanti[i].onclick = null;
-                }
-            }
-        });
-    });
-});
-
-// ======================================================================
-// FINE MODIFICA
-// ======================================================================
 
 // ======================================================================
 // NAVIGAZIONE PARAMETRI (UP / DOWN)
@@ -594,5 +539,3 @@ document.addEventListener("mouseover", function (e) {
 });
 
 /* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X2 ===================== */
-/* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X2 ===================== */
-});
