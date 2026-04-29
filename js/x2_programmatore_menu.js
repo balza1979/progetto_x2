@@ -201,118 +201,101 @@ function x2_caricaJSON(nomeFile, callback) {
 // ------------------------------------------------------------
 
 
-/* ============================================================
-   x2_popolaValori — Versione completa corretta
-   28/04/2026 — 22:05
-   ============================================================ */
-
-/* ============================================================
-   INIZIO FUNZIONE x2_popolaValori(param)
-   ============================================================ */
-
 function x2_popolaValori(param) {
+  
 
-    console.log("DEBUG → INGRESSO FUNZIONE x2_popolaValori");
-    console.log("DEBUG → PARAMETRO GREZZO:", param.PARAMETRO);
-    console.log("DEBUG → PARAMETRO TRIM:", param.PARAMETRO.trim());
-    console.log("DEBUG → VALORE GREZZO:", param.VALORE);
+    console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    /* ============================================================
-       BLOCCO SPECIALE 1.0.00 — usa il valore della tendina
-       ============================================================ */
+    // 1) Caso speciale: parametro 1.0.00
+// ------------------------------------------------------------
+// INIZIO MODIFICA - GESTIONE COMPLETA 1.0.00 DA JSON
+// File: /js/x2_programmatore_menu.js
+// Data: 2026-04-28
+// Ora: 16:25
+// ------------------------------------------------------------
 
-    if (param.PARAMETRO.trim() === "1.0.00") {
+if (param.PARAMETRO === "1.0.00") {
 
-        console.log("DEBUG → ENTRATO NEL BLOCCO SPECIALE 1.0.00");
+    x2_caricaJSON("1.0.00", function(data) {
 
-        x2_caricaJSON("1.0.00", function(data) {
+        // 1) Popola la tendina con ID + testo
+        tendina.innerHTML = "";
 
-            console.log("DEBUG → JSON 1.0.00 CARICATO:", data);
-            console.log("DEBUG → data.valori:", data.valori);
-            console.log("DEBUG → data.file_parametro:", data.file_parametro);
-
-            // 1) Popola tendina con ID + testo
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = "\"" + voce.id + "\" " + voce.text;
-                tendina.appendChild(opt);
-            });
-
-            // 2) Imposta il valore attuale del parametro nella tendina
-            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-            tendina.value = valorePulito;
-
-            // 3) ORA leggiamo il valore dalla tendina (SEMPRE CORRETTO)
-            const id = tendina.value;
-
-            console.log("DEBUG → ID SELEZIONATO:", id);
-
-            // 4) Lista immagini per quel valore
-            const lista = data.file_parametro[id];
-
-            console.log("DEBUG → LISTA TROVATA PER ID:", lista);
-
-            // 5) Aggiorna pulsanti VAL1–VAL8
-            const pulsanti = [
-                document.getElementById("val1"),
-                document.getElementById("val2"),
-                document.getElementById("val3"),
-                document.getElementById("val4"),
-                document.getElementById("val5"),
-                document.getElementById("val6"),
-                document.getElementById("val7"),
-                document.getElementById("val8")
-            ];
-
-            console.log("DEBUG → PULSANTI:", pulsanti);
-
-            for (let i = 0; i < 8; i++) {
-                console.log("DEBUG → i:", i, "lista[i]:", lista ? lista[i] : null);
-
-                if (lista && lista[i]) {
-                    pulsanti[i].textContent = lista[i];
-                    pulsanti[i].disabled = false;
-                    pulsanti[i].onclick = function () {
-                        window.open("img/" + lista[i], "_blank");
-                    };
-                } else {
-                    pulsanti[i].textContent = "-";
-                    pulsanti[i].disabled = true;
-                    pulsanti[i].onclick = null;
-                }
-            }
-
-            // 6) Campi numerici non applicabili
-            document.getElementById("unita_misura").value = "/";
-            document.getElementById("val_min").value = "/";
-            document.getElementById("val_max").value = "/";
-
-            console.log("DEBUG → USCITA BLOCCO 1.0.00");
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce;          // "02 Porta media"
+            opt.textContent = voce;    // "02 Porta media"
+            tendina.appendChild(opt);
         });
 
+        // 2) Seleziona il valore attuale
+        const id = x2_pulisciValore(param.VALORE);   // "02"
+
+        for (let i = 0; i < tendina.options.length; i++) {
+            if (tendina.options[i].value.startsWith(id)) {
+                tendina.selectedIndex = i;
+                break;
+            }
+        }
+
+        // 3) Carica immagini
+        const lista = data.file_parametro[id];
+        x2_mostraImmagini(lista);
+
+        // 4) Campi numerici non applicabili
+        document.getElementById("unita_misura").value = "/";
+        document.getElementById("val_min").value = "/";
+        document.getElementById("val_max").value = "/";
+    });
+
+    return;
+}
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
+
+// ------------------------------------------------------------
+// FINE MODIFICA
+// ------------------------------------------------------------
+
+    // 2) Caso speciale: parametro 1.0.01
+    if (param.PARAMETRO === "1.0.01") {
+
+        tendina.innerHTML = "";
+
+        x2_param_1_0_01.forEach(voce => {
+            const opt = document.createElement("option");
+            const pulita = x2_pulisciValore(voce);
+            opt.value = pulita;
+            opt.textContent = pulita;
+            tendina.appendChild(opt);
+        });
+
+        const id = x2_pulisciValore(param.VALORE);
+        for (let i = 0; i < tendina.options.length; i++) {
+            if (tendina.options[i].textContent.includes(id)) {
+                tendina.selectedIndex = i;
+                break;
+            }
+        }
+
+        document.getElementById("unita_misura").value = "/";
+        document.getElementById("val_min").value      = "/";
+        document.getElementById("val_max").value      = "/";
+
         return;
     }
 
-    // ============================================================
-    // METODO STANDARD (altri parametri)
-    // ============================================================
-
-    console.log("DEBUG → BLOCCO STANDARD (NON 1.0.00)");
-
+    // 3) Metodo standard per gli altri parametri
     const raw = param.VALORE || "";
-    console.log("DEBUG → RAW:", raw);
-
-    if (!raw) {
-        console.log("DEBUG → RAW VUOTO, USCITA");
-        return;
-    }
+    if (!raw) return;
 
     const parti = raw.split(";").map(v => v.trim()).filter(v => v !== "");
-    console.log("DEBUG → PARTI:", parti);
 
     parti.forEach(voce => {
         const opt = document.createElement("option");
@@ -325,13 +308,7 @@ function x2_popolaValori(param) {
     document.getElementById("unita_misura").value = "";
     document.getElementById("val_min").value      = "";
     document.getElementById("val_max").value      = "";
-
-    console.log("DEBUG → USCITA BLOCCO STANDARD");
 }
-
-/* ============================================================
-   FINE FUNZIONE x2_popolaValori(param)
-   ============================================================ */
 
 // ======================================================================
 // NAVIGAZIONE PARAMETRI (UP / DOWN)
@@ -360,7 +337,8 @@ document.getElementById("parametro_down").addEventListener("click", () => {
         }
     }
 });
- ======================================================================
+
+// ======================================================================
 // DEBUG: MAPPA FILE + MAPPA COLONNE + MOUSEOVER
 // ======================================================================
 
@@ -506,7 +484,7 @@ document.addEventListener("mouseover", function (e) {
     // FILE
     let file = mappaFile[id] || "—";
 
-    // Se è un bottone documento, prova a leggere dal tuo  ar chivio file (se esiste)
+    // Se è un bottone documento, prova a leggere dal tuo  archivio file (se esiste)
     if (id.startsWith("btn_file")) {
         try {
             const parametro = document.getElementById("parametro")?.value;
@@ -539,6 +517,3 @@ document.addEventListener("mouseover", function (e) {
 });
 
 /* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X2 ===================== */
-/* ===================== FINE BLOCCO MAPPE DEBUG PROGRAMMATORE X2 ===================== */
-});
-
