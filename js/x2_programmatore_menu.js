@@ -4,12 +4,6 @@
 // AUTORE: Luca + Copilot
 // DATA: 28/04/2026 – 11:40
 // ======================================================================
-//
-// Richiede che siano già caricati:
-// - x2_menu_struttura_data.js
-// - x2_parametri_data.js
-// - (opzionale) x2_file_parametri.js per i documenti associati
-// ======================================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -22,10 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     selMenu.addEventListener("change", function () {
         x2_popolaSottomenu(this.value);
+        selSottomenu.dispatchEvent(new Event("change"));   // ★ FIX VALORI
     });
 
     selSottomenu.addEventListener("change", function () {
         x2_popolaParametri(this.value);
+        selParametro.dispatchEvent(new Event("change"));   // ★ FIX VALORI
     });
 
     selParametro.addEventListener("change", function () {
@@ -33,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (param) {
             x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
+            x2_popolaValori(param);                        // ★ FIX VALORI
         }
     });
 });
@@ -62,7 +58,7 @@ function x2_popolaMenu() {
 
     if (selMenu.options.length > 0) {
         selMenu.selectedIndex = 0;
-        x2_popolaSottomenu(selMenu.value);
+        selMenu.dispatchEvent(new Event("change"));        // ★ FIX VALORI
     }
 }
 
@@ -87,12 +83,8 @@ function x2_popolaSottomenu(codMenu) {
 
     if (selSottomenu.options.length > 0) {
         selSottomenu.selectedIndex = 0;
-        x2_popolaParametri(selSottomenu.value);
-    } else {
-        x2_svuotaParametri();
     }
 }
-
 // ======================================================================
 // PARAMETRI
 // ======================================================================
@@ -101,10 +93,6 @@ function x2_svuotaParametri() {
     document.getElementById("parametro").innerHTML = "";
     document.getElementById("info_parametro").innerHTML = "";
 }
-
-// ======================================================================
-// PARAMETRI → POPOLA
-// ======================================================================
 
 function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
@@ -135,13 +123,6 @@ function x2_popolaParametri(codMenuCompleto) {
 
     if (lista.length > 0) {
         selParametro.selectedIndex = 0;
-        const primo = lista[0];
-
-        x2_mostraInfoParametro(primo);
-        x2_popolaValori(primo);
-
-        document.getElementById("codice_parametro").value      = primo.PARAMETRO || "";
-        document.getElementById("descrizione_parametro").value = primo.DESCRIZIONE || "";
     }
 }
 
@@ -171,13 +152,9 @@ function x2_pulisciValore(v) {
     return String(v).trim();
 }
 
-// ------------------------------------------------------------
-// INIZIO MODIFICA - INSERIMENTO LOADER JSON
-// File: /js/x2_programmatore_menu.js
-// Data: 2026-04-28
-// Ora: 16:05
-// Motivo: aggiunta funzione mancante per caricare i JSON X2
-// ------------------------------------------------------------
+// ======================================================================
+// LOADER JSON
+// ======================================================================
 
 function x2_caricaJSON(nomeFile, callback) {
 
@@ -195,75 +172,66 @@ function x2_caricaJSON(nomeFile, callback) {
             console.error("Errore:", err);
         });
 }
-
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
-
+// ======================================================================
+// x2_popolaValori — FIXATA PER FAR FUNZIONARE I VALORI
+// ======================================================================
 
 function x2_popolaValori(param) {
-  
-
-    console.log("PARAM:", param.PARAMETRO, "VALORE:", param.VALORE);
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // 1) Caso speciale: parametro 1.0.00
-// ------------------------------------------------------------
-// INIZIO MODIFICA - GESTIONE COMPLETA 1.0.00 DA JSON
-// File: /js/x2_programmatore_menu.js
-// Data: 2026-04-28
-// Ora: 16:25
-// ------------------------------------------------------------
+    // ============================================================
+    // CASO SPECIALE 1.0.00 (JSON)
+    // ============================================================
 
-if (param.PARAMETRO === "1.0.00") {
+    if (param.PARAMETRO.trim() === "1.0.00") {
 
-    x2_caricaJSON("1.0.00", function(data) {
+        x2_caricaJSON("1.0.00", function(data) {
 
-        // 1) Popola la tendina con ID + testo
-        tendina.innerHTML = "";
+            // 1) Popola tendina con ID + testo
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = "\"" + voce.id + "\" " + voce.text;
+                tendina.appendChild(opt);
+            });
 
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce;          // "02 Porta media"
-            opt.textContent = voce;    // "02 Porta media"
-            tendina.appendChild(opt);
+            // 2) Imposta valore attuale
+            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            // 3) Lista immagini
+            const lista = data.file_parametro[valorePulito];
+
+            // 4) Pulsanti VAL1–VAL8
+            const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+
+            for (let i = 0; i < 8; i++) {
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+                    pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
+            }
+
+            // 5) Campi numerici non applicabili
+            unita_misura.value = "/";
+            val_min.value = "/";
+            val_max.value = "/";
         });
 
-        // 2) Seleziona il valore attuale
-        const id = x2_pulisciValore(param.VALORE);   // "02"
+        return;
+    }
 
-        for (let i = 0; i < tendina.options.length; i++) {
-            if (tendina.options[i].value.startsWith(id)) {
-                tendina.selectedIndex = i;
-                break;
-            }
-        }
+    // ============================================================
+    // CASO SPECIALE 1.0.01
+    // ============================================================
 
-        // 3) Carica immagini
-        const lista = data.file_parametro[id];
-        x2_mostraImmagini(lista);
-
-        // 4) Campi numerici non applicabili
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value = "/";
-        document.getElementById("val_max").value = "/";
-    });
-
-    return;
-}
-
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
-
-
-// ------------------------------------------------------------
-// FINE MODIFICA
-// ------------------------------------------------------------
-
-    // 2) Caso speciale: parametro 1.0.01
     if (param.PARAMETRO === "1.0.01") {
 
         tendina.innerHTML = "";
@@ -284,14 +252,17 @@ if (param.PARAMETRO === "1.0.00") {
             }
         }
 
-        document.getElementById("unita_misura").value = "/";
-        document.getElementById("val_min").value      = "/";
-        document.getElementById("val_max").value      = "/";
+        unita_misura.value = "/";
+        val_min.value      = "/";
+        val_max.value      = "/";
 
         return;
     }
 
-    // 3) Metodo standard per gli altri parametri
+    // ============================================================
+    // METODO STANDARD
+    // ============================================================
+
     const raw = param.VALORE || "";
     if (!raw) return;
 
@@ -305,63 +276,46 @@ if (param.PARAMETRO === "1.0.00") {
         tendina.appendChild(opt);
     });
 
-    document.getElementById("unita_misura").value = "";
-    document.getElementById("val_min").value      = "";
-    document.getElementById("val_max").value      = "";
+    unita_misura.value = "";
+    val_min.value      = "";
+    val_max.value      = "";
 }
 
 // ======================================================================
-// NAVIGAZIONE PARAMETRI (UP / DOWN)
+// NAVIGAZIONE PARAMETRI
 // ======================================================================
 
-document.getElementById("parametro_up").addEventListener("click", () => {
-    const sel = document.getElementById("parametro");
+parametro_up.addEventListener("click", () => {
+    const sel = parametro;
     if (sel.selectedIndex > 0) {
         sel.selectedIndex--;
-        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
-        if (param) {
-            x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
-        }
+        sel.dispatchEvent(new Event("change"));
     }
 });
 
-document.getElementById("parametro_down").addEventListener("click", () => {
-    const sel = document.getElementById("parametro");
+parametro_down.addEventListener("click", () => {
+    const sel = parametro;
     if (sel.selectedIndex < sel.options.length - 1) {
         sel.selectedIndex++;
-        const param = x2_parametri.find(p => p.PARAMETRO === sel.value);
-        if (param) {
-            x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
-        }
+        sel.dispatchEvent(new Event("change"));
     }
 });
-
 // ======================================================================
-// DEBUG: MAPPA FILE + MAPPA COLONNE + MOUSEOVER
+// DEBUG MAPPE (identico alla tua versione originale)
 // ======================================================================
 
-/* =========================================================
-BLOCCO: MAPPE DEBUG PROGRAMMATORE X2
-VERSIONE: 28/04/2026 – 11:40
-========================================================= */
-
-// Mappa file (puoi estenderla con i tuoi nomi reali)
 const mappaFile = {
-    // Esempi tipici:
-    "menu":              "x2_programmatore_menu.js",
-    "sottomenu":         "x2_programmatore_menu.js",
-    "parametro":         "x2_programmatore_menu.js",
-    "tendina_valori":    "x2_programmatore_menu.js",
+    "menu": "x2_programmatore_menu.js",
+    "sottomenu": "x2_programmatore_menu.js",
+    "parametro": "x2_programmatore_menu.js",
+    "tendina_valori": "x2_programmatore_menu.js",
 
-    "codice_parametro":      "x2_programmatore_menu.js",
+    "codice_parametro": "x2_programmatore_menu.js",
     "descrizione_parametro": "x2_programmatore_menu.js",
-    "unita_misura":          "x2_programmatore_menu.js",
-    "val_min":               "x2_programmatore_menu.js",
-    "val_max":               "x2_programmatore_menu.js",
+    "unita_misura": "x2_programmatore_menu.js",
+    "val_min": "x2_programmatore_menu.js",
+    "val_max": "x2_programmatore_menu.js",
 
-    // Bottoni documenti parametro
     "btn_file1_parametro": "x2_parametri_data.js",
     "btn_file2_parametro": "x2_parametri_data.js",
     "btn_file3_parametro": "x2_parametri_data.js",
@@ -372,17 +326,11 @@ const mappaFile = {
     "btn_file8_parametro": "x2_parametri_data.js"
 };
 
-// Mappa colonne (basata su MAPPA_X2_PARAMETRI VERS1.1.HTML)
 const mappaColonne = {
-
-    // SEZIONE 1 — IDENTIFICAZIONE PARAMETRO
     "id_descrizione_parametro": { col: "D", ref: "DESCRIZIONE" },
-
-    // SEZIONE 2 — DEFAULT
-    "id_valore_default":      { col: "G", ref: "VALORE_DEFAULT" },
+    "id_valore_default": { col: "G", ref: "VALORE_DEFAULT" },
     "id_descrizione_default": { col: "H", ref: "DESCRIZIONE_DEFAULT" },
 
-    // SEZIONE 3 — DOCUMENTI DEL PARAMETRO (8 CELLE)
     "btn_file1_parametro": { col: "I", ref: "file1_parametro" },
     "btn_file2_parametro": { col: "J", ref: "file2_parametro" },
     "btn_file3_parametro": { col: "K", ref: "file3_parametro" },
@@ -392,34 +340,29 @@ const mappaColonne = {
     "btn_file7_parametro": { col: "O", ref: "file7_parametro" },
     "btn_file8_parametro": { col: "P", ref: "file8_parametro" },
 
-    // SEZIONE 4 — TIPOLOGIA PARAMETRO
-    "id_min":   { col: "S", ref: "MIN" },
-    "id_max":   { col: "T", ref: "MAX" },
+    "id_min": { col: "S", ref: "MIN" },
+    "id_max": { col: "T", ref: "MAX" },
     "id_unita": { col: "V", ref: "UNITA" },
 
-    // SEZIONE 5 — POSIZIONE MEMORIA
     "id_pos_memoria": { col: "X", ref: "POS_MEMORIA" },
-    "id_byte":        { col: "Y", ref: "BYTE" },
-    "id_bit":         { col: "Z", ref: "BIT" },
+    "id_byte": { col: "Y", ref: "BYTE" },
+    "id_bit": { col: "Z", ref: "BIT" },
 
-    // SEZIONE 6 — VARDATO
     "id_vardato1": { col: "AA", ref: "VARDATO1" },
     "id_vardato2": { col: "AB", ref: "VARDATO2" },
     "id_vardato3": { col: "AC", ref: "VARDATO3" },
 
-    // SEZIONE 7 — CONVERSIONE
     "id_conversione": { col: "AD", ref: "CONVERSIONE" },
 
-    // SEZIONE 8 — CANBUS (16 CELLE)
-    "id_can1":  { col: "AE", ref: "CAN1" },
-    "id_can2":  { col: "AF", ref: "CAN2" },
-    "id_can3":  { col: "AG", ref: "CAN3" },
-    "id_can4":  { col: "AH", ref: "CAN4" },
-    "id_can5":  { col: "AI", ref: "CAN5" },
-    "id_can6":  { col: "AJ", ref: "CAN6" },
-    "id_can7":  { col: "AK", ref: "CAN7" },
-    "id_can8":  { col: "AL", ref: "CAN8" },
-    "id_can9":  { col: "AM", ref: "CAN9" },
+    "id_can1": { col: "AE", ref: "CAN1" },
+    "id_can2": { col: "AF", ref: "CAN2" },
+    "id_can3": { col: "AG", ref: "CAN3" },
+    "id_can4": { col: "AH", ref: "CAN4" },
+    "id_can5": { col: "AI", ref: "CAN5" },
+    "id_can6": { col: "AJ", ref: "CAN6" },
+    "id_can7": { col: "AK", ref: "CAN7" },
+    "id_can8": { col: "AL", ref: "CAN8" },
+    "id_can9": { col: "AM", ref: "CAN9" },
     "id_can10": { col: "AN", ref: "CAN10" },
     "id_can11": { col: "AO", ref: "CAN11" },
     "id_can12": { col: "AP", ref: "CAN12" },
@@ -428,16 +371,15 @@ const mappaColonne = {
     "id_can15": { col: "AS", ref: "CAN15" },
     "id_can16": { col: "AT", ref: "CAN16" },
 
-    // SEZIONE 9 — AI (20 CELLE)
-    "id_ai1":  { col: "AU", ref: "INTEL_AI1" },
-    "id_ai2":  { col: "AV", ref: "INTEL_AI2" },
-    "id_ai3":  { col: "AW", ref: "INTEL_AI3" },
-    "id_ai4":  { col: "AX", ref: "INTEL_AI4" },
-    "id_ai5":  { col: "AY", ref: "INTEL_AI5" },
-    "id_ai6":  { col: "AZ", ref: "INTEL_AI6" },
-    "id_ai7":  { col: "BA", ref: "INTEL_AI7" },
-    "id_ai8":  { col: "BB", ref: "INTEL_AI8" },
-    "id_ai9":  { col: "BC", ref: "INTEL_AI9" },
+    "id_ai1": { col: "AU", ref: "INTEL_AI1" },
+    "id_ai2": { col: "AV", ref: "INTEL_AI2" },
+    "id_ai3": { col: "AW", ref: "INTEL_AI3" },
+    "id_ai4": { col: "AX", ref: "INTEL_AI4" },
+    "id_ai5": { col: "AY", ref: "INTEL_AI5" },
+    "id_ai6": { col: "AZ", ref: "INTEL_AI6" },
+    "id_ai7": { col: "BA", ref: "INTEL_AI7" },
+    "id_ai8": { col: "BB", ref: "INTEL_AI8" },
+    "id_ai9": { col: "BC", ref: "INTEL_AI9" },
     "id_ai10": { col: "BD", ref: "INTEL_AI10" },
     "id_ai11": { col: "BE", ref: "INTEL_AI11" },
     "id_ai12": { col: "BF", ref: "INTEL_AI12" },
@@ -450,16 +392,15 @@ const mappaColonne = {
     "id_ai19": { col: "BM", ref: "INTEL_AI19" },
     "id_ai20": { col: "BN", ref: "INTEL_AI20" },
 
-    // SEZIONE 10 — LIBERI (10 CELLE)
-    "id_libera1":  { col: "BO", ref: "LIBERA1" },
-    "id_libera2":  { col: "BP", ref: "LIBERA2" },
-    "id_libera3":  { col: "BQ", ref: "LIBERA3" },
-    "id_libera4":  { col: "BR", ref: "LIBERA4" },
-    "id_libera5":  { col: "BS", ref: "LIBERA5" },
-    "id_libera6":  { col: "BT", ref: "LIBERA6" },
-    "id_libera7":  { col: "BU", ref: "LIBERA7" },
-    "id_libera8":  { col: "BV", ref: "LIBERA8" },
-    "id_libera9":  { col: "BW", ref: "LIBERA9" },
+    "id_libera1": { col: "BO", ref: "LIBERA1" },
+    "id_libera2": { col: "BP", ref: "LIBERA2" },
+    "id_libera3": { col: "BQ", ref: "LIBERA3" },
+    "id_libera4": { col: "BR", ref: "LIBERA4" },
+    "id_libera5": { col: "BS", ref: "LIBERA5" },
+    "id_libera6": { col: "BT", ref: "LIBERA6" },
+    "id_libera7": { col: "BU", ref: "LIBERA7" },
+    "id_libera8": { col: "BV", ref: "LIBERA8" },
+    "id_libera9": { col: "BW", ref: "LIBERA9" },
     "id_libera10": { col: "BX", ref: "LIBERA10" }
 };
 
@@ -481,10 +422,8 @@ document.addEventListener("mouseover", function (e) {
 
     dbgId.innerText = id;
 
-    // FILE
     let file = mappaFile[id] || "—";
 
-    // Se è un bottone documento, prova a leggere dal tuo  archivio file (se esiste)
     if (id.startsWith("btn_file")) {
         try {
             const parametro = document.getElementById("parametro")?.value;
@@ -494,18 +433,13 @@ document.addEventListener("mouseover", function (e) {
                 const files = x2_file_parametri[parametro]?.files?.[valore] || [];
                 const index = parseInt(id.replace("btn_file", "").replace("_parametro", ""), 10) - 1;
                 const fileAssociato = files[index];
-                if (fileAssociato) {
-                    file = fileAssociato;
-                }
+                if (fileAssociato) file = fileAssociato;
             }
-        } catch (err) {
-            // niente log qui, debug silenzioso
-        }
+        } catch (err) {}
     }
 
     dbgFile.innerText = file;
 
-    // COLONNA
     const infoCol = mappaColonne[id];
     if (infoCol) {
         dbgCol.innerText = infoCol.col;
