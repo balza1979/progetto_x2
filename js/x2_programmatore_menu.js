@@ -35,7 +35,11 @@ function x2_aggiornaMenuButtons(codMenu) {
 
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
 
-    const codice = codMenu + "." + codSottomenu;
+    // Estrae solo il numero prima del "="
+    const soloNumero = codSottomenu.split("=")[0].trim();
+
+    const codice = codMenu + "." + soloNumero;
+
     const record = x2_menu_struttura_data.find(r => r.cod__menu === codice);
 
     const pulsanti = [];
@@ -58,9 +62,7 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
         }
     }
 }
-// ------------------------------------------------------------
-// FINE MODIFICA - FUNZIONI PULSANTI MENU / SOTTOMENU
-// ------------------------------------------------------------
+
 
 document.addEventListener("DOMContentLoaded", function () {
 
