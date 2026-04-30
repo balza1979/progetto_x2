@@ -1,13 +1,15 @@
 // ======================================================================
 // FILE: js/x2_ui.js
-// PERCORSO: progetto_x2/js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 17:40
+// ORA: 18:00
 // DESCRIZIONE:
-// - Gestione UI Programmatore X2
-// - Aggiornamento valori al cambio parametro e al cambio valore
-// - Fix definitivo gestione 00/0 e cambio valore tendina
+// Gestione UI Programmatore X2
+// - Menu / Sottomenu
+// - Parametri
+// - Valori (val1…val8)
+// - Pulsanti FILE1…FILE8 (btn_param1…8)
 // ======================================================================
+
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
@@ -34,25 +36,6 @@ function x2_popolaMenu() {
     }
 }
 
-function x2_aggiornaMenuButtons(codMenu) {
-    const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
-    const pulsanti = [];
-    for (let i = 1; i <= 8; i++) pulsanti.push(document.getElementById("menu_btn" + i));
-
-    for (let i = 0; i < 8; i++) {
-        const nomeCampo = "file" + (i + 1) + "_menu";
-        const file = record ? record[nomeCampo] : "/";
-        if (file && file !== "/") {
-            pulsanti[i].textContent = file;
-            pulsanti[i].disabled = false;
-            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
-        } else {
-            pulsanti[i].textContent = "-";
-            pulsanti[i].disabled = true;
-            pulsanti[i].onclick = null;
-        }
-    }
-}
 
 // ------------------------------------------------------------
 // SOTTOMENU
@@ -77,13 +60,17 @@ function x2_popolaSottomenu(codMenu) {
     }
 }
 
-function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
-    const record = x2_menu_struttura_data.find(r => r.cod__menu === codSottomenu);
+
+// ------------------------------------------------------------
+// PULSANTI MENU (file1_menu…file8_menu)
+// ------------------------------------------------------------
+function x2_aggiornaMenuButtons(codMenu) {
+    const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
     const pulsanti = [];
-    for (let i = 1; i <= 8; i++) pulsanti.push(document.getElementById("sottomenu_btn" + i));
+    for (let i = 1; i <= 8; i++) pulsanti.push(document.getElementById("menu_btn" + i));
 
     for (let i = 0; i < 8; i++) {
-        const nomeCampo = "file" + (i + 1) + "_sottomenu";
+        const nomeCampo = "file" + (i + 1) + "_menu";
         const file = record ? record[nomeCampo] : "/";
         if (file && file !== "/") {
             pulsanti[i].textContent = file;
@@ -97,17 +84,13 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     }
 }
 
+
 // ------------------------------------------------------------
 // PARAMETRI
 // ------------------------------------------------------------
 function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
-    const selValore    = document.getElementById("tendina_valori");
-    const boxInfo      = document.getElementById("info_parametro");
-
     selParametro.innerHTML = "";
-    selValore.innerHTML    = "";
-    boxInfo.innerHTML      = "";
 
     const prefisso = codMenuCompleto + ".";
     let lista = x2_parametri.filter(p => p.PARAMETRO && p.PARAMETRO.startsWith(prefisso));
@@ -127,6 +110,7 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
+
 // ------------------------------------------------------------
 // INFO PARAMETRO
 // ------------------------------------------------------------
@@ -143,23 +127,23 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
 }
 
+
 // ------------------------------------------------------------
-// VALORI (COSTRUZIONE TENDINA + PRIMO SET VAL1–VAL8)
+// VALORI (val1…val8)
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    const pulsantiReset = [val1,val2,val3,val4,val5,val6,val7,val8];
-    for (let i = 0; i < 8; i++) {
-        pulsantiReset[i].textContent = "-";
-        pulsantiReset[i].disabled = true;
-        pulsantiReset[i].onclick = null;
-    }
+    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+    pulsanti.forEach(btn => {
+        btn.textContent = "-";
+        btn.disabled = true;
+        btn.onclick = null;
+    });
 
     let nomeJSON;
-
     if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
         nomeJSON = param.PARAMETRO.trim();
     } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
@@ -170,8 +154,7 @@ function x2_popolaValori(param) {
 
     x2_caricaJSON(nomeJSON, function(data) {
 
-        // Costruisco la tendina
-        tendina.innerHTML = "";
+        // Costruzione tendina
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
             opt.value = voce.id;
@@ -179,44 +162,48 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
-        // Valore iniziale = VALORE del parametro
+        // Valore iniziale
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // Calcolo lista per il valore iniziale
-        const valoreScelto = tendina.value.padStart(2, "0");
-
-        const lista =
-            data.file_parametro[valoreScelto] ||
-            data.file_parametro[valoreScelto.padStart(2, "0")] ||
-            data.file_parametro[String(parseInt(valoreScelto))];
-
-        const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-
-        for (let i = 0; i < 8; i++) {
-            if (lista && lista[i]) {
-                pulsanti[i].textContent = lista[i];
-                pulsanti[i].disabled = false;
-                pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
-            } else {
-                pulsanti[i].textContent = "-";
-                pulsanti[i].disabled = true;
-                pulsanti[i].onclick = null;
-            }
-        }
-
-        unita_misura.value = "/";
-        val_min.value = "/";
-        val_max.value = "/";
+        // Aggiorna val1…val8
+        x2_aggiornaValoriDaSelezione(data, valorePulito);
     });
 }
 
+
 // ------------------------------------------------------------
-// PULSANTI PARAM1–PARAM8 (FILE1–FILE8)
+// AGGIORNA SOLO val1…val8 (senza ricostruire tendina)
+// ------------------------------------------------------------
+function x2_aggiornaValoriDaSelezione(data, valore) {
+
+    const lista =
+        data.file_parametro[valore] ||
+        data.file_parametro[valore.padStart(2, "0")] ||
+        data.file_parametro[String(parseInt(valore))];
+
+    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+
+    for (let i = 0; i < 8; i++) {
+        if (lista && lista[i]) {
+            pulsanti[i].textContent = lista[i];
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+
+
+// ------------------------------------------------------------
+// PULSANTI FILE1…FILE8 (btn_param1…8)
 // ------------------------------------------------------------
 function x2_aggiornaParamButtons(codiceParametro) {
 
-    const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro);
+    const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro.trim());
     const pulsanti = [];
 
     for (let i = 1; i <= 8; i++) {
@@ -227,7 +214,7 @@ function x2_aggiornaParamButtons(codiceParametro) {
         const nomeCampo = "FILE" + (i + 1);
         const file = record ? record[nomeCampo] : "/";
 
-        if (file && file !== "/") {
+        if (file && file !== "/" && file.trim() !== "") {
             pulsanti[i].textContent = file;
             pulsanti[i].disabled = false;
             pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
@@ -239,27 +226,9 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
-// ------------------------------------------------------------
-// NAVIGAZIONE PARAMETRI
-// ------------------------------------------------------------
-parametro_up.addEventListener("click", () => {
-    const sel = parametro;
-    if (sel.selectedIndex > 0) {
-        sel.selectedIndex--;
-        sel.dispatchEvent(new Event("change"));
-    }
-});
-
-parametro_down.addEventListener("click", () => {
-    const sel = parametro;
-    if (sel.selectedIndex < sel.options.length - 1) {
-        sel.selectedIndex++;
-        sel.dispatchEvent(new Event("change"));
-    }
-});
 
 // ------------------------------------------------------------
-// EVENTI PRINCIPALI
+// EVENTI
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -283,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     selParametro.addEventListener("change", function () {
-        const codice = this.value;
+        const codice = this.value.trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (param) {
             x2_mostraInfoParametro(param);
@@ -292,12 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // --------------------------------------------------------
-    // CAMBIO VALORE: aggiorna SOLO val1–val8, NON ricostruisce la tendina
-    // --------------------------------------------------------
     selValore.addEventListener("change", function () {
-
-        const codice = parametro.value;
+        const codice = parametro.value.trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (!param) return;
 
@@ -313,25 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const valoreScelto = this.value.toString().trim().padStart(2, "0");
 
         x2_caricaJSON(nomeJSON, function(data) {
-
-            const lista =
-                data.file_parametro[valoreScelto] ||
-                data.file_parametro[valoreScelto.padStart(2, "0")] ||
-                data.file_parametro[String(parseInt(valoreScelto))];
-
-            const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-
-            for (let i = 0; i < 8; i++) {
-                if (lista && lista[i]) {
-                    pulsanti[i].textContent = lista[i];
-                    pulsanti[i].disabled = false;
-                    pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
-                } else {
-                    pulsanti[i].textContent = "-";
-                    pulsanti[i].disabled = true;
-                    pulsanti[i].onclick = null;
-                }
-            }
+            x2_aggiornaValoriDaSelezione(data, valoreScelto);
         });
     });
 });
