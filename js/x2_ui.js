@@ -2,22 +2,13 @@
 // FILE: js/x2_ui.js
 // PERCORSO: progetto_x2/js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 11:45
+// ORA: 17:10
 // DESCRIZIONE:
-// - Reinserita funzione x2_popolaMenu() mancante
-// - Reinserita funzione x2_popolaSottomenu() mancante
-// - Ripristinata logica completa caricamento parametri
-// - Aggiunta gestione JS_FONTE_ELENCO_VALORI ("parametro" → PARAMETRO.json)
-// - Aggiunto fallback automatico se JS_FONTE_ELENCO_VALORI è vuoto o "/"
-// - Aggiunta funzione x2_aggiornaParamButtons() per pulsanti PARAM1–PARAM8
-// - Aggiunta chiamata x2_aggiornaParamButtons() nell’evento parametro.change
-// - Sistemato ordine esecuzione eventi DOM
+// - Gestione UI Programmatore X2
+// - Aggiornamento valori al cambio parametro e al cambio valore
+// - Fix gestione 00/0
 // ======================================================================
 
-
-// ------------------------------------------------------------
-// MENU
-// ------------------------------------------------------------
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -60,10 +51,6 @@ function x2_aggiornaMenuButtons(codMenu) {
     }
 }
 
-
-// ------------------------------------------------------------
-// SOTTOMENU
-// ------------------------------------------------------------
 function x2_popolaSottomenu(codMenu) {
     const selSottomenu = document.getElementById("sottomenu");
     selSottomenu.innerHTML = "";
@@ -104,10 +91,6 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     }
 }
 
-
-// ------------------------------------------------------------
-// PARAMETRI
-// ------------------------------------------------------------
 function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
     const selValore    = document.getElementById("tendina_valori");
@@ -135,27 +118,19 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
-
-// ------------------------------------------------------------
-// INFO PARAMETRO
-// ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore grezzo:</b> ${x2_pulisciValore(param.VALORE)}
+        <b>Valore grezzo:</b> ${param.VALORE}
     `;
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
 }
 
-
-// ------------------------------------------------------------
-// VALORI (CON LOGICA "JS_FONTE_ELENCO_VALORI")
-// ------------------------------------------------------------
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
@@ -188,11 +163,9 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
-        // Imposta il valore iniziale
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 🔥 QUI LA PATCH CHE RISOLVE TUTTO
         const valoreScelto = tendina.value.padStart(2, "0");
 
         const lista =
@@ -220,11 +193,6 @@ function x2_popolaValori(param) {
     });
 }
 
-
-
-// ------------------------------------------------------------
-// PULSANTI PARAM1–PARAM8
-// ------------------------------------------------------------
 function x2_aggiornaParamButtons(codiceParametro) {
 
     const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro);
@@ -250,10 +218,6 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
-
-// ------------------------------------------------------------
-// NAVIGAZIONE PARAMETRI
-// ------------------------------------------------------------
 parametro_up.addEventListener("click", () => {
     const sel = parametro;
     if (sel.selectedIndex > 0) {
@@ -270,15 +234,12 @@ parametro_down.addEventListener("click", () => {
     }
 });
 
-
-// ------------------------------------------------------------
-// EVENTI PRINCIPALI
-// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
 
     const selMenu       = document.getElementById("menu");
     const selSottomenu  = document.getElementById("sottomenu");
     const selParametro  = document.getElementById("parametro");
+    const selValore     = document.getElementById("tendina_valori");
 
     x2_popolaMenu();
 
@@ -301,6 +262,14 @@ document.addEventListener("DOMContentLoaded", function () {
             x2_mostraInfoParametro(param);
             x2_popolaValori(param);
             x2_aggiornaParamButtons(param.PARAMETRO);
+        }
+    });
+
+    selValore.addEventListener("change", function () {
+        const codice = parametro.value;
+        const param = x2_parametri.find(p => p.PARAMETRO === codice);
+        if (param) {
+            x2_popolaValori(param);
         }
     });
 });
