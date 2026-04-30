@@ -135,7 +135,7 @@ const X2_UI = {
                 return;
             }
 
-            // SPECIFICO / ELENCO COMUNE
+            // ELENCO (SPECIFICO o COMUNE)
             if (data.valori) {
                 data.valori.forEach(v => {
                     const opt = document.createElement("option");
@@ -145,17 +145,27 @@ const X2_UI = {
                 });
 
                 tendina.value = param.VALORE;
-
-                // FILE associati
-                const lista = data.file_parametro?.[param.VALORE] || [];
-                lista.forEach((f, i) => {
-                    if (f) {
-                        puls[i].textContent = f;
-                        puls[i].disabled = false;
-                        puls[i].onclick = () => window.open("img/" + f, "_blank");
-                    }
-                });
             }
+
+            // FILE associati: FILE1..FILE8 dal parametro
+            const filesParam = [
+                param.FILE1,
+                param.FILE2,
+                param.FILE3,
+                param.FILE4,
+                param.FILE5,
+                param.FILE6,
+                param.FILE7,
+                param.FILE8
+            ];
+
+            filesParam.forEach((f, i) => {
+                if (f) {
+                    puls[i].textContent = f;
+                    puls[i].disabled = false;
+                    puls[i].onclick = () => window.open("img/" + f, "_blank");
+                }
+            });
         });
     }
 };
