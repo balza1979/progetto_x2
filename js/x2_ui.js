@@ -5,6 +5,28 @@
 // ------------------------------------------------------------
 // MENU
 // ------------------------------------------------------------
+function x2_popolaMenu() {
+    const selMenu = document.getElementById("menu");
+    selMenu.innerHTML = "";
+    const visti = new Set();
+
+    x2_menu_struttura_data.forEach(riga => {
+        const cod = String(riga.cod__menu).split(".")[0];
+        if (!visti.has(cod)) {
+            visti.add(cod);
+            const opt = document.createElement("option");
+            opt.value = cod;
+            opt.textContent = riga.menu;
+            selMenu.appendChild(opt);
+        }
+    });
+
+    if (selMenu.options.length > 0) {
+        selMenu.selectedIndex = 0;
+        selMenu.dispatchEvent(new Event("change"));
+    }
+}
+
 function x2_aggiornaMenuButtons(codMenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
     const pulsanti = [];
@@ -28,6 +50,26 @@ function x2_aggiornaMenuButtons(codMenu) {
 // ------------------------------------------------------------
 // SOTTOMENU
 // ------------------------------------------------------------
+function x2_popolaSottomenu(codMenu) {
+    const selSottomenu = document.getElementById("sottomenu");
+    selSottomenu.innerHTML = "";
+
+    const lista = x2_menu_struttura_data.filter(riga =>
+        String(riga.cod__menu).startsWith(codMenu + ".")
+    );
+
+    lista.forEach(riga => {
+        const opt = document.createElement("option");
+        opt.value = riga.cod__menu;
+        opt.textContent = riga.sottomenu;
+        selSottomenu.appendChild(opt);
+    });
+
+    if (selSottomenu.options.length > 0) {
+        selSottomenu.selectedIndex = 0;
+    }
+}
+
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu === codSottomenu);
     const pulsanti = [];
@@ -102,7 +144,6 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // Reset pulsanti
     const pulsantiReset = [val1,val2,val3,val4,val5,val6,val7,val8];
     for (let i = 0; i < 8; i++) {
         pulsantiReset[i].textContent = "-";
@@ -110,9 +151,6 @@ function x2_popolaValori(param) {
         pulsantiReset[i].onclick = null;
     }
 
-    // ------------------------------------------------------------
-    // 🔥 LOGICA DECISA STAMATTINA
-    // ------------------------------------------------------------
     let nomeJSON;
 
     if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
@@ -121,12 +159,8 @@ function x2_popolaValori(param) {
         nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
     }
 
-    // ------------------------------------------------------------
-    // CARICA JSON
-    // ------------------------------------------------------------
     x2_caricaJSON(nomeJSON, function(data) {
 
-        // 1) Popola tendina valori
         tendina.innerHTML = "";
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
@@ -135,14 +169,10 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
-        // 2) Imposta valore attuale
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // 3) Lista immagini
         const lista = data.file_parametro[valorePulito];
-
-        // 4) Pulsanti VAL1–VAL8
         const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
         for (let i = 0; i < 8; i++) {
@@ -157,7 +187,6 @@ function x2_popolaValori(param) {
             }
         }
 
-        // 5) Campi numerici non applicabili
         unita_misura.value = "/";
         val_min.value = "/";
         val_max.value = "/";
