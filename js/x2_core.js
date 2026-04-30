@@ -53,7 +53,7 @@ const X2_CORE = {
             });
         }
 
-        // ELENCO (SPECIFICO o COMUNE) da JS_FONTE_ELENCO_VALORI
+        // ELENCO (SPECIFICO o COMUNE)
         if (tipo === "ELENCO") {
             const nomeJSON = (param.JS_FONTE_ELENCO_VALORI || "").trim();
             if (!nomeJSON) return callback({ tipo: "NONE" });
