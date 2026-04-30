@@ -191,10 +191,11 @@ function x2_popolaValori(param) {
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-      const lista =
-    data.file_parametro[valorePulito] ||
-    data.file_parametro[valorePulito.padStart(2, "0")] ||
-    data.file_parametro[String(parseInt(valorePulito))];
+        // PATCH DEFINITIVA 00/0
+        const lista =
+            data.file_parametro[valorePulito] ||
+            data.file_parametro[valorePulito.padStart(2, "0")] ||
+            data.file_parametro[String(parseInt(valorePulito))];
 
         const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
