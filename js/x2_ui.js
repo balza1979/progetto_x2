@@ -1,13 +1,9 @@
 // ======================================================================
 // FILE: js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 18:00
+// ORA: 18:30
 // DESCRIZIONE:
 // Gestione UI Programmatore X2
-// - Menu / Sottomenu
-// - Parametri
-// - Valori (val1…val8)
-// - Pulsanti FILE1…FILE8 (btn_param1…8)
 // ======================================================================
 
 
@@ -62,7 +58,7 @@ function x2_popolaSottomenu(codMenu) {
 
 
 // ------------------------------------------------------------
-// PULSANTI MENU (file1_menu…file8_menu)
+// PULSANTI MENU
 // ------------------------------------------------------------
 function x2_aggiornaMenuButtons(codMenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
@@ -173,7 +169,7 @@ function x2_popolaValori(param) {
 
 
 // ------------------------------------------------------------
-// AGGIORNA SOLO val1…val8 (senza ricostruire tendina)
+// AGGIORNA SOLO val1…val8
 // ------------------------------------------------------------
 function x2_aggiornaValoriDaSelezione(data, valore) {
 
@@ -252,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     selParametro.addEventListener("change", function () {
-        const codice = this.value.trim();
+        const codice = this.value.replace(/"/g, "").trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (param) {
             x2_mostraInfoParametro(param);
@@ -262,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     selValore.addEventListener("change", function () {
-        const codice = parametro.value.trim();
+        const codice = parametro.value.replace(/"/g, "").trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (!param) return;
 
