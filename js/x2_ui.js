@@ -1,7 +1,7 @@
 // ======================================================================
 // FILE: js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 18:30
+// ORA: 18:40
 // DESCRIZIONE:
 // Gestione UI Programmatore X2
 // ======================================================================
@@ -58,7 +58,7 @@ function x2_popolaSottomenu(codMenu) {
 
 
 // ------------------------------------------------------------
-// PULSANTI MENU
+// PULSANTI MENU (file1_menu…file8_menu)
 // ------------------------------------------------------------
 function x2_aggiornaMenuButtons(codMenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
@@ -69,6 +69,37 @@ function x2_aggiornaMenuButtons(codMenu) {
         const nomeCampo = "file" + (i + 1) + "_menu";
         const file = record ? record[nomeCampo] : "/";
         if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+
+
+// ------------------------------------------------------------
+// PULSANTI SOTTOMENU (file1_sottomenu…file8_sottomenu)
+// ------------------------------------------------------------
+function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
+
+    const record = x2_menu_struttura_data.find(r =>
+        r.cod__menu === codSottomenu
+    );
+
+    const pulsanti = [];
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("sottomenu_btn" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "file" + (i + 1) + "_sottomenu";
+        const file = record ? record[nomeCampo] : "/";
+
+        if (file && file !== "/" && file.trim() !== "") {
             pulsanti[i].textContent = file;
             pulsanti[i].disabled = false;
             pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
