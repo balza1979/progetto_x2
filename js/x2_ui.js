@@ -2,13 +2,16 @@
 // FILE: js/x2_ui.js
 // PERCORSO: progetto_x2/js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 17:10
+// ORA: 17:40
 // DESCRIZIONE:
 // - Gestione UI Programmatore X2
 // - Aggiornamento valori al cambio parametro e al cambio valore
-// - Fix gestione 00/0
+// - Fix definitivo gestione 00/0 e cambio valore tendina
 // ======================================================================
 
+// ------------------------------------------------------------
+// MENU PRINCIPALE
+// ------------------------------------------------------------
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -51,6 +54,9 @@ function x2_aggiornaMenuButtons(codMenu) {
     }
 }
 
+// ------------------------------------------------------------
+// SOTTOMENU
+// ------------------------------------------------------------
 function x2_popolaSottomenu(codMenu) {
     const selSottomenu = document.getElementById("sottomenu");
     selSottomenu.innerHTML = "";
@@ -91,6 +97,9 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     }
 }
 
+// ------------------------------------------------------------
+// PARAMETRI
+// ------------------------------------------------------------
 function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
     const selValore    = document.getElementById("tendina_valori");
@@ -118,6 +127,9 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
+// ------------------------------------------------------------
+// INFO PARAMETRO
+// ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
@@ -131,6 +143,9 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
 }
 
+// ------------------------------------------------------------
+// VALORI (COSTRUZIONE TENDINA + PRIMO SET VAL1–VAL8)
+// ------------------------------------------------------------
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
@@ -155,6 +170,7 @@ function x2_popolaValori(param) {
 
     x2_caricaJSON(nomeJSON, function(data) {
 
+        // Costruisco la tendina
         tendina.innerHTML = "";
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
@@ -163,9 +179,11 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
+        // Valore iniziale = VALORE del parametro
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
+        // Calcolo lista per il valore iniziale
         const valoreScelto = tendina.value.padStart(2, "0");
 
         const lista =
@@ -193,6 +211,9 @@ function x2_popolaValori(param) {
     });
 }
 
+// ------------------------------------------------------------
+// PULSANTI PARAM1–PARAM8 (FILE1–FILE8)
+// ------------------------------------------------------------
 function x2_aggiornaParamButtons(codiceParametro) {
 
     const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro);
@@ -218,6 +239,9 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
+// ------------------------------------------------------------
+// NAVIGAZIONE PARAMETRI
+// ------------------------------------------------------------
 parametro_up.addEventListener("click", () => {
     const sel = parametro;
     if (sel.selectedIndex > 0) {
@@ -234,6 +258,9 @@ parametro_down.addEventListener("click", () => {
     }
 });
 
+// ------------------------------------------------------------
+// EVENTI PRINCIPALI
+// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
 
     const selMenu       = document.getElementById("menu");
@@ -265,11 +292,46 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // --------------------------------------------------------
+    // CAMBIO VALORE: aggiorna SOLO val1–val8, NON ricostruisce la tendina
+    // --------------------------------------------------------
     selValore.addEventListener("change", function () {
+
         const codice = parametro.value;
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
-        if (param) {
-            x2_popolaValori(param);
+        if (!param) return;
+
+        let nomeJSON;
+        if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
+            nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
         }
+
+        const valoreScelto = this.value.toString().trim().padStart(2, "0");
+
+        x2_caricaJSON(nomeJSON, function(data) {
+
+            const lista =
+                data.file_parametro[valoreScelto] ||
+                data.file_parametro[valoreScelto.padStart(2, "0")] ||
+                data.file_parametro[String(parseInt(valoreScelto))];
+
+            const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+
+            for (let i = 0; i < 8; i++) {
+                if (lista && lista[i]) {
+                    pulsanti[i].textContent = lista[i];
+                    pulsanti[i].disabled = false;
+                    pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+                } else {
+                    pulsanti[i].textContent = "-";
+                    pulsanti[i].disabled = true;
+                    pulsanti[i].onclick = null;
+                }
+            }
+        });
     });
 });
