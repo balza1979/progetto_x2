@@ -9,8 +9,6 @@
 // - Pulizia valore grezzo con x2_pulisciValore()
 // ======================================================================
 
-// … codice core …
-
 function x2_pulisciValore(v) {
     if (!v) return "";
     return String(v).trim();
@@ -48,8 +46,11 @@ function x2_gestisciParametroSpeciale(param, id) {
 
     x2_caricaJSON("1.0.00", function(data) {
 
-       const lista = data.file_parametro[id] 
-           || data.file_parametro[id.padStart(2, "0")];
+        // Supporta sia "00" che "0" SENZA cambiare la logica
+        const lista =
+            data.file_parametro[id] ||
+            data.file_parametro[id.padStart(2, "0")] ||
+            data.file_parametro[String(parseInt(id))];
 
         const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
