@@ -1,7 +1,16 @@
 // ======================================================================
-// FILE: x2_debug.js
-// DESCRIZIONE: Mappe debug + mouseover per Programmatore X2
+// FILE: js/x2_loader.js
+// PERCORSO: progetto_x2/js/x2_loader.js
+// DATA: 30/04/2026
+// ORA: 11:35
+// DESCRIZIONE:
+// - Ripristinata funzione x2_caricaJSON()
+// - Gestione errori fetch JSON
+// - Percorso json_tendine/<nome>.json
 // ======================================================================
+
+// … codice loader …
+
 
 const mappaFile = {
     "menu": "x2_programmatore_menu.js",
