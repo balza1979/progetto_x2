@@ -1,5 +1,7 @@
-// x2_loader.js
-// Carica il JSON corretto dalla cartella json_tendine
+// ======================================================================
+// FILE: x2_loader.js
+// DESCRIZIONE: caricamento JSON per tendine valori e parametri X2
+// ======================================================================
 
 function x2_caricaJSON(nomeFile, callback) {
 
