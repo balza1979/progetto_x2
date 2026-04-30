@@ -1,12 +1,9 @@
 /* ============================================================
-   X2 CORE — COMPATIBILE CON MAPPA X1 (Q,R,S,T,U,V)
+   X2 CORE — COMPATIBILE CON x2_parametri_data.js ATTUALE
    ============================================================ */
 
 const X2_CORE = {
 
-    // ------------------------------------------------------------
-    // Carica JSON (SPECIFICO o ELENCO COMUNE)
-    // ------------------------------------------------------------
     caricaJSON(nome, callback) {
         fetch("json_tendine/" + nome + ".json")
             .then(r => r.json())
@@ -14,11 +11,7 @@ const X2_CORE = {
             .catch(err => callback({ tipo: "NONE" }));
     },
 
-    // ------------------------------------------------------------
-    // Interpreta il tipo del parametro dalla MAPPA X1
-    // ------------------------------------------------------------
     getTipoParametro(param) {
-
         const tipo = (param["TIPO ELENCO"] || "").trim().toUpperCase();
 
         if (tipo === "ELENCO_PREDEFINITO") return "ELENCO";
@@ -29,9 +22,6 @@ const X2_CORE = {
         return "NONE";
     },
 
-    // ------------------------------------------------------------
-    // Restituisce i valori del parametro (logica MASTER X1)
-    // ------------------------------------------------------------
     getValori(param, callback) {
 
         const tipo = this.getTipoParametro(param);
@@ -63,20 +53,16 @@ const X2_CORE = {
             });
         }
 
-        // ELENCO (SPECIFICO o COMUNE)
+        // ELENCO (SPECIFICO o COMUNE) da JS_FONTE_ELENCO_VALORI
         if (tipo === "ELENCO") {
             const nomeJSON = (param.JS_FONTE_ELENCO_VALORI || "").trim();
             if (!nomeJSON) return callback({ tipo: "NONE" });
             return this.caricaJSON(nomeJSON, callback);
         }
 
-        // Nessun valore
         return callback({ tipo: "NONE" });
     },
 
-    // ------------------------------------------------------------
-    // Utility
-    // ------------------------------------------------------------
     pulisci(v) {
         if (!v) return "";
         return String(v).trim();
