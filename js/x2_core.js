@@ -1,9 +1,12 @@
 /* ============================================================
-   X2 CORE — COMPATIBILE CON x2_parametri_data.js ATTUALE
+   X2 CORE — COMPATIBILE CON x2_parametri_data.js
    ============================================================ */
 
 const X2_CORE = {
 
+    /* ---------------------------------------------------------
+       CARICA JSON (SPECIFICO o COMUNE)
+       --------------------------------------------------------- */
     caricaJSON(nome, callback) {
         fetch("json_tendine/" + nome + ".json")
             .then(r => r.json())
@@ -11,7 +14,12 @@ const X2_CORE = {
             .catch(err => callback({ tipo: "NONE" }));
     },
 
+    /* ---------------------------------------------------------
+       DETERMINA IL TIPO DEL PARAMETRO
+       --------------------------------------------------------- */
     getTipoParametro(param) {
+
+        // ATTENZIONE: nel tuo file è "TIPO ELENCO" con spazio
         const tipo = (param["TIPO ELENCO"] || "").trim().toUpperCase();
 
         if (tipo === "ELENCO_PREDEFINITO") return "ELENCO";
@@ -22,11 +30,14 @@ const X2_CORE = {
         return "NONE";
     },
 
+    /* ---------------------------------------------------------
+       OTTIENE I VALORI DEL PARAMETRO
+       --------------------------------------------------------- */
     getValori(param, callback) {
 
         const tipo = this.getTipoParametro(param);
 
-        // NUMERICO (RANGE)
+        /* ---------------- NUMERICO ---------------- */
         if (tipo === "NUM") {
             return callback({
                 tipo: "NUM",
@@ -37,12 +48,12 @@ const X2_CORE = {
             });
         }
 
-        // TESTO LIBERO
+        /* ---------------- TESTO ---------------- */
         if (tipo === "TEXT") {
             return callback({ tipo: "TEXT" });
         }
 
-        // BOOLEANO
+        /* ---------------- BOOLEANO ---------------- */
         if (tipo === "BOOL") {
             return callback({
                 tipo: "BOOL",
@@ -53,16 +64,28 @@ const X2_CORE = {
             });
         }
 
-        // ELENCO (SPECIFICO o COMUNE)
+        /* ---------------- ELENCO (SPECIFICO o COMUNE) ---------------- */
         if (tipo === "ELENCO") {
-            const nomeJSON = (param.JS_FONTE_ELENCO_VALORI || "").trim();
+
+            let nomeJSON = (param.JS_FONTE_ELENCO_VALORI || "").trim();
+
+            // ⭐ Se scrivi "parametro", usa automaticamente <PARAMETRO>.json
+            if (nomeJSON.toLowerCase() === "parametro") {
+                nomeJSON = param.PARAMETRO;
+            }
+
             if (!nomeJSON) return callback({ tipo: "NONE" });
+
             return this.caricaJSON(nomeJSON, callback);
         }
 
+        /* ---------------- NESSUN VALORE ---------------- */
         return callback({ tipo: "NONE" });
     },
 
+    /* ---------------------------------------------------------
+       UTILITY
+       --------------------------------------------------------- */
     pulisci(v) {
         if (!v) return "";
         return String(v).trim();
