@@ -2,17 +2,22 @@
 // FILE: js/x2_ui.js
 // PERCORSO: progetto_x2/js/x2_ui.js
 // DATA: 30/04/2026
-// ORA: 11:35
+// ORA: 11:45
 // DESCRIZIONE:
 // - Reinserita funzione x2_popolaMenu() mancante
 // - Reinserita funzione x2_popolaSottomenu() mancante
 // - Ripristinata logica completa caricamento parametri
 // - Aggiunta gestione JS_FONTE_ELENCO_VALORI ("parametro" → PARAMETRO.json)
 // - Aggiunto fallback automatico se JS_FONTE_ELENCO_VALORI è vuoto o "/"
+// - Aggiunta funzione x2_aggiornaParamButtons() per pulsanti PARAM1–PARAM8
+// - Aggiunta chiamata x2_aggiornaParamButtons() nell’evento parametro.change
 // - Sistemato ordine esecuzione eventi DOM
 // ======================================================================
 
 
+// ------------------------------------------------------------
+// MENU
+// ------------------------------------------------------------
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -54,6 +59,7 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
+
 
 // ------------------------------------------------------------
 // SOTTOMENU
@@ -98,6 +104,7 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
     }
 }
 
+
 // ------------------------------------------------------------
 // PARAMETRI
 // ------------------------------------------------------------
@@ -128,6 +135,7 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
+
 // ------------------------------------------------------------
 // INFO PARAMETRO
 // ------------------------------------------------------------
@@ -143,6 +151,7 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
 }
+
 
 // ------------------------------------------------------------
 // VALORI (CON LOGICA "JS_FONTE_ELENCO_VALORI")
@@ -163,8 +172,10 @@ function x2_popolaValori(param) {
 
     if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
         nomeJSON = param.PARAMETRO.trim();
-    } else {
+    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
         nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+    } else {
+        nomeJSON = param.PARAMETRO.trim();
     }
 
     x2_caricaJSON(nomeJSON, function(data) {
@@ -201,6 +212,36 @@ function x2_popolaValori(param) {
     });
 }
 
+
+// ------------------------------------------------------------
+// PULSANTI PARAM1–PARAM8
+// ------------------------------------------------------------
+function x2_aggiornaParamButtons(codiceParametro) {
+
+    const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro);
+    const pulsanti = [];
+
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("btn_param" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "FILE" + (i + 1);
+        const file = record ? record[nomeCampo] : "/";
+
+        if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+
+
 // ------------------------------------------------------------
 // NAVIGAZIONE PARAMETRI
 // ------------------------------------------------------------
@@ -219,6 +260,7 @@ parametro_down.addEventListener("click", () => {
         sel.dispatchEvent(new Event("change"));
     }
 });
+
 
 // ------------------------------------------------------------
 // EVENTI PRINCIPALI
@@ -249,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (param) {
             x2_mostraInfoParametro(param);
             x2_popolaValori(param);
+            x2_aggiornaParamButtons(param.PARAMETRO);
         }
     });
 });
