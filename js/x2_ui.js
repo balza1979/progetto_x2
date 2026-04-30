@@ -1,10 +1,18 @@
 // ======================================================================
-// FILE: x2_ui.js
+// FILE: js/x2_ui.js
+// PERCORSO: progetto_x2/js/x2_ui.js
+// DATA: 30/04/2026
+// ORA: 11:35
+// DESCRIZIONE:
+// - Reinserita funzione x2_popolaMenu() mancante
+// - Reinserita funzione x2_popolaSottomenu() mancante
+// - Ripristinata logica completa caricamento parametri
+// - Aggiunta gestione JS_FONTE_ELENCO_VALORI ("parametro" → PARAMETRO.json)
+// - Aggiunto fallback automatico se JS_FONTE_ELENCO_VALORI è vuoto o "/"
+// - Sistemato ordine esecuzione eventi DOM
 // ======================================================================
 
-// ------------------------------------------------------------
-// MENU
-// ------------------------------------------------------------
+
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
