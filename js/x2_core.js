@@ -48,7 +48,9 @@ function x2_gestisciParametroSpeciale(param, id) {
 
     x2_caricaJSON("1.0.00", function(data) {
 
-        const lista = data.file_parametro[id];
+       const lista = data.file_parametro[id] 
+           || data.file_parametro[id.padStart(2, "0")];
+
         const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
         for (let i = 0; i < 8; i++) {
