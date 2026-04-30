@@ -1,93 +1,63 @@
-/* ============================================================
-   X2 CORE — COMPATIBILE CON x2_parametri_data.js
-   ============================================================ */
+// ======================================================================
+// FILE: x2_core.js
+// DESCRIZIONE: funzioni logiche interne del programmatore X2
+// ======================================================================
 
-const X2_CORE = {
+// ------------------------------------------------------------
+// UTILITY
+// ------------------------------------------------------------
+function x2_pulisciValore(v) {
+    if (!v) return "";
+    return String(v).trim();
+}
 
-    /* ---------------------------------------------------------
-       CARICA JSON (SPECIFICO o COMUNE)
-       --------------------------------------------------------- */
-    caricaJSON(nome, callback) {
-        fetch("json_tendine/" + nome + ".json")
-            .then(r => r.json())
-            .then(data => callback(data))
-            .catch(err => callback({ tipo: "NONE" }));
-    },
+// ------------------------------------------------------------
+// AGGIORNA PULSANTI PARAMETRI 1–8 (logica interna)
+// ------------------------------------------------------------
+function x2_aggiornaParamButtons(parametroCodice) {
+    const record = x2_parametri.find(p => p.PARAMETRO === parametroCodice);
+    const pulsanti = [];
+    for (let i = 1; i <= 8; i++) pulsanti.push(document.getElementById("btn_param" + i));
 
-    /* ---------------------------------------------------------
-       DETERMINA IL TIPO DEL PARAMETRO
-       --------------------------------------------------------- */
-    getTipoParametro(param) {
-
-        // ATTENZIONE: nel tuo file è "TIPO ELENCO" con spazio
-        const tipo = (param["TIPO ELENCO"] || "").trim().toUpperCase();
-
-        if (tipo === "ELENCO_PREDEFINITO") return "ELENCO";
-        if (tipo === "RANGE") return "NUM";
-        if (tipo === "TESTO") return "TEXT";
-        if (tipo === "BOOL") return "BOOL";
-
-        return "NONE";
-    },
-
-    /* ---------------------------------------------------------
-       OTTIENE I VALORI DEL PARAMETRO
-       --------------------------------------------------------- */
-    getValori(param, callback) {
-
-        const tipo = this.getTipoParametro(param);
-
-        /* ---------------- NUMERICO ---------------- */
-        if (tipo === "NUM") {
-            return callback({
-                tipo: "NUM",
-                min: param.MIN,
-                max: param.MAX,
-                dec: param.DECIMALI,
-                unita: param.UNITA
-            });
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "FILE" + (i + 1);
+        const file = record ? record[nomeCampo] : "/";
+        if (file && file !== "/") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
         }
-
-        /* ---------------- TESTO ---------------- */
-        if (tipo === "TEXT") {
-            return callback({ tipo: "TEXT" });
-        }
-
-        /* ---------------- BOOLEANO ---------------- */
-        if (tipo === "BOOL") {
-            return callback({
-                tipo: "BOOL",
-                valori: [
-                    { id: "0", text: "No" },
-                    { id: "1", text: "Sì" }
-                ]
-            });
-        }
-
-        /* ---------------- ELENCO (SPECIFICO o COMUNE) ---------------- */
-        if (tipo === "ELENCO") {
-
-            let nomeJSON = (param.JS_FONTE_ELENCO_VALORI || "").trim();
-
-            // ⭐ Se scrivi "parametro", usa automaticamente <PARAMETRO>.json
-            if (nomeJSON.toLowerCase() === "parametro") {
-                nomeJSON = param.PARAMETRO;
-            }
-
-            if (!nomeJSON) return callback({ tipo: "NONE" });
-
-            return this.caricaJSON(nomeJSON, callback);
-        }
-
-        /* ---------------- NESSUN VALORE ---------------- */
-        return callback({ tipo: "NONE" });
-    },
-
-    /* ---------------------------------------------------------
-       UTILITY
-       --------------------------------------------------------- */
-    pulisci(v) {
-        if (!v) return "";
-        return String(v).trim();
     }
-};
+}
+
+// ------------------------------------------------------------
+// GESTIONE SPECIALE PARAMETRO 1.0.00
+// ------------------------------------------------------------
+function x2_gestisciParametroSpeciale(param, id) {
+
+    if (param.PARAMETRO.trim() !== "1.0.00") return false;
+
+    x2_caricaJSON("1.0.00", function(data) {
+
+        const lista = data.file_parametro[id];
+        const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+
+        for (let i = 0; i < 8; i++) {
+            if (lista && lista[i]) {
+                pulsanti[i].textContent = lista[i];
+                pulsanti[i].disabled = false;
+                pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+            } else {
+                pulsanti[i].textContent = "-";
+                pulsanti[i].disabled = true;
+                pulsanti[i].onclick = null;
+            }
+        }
+    });
+
+    return true;
+}
