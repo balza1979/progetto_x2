@@ -1,11 +1,16 @@
 // ======================================================================
-// FILE: x2_core.js
-// DESCRIZIONE: funzioni logiche interne del programmatore X2
+// FILE: js/x2_core.js
+// PERCORSO: progetto_x2/js/x2_core.js
+// DATA: 30/04/2026
+// ORA: 11:35
+// DESCRIZIONE:
+// - Ripristinata funzione x2_gestisciParametroSpeciale()
+// - Gestione speciale parametro 1.0.00
+// - Pulizia valore grezzo con x2_pulisciValore()
 // ======================================================================
 
-// ------------------------------------------------------------
-// UTILITY
-// ------------------------------------------------------------
+// … codice core …
+
 function x2_pulisciValore(v) {
     if (!v) return "";
     return String(v).trim();
