@@ -188,14 +188,17 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         });
 
+        // Imposta il valore iniziale
         const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        // PATCH DEFINITIVA 00/0
+        // 🔥 QUI LA PATCH CHE RISOLVE TUTTO
+        const valoreScelto = tendina.value.padStart(2, "0");
+
         const lista =
-            data.file_parametro[valorePulito] ||
-            data.file_parametro[valorePulito.padStart(2, "0")] ||
-            data.file_parametro[String(parseInt(valorePulito))];
+            data.file_parametro[valoreScelto] ||
+            data.file_parametro[valoreScelto.padStart(2, "0")] ||
+            data.file_parametro[String(parseInt(valoreScelto))];
 
         const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
 
@@ -216,6 +219,7 @@ function x2_popolaValori(param) {
         val_max.value = "/";
     });
 }
+
 
 
 // ------------------------------------------------------------
