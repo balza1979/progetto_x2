@@ -42,7 +42,7 @@ function x2_aggiornaParamButtons(parametroCodice) {
 }
 
 // ------------------------------------------------------------
-// GESTIONE SPECIALE PARAMETRO 1.0.00
+// GESTIONE SPECIALE PARAMETRO 1.0.00 
 // ------------------------------------------------------------
 function x2_gestisciParametroSpeciale(param, id) {
 
