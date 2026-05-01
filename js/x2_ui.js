@@ -246,7 +246,7 @@ function x2_aggiornaParamButtons(codiceParametro) {
             pulsanti[i].disabled = false;
             pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
         } else {
-            pulsanti[i].textContent = "-";
+            pulsanti[i].textContent = "UI";
             pulsanti[i].disabled = true;
             pulsanti[i].onclick = null;
         }
