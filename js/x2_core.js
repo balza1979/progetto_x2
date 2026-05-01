@@ -34,7 +34,7 @@ function x2_aggiornaParamButtons(parametroCodice) {
             pulsanti[i].disabled = false;
             pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
         } else {
-            pulsanti[i].textContent = "ciao";
+            pulsanti[i].textContent = "core";
             pulsanti[i].disabled = true;
             pulsanti[i].onclick = null;
         }
