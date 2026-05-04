@@ -323,24 +323,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    selValore.addEventListener("change", function () {
-        const codice = parametro.value.replace(/"/g, "").trim();
-        const param = x2_parametri.find(p => p.PARAMETRO === codice);
-        if (!param) return;
+selValore.addEventListener("change", function () {
 
-        let nomeJSON;
-        if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
-            nomeJSON = param.PARAMETRO.trim();
-        } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
-            nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
-        } else {
-            nomeJSON = param.PARAMETRO.trim();
-        }
+    const codice = selParametro.value.replace(/"/g, "").trim();
+    const param = x2_parametri.find(p => p.PARAMETRO === codice);
+    if (!param) return;
 
-        const valoreScelto = this.value.toString().trim().padStart(2, "0");
+    let nomeJSON;
+    if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
+        nomeJSON = param.PARAMETRO.trim();
+    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
+        nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+    } else {
+        nomeJSON = param.PARAMETRO.trim();
+    }
 
-        x2_caricaJSON(nomeJSON, function(data) {
-            x2_aggiornaValoriDaSelezione(data, valoreScelto);
-        });
+    const valoreScelto = this.value.toString().trim().padStart(2, "0");
+
+    x2_caricaJSON(nomeJSON, function(data) {
+        x2_aggiornaValoriDaSelezione(data, valoreScelto);
     });
+});
+
 });
