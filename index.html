@@ -491,24 +491,30 @@ input:focus, select:focus, textarea:focus {
 </div>
 
   
-  <!-- ========================================================= -->
-  <!--  VALORI DEL PARAMETRO                                     -->
-  <!-- ========================================================= -->
-  <div class="section-title">VALORI DEL PARAMETRO</div>
+<!-- ========================================================= -->
+<!--  VALORI DEL PARAMETRO (tendina sopra, unità sotto)        -->
+<!-- ========================================================= -->
 
-  <div class="row">
-    <div class="field" style="flex:2">
-      <label>Seleziona valore</label>
-      <select class="full" id="tendina_valori">
-        <option>— seleziona valore —</option>
-      </select>
-    </div>
+<div class="section-title">VALORI DEL PARAMETRO</div>
 
-    <div class="field" style="flex:1">
-      <label>Unità</label>
-      <input class="full" id="unita_misura" type="text" placeholder="sec / °C / Volt">
-    </div>
+<!-- RIGA 1: tendina valori -->
+<div class="row">
+  <div class="field" style="flex:1">
+    <label>Seleziona valore</label>
+    <select class="full" id="tendina_valori">
+      <option>— seleziona valore —</option>
+    </select>
   </div>
+</div>
+
+<!-- RIGA 2: unità di misura -->
+<div class="row">
+  <div class="field" style="flex:1">
+    <label>Unità</label>
+    <input class="full" id="unita_misura" type="text" placeholder="sec / °C / Volt">
+  </div>
+</div>
+
 
   <div class="row">
     <div class="field">
