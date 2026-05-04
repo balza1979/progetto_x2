@@ -154,11 +154,18 @@ function x2_popolaParametri(codMenuCompleto) {
 function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
-    box.innerHTML = `
-        <b>Codice:</b> ${param.PARAMETRO}<br>
-        <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore grezzo:</b> ${param.VALORE}
-    `;
+  box.innerHTML = `
+    <b>Codice:</b> ${param.PARAMETRO}<br>
+    <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
+    <b>Valore grezzo:</b> ${param.VALORE}<br><br>
+
+    <b>Indirizzo HC64:</b> ${param.LIBERA1 || "LIBERA1 (vuoto)"}<br>
+    <b>Numero byte:</b> ${param.LIBERA2 || "LIBERA2 (vuoto)"}<br>
+    <b>Tipo valore:</b> ${param.LIBERA3 || "LIBERA3 (vuoto)"}<br>
+    <b>Scala:</b> ${param.LIBERA4 || "LIBERA4 (vuoto)"}<br>
+    <b>Valore in HEX:</b> ${x2_calcolaHex(param)}<br>
+`;
+
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
