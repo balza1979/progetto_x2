@@ -47,7 +47,16 @@ function x2_popolaSottomenu(codMenu) {
     lista.forEach(riga => {
         const opt = document.createElement("option");
         opt.value = riga.cod__menu;
-        opt.textContent = riga.sottomenu;
+
+        // Y = parte dopo il punto
+        const y = String(riga.cod__menu).split(".")[1];
+
+        // testo dopo "="
+        const testo = String(riga.sottomenu).split("=").slice(1).join("=").trim();
+
+        // formato finale
+        opt.textContent = `${codMenu}.${y} = ${testo}`;
+
         selSottomenu.appendChild(opt);
     });
 
@@ -55,6 +64,7 @@ function x2_popolaSottomenu(codMenu) {
         selSottomenu.selectedIndex = 0;
     }
 }
+
 
 
 // ------------------------------------------------------------
