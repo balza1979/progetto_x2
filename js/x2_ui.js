@@ -239,7 +239,9 @@ function x2_aggiornaParamButtons(codiceParametro) {
 
     for (let i = 0; i < 8; i++) {
         const nomeCampo = "FILE" + (i + 1);
-        const file = record ? record[nomeCampo] : "/";
+       // const file = record ? record[nomeCampo] : "/";
+const file = record ? record[nomeCampo] : "NO_RECORD";
+pulsanti[i].textContent = "VALORE=" + file;
 
         if (file && file !== "/" && file.trim() !== "") {
             pulsanti[i].textContent = file;
