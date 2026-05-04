@@ -267,6 +267,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const selValore     = document.getElementById("tendina_valori");
 
     x2_popolaMenu();
+    // ------------------------------------------------------------
+    // INIZIO MODIFICA 04/05/2026 – Gestione frecce parametro
+    // ------------------------------------------------------------
+
+    function x2_cambiaParametro(delta) {
+        const sel = document.getElementById("parametro");
+
+        let nuovo = sel.selectedIndex + delta;
+
+        if (nuovo < 0) nuovo = 0;
+        if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
+
+        sel.selectedIndex = nuovo;
+        sel.dispatchEvent(new Event("change"));
+    }
+
+    document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
+    document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
+
+    // ------------------------------------------------------------
+    // FINE MODIFICA 04/05/2026
+    // ------------------------------------------------------------
 
     selMenu.addEventListener("change", function () {
         x2_popolaSottomenu(this.value);
