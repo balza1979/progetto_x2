@@ -154,7 +154,7 @@ function x2_popolaParametri(codMenuCompleto) {
 function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
-  box.innerHTML = 
+box.innerHTML = `
     <b>Codice:</b> ${param.PARAMETRO}<br>
     <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
     <b>Valore grezzo:</b> ${param.VALORE}<br><br>
@@ -164,11 +164,21 @@ function x2_mostraInfoParametro(param) {
     <b>Tipo valore:</b> ${param.LIBERA3 || "LIBERA3 (vuoto)"}<br>
     <b>Scala:</b> ${param.LIBERA4 || "LIBERA4 (vuoto)"}<br>
     <b>Valore in HEX:</b> ${x2_calcolaHex(param)}<br>
-;
+`;
 
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
+}
+
+function x2_calcolaHex(param) {
+    // Se non abbiamo ancora i dati reali, mostriamo solo un placeholder
+    if (!param.VALORE) return "—";
+
+    // Conversione base: decimale → hex a 2 cifre
+    let hex = parseInt(param.VALORE).toString(16).toUpperCase().padStart(2, "0");
+
+    return hex + "  (elaborazione HTML)";
 }
 
 
