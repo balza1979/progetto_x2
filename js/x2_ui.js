@@ -265,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selSottomenu  = document.getElementById("sottomenu");
     const selParametro  = document.getElementById("parametro");
     const selValore     = document.getElementById("tendina_valori");
+    document.getElementById("tendina_valori").classList.add("tendina_verde");
 
     x2_popolaMenu();
     // ------------------------------------------------------------
