@@ -3,13 +3,7 @@
 <!-- ========================================================= -->
 <!--  FILE: hex_generator.html                                 -->
 <!--  DATA: 15/04/2026                                         -->
-<!--  ORA: 18:30                                               -->
-<!--  DESCRIZIONE:                                             -->
 <!--  Generatore memoria HEX X1/X2                             -->
-<!--  - Apre da: CREA MEMORIA HEX                              -->
-<!--  - Crea buffer 8192 byte                                  -->
-<!--  - Esporta file Intel HEX                                 -->
-<!--  - Legge parametri da x2_parametri_data.js                -->
 <!-- ========================================================= -->
 <head>
   <meta charset="UTF-8">
@@ -25,7 +19,7 @@
     .page {
       max-width:600px;
       margin:0 auto;
-      background:#1a1a1a;
+      background:#1a11a1;
       border:3px solid #cc0000;
       padding:16px;
       box-sizing:border-box;
@@ -46,11 +40,6 @@
       color:#ff3333;
       border-bottom:2px solid #660000;
       padding-bottom:3px;
-    }
-    label {
-      font-size:13px;
-      display:block;
-      margin-top:6px;
     }
     textarea {
       width:100%;
@@ -74,10 +63,6 @@
       cursor:pointer;
       box-shadow:0 0 10px rgba(255,0,0,0.4);
     }
-    button:hover {
-      background:#880000;
-      border-color:#ff3333;
-    }
     .log {
       margin-top:10px;
       font-size:12px;
@@ -91,26 +76,18 @@
     <h1>Generatore Memoria HEX – X1/X2</h1>
 
     <div class="section-title">Sorgente dati (CSV)</div>
-    <label>Per ora mock: in seguito leggeremo il CSV reale con indirizzi.</label>
-    <textarea id="csv_input" placeholder="Qui in futuro potrai incollare o caricare il CSV con indirizzi..."></textarea>
+    <textarea id="csv_input" placeholder="(non usato per ora)"></textarea>
 
-    <button id="genera_hex_btn">Genera file HEX (8192 byte + parametri)</button>
+    <button id="genera_hex_btn">Genera file HEX</button>
 
     <div class="section-title">Log operazioni</div>
     <div id="log" class="log"></div>
   </div>
 
-  <!-- ⚠️ IMPORTANTE: carica prima la tabella parametri -->
-  <!-- <script src="../js/x2_parametri_data.js"></script> -->
-<script src="../js/x2_parametri_data.js"></script>
+  <!-- ⚠️ CARICA PRIMA LA TABELLA PARAMETRI -->
+  <script src="../js/x2_parametri_data.js"></script>
 
   <script>
-  // =========================================================
-  //  SCRIPT: GENERATORE HEX X1/X2
-  //  DATA: 15/04/2026 - ORA: 19:30
-  //  VERSIONE: v0.3 - Buffer 8192 byte + blocchi FF + parser parametri
-  // =========================================================
-
   const logDiv = document.getElementById("log");
   const btnGenera = document.getElementById("genera_hex_btn");
 
@@ -118,41 +95,32 @@
     logDiv.textContent += msg + "\n";
   }
 
-  // Crea buffer 8192 byte inizializzato a 0x00
   function creaBufferMemoria() {
-    const size = 8192;
-    const buf = new Uint8Array(size);
+    const buf = new Uint8Array(8192);
     buf.fill(0x00);
     return buf;
   }
 
-  // Imposta a 0xFF i blocchi indicati
   function applicaBlocchiFF(buf, ranges) {
     ranges.forEach(r => {
       const s = Math.max(0, r.start);
       const e = Math.min(buf.length - 1, r.end);
-      for (let i = s; i <= e; i++) {
-        buf[i] = 0xFF;
-      }
+      for (let i = s; i <= e; i++) buf[i] = 0xFF;
     });
   }
 
-  // Checksum Intel HEX
   function intelHexChecksum(byteArray) {
     let sum = 0;
     for (let i = 0; i < byteArray.length; i++) {
       sum = (sum + byteArray[i]) & 0xFF;
     }
-    const chk = ((~sum + 1) & 0xFF);
-    return chk;
+    return ((~sum + 1) & 0xFF);
   }
 
-  // Converte buffer in stringa Intel HEX (record da 16 byte)
   function bufferToIntelHex(buf, baseAddress = 0x0000) {
     const lines = [];
 
-    // Riga extended linear address per essere identico al programmatore
-    lines.push("aaaa:020000040000FA");
+    lines.push("BBB:020000040000FA");
 
     const recordSize = 16;
 
@@ -162,18 +130,24 @@
       const address = baseAddress + addr;
       const recordType = 0x00;
 
-      const bytes = [byteCount, (address >> 8) & 0xFF, address & 0xFF, recordType];
-      for (let i = 0; i < chunk.length; i++) {
-        bytes.push(chunk[i]);
-      }
+      const bytes = [
+        byteCount,
+        (address >> 8) & 0xFF,
+        address & 0xFF,
+        recordType
+      ];
+
+      for (let i = 0; i < chunk.length; i++) bytes.push(chunk[i]);
 
       const chk = intelHexChecksum(bytes);
-      let line = ":" + bytes.map(b => b.toString(16).toUpperCase().padStart(2, "0")).join("") +
-                 chk.toString(16).toUpperCase().padStart(2, "0");
+
+      let line = ":" +
+        bytes.map(b => b.toString(16).toUpperCase().padStart(2, "0")).join("") +
+        chk.toString(16).toUpperCase().padStart(2, "0");
+
       lines.push(line);
     }
 
-    // Record di fine file
     lines.push(":00000001FF");
     return lines.join("\n");
   }
@@ -184,35 +158,34 @@
     const a = document.createElement("a");
     a.href = url;
     a.download = nome;
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
-  // ⭐ PARSER INTELLIGENTE: legge x2_parametri e scrive nel buffer
+  // ⭐ PARSER INTELLIGENTE
   function scriviParametriDaTabella(buf) {
     if (typeof x2_parametri === "undefined") {
-      log("ATTENZIONE: x2_parametri non definito. Hai caricato x2_parametri_data.js?");
+      log("ERRORE: x2_parametri_data.js NON caricato!");
       return;
     }
 
     let count = 0;
 
     x2_parametri.forEach(p => {
-      const addr = parseInt(p.LIBERA1);
-      if (isNaN(addr)) return;
+      let addr = Number(p.LIBERA1);
+      if (isNaN(addr) || addr < 0) return;
 
-      const size = parseInt(p.LIBERA2);
+      let size = Number(p.LIBERA2);
       if (isNaN(size) || size <= 0) return;
 
-      const tipo = (p.LIBERA3 || "").toUpperCase();
+      let tipo = (p.LIBERA3 || "").toUpperCase();
       let valStr = (p.VALORE || "").trim();
-      if (valStr === "") return;
 
-      // ENUM / VLGM / generico 1 byte
+      if (valStr === "" || valStr === "/") return;
+
+      // ENUM / VLGM / 1 byte
       if (tipo === "ENUM" || tipo === "VLGM" || size === 1) {
-        const v = parseInt(valStr);
+        let v = Number(valStr);
         if (!isNaN(v)) {
           buf[addr] = v & 0xFF;
           count++;
@@ -222,7 +195,7 @@
 
       // INT16
       if (tipo === "INT" && size === 2) {
-        const v = parseInt(valStr);
+        let v = Number(valStr);
         if (!isNaN(v)) {
           buf[addr]     = (v >> 8) & 0xFF;
           buf[addr + 1] = v & 0xFF;
@@ -233,7 +206,7 @@
 
       // INT32
       if (tipo === "INT" && size === 4) {
-        const v = parseInt(valStr);
+        let v = Number(valStr);
         if (!isNaN(v)) {
           buf[addr]     = (v >> 24) & 0xFF;
           buf[addr + 1] = (v >> 16) & 0xFF;
@@ -244,30 +217,20 @@
         return;
       }
 
-      // BITMASK (1 byte)
+      // BITMASK
       if (tipo === "BIT") {
-        const v = parseInt(valStr);
+        let v = Number(valStr);
         if (!isNaN(v)) {
           buf[addr] = v & 0xFF;
           count++;
         }
         return;
       }
-
-      // STRING (se mai userai)
-      if (tipo === "STRING") {
-        for (let i = 0; i < size; i++) {
-          buf[addr + i] = valStr.charCodeAt(i) || 0;
-        }
-        count += size;
-        return;
-      }
     });
 
-    log("Parametri scritti da tabella: " + count + " byte.");
+    log("Parametri scritti: " + count + " byte.");
   }
 
-  // Blocchi FF reali (dal tuo file)
   const blocchiFF = [
     { start: 0x0000, end: 0x01FF },
     { start: 0x0520, end: 0x05FF },
@@ -277,21 +240,20 @@
   btnGenera.addEventListener("click", function () {
     logDiv.textContent = "";
 
-    log("Creazione buffer memoria 8192 byte a 0x00...");
+    log("Creo buffer 8192 byte...");
     const buf = creaBufferMemoria();
 
-    log("Applicazione blocchi FF...");
+    log("Applico blocchi FF...");
     applicaBlocchiFF(buf, blocchiFF);
 
-    log("Scrittura parametri da x2_parametri_data.js...");
+    log("Scrivo parametri da tabella...");
     scriviParametriDaTabella(buf);
 
-    log("Conversione in formato Intel HEX...");
-    const hex = bufferToIntelHex(buf, 0x0000);
+    log("Genero file Intel HEX...");
+    const hex = bufferToIntelHex(buf);
 
-    log("Download file: x1_memoria.hex");
     scaricaFile("x1_memoria.hex", hex);
-    log("Operazione completata.\n");
+    log("Fatto.");
   });
   </script>
 </body>
