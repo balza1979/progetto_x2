@@ -67,12 +67,10 @@ body {
 
 .top-bar {
   display:flex;
-  flex-wrap: wrap;   /* <— QUESTA È LA CHIAVE */
-	justify-content: center;   /* <— CENTRA TUTTI I PULSANTI */
-    align-items: center;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:nowrap;
+  flex-wrap: wrap;        /* <— PERMETTE DI ANDARE A CAPO */
+  justify-content: center;/* <— CENTRA I PULSANTI */
+  align-items: center;     /* <— ALLINEA VERTICALMENTE */
+
   overflow:hidden;
   background:#1a0000 !important;
   padding:6px !important;
@@ -83,8 +81,7 @@ body {
 }
 
 .top-title {
-
-	flex-basis: 100%;
+  flex-basis: 100%;   /* <— forza il titolo su una riga intera */
   text-align:center;
   font-size:16px;
   color:#ff1a1a !important;
