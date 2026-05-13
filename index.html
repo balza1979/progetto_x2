@@ -66,12 +66,9 @@ body {
    ============================================================ */
 
 .top-bar {
-  display:flex;
-  flex-wrap: wrap;        /* <— PERMETTE DI ANDARE A CAPO */
-  justify-content: center;/* <— CENTRA I PULSANTI */
-  align-items: center;     /* <— ALLINEA VERTICALMENTE */
-
-  overflow:hidden;
+  display: flex;
+  flex-wrap: wrap;        /* permette di andare a capo */
+  width: 100%;
   background:#1a0000 !important;
   padding:6px !important;
   border-radius:6px !important;
@@ -80,15 +77,24 @@ body {
   box-sizing:border-box;
 }
 
+
 .top-title {
-  flex-basis: 100%;   /* <— forza il titolo su una riga intera */
-  text-align:center;
+  flex-basis: 100%;       /* forza il titolo su una riga intera */
+  text-align: center;
   font-size:16px;
   color:#ff1a1a !important;
   font-weight:bold !important;
   text-shadow:0 0 6px rgba(255,0,0,0.5) !important;
 }
 
+
+#mostra_tutto_btn {
+  margin-right: auto;     /* spinge MOSTRA a sinistra */
+}
+
+#home_btn {
+  margin-left: auto;      /* spinge HOME a destra */
+}
 
 
 
@@ -119,11 +125,12 @@ body {
   text-overflow:ellipsis;
 }
 #crea_hex_btn {
-    width: auto !important;
-    min-width: 120px !important;
-    padding: 0 10px !important;
-    margin-left: 8px !important;
+  flex-basis: 100%;       /* va su una riga da solo */
+  text-align: center;
+  margin-top: 6px;
+  min-width: 150px;
 }
+
 
 
 
