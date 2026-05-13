@@ -361,5 +361,12 @@ selValore.addEventListener("change", function () {
         x2_aggiornaValoriDaSelezione(data, valoreScelto);
     });
 });
+// ------------------------------------------------------------
+// CREA MEMORIA HEX
+// ------------------------------------------------------------
+document.getElementById("crea_hex_btn").onclick = function () {
+    window.open("hex/hex_generator.html", "_blank");
+};
 
 });
+
