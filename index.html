@@ -115,9 +115,10 @@ body {
   border-radius:6px !important;
   box-shadow:0 0 10px rgba(255,0,0,0.4) !important;
 
-  width:75px;
-  min-width:75px;
-  max-width:75px;
+ padding: 0 14px;       /* pulsanti elastici */
+  min-width: 70px;       /* limite minimo */
+  width: auto;           /* niente larghezza fissa */
+  max-width: none;
   height:34px;
   font-size:12px;
 
@@ -253,9 +254,10 @@ input:focus, select:focus, textarea:focus {
 
   /* Pulsanti simmetrici */
   .top-btn {
-    width:75px !important;
-    min-width:75px !important;
-    max-width:75px !important;
+      padding: 0 14px !important;
+    width: auto !important;
+    min-width: 70px !important;
+    max-width: none !important;
     height:34px !important;
     font-size:10px !important;
   }
