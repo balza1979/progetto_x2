@@ -189,9 +189,10 @@ btnGenera.addEventListener("click", function () {
 
   // 👉 QUI METTEREMO I BLOCCHI A 0xFF
   const blocchiFF = [
-    // Esempio finto:
-    // { start: 0, end: 15 },
-    // { start: 128, end: 255 },
+     { start: 0x0000, end: 0x01FF },   // 512 byte
+  { start: 0x0300, end: 0x03FF },   // 256 byte
+{ start: 0x0520, end: 0x1FFF },   // blocco 3 (calcolato dai record HEX)
+   
   ];
   applicaBlocchiFF(buf, blocchiFF);
 
