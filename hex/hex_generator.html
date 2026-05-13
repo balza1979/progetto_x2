@@ -147,6 +147,8 @@ function intelHexChecksum(byteArray) {
 // Converte buffer in stringa Intel HEX (record da 16 byte)
 function bufferToIntelHex(buf, baseAddress = 0x0000) {
   const lines = [];
+   // ⭐ AGGIUNGI QUESTA RIGA PER AVERE UN FILE IDENTICO AL PROGRAMMATORE
+  lines.push(":020000040000FA");
   const recordSize = 16;
 
   for (let addr = 0; addr < buf.length; addr += recordSize) {
