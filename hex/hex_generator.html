@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
-<!-- ========================================================= -->
-<!--  FILE: hex_generator.html                                 -->
-<!--  DATA: 15/04/2026                                         -->
-<!--  Generatore memoria HEX X1/X2                             -->
-<!-- ========================================================= -->
 <head>
   <meta charset="UTF-8">
   <title>Generatore Memoria HEX – X1/X2</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -71,6 +67,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page">
     <h1>Generatore Memoria HEX – X1/X2</h1>
@@ -95,12 +92,18 @@
     logDiv.textContent += msg + "\n";
   }
 
+  // ------------------------------------------------------------
+  // CREA BUFFER 8192 BYTE
+  // ------------------------------------------------------------
   function creaBufferMemoria() {
     const buf = new Uint8Array(8192);
     buf.fill(0x00);
     return buf;
   }
 
+  // ------------------------------------------------------------
+  // APPLICA BLOCCHI FF
+  // ------------------------------------------------------------
   function applicaBlocchiFF(buf, ranges) {
     ranges.forEach(r => {
       const s = Math.max(0, r.start);
@@ -109,6 +112,9 @@
     });
   }
 
+  // ------------------------------------------------------------
+  // CHECKSUM INTEL HEX
+  // ------------------------------------------------------------
   function intelHexChecksum(byteArray) {
     let sum = 0;
     for (let i = 0; i < byteArray.length; i++) {
@@ -117,6 +123,9 @@
     return ((~sum + 1) & 0xFF);
   }
 
+  // ------------------------------------------------------------
+  // CONVERSIONE BUFFER → INTEL HEX
+  // ------------------------------------------------------------
   function bufferToIntelHex(buf, baseAddress = 0x0000) {
     const lines = [];
 
@@ -152,6 +161,9 @@
     return lines.join("\n");
   }
 
+  // ------------------------------------------------------------
+  // SCARICA FILE
+  // ------------------------------------------------------------
   function scaricaFile(nome, contenuto) {
     const blob = new Blob([contenuto], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -162,8 +174,11 @@
     URL.revokeObjectURL(url);
   }
 
-  // ⭐ PARSER INTELLIGENTE
+  // ------------------------------------------------------------
+  // ⭐ SCRITTURA PARAMETRI (VERSIONE CORRETTA)
+  // ------------------------------------------------------------
   function scriviParametriDaTabella(buf) {
+
     if (typeof x2_parametri === "undefined") {
       log("ERRORE: x2_parametri_data.js NON caricato!");
       return;
@@ -172,24 +187,55 @@
     let count = 0;
 
     x2_parametri.forEach(p => {
-      let addr = Number(p.LIBERA1);
-      if (isNaN(addr) || addr < 0) return;
 
-      let size = Number(p.LIBERA2);
+      let addr = parseInt(p.LIBERA1, 16);
+      if (isNaN(addr)) return;
+
+      let size = parseInt(p.LIBERA2);
       if (isNaN(size) || size <= 0) return;
 
-      let tipo = (p.LIBERA3 || "").toUpperCase();
       let valStr = (p.VALORE || "").trim();
-
       if (valStr === "" || valStr === "/") return;
 
-      // ENUM / VLGM / 1 byte
-      if (tipo === "ENUM" || tipo === "VLGM" || size === 1) {
+      let tipo = (p.LIBERA3 || "").toUpperCase();
+
+      // ENUM / VLGM
+      if (tipo.startsWith("ENUM") || tipo === "VLGM") {
         let v = Number(valStr);
         if (!isNaN(v)) {
           buf[addr] = v & 0xFF;
           count++;
         }
+        return;
+      }
+
+      // BITMASK
+      if (tipo === "BIT") {
+        let v = Number(valStr);
+        if (!isNaN(v)) {
+          buf[addr] = v & 0xFF;
+          count++;
+        }
+        return;
+      }
+
+      // NUMERICO con offset e scala
+      if (tipo.startsWith("NUM")) {
+
+        let valore = parseFloat(valStr);
+        if (isNaN(valore)) return;
+
+        // Estrae offset da "NUM (20.0–25.0)"
+        let match = p.LIBERA3.match(/(\d+(\.\d+)?)/);
+        let offset = match ? parseFloat(match[1]) : 0;
+
+        let scala = parseInt(p.LIBERA4);
+        if (isNaN(scala) || scala <= 0) scala = 1;
+
+        let byteVal = Math.round((valore - offset) * scala);
+
+        buf[addr] = byteVal & 0xFF;
+        count++;
         return;
       }
 
@@ -217,26 +263,29 @@
         return;
       }
 
-      // BITMASK
-      if (tipo === "BIT") {
-        let v = Number(valStr);
-        if (!isNaN(v)) {
-          buf[addr] = v & 0xFF;
-          count++;
-        }
-        return;
+      // Fallback
+      let v = Number(valStr);
+      if (!isNaN(v)) {
+        buf[addr] = v & 0xFF;
+        count++;
       }
     });
 
     log("Parametri scritti: " + count + " byte.");
   }
 
+  // ------------------------------------------------------------
+  // BLOCCHI FF
+  // ------------------------------------------------------------
   const blocchiFF = [
     { start: 0x0000, end: 0x01FF },
     { start: 0x0520, end: 0x05FF },
     { start: 0x0A000, end: 0x1FFF }
   ];
 
+  // ------------------------------------------------------------
+  // GENERA HEX
+  // ------------------------------------------------------------
   btnGenera.addEventListener("click", function () {
     logDiv.textContent = "";
 
@@ -252,9 +301,10 @@
     log("Genero file Intel HEX...");
     const hex = bufferToIntelHex(buf);
 
-    scaricaFile("x1_memoria.hex", hex);
+    scaricaFile("x2_memoria.hex", hex);
     log("Fatto.");
   });
+
   </script>
 </body>
 </html>
