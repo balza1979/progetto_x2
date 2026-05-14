@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Confronto Memorie – X2</title>
+
+    <!-- Tema scuro -->
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00bcd4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .file-box {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #00bcd4;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0097a7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background: #222;
+        }
+
+        .diff {
+            background: #3a0000;
+        }
+
+        .param {
+            color: #00e676;
+        }
+
+        .nonprev {
+            color: #ff9800;
+        }
+    </style>
+
+    <script src="../js/x2_parametri_data.js"></script>
+    <script src="confronto_memorie.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Confronto Memorie HC64 – X2</h1>
+
+        <div class="file-box">
+            <label>File Memoria 1:</label>
+            <input type="file" id="file1" accept=".hex">
+        </div>
+
+        <div class="file-box">
+            <label>File Memoria 2:</label>
+            <input type="file" id="file2" accept=".hex">
+        </div>
+
+        <button onclick="avviaConfronto()">AVVIA CONFRONTO</button>
+
+        <div id="risultati"></div>
+    </div>
+</body>
+</html>
