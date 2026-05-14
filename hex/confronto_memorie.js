@@ -1,25 +1,27 @@
-// ======================================================
-// confronto_memorie.js
-// Motore confronto memorie HC64 – X2
-// ======================================================
+// ============================================================
+//   CONFRONTO MEMORIE X2 – Versione completa
+//   Luca – 14/05/2026 16:34
+// ============================================================
 
-// -----------------------------
-// 1) Lettura file HEX
-// -----------------------------
+
+// ------------------------------------------------------------
+//  LETTURA FILE HEX
+// ------------------------------------------------------------
 function leggiFileHex(input, callback) {
     const file = input.files[0];
     if (!file) return callback(null);
 
     const reader = new FileReader();
-    reader.onload = () => callback(reader.result);
+    reader.onload = e => callback(e.target.result);
     reader.readAsText(file);
 }
 
-// -----------------------------
-// 2) Parser Intel HEX → mappa memoria
-// -----------------------------
-function hexToMemoryMap(hexString) {
-    const lines = hexString.split(/\r?\n/);
+
+// ------------------------------------------------------------
+//  CONVERSIONE HEX → MAPPA MEMORIA
+// ------------------------------------------------------------
+function hexToMemoryMap(hexText) {
+    const lines = hexText.split(/\r?\n/);
     const mem = {};
 
     for (let line of lines) {
@@ -29,38 +31,38 @@ function hexToMemoryMap(hexString) {
         const address = parseInt(line.substr(3, 4), 16);
         const recordType = parseInt(line.substr(7, 2), 16);
 
-        if (recordType !== 0) continue; // solo record dati
-
-        let data = line.substr(9, byteCount * 2);
+        if (recordType !== 0) continue;
 
         for (let i = 0; i < byteCount; i++) {
-            const byteHex = data.substr(i * 2, 2);
-            mem[address + i] = parseInt(byteHex, 16);
+            const byteHex = line.substr(9 + i * 2, 2);
+            mem[address + i] = byteHex;
         }
     }
 
     return mem;
 }
 
-// -----------------------------
-// 3) Mappa indirizzo → parametro
-// -----------------------------
+
+// ------------------------------------------------------------
+//  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
+//  (usa LIBERA1 = indirizzo, LIBERA2 = bytes)
+// ------------------------------------------------------------
 function buildAddressToParamMap() {
     const map = {};
 
     for (let i = 0; i < x2_parametri.length; i++) {
         const p = x2_parametri[i];
 
-        // Usa LIBERA1 come indirizzo
         const start = parseInt(p.LIBERA1, 16);
-
-        // Usa LIBERA2 come numero di byte
         const size = parseInt(p.LIBERA2);
 
         if (isNaN(start) || isNaN(size)) continue;
 
         for (let j = 0; j < size; j++) {
-            map[start + j] = p.PARAMETRO;
+            map[start + j] = {
+                codice: p.PARAMETRO,
+                descrizione: p.DESCRIZIONE
+            };
         }
     }
 
@@ -68,100 +70,97 @@ function buildAddressToParamMap() {
 }
 
 
+// ------------------------------------------------------------
+//  CONFRONTO MEMORIA
+// ------------------------------------------------------------
+function compareMemory(memA, memB, addrMap) {
+    const diff = [];
 
-// -----------------------------
-// 4) Confronto byte-per-byte
-// -----------------------------
-function compareMemory(memA, memB, addrToParam) {
-    const differenze = [];
+    const allAddrs = new Set([
+        ...Object.keys(memA).map(Number),
+        ...Object.keys(memB).map(Number)
+    ]);
 
-   const maxAddr = Math.max(
-    ...Object.keys(memA).map(n => parseInt(n)),
-    ...Object.keys(memB).map(n => parseInt(n))
-);
+    for (let addr of allAddrs) {
+        const v1 = memA[addr] || "--";
+        const v2 = memB[addr] || "--";
 
-
-    for (let addr = 0; addr <= maxAddr; addr++) {
-        const a = memA[addr] ?? null;
-        const b = memB[addr] ?? null;
-
-        if (a !== b) {
-            const param = addrToParam[addr] || null;
-
-            differenze.push({
+        if (v1 !== v2) {
+            diff.push({
                 addr,
-                a,
-                b,
-                param
+                v1,
+                v2,
+                param: addrMap[addr] || null
             });
         }
     }
 
-    return differenze;
+    return diff;
 }
 
-// -----------------------------
-// 5) Render tabella differenze
-// -----------------------------
+
+// ------------------------------------------------------------
+//  RENDER RISULTATI
+// ------------------------------------------------------------
 function renderResults(lista) {
-    if (lista.length === 0) {
-        document.getElementById("risultati").innerHTML =
-            "<h3>Nessuna differenza trovata.</h3>";
-        return;
-    }
+
+    // Ordina: prima parametri noti, poi non previsti
+    lista.sort((a, b) => {
+        if (a.param && !b.param) return -1;
+        if (!a.param && b.param) return 1;
+        return a.addr - b.addr;
+    });
 
     let html = `
         <table>
             <tr>
                 <th>Indirizzo</th>
-                <th>File 1</th>
-                <th>File 2</th>
+                <th>Valore 1</th>
+                <th>Valore 2</th>
                 <th>Parametro</th>
             </tr>
     `;
 
     for (let d of lista) {
-        const hexAddr = "0x" + d.addr.toString(16).padStart(4, "0").toUpperCase();
-        const valA = d.a !== null ? d.a.toString(16).padStart(2, "0").toUpperCase() : "--";
-        const valB = d.b !== null ? d.b.toString(16).padStart(2, "0").toUpperCase() : "--";
-
-        const param = d.param
-            ? `<span class="param">${d.param}</span>`
-            : `<span class="nonprev">NON PREVISTO</span>`;
+        const isParam = d.param !== null;
 
         html += `
-            <tr class="diff">
-                <td>${hexAddr}</td>
-                <td>${valA}</td>
-                <td>${valB}</td>
-                <td>${param}</td>
+            <tr class="${isParam ? 'param-row' : 'diff'}">
+                <td>0x${d.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+                <td>${d.v1}</td>
+                <td>${d.v2}</td>
+                <td>
+                    ${
+                        isParam
+                        ? `<span class="param">${d.param.codice} – ${d.param.descrizione}</span>`
+                        : `<span class="nonprev">NON PREVISTO</span>`
+                    }
+                </td>
             </tr>
         `;
     }
 
-    html += "</table>";
+    html += `</table>`;
 
     document.getElementById("risultati").innerHTML = html;
 }
 
-// -----------------------------
-// 6) Avvio confronto
-// -----------------------------
+
+// ------------------------------------------------------------
+//  AVVIA CONFRONTO (sempre da zero)
+// ------------------------------------------------------------
 function avviaConfronto() {
 
-    // Pulisci i risultati precedenti
     document.getElementById("risultati").innerHTML = "";
 
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    // Controllo file selezionati
     if (!f1.files[0] || !f2.files[0]) {
         alert("Seleziona entrambi i file HEX");
         return;
     }
 
-    // Rileggi SEMPRE i file da zero
     leggiFileHex(f1, hex1 => {
         if (!hex1) {
             alert("Errore lettura file 1");
@@ -174,7 +173,6 @@ function avviaConfronto() {
                 return;
             }
 
-            // Ora fai il confronto da zero
             const mem1 = hexToMemoryMap(hex1);
             const mem2 = hexToMemoryMap(hex2);
 
