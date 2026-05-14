@@ -148,21 +148,33 @@ function renderResults(lista) {
 // 6) Avvio confronto
 // -----------------------------
 function avviaConfronto() {
+
+    // Pulisci i risultati precedenti
+    document.getElementById("risultati").innerHTML = "";
+
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
+    // Controllo file selezionati
+    if (!f1.files[0] || !f2.files[0]) {
+        alert("Seleziona entrambi i file HEX");
+        return;
+    }
+
+    // Rileggi SEMPRE i file da zero
     leggiFileHex(f1, hex1 => {
         if (!hex1) {
-            alert("Seleziona il primo file HEX");
+            alert("Errore lettura file 1");
             return;
         }
 
         leggiFileHex(f2, hex2 => {
             if (!hex2) {
-                alert("Seleziona il secondo file HEX");
+                alert("Errore lettura file 2");
                 return;
             }
 
+            // Ora fai il confronto da zero
             const mem1 = hexToMemoryMap(hex1);
             const mem2 = hexToMemoryMap(hex2);
 
