@@ -67,10 +67,11 @@ function buildAddressToParamMap() {
 function compareMemory(memA, memB, addrToParam) {
     const differenze = [];
 
-    const maxAddr = Math.max(
-        Math.max(...Object.keys(memA)),
-        Math.max(...Object.keys(memB))
-    );
+   const maxAddr = Math.max(
+    ...Object.keys(memA).map(n => parseInt(n)),
+    ...Object.keys(memB).map(n => parseInt(n))
+);
+
 
     for (let addr = 0; addr <= maxAddr; addr++) {
         const a = memA[addr] ?? null;
