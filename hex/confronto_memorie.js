@@ -48,18 +48,20 @@ function hexToMemoryMap(hexString) {
 function buildAddressToParamMap() {
     const map = {};
 
-    for (let key in PARAMETRI_DATA) {
-        const p = PARAMETRI_DATA[key];
-        const start = p.addr;
-        const size = p.bytes;
+    // Usa x2_parametri invece di PARAMETRI_DATA
+    for (let i = 0; i < x2_parametri.length; i++) {
+        const p = x2_parametri[i];
+        const start = parseInt(p.addr || p.ADDR || 0);
+        const size = parseInt(p.bytes || p.BYTES || 1);
 
-        for (let i = 0; i < size; i++) {
-            map[start + i] = key;
+        for (let j = 0; j < size; j++) {
+            map[start + j] = p.PARAMETRO;
         }
     }
 
     return map;
 }
+
 
 // -----------------------------
 // 4) Confronto byte-per-byte
