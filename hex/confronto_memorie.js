@@ -48,11 +48,16 @@ function hexToMemoryMap(hexString) {
 function buildAddressToParamMap() {
     const map = {};
 
-    // Usa x2_parametri invece di PARAMETRI_DATA
     for (let i = 0; i < x2_parametri.length; i++) {
         const p = x2_parametri[i];
-        const start = parseInt(p.addr || p.ADDR || 0);
-        const size = parseInt(p.bytes || p.BYTES || 1);
+
+        // Usa LIBERA1 come indirizzo
+        const start = parseInt(p.LIBERA1, 16);
+
+        // Usa LIBERA2 come numero di byte
+        const size = parseInt(p.LIBERA2);
+
+        if (isNaN(start) || isNaN(size)) continue;
 
         for (let j = 0; j < size; j++) {
             map[start + j] = p.PARAMETRO;
@@ -61,6 +66,7 @@ function buildAddressToParamMap() {
 
     return map;
 }
+
 
 
 // -----------------------------
