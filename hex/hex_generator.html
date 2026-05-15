@@ -174,115 +174,126 @@
     URL.revokeObjectURL(url);
   }
 
-  // ------------------------------------------------------------
-  // ⭐ SCRITTURA PARAMETRI (VERSIONE CORRETTA)
-  // ------------------------------------------------------------
-  function scriviParametriDaTabella(buf) {
+ // ------------------------------------------------------------
+// ⭐ SCRITTURA PARAMETRI (VERSIONE DEFINITIVA)
+// ------------------------------------------------------------
+function scriviParametriDaTabella(buf) {
 
-    if (typeof x2_parametri === "undefined") {
-      log("ERRORE: x2_parametri_data.js NON caricato!");
-      return;
-    }
-
-    let count = 0;
-
-    x2_parametri.forEach(p => {
-
-      let addr = parseInt(p.LIBERA1, 16);
-      if (isNaN(addr)) return;
-
-      let size = parseInt(p.LIBERA2);
-      if (isNaN(size) || size <= 0) return;
-
-      let valStr = (p.VALORE || "").trim();
-      if (valStr === "" || valStr === "/") return;
-
-      let tipo = (p.LIBERA3 || "").toUpperCase();
-
-      // ENUM / VLGM
-      if (tipo.startsWith("ENUM") || tipo === "VLGM") {
-        let v = Number(valStr);
-        if (!isNaN(v)) {
-          buf[addr] = v & 0xFF;
-          count++;
-        }
-        return;
-      }
-
-      // BITMASK
-      if (tipo === "BIT") {
-        let v = Number(valStr);
-        if (!isNaN(v)) {
-          buf[addr] = v & 0xFF;
-          count++;
-        }
-        return;
-      }
-
-     // NUMERICO con offset e scala
-// NUMERICO
-if (tipo === "NUM") {
-
-    let valore = parseFloat(valStr);
-    if (isNaN(valore)) return;
-
-    let scala = parseInt(p.LIBERA4);
-    if (isNaN(scala) || scala <= 0) scala = 1;
-
-    // NUM SENZA OFFSET (scala = 1)
-    if (scala === 1) {
-        buf[addr] = valore & 0xFF;
-        count++;
-        return;
-    }
-
-    // NUM CON OFFSET (scala > 1)
-    let match = p.LIBERA6.match(/(\d+(\.\d+)?)/);
-    let offset = match ? parseFloat(match[1]) : 0;
-
-    let byteVal = Math.round((valore - offset) * scala);
-
-    buf[addr] = byteVal & 0xFF;
-    count++;
+  if (typeof x2_parametri === "undefined") {
+    log("ERRORE: x2_parametri_data.js NON caricato!");
     return;
-}
+  }
 
+  // ⭐ Indirizzi runtime NON programmabili
+  const indirizziRuntime = [
+    0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
+    0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
+  ];
 
+  let count = 0;
 
-      // INT16
-      if (tipo === "INT" && size === 2) {
-        let v = Number(valStr);
-        if (!isNaN(v)) {
-          buf[addr]     = (v >> 8) & 0xFF;
-          buf[addr + 1] = v & 0xFF;
-          count += 2;
-        }
-        return;
-      }
+  x2_parametri.forEach(p => {
 
-      // INT32
-      if (tipo === "INT" && size === 4) {
-        let v = Number(valStr);
-        if (!isNaN(v)) {
-          buf[addr]     = (v >> 24) & 0xFF;
-          buf[addr + 1] = (v >> 16) & 0xFF;
-          buf[addr + 2] = (v >> 8) & 0xFF;
-          buf[addr + 3] = v & 0xFF;
-          count += 4;
-        }
-        return;
-      }
+    let addr = parseInt(p.LIBERA1, 16);
+    if (isNaN(addr)) return;
 
-      // Fallback
+    let size = parseInt(p.LIBERA2);
+    if (isNaN(size) || size <= 0) return;
+
+    let valStr = (p.VALORE || "").trim();
+
+    // ⭐ Parametri senza valore → NON scrivere
+    if (valStr === "" || valStr === "/") return;
+
+    // ⭐ NON scrivere indirizzi runtime
+    if (indirizziRuntime.includes(addr)) return;
+
+    // ⭐ NON scrivere byte di sistema 0x0500–0x051F
+    if (addr >= 0x0500 && addr <= 0x051F) return;
+
+    let tipo = (p.LIBERA3 || "").toUpperCase();
+
+    // ENUM / VLGM
+    if (tipo.startsWith("ENUM") || tipo === "VLGM") {
       let v = Number(valStr);
       if (!isNaN(v)) {
         buf[addr] = v & 0xFF;
         count++;
       }
-    });
+      return;
+    }
 
-    log("Parametri scritti: " + count + " byte.");
-  }
+    // BITMASK
+    if (tipo === "BIT") {
+      let v = Number(valStr);
+      if (!isNaN(v)) {
+        buf[addr] = v & 0xFF;
+        count++;
+      }
+      return;
+    }
+
+    // NUMERICO
+    if (tipo === "NUM") {
+
+      let valore = parseFloat(valStr);
+      if (isNaN(valore)) return;
+
+      let scala = parseInt(p.LIBERA4);
+      if (isNaN(scala) || scala <= 0) scala = 1;
+
+      // NUM SENZA OFFSET
+      if (scala === 1) {
+        buf[addr] = valore & 0xFF;
+        count++;
+        return;
+      }
+
+      // NUM CON OFFSET
+      let match = p.LIBERA6.match(/(\d+(\.\d+)?)/);
+      let offset = match ? parseFloat(match[1]) : 0;
+
+      let byteVal = Math.round((valore - offset) * scala);
+
+      buf[addr] = byteVal & 0xFF;
+      count++;
+      return;
+    }
+
+    // INT16
+    if (tipo === "INT" && size === 2) {
+      let v = Number(valStr);
+      if (!isNaN(v)) {
+        buf[addr]     = (v >> 8) & 0xFF;
+        buf[addr + 1] = v & 0xFF;
+        count += 2;
+      }
+      return;
+    }
+
+    // INT32
+    if (tipo === "INT" && size === 4) {
+      let v = Number(valStr);
+      if (!isNaN(v)) {
+        buf[addr]     = (v >> 24) & 0xFF;
+        buf[addr + 1] = (v >> 16) & 0xFF;
+        buf[addr + 2] = (v >> 8) & 0xFF;
+        buf[addr + 3] = v & 0xFF;
+        count += 4;
+      }
+      return;
+    }
+
+    // Fallback
+    let v = Number(valStr);
+    if (!isNaN(v)) {
+      buf[addr] = v & 0xFF;
+      count++;
+    }
+  });
+
+  log("Parametri scritti: " + count + " byte.");
+}
 
   // ------------------------------------------------------------
   // BLOCCHI FF
