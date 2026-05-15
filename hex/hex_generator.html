@@ -307,7 +307,10 @@ if (tipo === "NUM") {
 
     log("Scrivo parametri da tabella...");
     scriviParametriDaTabella(buf);
+    // Valore fisso firmware X2
+buf[0x0351] = 0x03;
 
+    
     log("Genero file Intel HEX...");
     const hex = bufferToIntelHex(buf);
 
