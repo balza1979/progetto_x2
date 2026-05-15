@@ -1,7 +1,16 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione completa
-//   Luca – 14/05/2026 16:34
+//   CONFRONTO MEMORIE X2 – Versione definitiva
+//   Luca – 15/05/2026 14:30
 // ============================================================
+
+
+// ------------------------------------------------------------
+//  INDIRIZZI RUNTIME (NON PROGRAMMABILI)
+// ------------------------------------------------------------
+const indirizziRuntime = [
+    0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
+    0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
+];
 
 
 // ------------------------------------------------------------
@@ -45,7 +54,6 @@ function hexToMemoryMap(hexText) {
 
 // ------------------------------------------------------------
 //  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
-//  (usa LIBERA1 = indirizzo, LIBERA2 = bytes)
 // ------------------------------------------------------------
 function buildAddressToParamMap() {
     const map = {};
@@ -71,10 +79,11 @@ function buildAddressToParamMap() {
 
 
 // ------------------------------------------------------------
-//  CONFRONTO MEMORIA
+//  CONFRONTO MEMORIA (VERSIONE MIGLIORATA)
 // ------------------------------------------------------------
 function compareMemory(memA, memB, addrMap) {
     const diff = [];
+    const runtime = [];
 
     const allAddrs = new Set([
         ...Object.keys(memA).map(Number),
@@ -82,6 +91,17 @@ function compareMemory(memA, memB, addrMap) {
     ]);
 
     for (let addr of allAddrs) {
+
+        // ⭐ SE È RUNTIME → NON confrontare, ma registrare
+        if (indirizziRuntime.includes(addr)) {
+            runtime.push({
+                addr,
+                v1: memA[addr] || "--",
+                v2: memB[addr] || "--"
+            });
+            continue;
+        }
+
         const v1 = memA[addr] || "--";
         const v2 = memB[addr] || "--";
 
@@ -95,14 +115,17 @@ function compareMemory(memA, memB, addrMap) {
         }
     }
 
-    return diff;
+    return { diff, runtime };
 }
 
 
 // ------------------------------------------------------------
 //  RENDER RISULTATI
 // ------------------------------------------------------------
-function renderResults(lista) {
+function renderResults(result) {
+
+    const lista = result.diff;
+    const runtime = result.runtime;
 
     // Ordina: prima parametri noti, poi non previsti
     lista.sort((a, b) => {
@@ -112,6 +135,7 @@ function renderResults(lista) {
     });
 
     let html = `
+        <h3>DIFFERENZE PARAMETRI</h3>
         <table>
             <tr>
                 <th>Indirizzo</th>
@@ -142,12 +166,39 @@ function renderResults(lista) {
 
     html += `</table>`;
 
+    // ------------------------------------------------------------
+    // ⭐ SEZIONE RUNTIME (NON PROGRAMMABILI)
+    // ------------------------------------------------------------
+    html += `
+        <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
+        <table>
+            <tr>
+                <th>Indirizzo</th>
+                <th>Valore 1</th>
+                <th>Valore 2</th>
+                <th>Note</th>
+            </tr>
+    `;
+
+    for (let r of runtime) {
+        html += `
+            <tr class="runtime">
+                <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+                <td>${r.v1}</td>
+                <td>${r.v2}</td>
+                <td>Runtime – non programmabile</td>
+            </tr>
+        `;
+    }
+
+    html += `</table>`;
+
     document.getElementById("risultati").innerHTML = html;
 }
 
 
 // ------------------------------------------------------------
-//  AVVIA CONFRONTO (sempre da zero)
+//  AVVIA CONFRONTO
 // ------------------------------------------------------------
 function avviaConfronto() {
 
@@ -178,9 +229,9 @@ function avviaConfronto() {
 
             const addrMap = buildAddressToParamMap();
 
-            const diff = compareMemory(mem1, mem2, addrMap);
+            const result = compareMemory(mem1, mem2, addrMap);
 
-            renderResults(diff);
+            renderResults(result);
         });
     });
 }
