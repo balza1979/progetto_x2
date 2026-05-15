@@ -1,6 +1,6 @@
 // ============================================================
 //   CONFRONTO MEMORIE X2 – Versione definitiva con TOGGLE
-//   Luca – 15/05/2026 16:40
+//   Luca – 15/05/2026 17:00
 // ============================================================
 
 
@@ -120,51 +120,73 @@ function compareMemory(memA, memB, addrMap) {
 
 
 // ------------------------------------------------------------
-//  RENDER RISULTATI (con toggle runtime)
+//  RENDER RISULTATI (con toggle runtime + messaggio equivalenza)
 // ------------------------------------------------------------
 function renderResults(result) {
 
     const lista = result.diff;
     const runtime = result.runtime;
 
-    // Ordina: prima parametri noti, poi non previsti
-    lista.sort((a, b) => {
-        if (a.param && !b.param) return -1;
-        if (!a.param && b.param) return 1;
-        return a.addr - b.addr;
-    });
+    let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
-    let html = `
-        <h3>DIFFERENZE PARAMETRI</h3>
-        <table>
-            <tr>
-                <th>Indirizzo</th>
-                <th>Valore 1</th>
-                <th>Valore 2</th>
-                <th>Parametro</th>
-            </tr>
-    `;
-
-    for (let d of lista) {
-        const isParam = d.param !== null;
+    // ⭐ SE NON CI SONO DIFFERENZE → MOSTRA MESSAGGIO
+    if (lista.length === 0) {
 
         html += `
-            <tr class="${isParam ? 'param-row' : 'diff'}">
-                <td>0x${d.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                <td>${d.v1}</td>
-                <td>${d.v2}</td>
-                <td>
-                    ${
-                        isParam
-                        ? `<span class="param">${d.param.codice} – ${d.param.descrizione}</span>`
-                        : `<span class="nonprev">NON PREVISTO</span>`
-                    }
-                </td>
-            </tr>
+            <div style="
+                margin:15px 0;
+                padding:12px;
+                background:#113311;
+                border:1px solid #44aa44;
+                border-radius:6px;
+                color:#88ff88;
+                font-weight:bold;
+            ">
+                ✔ I parametri risultano equivalenti.<br>
+                Nessuna differenza da segnalare.
+            </div>
         `;
-    }
 
-    html += `</table>`;
+    } else {
+
+        // ⭐ SE CI SONO DIFFERENZE → MOSTRA TABELLA
+        lista.sort((a, b) => {
+            if (a.param && !b.param) return -1;
+            if (!a.param && b.param) return 1;
+            return a.addr - b.addr;
+        });
+
+        html += `
+            <table>
+                <tr>
+                    <th>Indirizzo</th>
+                    <th>Valore 1</th>
+                    <th>Valore 2</th>
+                    <th>Parametro</th>
+                </tr>
+        `;
+
+        for (let d of lista) {
+            const isParam = d.param !== null;
+
+            html += `
+                <tr class="${isParam ? 'param-row' : 'diff'}">
+                    <td>0x${d.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+                    <td>${d.v1}</td>
+                    <td>${d.v2}</td>
+                    <td>
+                        ${
+                            isParam
+                            ? `<span class="param">${d.param.codice} – ${d.param.descrizione}</span>`
+                            : `<span class="nonprev">NON PREVISTO</span>`
+                        }
+                    </td>
+                </tr>
+            `;
+        }
+
+        html += `</table>`;
+    }
 
     // ------------------------------------------------------------
     // ⭐ PULSANTE TOGGLE RUNTIME
