@@ -220,17 +220,25 @@
       }
 
      // NUMERICO con offset e scala
-if (tipo.startsWith("NUM")) {
+// NUMERICO
+if (tipo === "NUM") {
 
     let valore = parseFloat(valStr);
     if (isNaN(valore)) return;
 
-    // Estrae offset da LIBERA6: "NUM (20.0–25.0)"
-    let match = p.LIBERA6.match(/(\d+(\.\d+)?)/);
-    let offset = match ? parseFloat(match[1]) : 0;
-
     let scala = parseInt(p.LIBERA4);
     if (isNaN(scala) || scala <= 0) scala = 1;
+
+    // NUM SENZA OFFSET (scala = 1)
+    if (scala === 1) {
+        buf[addr] = valore & 0xFF;
+        count++;
+        return;
+    }
+
+    // NUM CON OFFSET (scala > 1)
+    let match = p.LIBERA6.match(/(\d+(\.\d+)?)/);
+    let offset = match ? parseFloat(match[1]) : 0;
 
     let byteVal = Math.round((valore - offset) * scala);
 
@@ -238,6 +246,7 @@ if (tipo.startsWith("NUM")) {
     count++;
     return;
 }
+
 
 
       // INT16
