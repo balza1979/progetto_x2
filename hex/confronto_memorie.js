@@ -78,8 +78,88 @@ function buildAddressToParamMap() {
 }
 
 
+// ============================================================
+//   CONFRONTO MEMORIE X2 – Versione definitiva con TOGGLE
+//   Luca – 15/05/2026 16:40
+// ============================================================
+
+
 // ------------------------------------------------------------
-//  CONFRONTO MEMORIA (VERSIONE MIGLIORATA)
+//  INDIRIZZI RUNTIME (NON PROGRAMMABILI)
+// ------------------------------------------------------------
+const indirizziRuntime = [
+    0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
+    0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
+];
+
+
+// ------------------------------------------------------------
+//  LETTURA FILE HEX
+// ------------------------------------------------------------
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
+
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
+}
+
+
+// ------------------------------------------------------------
+//  CONVERSIONE HEX → MAPPA MEMORIA
+// ------------------------------------------------------------
+function hexToMemoryMap(hexText) {
+    const lines = hexText.split(/\r?\n/);
+    const mem = {};
+
+    for (let line of lines) {
+        if (!line.startsWith(":")) continue;
+
+        const byteCount = parseInt(line.substr(1, 2), 16);
+        const address = parseInt(line.substr(3, 4), 16);
+        const recordType = parseInt(line.substr(7, 2), 16);
+
+        if (recordType !== 0) continue;
+
+        for (let i = 0; i < byteCount; i++) {
+            const byteHex = line.substr(9 + i * 2, 2);
+            mem[address + i] = byteHex;
+        }
+    }
+
+    return mem;
+}
+
+
+// ------------------------------------------------------------
+//  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
+// ------------------------------------------------------------
+function buildAddressToParamMap() {
+    const map = {};
+
+    for (let i = 0; i < x2_parametri.length; i++) {
+        const p = x2_parametri[i];
+
+        const start = parseInt(p.LIBERA1, 16);
+        const size = parseInt(p.LIBERA2);
+
+        if (isNaN(start) || isNaN(size)) continue;
+
+        for (let j = 0; j < size; j++) {
+            map[start + j] = {
+                codice: p.PARAMETRO,
+                descrizione: p.DESCRIZIONE
+            };
+        }
+    }
+
+    return map;
+}
+
+
+// ------------------------------------------------------------
+//  CONFRONTO MEMORIA
 // ------------------------------------------------------------
 function compareMemory(memA, memB, addrMap) {
     const diff = [];
@@ -120,7 +200,7 @@ function compareMemory(memA, memB, addrMap) {
 
 
 // ------------------------------------------------------------
-//  RENDER RISULTATI
+//  RENDER RISULTATI (con toggle runtime)
 // ------------------------------------------------------------
 function renderResults(result) {
 
@@ -167,17 +247,25 @@ function renderResults(result) {
     html += `</table>`;
 
     // ------------------------------------------------------------
-    // ⭐ SEZIONE RUNTIME (NON PROGRAMMABILI)
+    // ⭐ PULSANTE TOGGLE RUNTIME
     // ------------------------------------------------------------
     html += `
-        <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
-        <table>
-            <tr>
-                <th>Indirizzo</th>
-                <th>Valore 1</th>
-                <th>Valore 2</th>
-                <th>Note</th>
-            </tr>
+        <h3 style="margin-top:25px;">
+            <button id="toggleRuntimeBtn"
+                style="padding:6px 12px; font-size:12px; cursor:pointer;">
+                Mostra valori runtime non programmabili
+            </button>
+        </h3>
+
+        <div id="runtimeSection" style="display:none;">
+            <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
+            <table>
+                <tr>
+                    <th>Indirizzo</th>
+                    <th>Valore 1</th>
+                    <th>Valore 2</th>
+                    <th>Note</th>
+                </tr>
     `;
 
     for (let r of runtime) {
@@ -191,9 +279,28 @@ function renderResults(result) {
         `;
     }
 
-    html += `</table>`;
+    html += `
+            </table>
+        </div>
+    `;
 
     document.getElementById("risultati").innerHTML = html;
+
+    // ------------------------------------------------------------
+    // ⭐ LOGICA TOGGLE
+    // ------------------------------------------------------------
+    const btn = document.getElementById("toggleRuntimeBtn");
+    const section = document.getElementById("runtimeSection");
+
+    btn.addEventListener("click", () => {
+        if (section.style.display === "none") {
+            section.style.display = "block";
+            btn.textContent = "Nascondi valori runtime non programmabili";
+        } else {
+            section.style.display = "none";
+            btn.textContent = "Mostra valori runtime non programmabili";
+        }
+    });
 }
 
 
