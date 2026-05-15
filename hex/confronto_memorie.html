@@ -1,110 +1,89 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Confronto Memorie – X2</title>
+<meta charset="UTF-8">
+<title>Confronto Memorie – X2</title>
 
-    <!-- Tema scuro -->
-    <style>
-        body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#0d0d0d;
+        color:#f5f5f5;
+        margin:0;
+        padding:20px;
+    }
+    .page {
+        max-width:900px;
+        margin:0 auto;
+        background:#1a1a1a;
+        border:2px solid #444;
+        padding:20px;
+        border-radius:10px;
+    }
+    h1 {
+        text-align:center;
+        color:#ff3333;
+    }
+    table {
+        width:100%;
+        border-collapse:collapse;
+        margin-top:10px;
+    }
+    th, td {
+        border:1px solid #555;
+        padding:6px;
+        font-size:12px;
+    }
+    th {
+        background:#333;
+    }
+    .param-row {
+        background:#112211;
+    }
+    .diff {
+        background:#331111;
+    }
+    .runtime {
+        background:#222244;
+    }
+    button {
+        padding:8px 14px;
+        margin-top:10px;
+        cursor:pointer;
+        background:#660000;
+        color:white;
+        border:2px solid #ff3333;
+        border-radius:6px;
+        font-weight:bold;
+    }
+</style>
 
-        h1 {
-            text-align: center;
-            color: #00bcd4;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-
-        .file-box {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            color: #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #00bcd4;
-            border: none;
-            border-radius: 5px;
-            color: black;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0097a7;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-        }
-
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #333;
-        }
-
-        th {
-            background: #222;
-        }
-
-        .diff {
-            background: #3a0000;
-        }
-
-        .param {
-            color: #00e676;
-        }
-
-        .nonprev {
-            color: #ff9800;
-        }
-    </style>
-
-<script src="../js/x2_parametri_data.js"></script>
-    <script src="confronto_memorie.js"></script>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Confronto Memorie HC64 – X2</h1>
 
-        <div class="file-box">
-            <label>File Memoria 1:</label>
-            <input type="file" id="file1" accept=".hex">
-        </div>
+<div class="page">
 
-        <div class="file-box">
-            <label>File Memoria 2:</label>
-            <input type="file" id="file2" accept=".hex">
-        </div>
+    <h1>Confronto Memorie X2</h1>
 
-        <button onclick="avviaConfronto()">AVVIA CONFRONTO</button>
+    <h3>File HEX da confrontare</h3>
 
-        <div id="risultati"></div>
-    </div>
+    <input type="file" id="file1">  
+    <br><br>
+    <input type="file" id="file2">  
+    <br><br>
+
+    <!-- ⭐ QUESTO È IL BOTTONE CHE MANCA NEL TUO FILE -->
+    <button onclick="avviaConfronto()">Avvia confronto</button>
+
+    <div id="risultati" style="margin-top:30px;"></div>
+
+</div>
+
+<!-- CARICA TABELLA PARAMETRI -->
+<script src="../js/x2_parametri_data.js"></script>
+
+<!-- CARICA IL FILE JS COMPLETO -->
+<script src="confronto_memorie.js"></script>
+
 </body>
 </html>
