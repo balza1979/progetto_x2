@@ -187,15 +187,16 @@ function compareMemory(memA, memB, addrMap) {
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
         if (diversi || valA !== valB) {
-            diff.push({
-                base,
-                len,
-                nome,
-                bytesA,
-                bytesB,
-                valA_str,
-                valB_str
-            });
+diff.push({
+    base,
+    len,
+    nome,
+    codice: p.PARAMETRO,
+    bytesA,
+    bytesB,
+    valA_str,
+    valB_str
+});
         }
     }
 
@@ -252,7 +253,7 @@ function renderResults(result) {
                         <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td>${formatVal(d.bytesA[i])}</td>
                         <td>${formatVal(d.bytesB[i])}</td>
-                        <td>${d.nome}</td>
+                        <td>${d.codice} – ${d.nome}</td>
                 `;
 
                 if (i === 0) {
@@ -264,7 +265,7 @@ function renderResults(result) {
                     `;
                 }
 
-                html += `</tr>`;
+                html += `</tr>`;<td>${d.codice} – ${d.nome}</td>
             }
         }
 
