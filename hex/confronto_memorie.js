@@ -1,5 +1,5 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione definitiva con MULTIBYTE
+//   CONFRONTO MEMORIE  X2 – Versione definitiva con MULTIBYTE
 //   Luca – 18/05/2026 14:50
 // ============================================================
 
