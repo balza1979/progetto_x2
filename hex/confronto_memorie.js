@@ -197,15 +197,26 @@ function convertiVecchioFormatoRuntime(lista) {
 
     return out;
 }
+// ===============================================================
+// FUNZIONE CHIAMATA DAL BOTTONE HTML
+// ===============================================================
 function avviaConfronto() {
-    const memA = memoriaA;   // <-- le tue variabili globali
+
+    // Queste variabili devono già esistere nel tuo sistema
+    // (le usavi nel vecchio confronto)
+    const memA = memoriaA;
     const memB = memoriaB;
+
+    // Mappa indirizzi → parametri (vecchio sistema)
     const addrMap = buildAddressToParamMap();
 
+    // Usiamo la funzione compatibile
     const result = compareMemory(memA, memB, addrMap);
 
+    // Usiamo il vecchio renderer (che la tua pagina già usa)
     renderResults(result);
 }
+
 
 // ===============================================================
 // FINE FILE
