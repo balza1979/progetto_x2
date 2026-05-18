@@ -63,7 +63,7 @@ function hexToMemoryMap(hexText) {
 
 
 // ------------------------------------------------------------
-//  RICOSTRUISCI VALORE (GESTIONE SPECIALE LIVELLI PIANI 4 BYTE)
+//  RICOSTRUISCI VALORE (GESTIONE SPECIALE LIVE LLI PIANI 4 BYTE)
 // ------------------------------------------------------------
 function ricostruisciValore(bytes) {
 
