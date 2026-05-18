@@ -1,6 +1,6 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione definitiva con MULTIBYTE
-//   Luca – 18/05/2026 21:20
+//   CONFRONTO MEMORIE X2 – Versione completa
+//   Luca – 18/05/2026 21:30
 // ============================================================
 
 
@@ -94,7 +94,7 @@ function ricostruisciValore(bytes) {
 
 
 // ------------------------------------------------------------
-//  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
+//  COSTRUISCI MAPPA INDIRIZZO → PARAMETRO
 // ------------------------------------------------------------
 function buildAddressToParamMap() {
     const map = {};
@@ -120,7 +120,7 @@ function buildAddressToParamMap() {
 
 
 // ------------------------------------------------------------
-//  CONFRONTO MEMORIA (VERSIONE MULTIBYTE)
+//  CONFRONTO MEMORIA (VERSIONE COMPLETA CON RUNTIME)
 // ------------------------------------------------------------
 function compareMemory(memA, memB, addrMap) {
 
@@ -128,6 +128,23 @@ function compareMemory(memA, memB, addrMap) {
     const runtime = [];
     const giàGestiti = new Set();
 
+    // --------------------------------------------------------
+    // 1) SCANSIONE COMPLETA PER RUNTIME
+    // --------------------------------------------------------
+    for (let addr = 0; addr < 0x10000; addr++) {
+
+        if (indirizziRuntime.includes(addr)) {
+            runtime.push({
+                addr,
+                v1: memA[addr] ?? "--",
+                v2: memB[addr] ?? "--"
+            });
+        }
+    }
+
+    // --------------------------------------------------------
+    // 2) PARAMETRI PROGRAMMABILI
+    // --------------------------------------------------------
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -144,12 +161,10 @@ function compareMemory(memA, memB, addrMap) {
         const bytesB = [];
 
         for (let i = 0; i < len; i++) {
-            const addr = base + i;
-            bytesA.push(memA[addr] ?? "--");
-            bytesB.push(memB[addr] ?? "--");
+            const a = base + i;
+            bytesA.push(memA[a] ?? "--");
+            bytesB.push(memB[a] ?? "--");
         }
-
-        if (bytesA.every(b => b === "--") && bytesB.every(b => b === "--")) continue;
 
         const diversi = bytesA.some((b, i) => b !== bytesB[i]);
 
@@ -178,7 +193,7 @@ function compareMemory(memA, memB, addrMap) {
 
 
 // ------------------------------------------------------------
-//  RENDER RISULTATI (CODICE + DESCRIZIONE + RUNTIME)
+//  RENDER RISULTATI (DIFFERENZE + RUNTIME)
 // ------------------------------------------------------------
 function renderResults(result) {
 
