@@ -89,10 +89,10 @@ function ricostruisciValore(bytes) {
     //  }
 
     if (len === 4) {
-        const LSB = b[0];
-        const MSB = b[1];
-        const LSBH = b[2];
-        const MSBH = b[3];
+        const LSB = b[1];
+        const MSB = b[0];
+        const LSBH = b[3];
+        const MSBH = b[2];
         return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
     }
     // -------------------------------
