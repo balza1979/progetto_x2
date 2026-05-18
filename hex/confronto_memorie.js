@@ -246,32 +246,31 @@ function renderResults(result) {
 
         for (let d of lista) {
 
-            for (let i = 0; i < d.len; i++) {
+    for (let i = 0; i < d.len; i++) {
 
-                html += `
-                    <tr class="param-row">
-                        <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                        <td>${formatVal(d.bytesA[i])}</td>
-                        <td>${formatVal(d.bytesB[i])}</td>
-                        <td>${d.codice} – ${d.nome}</td>
-                `;
+        html += `
+            <tr class="param-row">
+                <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
+                <td>${formatVal(d.bytesA[i])}</td>
+                <td>${formatVal(d.bytesB[i])}</td>
+                <td>${d.codice} – ${d.nome}</td>
+        `;
 
-                if (i === 0) {
-                    html += `
-                        <td rowspan="${d.len}" style="text-align:center;">
-                            <b>A:</b> ${d.valA_str}<br>
-                            <b>B:</b> ${d.valB_str}
-                        </td>
-                    `;
-                }
-
-                html += `</tr>`;<td>${d.codice} – ${d.nome}</td>
-            }
+        if (i === 0) {
+            html += `
+                <td rowspan="${d.len}" style="text-align:center;">
+                    <b>A:</b> ${d.valA_str}<br>
+                    <b>B:</b> ${d.valB_str}
+                </td>
+            `;
         }
 
-        html += `</table>`;
+        html += `</tr>`;
     }
+}
 
+html += `</table>`;
+    }
     // Runtime identico al tuo
     html += `
         <h3 style="margin-top:25px;">
