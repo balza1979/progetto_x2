@@ -197,6 +197,15 @@ function convertiVecchioFormatoRuntime(lista) {
 
     return out;
 }
+function avviaConfronto() {
+    const memA = memoriaA;   // <-- le tue variabili globali
+    const memB = memoriaB;
+    const addrMap = buildAddressToParamMap();
+
+    const result = compareMemory(memA, memB, addrMap);
+
+    renderResults(result);
+}
 
 // ===============================================================
 // FINE FILE
