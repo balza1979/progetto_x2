@@ -72,8 +72,11 @@ function ricostruisciValore(bytes) {
 
     const len = bytes.length;
 
-    // Converte ogni byte da stringa HEX → numero
-    const b = bytes.map(x => parseInt(x, 16));
+    // Converte ogni byte in numero (accetta sia "CC" che 204)
+    const b = bytes.map(x => {
+        if (typeof x === "number") return x;
+        return parseInt(x, 16);
+    });
 
     // -------------------------------
     // CASO 4 BYTE → LIVELLI PIANI
@@ -86,7 +89,7 @@ function ricostruisciValore(bytes) {
     }
 
     // -------------------------------
-    // CASO 2 BYTE → formato standard LSB/MSB
+    // CASO 2 BYTE → LSB/MSB standard
     // -------------------------------
     if (len === 2) {
         const LSB = b[0];
@@ -104,16 +107,6 @@ function ricostruisciValore(bytes) {
     return "--";
 }
 
-    // -------------------------------
-    // CASO 1 BYTE
-    // -------------------------------
-    if (len === 1) {
-        return bytes[0];
-    }
-
-    // Default (non dovrebbe servire)
-    return "--";
-}
 
 // ------------------------------------------------------------
 //  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
