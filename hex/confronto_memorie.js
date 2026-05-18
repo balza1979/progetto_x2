@@ -1,31 +1,45 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione multi-byte + VALORE COMPLESSIVO
-//   Luca + Copilot – 18/05/2026
+//   CONFRONTO MEMORIE X2 – Versione definitiva con MULTIBYTE
+//   Luca – 18/05/2026 14:50
 // ============================================================
+
+
+// ------------------------------------------------------------
+//  INDIRIZZI RUNTIME (NON PROGRAMMABILI)
+// ------------------------------------------------------------
+const indirizziRuntime = [
+    0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
+    0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
+];
+
+
+// ------------------------------------------------------------
+//  FORMATTAZIONE ESA + DEC
+// ------------------------------------------------------------
+function formatVal(hexVal) {
+    if (hexVal === "--") return "--";
+    const num = parseInt(hexVal, 16);
+    return `${hexVal} <span style="color:#888;">(${num})</span>`;
+}
+
 
 // ------------------------------------------------------------
 //  LETTURA FILE HEX
 // ------------------------------------------------------------
-function leggiFileHex(input) {
-    return new Promise((resolve) => {
-        const file = input.files[0];
-        if (!file) {
-            resolve(null);
-            return;
-        }
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
 
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.readAsText(file);
-    });
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
 }
+
 
 // ------------------------------------------------------------
 //  CONVERSIONE HEX → MAPPA MEMORIA
 // ------------------------------------------------------------
 function hexToMemoryMap(hexText) {
-    if (!hexText) return {};
-
     const lines = hexText.split(/\r?\n/);
     const mem = {};
 
@@ -47,14 +61,6 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-// ------------------------------------------------------------
-//  FORMATTAZIONE ESA + DEC
-// ------------------------------------------------------------
-function formatVal(hexVal) {
-    if (hexVal === "--") return "--";
-    const num = parseInt(hexVal, 16);
-    return `${hexVal} <span style="color:#888;">(${num})</span>`;
-}
 
 // ------------------------------------------------------------
 //  RICOSTRUZIONE VALORE LITTLE-ENDIAN
@@ -64,34 +70,36 @@ function ricostruisciValore(bytes) {
 
     let val = 0;
     for (let i = 0; i < bytes.length; i++) {
-        const b = bytes[i];
-        if (b === "--") return "--";
-        val += parseInt(b, 16) * Math.pow(256, i);
+        if (bytes[i] === "--") return "--";
+        val += parseInt(bytes[i], 16) * Math.pow(256, i);
     }
     return val;
 }
 
+
 // ------------------------------------------------------------
-//  CONFRONTO PARAMETRI (USANDO x2_parametri)
+//  CONFRONTO MEMORIA (VERSIONE MULTIBYTE)
 // ------------------------------------------------------------
-function confrontaMemorie(memA, memB) {
-    const risultati = [];
+function compareMemory(memA, memB, addrMap) {
+
+    const diff = [];
+    const runtime = [];
+    const giàGestiti = new Set();
 
     for (const p of x2_parametri) {
-        const baseHex = p.LIBERA1;
-        const lenStr = p.LIBERA4;
-        const unitaRaw = p.UNITA || "";
-        const nome = p.DESCRIZIONE || p.PARAMETRO || "Parametro";
 
-        if (!baseHex || !lenStr) continue;
+        const base = parseInt(p.LIBERA1, 16);
+        const len = parseInt(p.LIBERA4);
+        const unita = (p.UNITA === "/" ? "" : p.UNITA);
+        const nome = p.DESCRIZIONE || p.PARAMETRO;
 
-        const base = parseInt(baseHex, 16);
-        const len = parseInt(lenStr); // 1,2,3,4
+        if (isNaN(base) || isNaN(len)) continue;
 
-        if (isNaN(base) || isNaN(len) || len <= 0) continue;
+        // Evita doppioni
+        if (giàGestiti.has(base)) continue;
+        for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
-        const unita = (unitaRaw === "/" ? "" : unitaRaw);
-
+        // Leggi byte consecutivi
         const bytesA = [];
         const bytesB = [];
 
@@ -101,53 +109,49 @@ function confrontaMemorie(memA, memB) {
             bytesB.push(memB[addr] ?? "--");
         }
 
-        // Se entrambe le memorie non hanno nessun byte → salta
+        // Se entrambi vuoti → ignora
         if (bytesA.every(b => b === "--") && bytesB.every(b => b === "--")) continue;
 
-        const diversiByte = bytesA.some((b, i) => b !== bytesB[i]);
+        // Confronto byte-per-byte
+        const diversi = bytesA.some((b, i) => b !== bytesB[i]);
 
+        // Valore complessivo
         const valA = ricostruisciValore(bytesA);
         const valB = ricostruisciValore(bytesB);
 
-        const diversiValore = valA !== valB;
+        const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
+        const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
-        // Se tutto identico → non mostrare
-        if (!diversiByte && !diversiValore) continue;
-
-        const valA_str = (valA === "--")
-            ? "--"
-            : (unita ? `${valA} ${unita}` : `${valA}`);
-
-        const valB_str = (valB === "--")
-            ? "--"
-            : (unita ? `${valB} ${unita}` : `${valB}`);
-
-        risultati.push({
-            base,
-            len,
-            nome,
-            bytesA,
-            bytesB,
-            valA_str,
-            valB_str
-        });
+        if (diversi || valA !== valB) {
+            diff.push({
+                base,
+                len,
+                nome,
+                bytesA,
+                bytesB,
+                valA_str,
+                valB_str
+            });
+        }
     }
 
-    // Ordina per indirizzo base
-    risultati.sort((a, b) => a.base - b.base);
-
-    return risultati;
+    return { diff, runtime };
 }
 
-// ------------------------------------------------------------
-//  RENDER RISULTATI IN HTML
-// ------------------------------------------------------------
-function renderRisultati(dati) {
-    const container = document.getElementById("risultati");
-    container.innerHTML = "";
 
-    if (!dati || dati.length === 0) {
-        container.innerHTML = `
+// ------------------------------------------------------------
+//  RENDER RISULTATI (AGGIUNTO VALORE COMPLESSIVO)
+// ------------------------------------------------------------
+function renderResults(result) {
+
+    const lista = result.diff;
+    const runtime = result.runtime;
+
+    let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
+
+    if (lista.length === 0) {
+
+        html += `
             <div style="
                 margin:15px 0;
                 padding:12px;
@@ -161,75 +165,136 @@ function renderRisultati(dati) {
                 Nessuna differenza da segnalare.
             </div>
         `;
-        return;
+
+    } else {
+
+        html += `
+            <table>
+                <tr>
+                    <th>Indirizzo</th>
+                    <th>Valore 1</th>
+                    <th>Valore 2</th>
+                    <th>Parametro</th>
+                    <th>Valore complessivo</th>
+                </tr>
+        `;
+
+        for (let d of lista) {
+
+            for (let i = 0; i < d.len; i++) {
+
+                html += `
+                    <tr class="param-row">
+                        <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
+                        <td>${formatVal(d.bytesA[i])}</td>
+                        <td>${formatVal(d.bytesB[i])}</td>
+                        <td>${d.nome}</td>
+                `;
+
+                if (i === 0) {
+                    html += `
+                        <td rowspan="${d.len}" style="text-align:center;">
+                            <b>A:</b> ${d.valA_str}<br>
+                            <b>B:</b> ${d.valB_str}
+                        </td>
+                    `;
+                }
+
+                html += `</tr>`;
+            }
+        }
+
+        html += `</table>`;
     }
 
-    let html = `
-        <h3>DIFFERENZE PARAMETRI (con VALORE COMPLESSIVO)</h3>
-        <table>
-            <tr>
-                <th>Indirizzo</th>
-                <th>Valore 1</th>
-                <th>Valore 2</th>
-                <th>Parametro</th>
-                <th>VALORE COMPLESSIVO</th>
-            </tr>
+    // Runtime identico al tuo
+    html += `
+        <h3 style="margin-top:25px;">
+            <button id="toggleRuntimeBtn"
+                style="padding:6px 12px; font-size:12px; cursor:pointer;">
+                Mostra valori runtime non programmabili
+            </button>
+        </h3>
+
+        <div id="runtimeSection" style="display:none;">
+            <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
+            <table>
+                <tr>
+                    <th>Indirizzo</th>
+                    <th>Valore 1</th>
+                    <th>Valore 2</th>
+                    <th>Note</th>
+                </tr>
     `;
 
-    for (const r of dati) {
-        for (let i = 0; i < r.len; i++) {
-            const addr = (r.base + i).toString(16).toUpperCase().padStart(4, "0");
-            const v1 = r.bytesA[i] ?? "--";
-            const v2 = r.bytesB[i] ?? "--";
-
-            html += `<tr class="param-row">`;
-
-            html += `<td>0x${addr}</td>`;
-            html += `<td>${formatVal(v1)}</td>`;
-            html += `<td>${formatVal(v2)}</td>`;
-            html += `<td>${r.nome}</td>`;
-
-            if (i === 0) {
-                html += `
-                    <td rowspan="${r.len}" style="text-align:center;">
-                        <div><b>A:</b> ${r.valA_str}</div>
-                        <div><b>B:</b> ${r.valB_str}</div>
-                    </td>
-                `;
-            }
-
-            html += `</tr>`;
-        }
+    for (let r of runtime) {
+        html += `
+            <tr class="runtime">
+                <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+                <td>${formatVal(r.v1)}</td>
+                <td>${formatVal(r.v2)}</td>
+                <td>Runtime – non programmabile</td>
+            </tr>
+        `;
     }
 
-    html += `</table>`;
+    html += `
+            </table>
+        </div>
+    `;
 
-    container.innerHTML = html;
+    document.getElementById("risultati").innerHTML = html;
+
+    const btn = document.getElementById("toggleRuntimeBtn");
+    const section = document.getElementById("runtimeSection");
+
+    btn.addEventListener("click", () => {
+        if (section.style.display === "none") {
+            section.style.display = "block";
+            btn.textContent = "Nascondi valori runtime non programmabili";
+        } else {
+            section.style.display = "none";
+            btn.textContent = "Mostra valori runtime non programmabili";
+        }
+    });
 }
 
-// ------------------------------------------------------------
-//  FUNZIONE CHIAMATA DAL BOTTONE HTML
-// ------------------------------------------------------------
-async function avviaConfronto() {
-    const input1 = document.getElementById("file1");
-    const input2 = document.getElementById("file2");
 
-    const hex1 = await leggiFileHex(input1);
-    const hex2 = await leggiFileHex(input2);
+// ------------------------------------------------------------
+//  AVVIA CONFRONTO (IDENTICO AL TUO)
+// ------------------------------------------------------------
+function avviaConfronto() {
 
-    if (!hex1 || !hex2) {
-        alert("Seleziona entrambi i file HEX prima di avviare il confronto.");
+    document.getElementById("risultati").innerHTML = "";
+
+    const f1 = document.getElementById("file1");
+    const f2 = document.getElementById("file2");
+
+    if (!f1.files[0] || !f2.files[0]) {
+        alert("Seleziona entrambi i file HEX");
         return;
     }
 
-    const memA = hexToMemoryMap(hex1);
-    const memB = hexToMemoryMap(hex2);
+    leggiFileHex(f1, hex1 => {
+        if (!hex1) {
+            alert("Errore lettura file 1");
+            return;
+        }
 
-    const dati = confrontaMemorie(memA, memB);
+        leggiFileHex(f2, hex2 => {
+            if (!hex2) {
+                alert("Errore lettura file 2");
+                return;
+            }
 
-    renderRisultati(dati);
+            const mem1 = hexToMemoryMap(hex1);
+            const mem2 = hexToMemoryMap(hex2);
+
+            const addrMap = buildAddressToParamMap();
+
+            const result = compareMemory(mem1, mem2, addrMap);
+
+            renderResults(result);
+        });
+    });
 }
-
-// ============================================================
-//  FINE FILE
-// ============================================================
