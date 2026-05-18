@@ -204,8 +204,8 @@ function avviaConfronto() {
 
     // Queste variabili devono già esistere nel tuo sistema
     // (le usavi nel vecchio confronto)
-    const memA = memoriaA;
-    const memB = memoriaB;
+   const memA = memA_global;
+const memB = memB_global;
 
     // Mappa indirizzi → parametri (vecchio sistema)
     const addrMap = buildAddressToParamMap();
