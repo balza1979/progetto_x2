@@ -63,18 +63,45 @@ function hexToMemoryMap(hexText) {
 
 
 // ------------------------------------------------------------
-//  RICOSTRUZIONE VALORE LITTLE-ENDIAN
+//  RICOSTRUISCI VALORE (GESTIONE SPECIALE LIVELLI PIANI 4 BYTE)
 // ------------------------------------------------------------
 function ricostruisciValore(bytes) {
-    if (bytes.every(b => b === "--")) return "--";
 
-    let val = 0;
-    for (let i = 0; i < bytes.length; i++) {
-        if (bytes[i] === "--") return "--";
-        val += parseInt(bytes[i], 16) * Math.pow(256, i);
+    // Se ci sono byte mancanti → valore non valido
+    if (bytes.includes("--")) return "--";
+
+    const len = bytes.length;
+
+    // -------------------------------
+    // CASO 4 BYTE → LIVELLI PIANI
+    // Formato X2: [00] [LSB] [MSB] [00]
+    // -------------------------------
+    if (len === 4) {
+        const b1 = bytes[1]; // LSB
+        const b2 = bytes[2]; // MSB
+        return b2 * 256 + b1;
     }
-    return val;
+
+    // -------------------------------
+    // CASO 2 BYTE → formato standard LSB/MSB
+    // -------------------------------
+    if (len === 2) {
+        const LSB = bytes[0];
+        const MSB = bytes[1];
+        return MSB * 256 + LSB;
+    }
+
+    // -------------------------------
+    // CASO 1 BYTE
+    // -------------------------------
+    if (len === 1) {
+        return bytes[0];
+    }
+
+    // Default (non dovrebbe servire)
+    return "--";
 }
+
 // ------------------------------------------------------------
 //  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
 // ------------------------------------------------------------
