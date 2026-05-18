@@ -147,6 +147,56 @@ function renderRisultati(dati, containerId) {
 
     container.appendChild(table);
 }
+// ===============================================================
+// COMPATIBILITÀ CON IL VECCHIO SISTEMA (compareMemory)
+// ===============================================================
+function compareMemory(memA, memB, addrMap) {
+    // Converte la vecchia struttura in quella nuova
+    const tabellaParametri = x2_parametri; // usa la tabella globale
+
+    const res = confrontaMemorie(memA, memB, tabellaParametri);
+
+    return {
+        diff: convertiVecchioFormato(res.risultati),
+        runtime: convertiVecchioFormatoRuntime(res.runtime)
+    };
+}
+
+function convertiVecchioFormato(lista) {
+    const out = [];
+
+    for (const r of lista) {
+        for (let i = 0; i < r.len; i++) {
+            out.push({
+                addr: r.base + i,
+                v1: r.bytesA[i],
+                v2: r.bytesB[i],
+                param: {
+                    codice: r.nome,
+                    descrizione: r.nome
+                }
+            });
+        }
+    }
+
+    return out;
+}
+
+function convertiVecchioFormatoRuntime(lista) {
+    const out = [];
+
+    for (const r of lista) {
+        for (let i = 0; i < r.len; i++) {
+            out.push({
+                addr: r.base + i,
+                v1: r.bytesA[i],
+                v2: r.bytesB[i]
+            });
+        }
+    }
+
+    return out;
+}
 
 // ===============================================================
 // FINE FILE
