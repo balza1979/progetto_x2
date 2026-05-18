@@ -1,6 +1,6 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione definitiva con TOGGLE
-//   Luca – 15/05/2026 17:00
+//   CONFRONTO MEMORIE X2 – Versione definitiva con TOGGLE + DEC
+//   Luca – 18/05/2026 09:10
 // ============================================================
 
 
@@ -11,6 +11,17 @@ const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
+
+
+// ------------------------------------------------------------
+//  FORMATTAZIONE ESA + DEC
+// ------------------------------------------------------------
+function formatVal(hexVal) {
+    if (hexVal === "--") return "--";
+
+    const num = parseInt(hexVal, 16); // DEC
+    return `${hexVal} <span style="color:#888;">(${num})</span>`;
+}
 
 
 // ------------------------------------------------------------
@@ -92,7 +103,6 @@ function compareMemory(memA, memB, addrMap) {
 
     for (let addr of allAddrs) {
 
-        // ⭐ SE È RUNTIME → NON confrontare, ma registrare
         if (indirizziRuntime.includes(addr)) {
             runtime.push({
                 addr,
@@ -129,7 +139,7 @@ function renderResults(result) {
 
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
-    // ⭐ SE NON CI SONO DIFFERENZE → MOSTRA MESSAGGIO
+    // ⭐ SE NON CI SONO DIFFERENZE
     if (lista.length === 0) {
 
         html += `
@@ -149,7 +159,7 @@ function renderResults(result) {
 
     } else {
 
-        // ⭐ SE CI SONO DIFFERENZE → MOSTRA TABELLA
+        // ⭐ SE CI SONO DIFFERENZE
         lista.sort((a, b) => {
             if (a.param && !b.param) return -1;
             if (!a.param && b.param) return 1;
@@ -172,8 +182,8 @@ function renderResults(result) {
             html += `
                 <tr class="${isParam ? 'param-row' : 'diff'}">
                     <td>0x${d.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                    <td>${d.v1}</td>
-                    <td>${d.v2}</td>
+                    <td>${formatVal(d.v1)}</td>
+                    <td>${formatVal(d.v2)}</td>
                     <td>
                         ${
                             isParam
@@ -189,7 +199,7 @@ function renderResults(result) {
     }
 
     // ------------------------------------------------------------
-    // ⭐ PULSANTE TOGGLE RUNTIME
+    //  TOGGLE RUNTIME
     // ------------------------------------------------------------
     html += `
         <h3 style="margin-top:25px;">
@@ -214,8 +224,8 @@ function renderResults(result) {
         html += `
             <tr class="runtime">
                 <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                <td>${r.v1}</td>
-                <td>${r.v2}</td>
+                <td>${formatVal(r.v1)}</td>
+                <td>${formatVal(r.v2)}</td>
                 <td>Runtime – non programmabile</td>
             </tr>
         `;
@@ -229,7 +239,7 @@ function renderResults(result) {
     document.getElementById("risultati").innerHTML = html;
 
     // ------------------------------------------------------------
-    // ⭐ LOGICA TOGGLE
+    //  LOGICA TOGGLE
     // ------------------------------------------------------------
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
