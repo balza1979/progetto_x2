@@ -75,6 +75,30 @@ function ricostruisciValore(bytes) {
     }
     return val;
 }
+// ------------------------------------------------------------
+//  COSTRUZIONE MAPPA INDIRIZZO → PARAMETRO
+// ------------------------------------------------------------
+function buildAddressToParamMap() {
+    const map = {};
+
+    for (let i = 0; i < x2_parametri.length; i++) {
+        const p = x2_parametri[i];
+
+        const start = parseInt(p.LIBERA1, 16);
+        const size = parseInt(p.LIBERA2);
+
+        if (isNaN(start) || isNaN(size)) continue;
+
+        for (let j = 0; j < size; j++) {
+            map[start + j] = {
+                codice: p.PARAMETRO,
+                descrizione: p.DESCRIZIONE
+            };
+        }
+    }
+
+    return map;
+}
 
 
 // ------------------------------------------------------------
