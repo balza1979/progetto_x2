@@ -1,6 +1,6 @@
 // ============================================================
-//   CONFRONTO MEMORIE  X2 – Versione definitiva con MULTIBYTE
-//   Luca – 18/05/2026 14:50
+//   CONFRONTO MEMORIE X2 – Versione definitiva con MULTIBYTE
+//   Luca – 18/05/2026 21:20
 // ============================================================
 
 
@@ -63,50 +63,28 @@ function hexToMemoryMap(hexText) {
 
 
 // ------------------------------------------------------------
-//  RICOSTRUISCI VALORE (GESTIONE SPECIALE LIVE LLI PIANI 4 BYTE)
+//  RICOSTRUISCI VALORE (GESTIONE 4 BYTE X2)
 // ------------------------------------------------------------
 function ricostruisciValore(bytes) {
 
-    // Se ci sono byte mancanti → valore non valido
     if (bytes.includes("--")) return "--";
 
-    const len = bytes.length;
+    const b = bytes.map(x => parseInt(x, 16));
+    const len = b.length;
 
-    // Converte ogni byte in numero (accetta sia "CC" che 204)
-    const b = bytes.map(x => {
-        if (typeof x === "number") return x;
-        return parseInt(x, 16);
-    });
-
-    // -------------------------------
-    // CASO 4 BYTE → LIVELLI PIANI
-    // Formato X2: [00] [LSB] [MSB] [00]
-    // -------------------------------
-    //  if (len === 4) {
-       //   const LSB = b[1];
-       //   const MSB = b[2];
-       //   return MSB * 256 + LSB;
-    //  }
-
+    // 4 BYTE → formato X2: 00 LSB MSB 00
     if (len === 4) {
         const LSB = b[1];
-        const MSB = b[0];
-        const LSBH = b[3];
-        const MSBH = b[2];
-        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
-    }
-    // -------------------------------
-    // CASO 2 BYTE → LSB/MSB standard
-    // -------------------------------
-    if (len === 2) {
-        const LSB = b[0];
-        const MSB = b[1];
+        const MSB = b[2];
         return MSB * 256 + LSB;
     }
 
-    // -------------------------------
-    // CASO 1 BYTE
-    // -------------------------------
+    // 2 BYTE standard
+    if (len === 2) {
+        return b[1] * 256 + b[0];
+    }
+
+    // 1 BYTE
     if (len === 1) {
         return b[0];
     }
@@ -159,11 +137,9 @@ function compareMemory(memA, memB, addrMap) {
 
         if (isNaN(base) || isNaN(len)) continue;
 
-        // Evita doppioni
         if (giàGestiti.has(base)) continue;
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
-        // Leggi byte consecutivi
         const bytesA = [];
         const bytesB = [];
 
@@ -173,13 +149,10 @@ function compareMemory(memA, memB, addrMap) {
             bytesB.push(memB[addr] ?? "--");
         }
 
-        // Se entrambi vuoti → ignora
         if (bytesA.every(b => b === "--") && bytesB.every(b => b === "--")) continue;
 
-        // Confronto byte-per-byte
         const diversi = bytesA.some((b, i) => b !== bytesB[i]);
 
-        // Valore complessivo
         const valA = ricostruisciValore(bytesA);
         const valB = ricostruisciValore(bytesB);
 
@@ -187,16 +160,16 @@ function compareMemory(memA, memB, addrMap) {
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
         if (diversi || valA !== valB) {
-diff.push({
-    base,
-    len,
-    nome,
-    codice: p.PARAMETRO,
-    bytesA,
-    bytesB,
-    valA_str,
-    valB_str
-});
+            diff.push({
+                base,
+                len,
+                nome,
+                codice: p.PARAMETRO,
+                bytesA,
+                bytesB,
+                valA_str,
+                valB_str
+            });
         }
     }
 
@@ -205,7 +178,7 @@ diff.push({
 
 
 // ------------------------------------------------------------
-//  RENDER RISULTATI (AGGIUNTO VALORE COMPLESSIVO)
+//  RENDER RISULTATI (CODICE + DESCRIZIONE + RUNTIME)
 // ------------------------------------------------------------
 function renderResults(result) {
 
@@ -246,32 +219,35 @@ function renderResults(result) {
 
         for (let d of lista) {
 
-    for (let i = 0; i < d.len; i++) {
+            for (let i = 0; i < d.len; i++) {
 
-        html += `
-            <tr class="param-row">
-                <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                <td>${formatVal(d.bytesA[i])}</td>
-                <td>${formatVal(d.bytesB[i])}</td>
-                <td>${d.codice} – ${d.nome}</td>
-        `;
+                html += `
+                    <tr class="param-row">
+                        <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
+                        <td>${formatVal(d.bytesA[i])}</td>
+                        <td>${formatVal(d.bytesB[i])}</td>
+                        <td>${d.codice} – ${d.nome}</td>
+                `;
 
-        if (i === 0) {
-            html += `
-                <td rowspan="${d.len}" style="text-align:center;">
-                    <b>A:</b> ${d.valA_str}<br>
-                    <b>B:</b> ${d.valB_str}
-                </td>
-            `;
+                if (i === 0) {
+                    html += `
+                        <td rowspan="${d.len}" style="text-align:center;">
+                            <b>A:</b> ${d.valA_str}<br>
+                            <b>B:</b> ${d.valB_str}
+                        </td>
+                    `;
+                }
+
+                html += `</tr>`;
+            }
         }
 
-        html += `</tr>`;
+        html += `</table>`;
     }
-}
 
-html += `</table>`;
-    }
-    // Runtime identico al tuo
+    // --------------------------------------------------------
+    //  BLOCCO RUNTIME
+    // --------------------------------------------------------
     html += `
         <h3 style="margin-top:25px;">
             <button id="toggleRuntimeBtn"
@@ -325,7 +301,7 @@ html += `</table>`;
 
 
 // ------------------------------------------------------------
-//  AVVIA CONFRONTO (IDENTICO AL TUO)
+//  AVVIA CONFRONTO
 // ------------------------------------------------------------
 function avviaConfronto() {
 
