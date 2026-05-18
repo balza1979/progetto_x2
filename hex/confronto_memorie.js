@@ -72,24 +72,37 @@ function ricostruisciValore(bytes) {
 
     const len = bytes.length;
 
+    // Converte ogni byte da stringa HEX → numero
+    const b = bytes.map(x => parseInt(x, 16));
+
     // -------------------------------
     // CASO 4 BYTE → LIVELLI PIANI
     // Formato X2: [00] [LSB] [MSB] [00]
     // -------------------------------
     if (len === 4) {
-        const b1 = bytes[1]; // LSB
-        const b2 = bytes[2]; // MSB
-        return b2 * 256 + b1;
+        const LSB = b[1];
+        const MSB = b[2];
+        return MSB * 256 + LSB;
     }
 
     // -------------------------------
     // CASO 2 BYTE → formato standard LSB/MSB
     // -------------------------------
     if (len === 2) {
-        const LSB = bytes[0];
-        const MSB = bytes[1];
+        const LSB = b[0];
+        const MSB = b[1];
         return MSB * 256 + LSB;
     }
+
+    // -------------------------------
+    // CASO 1 BYTE
+    // -------------------------------
+    if (len === 1) {
+        return b[0];
+    }
+
+    return "--";
+}
 
     // -------------------------------
     // CASO 1 BYTE
