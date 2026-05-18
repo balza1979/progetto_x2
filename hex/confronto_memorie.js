@@ -82,12 +82,19 @@ function ricostruisciValore(bytes) {
     // CASO 4 BYTE → LIVELLI PIANI
     // Formato X2: [00] [LSB] [MSB] [00]
     // -------------------------------
-    if (len === 4) {
-        const LSB = b[1];
-        const MSB = b[2];
-        return MSB * 256 + LSB;
-    }
+    //  if (len === 4) {
+       //   const LSB = b[1];
+       //   const MSB = b[2];
+       //   return MSB * 256 + LSB;
+    //  }
 
+    if (len === 4) {
+        const LSB = b[0];
+        const MSB = b[1];
+        const LSBH = b[2];
+        const MSBH = b[3];
+        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
+    }
     // -------------------------------
     // CASO 2 BYTE → LSB/MSB standard
     // -------------------------------
