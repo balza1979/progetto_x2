@@ -105,7 +105,7 @@ function buildAddressToParamMap() {
         const p = x2_parametri[i];
 
         const start = parseInt(p.LIBERA1, 16);
-        const size = parseInt(p.LIBERA2);
+        const size = parseInt(p.LIBERA4);
 
         if (isNaN(start) || isNaN(size)) continue;
 
