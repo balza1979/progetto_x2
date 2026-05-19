@@ -83,7 +83,7 @@ function ricostruisciValore(bytes) {
 
     // 2 BYTE standard
     if (len === 2) {
-        return b[1] * 256 + b[0];
+        return b[0] * 256 + b[1];
     }
 
     // 1 BYTE
