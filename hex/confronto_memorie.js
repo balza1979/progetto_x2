@@ -73,10 +73,12 @@ function ricostruisciValore(bytes) {
     const len = b.length;
 
     // 4 BYTE → formato X2: 00 LSB MSB 00
-    if (len === 4) {
+ if (len === 4) {
         const LSB = b[1];
-        const MSB = b[2];
-        return MSB * 256 + LSB;
+        const MSB = b[0];
+        const LSBH = b[3];
+        const MSBH = b[2];
+        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
     }
 
     // 2 BYTE standard
