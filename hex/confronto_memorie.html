@@ -19,6 +19,17 @@
 .hide-col {
     display: none;
 }
+.btn-confronto {
+    background:#444;
+    border:2px solid #777;
+    color:#ddd;
+}
+
+.btn-confronto.attivo {
+    background:#990000;
+    border-color:#ff3333;
+    color:white;
+}
 
     .page {
         max-width:900px;
@@ -133,11 +144,12 @@
     </div>
 
     <!-- PULSANTI -->
-    <button onclick="confrontaAB()">Confronta A–B</button>
-    <button onclick="confrontaAC()">Confronta A–C</button>
-    <button onclick="confrontaBC()">Confronta B–C</button>
+ <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
+<button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
+<button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
 
-    <button onclick="avviaConfronto()">Avvia confronto</button>
+  <!--      <button onclick="avviaConfronto()">Avvia confronto</button> -->
+    
 <!-- ============================================================
      FILTRI COLONNE (SMARTPHONE)
      ============================================================ -->
