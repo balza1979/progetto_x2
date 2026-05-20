@@ -355,3 +355,79 @@ function avviaConfronto() {
         });
     });
 }
+// ============================================
+//  FUNZIONE GENERICA DI CONFRONTO
+//  Luca – 20/05/2026 08:45
+// ============================================
+function confronta(memFileA, memFileB) {
+
+    const mem1 = hexToMemoryMap(memFileA);
+    const mem2 = hexToMemoryMap(memFileB);
+
+    const addrMap = buildAddressToParamMap();
+    const result = compareMemory(mem1, mem2, addrMap);
+
+    renderResults(result);
+}
+// ============================================
+//  CONFRONTO A–B
+//  Luca – 20/05/2026 08:45
+// ============================================
+function confrontaAB() {
+    const f1 = document.getElementById("file1");
+    const f2 = document.getElementById("file2");
+
+    if (!f1.files[0] || !f2.files[0]) {
+        alert("Seleziona File A e File B");
+        return;
+    }
+
+    leggiFileHex(f1, hexA => {
+        leggiFileHex(f2, hexB => {
+            confronta(hexA, hexB);
+        });
+    });
+}
+
+
+// ============================================
+//  CONFRONTO A–C
+//  Luca – 20/05/2026 08:45
+// ============================================
+function confrontaAC() {
+    const f1 = document.getElementById("file1");
+    const f3 = document.getElementById("file3");
+
+    if (!f1.files[0] || !f3.files[0]) {
+        alert("Seleziona File A e File C");
+        return;
+    }
+
+    leggiFileHex(f1, hexA => {
+        leggiFileHex(f3, hexC => {
+            confronta(hexA, hexC);
+        });
+    });
+}
+
+
+// ============================================
+//  CONFRONTO B–C
+//  Luca – 20/05/2026 08:45
+// ============================================
+function confrontaBC() {
+    const f2 = document.getElementById("file2");
+    const f3 = document.getElementById("file3");
+
+    if (!f2.files[0] || !f3.files[0]) {
+        alert("Seleziona File B e File C");
+        return;
+    }
+
+    leggiFileHex(f2, hexB => {
+        leggiFileHex(f3, hexC => {
+            confronta(hexB, hexC);
+        });
+    });
+}
+
