@@ -145,18 +145,23 @@ function compareMemory(memA, memB, addrMap) {
         const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
-        if (diversi || valA !== valB) {
-            diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
-                bytesA,
-                bytesB,
-                valA_str,
-                valB_str
-            });
-        }
+   const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
+
+// Se diversi → sempre dentro
+// Se uguali → dentro SOLO se flag attivo
+if (diversi || valA !== valB || visualizzaTutto) {
+    diff.push({
+        base,
+        len,
+        nome,
+        codice: p.PARAMETRO,
+        bytesA,
+        bytesB,
+        valA_str,
+        valB_str
+    });
+}
+
     }
 
     return { diff, runtime };
