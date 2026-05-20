@@ -261,7 +261,6 @@ function renderResults(result) {
 
         html += `</table>`;
     }
-
     // ------------------------------------------------------------
 //  BLOCCO RUNTIME
 //  Luca – 20/05/2026 09:32
