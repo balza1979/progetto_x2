@@ -353,4 +353,21 @@ function applyColumnFilters() {
             });
         });
     });
+
+function evidenziaPulsante(idAttivo) {
+    const ids = ["btnAB", "btnAC", "btnBC"];
+
+    ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        if (id === idAttivo) {
+            btn.classList.add("attivo");
+        } else {
+            btn.classList.remove("attivo");
+        }
+    });
+
+
+    
 }
