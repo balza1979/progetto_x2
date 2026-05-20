@@ -356,7 +356,7 @@ function applyColumnFilters() {
             });
         });
     });
-
+}   //  ⭐ MANCAVA QUESTA GRAFFA QUI
 function evidenziaPulsante(idAttivo) {
     const ids = ["btnAB", "btnAC", "btnBC"];
 
