@@ -124,19 +124,21 @@
     <!-- FILE A -->
     <div class="file-block">
         <label for="file1" style="color:#cc0000;">FILE A</label>
-        <input type="file" id="file1" accept=".hex">
+        <input type="file" id="file1" accept=".hex" onchange="salvaFile('A', this)">
     </div>
 
     <!-- FILE B -->
     <div class="file-block">
         <label for="file2" style="color:#0066cc;">FILE B</label>
-        <input type="file" id="file2" accept=".hex">
+        <input type="file" id="file2" accept=".hex" onchange="salvaFile('B', this)">
+
     </div>
 
     <!-- FILE C -->
     <div class="file-block">
         <label for="file3" style="color:#009933;">FILE C</label>
-        <input type="file" id="file3" accept=".hex">
+        <input type="file" id="file3" accept=".hex" onchange="salvaFile('C', this)">
+
     </div>
 
     <!-- ⭐ PULSANTI CONFRONTO -->
