@@ -272,15 +272,18 @@ function renderResults(result) {
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
-    btn.addEventListener("click", () => {
-        if (section.style.display === "none") {
-            section.style.display = "block";
-            btn.textContent = "Nascondi valori runtime non programmabili";
-        } else {
-            section.style.display = "none";
-            btn.textContent = "Mostra valori runtime non programmabili";
-        }
-    });
+ btn.addEventListener("click", () => {
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        btn.textContent = "Nascondi valori runtime non programmabili";
+    } else {
+        section.style.display = "none";
+        btn.textContent = "Mostra valori runtime non programmabili";
+    }
+});
+
+// ⭐ Applica i filtri colonne dopo aver generato la tabella
+applyColumnFilters();
 }
 
 // ============================================================
@@ -335,4 +338,19 @@ function isNumber(x) {
 
 function debugLog(msg) {
     // console.log("[DEBUG]", msg);
+}
+function applyColumnFilters() {
+    document.querySelectorAll(".col-flag").forEach(flag => {
+        const colIndex = parseInt(flag.dataset.col);
+        const hide = !flag.checked;
+
+        document.querySelectorAll("table").forEach(table => {
+            table.querySelectorAll("tr").forEach(row => {
+                const cell = row.children[colIndex - 1];
+                if (cell) {
+                    cell.style.display = hide ? "none" : "";
+                }
+            });
+        });
+    });
 }
