@@ -1,31 +1,22 @@
 // ============================================================
-//   CONFRONTO MEMORIE X2 – Versione completa
-//   Luca – 18/05/2026 21:30
+//  BLOCCO 1/6 — FUNZIONI BASE
+//  Luca – 20/05/2026 09:50
 // ============================================================
 
-
-// ------------------------------------------------------------
-//  INDIRIZZI RUNTIME (NON PROGRAMMABILI)
-// ------------------------------------------------------------
+// Indirizzi runtime non programmabili
 const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
 
-
-// ------------------------------------------------------------
-//  FORMATTAZIONE ESA + DEC
-// ------------------------------------------------------------
+// Formattazione HEX + DEC
 function formatVal(hexVal) {
     if (hexVal === "--") return "--";
     const num = parseInt(hexVal, 16);
     return `${hexVal} <span style="color:#888;">(${num})</span>`;
 }
 
-
-// ------------------------------------------------------------
-//  LETTURA FILE HEX
-// ------------------------------------------------------------
+// Lettura file HEX
 function leggiFileHex(input, callback) {
     const file = input.files[0];
     if (!file) return callback(null);
@@ -35,10 +26,7 @@ function leggiFileHex(input, callback) {
     reader.readAsText(file);
 }
 
-
-// ------------------------------------------------------------
-//  CONVERSIONE HEX → MAPPA MEMORIA
-// ------------------------------------------------------------
+// Conversione HEX → mappa memoria
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
@@ -61,10 +49,7 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-
-// ------------------------------------------------------------
-//  RICOSTRUISCI VALORE (GESTIONE 4 BYTE X2)
-// ------------------------------------------------------------
+// Ricostruzione valore (1, 2, 4 byte)
 function ricostruisciValore(bytes) {
 
     if (bytes.includes("--")) return "--";
@@ -72,8 +57,8 @@ function ricostruisciValore(bytes) {
     const b = bytes.map(x => parseInt(x, 16));
     const len = b.length;
 
-    // 4 BYTE → formato X2: 00 LSB MSB 00
- if (len === 4) {
+    // 4 BYTE formato X2
+    if (len === 4) {
         const LSB = b[1];
         const MSB = b[0];
         const LSBH = b[3];
@@ -81,7 +66,7 @@ function ricostruisciValore(bytes) {
         return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
     }
 
-    // 2 BYTE standard
+    // 2 BYTE — CORRETTO (MSB * 256 + LSB)
     if (len === 2) {
         return b[0] * 256 + b[1];
     }
@@ -94,59 +79,34 @@ function ricostruisciValore(bytes) {
     return "--";
 }
 
-
-// ------------------------------------------------------------
-//  COSTRUISCI MAPPA INDIRIZZO → PARAMETRO
-// ------------------------------------------------------------
+// Mappa indirizzo → parametro
 function buildAddressToParamMap() {
     const map = {};
 
-    for (let i = 0; i < x2_parametri.length; i++) {
-        const p = x2_parametri[i];
+// ============================================================
+//  BLOCCO 2/6 — CONFRONTO MEMORIA
+//  Luca – 20/05/2026 09:55
+// ============================================================
 
-        const start = parseInt(p.LIBERA1, 16);
-        const size = parseInt(p.LIBERA4);
-
-        if (isNaN(start) || isNaN(size)) continue;
-
-        for (let j = 0; j < size; j++) {
-            map[start + j] = {
-                codice: p.PARAMETRO,
-                descrizione: p.DESCRIZIONE
-            };
-        }
-    }
-
-    return map;
-}
-
-
-// ------------------------------------------------------------
-//  CONFRONTO MEMORIA (VERSIONE COMPLETA CON RUNTIME)
-// ------------------------------------------------------------
 function compareMemory(memA, memB, addrMap) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
 
-    // --------------------------------------------------------
-    // 1) SCANSIONE COMPLETA PER RUNTIME
-    // --------------------------------------------------------
-    for (let addr = 0; addr < 0x10000; addr++) {
+    // 1) RUNTIME NON PROGRAMMABILI
+    for (let addr of indirizziRuntime) {
+        const v1 = memA[addr] ?? "--";
+        const v2 = memB[addr] ?? "--";
 
-        if (indirizziRuntime.includes(addr)) {
-            runtime.push({
-                addr,
-                v1: memA[addr] ?? "--",
-                v2: memB[addr] ?? "--"
-            });
-        }
+        runtime.push({
+            addr,
+            v1,
+            v2
+        });
     }
 
-    // --------------------------------------------------------
     // 2) PARAMETRI PROGRAMMABILI
-    // --------------------------------------------------------
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -193,10 +153,11 @@ function compareMemory(memA, memB, addrMap) {
     return { diff, runtime };
 }
 
+// ============================================================
+//  BLOCCO 3/6 — RENDER RISULTATI (DIFFERENZE + RUNTIME)
+//  Luca – 20/05/2026 10:00
+// ============================================================
 
-// ------------------------------------------------------------
-//  RENDER RISULTATI (DIFFERENZE + RUNTIME)
-// ------------------------------------------------------------
 function renderResults(result) {
 
     const lista = result.diff;
@@ -204,6 +165,9 @@ function renderResults(result) {
 
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
+    // ------------------------------------------------------------
+    //  SE NON CI SONO DIFFERENZE
+    // ------------------------------------------------------------
     if (lista.length === 0) {
 
         html += `
@@ -223,6 +187,9 @@ function renderResults(result) {
 
     } else {
 
+        // ------------------------------------------------------------
+        //  TABELLA DIFFERENZE
+        // ------------------------------------------------------------
         html += `
             <table>
                 <tr>
@@ -249,8 +216,8 @@ function renderResults(result) {
                 if (i === 0) {
                     html += `
                         <td rowspan="${d.len}" style="text-align:center;">
-                            <b>A:</b> ${d.valA_str}<br>
-                            <b>B:</b> ${d.valB_str}
+                            <b>${confrontoAttivo.split("-")[0]}:</b> ${d.valA_str}<br>
+                            <b>${confrontoAttivo.split("-")[1]}:</b> ${d.valB_str}
                         </td>
                     `;
                 }
@@ -261,63 +228,72 @@ function renderResults(result) {
 
         html += `</table>`;
     }
+
     // ------------------------------------------------------------
-//  BLOCCO RUNTIME
-//  Luca – 20/05/2026 09:32
-// ------------------------------------------------------------
-html += `
-    <h3 style="margin-top:25px;">
-        <button id="toggleRuntimeBtn"
-            style="padding:6px 12px; font-size:12px; cursor:pointer;">
-            Mostra valori runtime non programmabili
-        </button>
-    </h3>
-
-    <div id="runtimeSection" style="display:none;">
-        <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
-        <table>
-            <tr>
-                <th>Indirizzo</th>
-                <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
-                <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
-                <th>Note</th>
-            </tr>
-`;
-
-for (let r of runtime) {
+    //  BLOCCO RUNTIME
+    // ------------------------------------------------------------
     html += `
-        <tr class="runtime">
-            <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-            <td>${formatVal(r.v1)}</td>
-            <td>${formatVal(r.v2)}</td>
-            <td>Runtime – non programmabile</td>
-        </tr>
+        <h3 style="margin-top:25px;">
+            <button id="toggleRuntimeBtn"
+                style="padding:6px 12px; font-size:12px; cursor:pointer;">
+                Mostra valori runtime non programmabili
+            </button>
+        </h3>
+
+        <div id="runtimeSection" style="display:none;">
+            <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
+            <table>
+                <tr>
+                    <th>Indirizzo</th>
+                    <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
+                    <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
+                    <th>Note</th>
+                </tr>
     `;
-}
 
-html += `
-        </table>
-    </div>
-`;
-
-document.getElementById("risultati").innerHTML = html;
-
-// Listener toggle
-const btn = document.getElementById("toggleRuntimeBtn");
-const section = document.getElementById("runtimeSection");
-
-btn.addEventListener("click", () => {
-    if (section.style.display === "none") {
-        section.style.display = "block";
-        btn.textContent = "Nascondi valori runtime non programmabili";
-    } else {
-        section.style.display = "none";
-        btn.textContent = "Mostra valori runtime non programmabili";
+    for (let r of runtime) {
+        html += `
+            <tr class="runtime">
+                <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+                <td>${formatVal(r.v1)}</td>
+                <td>${formatVal(r.v2)}</td>
+                <td>Runtime – non programmabile</td>
+            </tr>
+        `;
     }
-});
-// ------------------------------------------------------------
-//  AVVIA CONFRONTO
-// ------------------------------------------------------------
+
+    html += `
+            </table>
+        </div>
+    `;
+
+    // ------------------------------------------------------------
+    //  INSERIMENTO HTML
+    // ------------------------------------------------------------
+    document.getElementById("risultati").innerHTML = html;
+
+    // ------------------------------------------------------------
+    //  LISTENER MOSTRA/NASCONDI RUNTIME
+    // ------------------------------------------------------------
+    const btn = document.getElementById("toggleRuntimeBtn");
+    const section = document.getElementById("runtimeSection");
+
+    btn.addEventListener("click", () => {
+        if (section.style.display === "none") {
+            section.style.display = "block";
+            btn.textContent = "Nascondi valori runtime non programmabili";
+        } else {
+            section.style.display = "none";
+            btn.textContent = "Mostra valori runtime non programmabili";
+        }
+    });
+}
+// ============================================================
+//  BLOCCO 4/6 — FUNZIONI DI CONFRONTO
+//  Luca – 20/05/2026 10:05
+// ============================================================
+
+// Confronto classico (file1 vs file2)
 function avviaConfronto() {
 
     document.getElementById("risultati").innerHTML = "";
@@ -353,10 +329,10 @@ function avviaConfronto() {
         });
     });
 }
-// ============================================
+
+// ------------------------------------------------------------
 //  FUNZIONE GENERICA DI CONFRONTO
-//  Luca – 20/05/2026 08:45
-// ============================================
+// ------------------------------------------------------------
 function confronta(memFileA, memFileB) {
 
     const mem1 = hexToMemoryMap(memFileA);
@@ -367,11 +343,14 @@ function confronta(memFileA, memFileB) {
 
     renderResults(result);
 }
-// ============================================
+
+// ------------------------------------------------------------
 //  CONFRONTO A–B
-//  Luca – 20/05/2026 08:45
-// ============================================
+// ------------------------------------------------------------
 function confrontaAB() {
+
+    confrontoAttivo = "A-B";
+
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
@@ -387,12 +366,13 @@ function confrontaAB() {
     });
 }
 
-
-// ============================================
+// ------------------------------------------------------------
 //  CONFRONTO A–C
-//  Luca – 20/05/2026 08:45
-// ============================================
+// ------------------------------------------------------------
 function confrontaAC() {
+
+    confrontoAttivo = "A-C";
+
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
@@ -408,12 +388,13 @@ function confrontaAC() {
     });
 }
 
-
-// ============================================
+// ------------------------------------------------------------
 //  CONFRONTO B–C
-//  Luca – 20/05/2026 08:45
-// ============================================
+// ------------------------------------------------------------
 function confrontaBC() {
+
+    confrontoAttivo = "B-C";
+
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
@@ -429,3 +410,42 @@ function confrontaBC() {
     });
 }
 
+// ============================================================
+//  BLOCCO 5/6 — VARIABILI GLOBALI E STATO
+//  Luca – 20/05/2026 10:10
+// ============================================================
+
+// Stato del confronto attivo (A-B, A-C, B-C)
+let confrontoAttivo = "A-B";
+
+// Array parametri X2 (deve essere già definito nel tuo progetto)
+// Qui NON lo riscrivo perché è enorme e già presente nel tuo file.
+
+// Nota: questo blocco serve solo a definire lo stato globale
+// che viene letto da renderResults() per mostrare:
+// "Valore File A" / "Valore File B" / "Valore File C"
+
+
+
+// ============================================================
+//  BLOCCO 6/6 — UTILITY FINALI
+//  Luca – 20/05/2026 10:15
+// ============================================================
+
+// Utility per convertire un numero in HEX a 4 cifre
+function toHex4(n) {
+    return "0x" + n.toString(16).padStart(4, "0").toUpperCase();
+}
+
+// Utility per verificare se un valore è numerico
+function isNumber(x) {
+    return typeof x === "number" && !isNaN(x);
+}
+
+// (Opzionale) Log di debug
+function debugLog(msg) {
+    // console.log("[DEBUG]", msg);
+}
+
+// Fine file JS
+// ============================================================
