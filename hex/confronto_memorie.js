@@ -227,10 +227,6 @@ function renderResults(result) {
             <table>
                 <tr>
                     <th>Indirizzo</th>
-                    <!-- ============================================================
-     HEADER DINAMICO FILE A/B/C
-     Luca – 20/05/2026 09:20
-     ============================================================ -->
                     <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
                     <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
                     <th>Parametro</th>
