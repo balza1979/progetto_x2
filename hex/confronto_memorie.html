@@ -16,20 +16,32 @@
         margin:0;
         padding:10px;
     }
-.hide-col {
-    display: none;
-}
-.btn-confronto {
-    background:#444;
-    border:2px solid #777;
-    color:#ddd;
-}
 
-.btn-confronto.attivo {
-    background:#990000;
-    border-color:#ff3333;
-    color:white;
-}
+    /* ⭐ NASCONDI COLONNE */
+    .hide-col {
+        display: none;
+    }
+
+    /* ⭐ STILE PULSANTI DI CONFRONTO */
+    .btn-confronto {
+        background:#444 !important;
+        border:2px solid #777 !important;
+        color:#ddd !important;
+        width:100%;
+        margin-top:10px;
+        padding:12px 18px;
+        font-size:18px;
+        font-weight:bold;
+        border-radius:6px;
+        cursor:pointer;
+        box-sizing:border-box;
+    }
+
+    .btn-confronto.attivo {
+        background:#990000 !important;
+        border-color:#ff3333 !important;
+        color:white !important;
+    }
 
     .page {
         max-width:900px;
@@ -56,7 +68,7 @@
     table {
         width:100%;
         border-collapse:collapse;
-        min-width:600px; /* evita che si schiacci troppo */
+        min-width:600px;
     }
 
     th, td {
@@ -81,21 +93,6 @@
         background:#222244;
     }
 
-    /* ⭐ PULSANTI PIÙ GRANDI SU SMARTPHONE */
-    button {
-        padding:12px 18px;
-        margin-top:10px;
-        cursor:pointer;
-        background:#660000;
-        color:white;
-        border:2px solid #ff3333;
-        border-radius:6px;
-        font-weight:bold;
-        font-size:18px;
-        width:100%; /* su smartphone diventano a tutta larghezza */
-        box-sizing:border-box;
-    }
-
     /* ⭐ INPUT FILE PIÙ GRANDE */
     input[type="file"] {
         font-size:18px;
@@ -109,7 +106,6 @@
         margin-bottom:6px;
     }
 
-    /* ⭐ SPAZIATURA MIGLIORE SU SMARTPHONE */
     .file-block {
         margin-bottom:25px;
     }
@@ -143,13 +139,11 @@
         <input type="file" id="file3" accept=".hex">
     </div>
 
-    <!-- PULSANTI -->
- <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
-<button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
-<button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
+    <!-- ⭐ PULSANTI CONFRONTO -->
+    <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
+    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
+    <button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
 
-  <!--      <button onclick="avviaConfronto()">Avvia confronto</button> -->
-    
 <!-- ============================================================
      FILTRI COLONNE (SMARTPHONE)
      ============================================================ -->
@@ -194,6 +188,8 @@
 
 <!-- CARICA IL FILE JS COMPLETO -->
 <script src="confronto_memorie.js"></script>
+
+<!-- ⭐ SCRIPT FILTRI COLONNE -->
 <script>
 document.addEventListener("change", function(e) {
     if (!e.target.classList.contains("col-flag")) return;
@@ -201,9 +197,7 @@ document.addEventListener("change", function(e) {
     const colIndex = parseInt(e.target.dataset.col);
     const hide = !e.target.checked;
 
-    // Seleziona tutte le tabelle generate
     document.querySelectorAll("table").forEach(table => {
-        // Seleziona tutte le righe
         table.querySelectorAll("tr").forEach(row => {
             const cell = row.children[colIndex - 1];
             if (cell) {
