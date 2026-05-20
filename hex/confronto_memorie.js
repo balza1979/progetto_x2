@@ -262,61 +262,60 @@ function renderResults(result) {
         html += `</table>`;
     }
 
-    // --------------------------------------------------------
-    //  BLOCCO RUNTIME
-    // --------------------------------------------------------
-    html += `
-        <h3 style="margin-top:25px;">
-            <button id="toggleRuntimeBtn"
-                style="padding:6px 12px; font-size:12px; cursor:pointer;">
-                Mostra valori runtime non programmabili
-            </button>
-        </h3>
+    // ------------------------------------------------------------
+//  BLOCCO RUNTIME
+//  Luca – 20/05/2026 09:32
+// ------------------------------------------------------------
+html += `
+    <h3 style="margin-top:25px;">
+        <button id="toggleRuntimeBtn"
+            style="padding:6px 12px; font-size:12px; cursor:pointer;">
+            Mostra valori runtime non programmabili
+        </button>
+    </h3>
 
-        <div id="runtimeSection" style="display:none;">
-            <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
-            <table>
-                <tr>
-                    <th>Indirizzo</th>
-                    <th>Valore 1</th>
-                    <th>Valore 2</th>
-                    <th>Note</th>
-                </tr>
-    `;
-
-    for (let r of runtime) {
-        html += `
-            <tr class="runtime">
-                <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                <td>${formatVal(r.v1)}</td>
-                <td>${formatVal(r.v2)}</td>
-                <td>Runtime – non programmabile</td>
+    <div id="runtimeSection" style="display:none;">
+        <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
+        <table>
+            <tr>
+                <th>Indirizzo</th>
+                <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
+                <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
+                <th>Note</th>
             </tr>
-        `;
-    }
+`;
 
+for (let r of runtime) {
     html += `
-            </table>
-        </div>
+        <tr class="runtime">
+            <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
+            <td>${formatVal(r.v1)}</td>
+            <td>${formatVal(r.v2)}</td>
+            <td>Runtime – non programmabile</td>
+        </tr>
     `;
-
-    document.getElementById("risultati").innerHTML = html;
-
-    const btn = document.getElementById("toggleRuntimeBtn");
-    const section = document.getElementById("runtimeSection");
-
-    btn.addEventListener("click", () => {
-        if (section.style.display === "none") {
-            section.style.display = "block";
-            btn.textContent = "Nascondi valori runtime non programmabili";
-        } else {
-            section.style.display = "none";
-            btn.textContent = "Mostra valori runtime non programmabili";
-        }
-    });
 }
 
+html += `
+        </table>
+    </div>
+`;
 
+document.getElementById("risultati").innerHTML = html;
+
+// Listener toggle
+const btn = document.getElementById("toggleRuntimeBtn");
+const section = document.getElementById("runtimeSection");
+
+btn.addEventListener("click", () => {
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        btn.textContent = "Nascondi valori runtime non programmabili";
+    } else {
+        section.style.display = "none";
+        btn.textContent = "Mostra valori runtime non programmabili";
+    }
+});
 // ------------------------------------------------------------
 //  AVVIA CONFRONTO
 // ------------------------------------------------------------
