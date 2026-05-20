@@ -98,9 +98,27 @@
     <input type="file" id="file3" accept=".hex" style="font-size:16px;">
 </div>
 
-<button onclick="confrontaAB()">Confronta A–B</button>
-<button onclick="confrontaAC()">Confronta A–C</button>
-<button onclick="confrontaBC()">Confronta B–C</button>
+<!-- ============================================================
+     PULSANTI CONFRONTO A–B / A–C / B–C
+     Luca – 20/05/2026 09:20
+     ============================================================ -->
+
+<button onclick="confrontaAB()"
+        style="padding:10px 20px; margin-right:10px; font-size:16px;">
+    Confronta A–B
+</button>
+
+<button onclick="confrontaAC()"
+        style="padding:10px 20px; margin-right:10px; font-size:16px;">
+    Confronta A–C
+</button>
+
+<button onclick="confrontaBC()"
+        style="padding:10px 20px; font-size:16px;">
+    Confronta B–C
+</button>
+
+<br><br>
     <!-- ⭐ QUESTO È IL BOTTONE CHE MANCA NEL TUO FILE -->
     <button onclick="avviaConfronto()">Avvia confronto</button>
 
