@@ -301,6 +301,7 @@ function confronta(memFileA, memFileB) {
 }
 
 function confrontaAB() {
+    evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
@@ -309,6 +310,7 @@ function confrontaAB() {
 }
 
 function confrontaAC() {
+    evidenziaPulsante("btnAC");
     confrontoAttivo = "A-C";
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
@@ -317,6 +319,7 @@ function confrontaAC() {
 }
 
 function confrontaBC() {
+    evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
