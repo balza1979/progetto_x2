@@ -7,6 +7,9 @@ const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
+function apriErrori() {
+    window.location.href = "errori_x2.html";
+}
 
 // Formattazione HEX + DEC
 function formatVal(hexVal) {
