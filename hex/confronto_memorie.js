@@ -379,6 +379,20 @@ function evidenziaPulsante(idAttivo) {
         }
     });
 
+// ============================================================
+//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE  –  20/05/2026
+// ============================================================
+function salvaFile(lettera, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("X2_FILE_" + lettera, e.target.result);
+        localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
+    };
+    reader.readAsText(file);
+}
 
     
 }
