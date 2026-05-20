@@ -2,6 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+
+<!-- ⭐ NECESSARIO PER SMARTPHONE -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Confronto Memorie – X2</title>
 
 <style>
@@ -10,44 +14,62 @@
         background:#0d0d0d;
         color:#f5f5f5;
         margin:0;
-        padding:20px;
+        padding:10px;
     }
+
     .page {
         max-width:900px;
         margin:0 auto;
         background:#1a1a1a;
         border:2px solid #444;
-        padding:20px;
+        padding:15px;
         border-radius:10px;
     }
+
     h1 {
         text-align:center;
         color:#ff3333;
+        font-size:26px;
     }
+
+    /* ⭐ TABELLA RESPONSIVE SU SMARTPHONE */
+    .table-wrapper {
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top:10px;
+    }
+
     table {
         width:100%;
         border-collapse:collapse;
-        margin-top:10px;
+        min-width:600px; /* evita che si schiacci troppo */
     }
+
     th, td {
         border:1px solid #555;
         padding:6px;
         font-size:12px;
     }
+
     th {
         background:#333;
     }
+
     .param-row {
         background:#112211;
     }
+
     .diff {
         background:#331111;
     }
+
     .runtime {
         background:#222244;
     }
+
+    /* ⭐ PULSANTI PIÙ GRANDI SU SMARTPHONE */
     button {
-        padding:8px 14px;
+        padding:12px 18px;
         margin-top:10px;
         cursor:pointer;
         background:#660000;
@@ -55,7 +77,29 @@
         border:2px solid #ff3333;
         border-radius:6px;
         font-weight:bold;
+        font-size:18px;
+        width:100%; /* su smartphone diventano a tutta larghezza */
+        box-sizing:border-box;
     }
+
+    /* ⭐ INPUT FILE PIÙ GRANDE */
+    input[type="file"] {
+        font-size:18px;
+        width:100%;
+    }
+
+    label {
+        font-size:22px;
+        font-weight:bold;
+        display:block;
+        margin-bottom:6px;
+    }
+
+    /* ⭐ SPAZIATURA MIGLIORE SU SMARTPHONE */
+    .file-block {
+        margin-bottom:25px;
+    }
+
 </style>
 
 </head>
@@ -66,63 +110,36 @@
     <h1>Confronto Memorie X2</h1>
 
     <h3>File HEX da confrontare</h3>
-<!-- ============================================================
-     SEZIONE FILE A / B / C (etichette prima del tasto)
-     Luca – 20/05/2026 09:20
-     ============================================================ -->
 
-<!-- FILE A -->
-<div style="margin-bottom:20px;">
-    <label for="file1"
-        style="display:block; font-size:24px; font-weight:bold; color:#cc0000; margin-bottom:6px;">
-        FILE A
-    </label>
-    <input type="file" id="file1" accept=".hex" style="font-size:16px;">
-</div>
+    <!-- FILE A -->
+    <div class="file-block">
+        <label for="file1" style="color:#cc0000;">FILE A</label>
+        <input type="file" id="file1" accept=".hex">
+    </div>
 
-<!-- FILE B -->
-<div style="margin-bottom:20px;">
-    <label for="file2"
-        style="display:block; font-size:24px; font-weight:bold; color:#0066cc; margin-bottom:6px;">
-        FILE B
-    </label>
-    <input type="file" id="file2" accept=".hex" style="font-size:16px;">
-</div>
+    <!-- FILE B -->
+    <div class="file-block">
+        <label for="file2" style="color:#0066cc;">FILE B</label>
+        <input type="file" id="file2" accept=".hex">
+    </div>
 
-<!-- FILE C -->
-<div style="margin-bottom:20px;">
-    <label for="file3"
-        style="display:block; font-size:24px; font-weight:bold; color:#009933; margin-bottom:6px;">
-        FILE C
-    </label>
-    <input type="file" id="file3" accept=".hex" style="font-size:16px;">
-</div>
+    <!-- FILE C -->
+    <div class="file-block">
+        <label for="file3" style="color:#009933;">FILE C</label>
+        <input type="file" id="file3" accept=".hex">
+    </div>
 
-<!-- ============================================================
-     PULSANTI CONFRONTO A–B / A–C / B–C
-     Luca – 20/05/2026 09:20
-     ============================================================ -->
+    <!-- PULSANTI -->
+    <button onclick="confrontaAB()">Confronta A–B</button>
+    <button onclick="confrontaAC()">Confronta A–C</button>
+    <button onclick="confrontaBC()">Confronta B–C</button>
 
-<button onclick="confrontaAB()"
-        style="padding:10px 20px; margin-right:10px; font-size:16px;">
-    Confronta A–B
-</button>
-
-<button onclick="confrontaAC()"
-        style="padding:10px 20px; margin-right:10px; font-size:16px;">
-    Confronta A–C
-</button>
-
-<button onclick="confrontaBC()"
-        style="padding:10px 20px; font-size:16px;">
-    Confronta B–C
-</button>
-
-<br><br>
-    <!-- ⭐ QUESTO È IL BOTTONE CHE MANCA NEL TUO FILE -->
     <button onclick="avviaConfronto()">Avvia confronto</button>
 
-    <div id="risultati" style="margin-top:30px;"></div>
+    <!-- ⭐ WRAPPER RESPONSIVE PER LE TABELLE -->
+    <div class="table-wrapper">
+        <div id="risultati" style="margin-top:30px;"></div>
+    </div>
 
 </div>
 
