@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Errori X2</title>
+
+<style>
+body {
+    background:#0d0d0d;
+    color:#f5f5f5;
+    font-family:Arial;
+    padding:15px;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th, td {
+    border:1px solid #555;
+    padding:6px;
+    font-size:14px;
+}
+
+th {
+    background:#333;
+}
+
+.gemma {
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:4px;
+}
+
+.on  { background:#00ff00; }
+.off { background:#444; }
+</style>
+</head>
+
+<body>
+
+<h1>Errori registrati (0x8000–0x8FFF)</h1>
+
+<input type="file" id="fileErr" accept=".hex">
+<button onclick="leggiErrori()">Leggi errori</button>
+
+<div id="risultati"></div>
+
+<script>
+// Lettura file HEX
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
+}
+
+// Conversione HEX → memoria
+function hexToMemoryMap(hexText) {
+    const lines = hexText.split(/\r?\n/);
+    const mem = {};
+    for (let line of lines) {
+        if (!line.startsWith(":")) continue;
+        const byteCount = parseInt(line.substr(1,2),16);
+        const address = parseInt(line.substr(3,4),16);
+        const recordType = parseInt(line.substr(7,2),16);
+        if (recordType !== 0) continue;
+        for (let i=0;i<byteCount;i++) {
+            const byteHex = line.substr(9+i*2,2).toUpperCase();
+            mem[address+i] = byteHex;
+        }
+    }
+    return mem;
+}
+
+function leggiErrori() {
+    const f = document.getElementById("fileErr");
+    if (!f.files[0]) return alert("Seleziona un file HEX");
+
+    leggiFileHex(f, hex => {
+        const mem = hexToMemoryMap(hex);
+        mostraErrori(mem);
+    });
+}
+
+function mostraErrori(mem) {
+
+    // Esempio: un solo errore a 0x8000
+    const codice = mem[0x8000] ?? "--";
+    const piano  = mem[0x8001] ?? "--";
+    const giorno = mem[0x8002] ?? "--";
+    const mese   = mem[0x8003] ?? "--";
+    const anno   = mem[0x8004] ?? "--";
+    const ora    = mem[0x8005] ?? "--";
+    const min    = mem[0x8006] ?? "--";
+    const sec    = mem[0x8007] ?? "--";
+
+    // Ingressi (bitmask)
+    const ingressi = mem[0x8010] ?? "00";
+    const uscite   = mem[0x8020] ?? "00";
+
+    let html = `
+        <h2>Ultimo errore registrato</h2>
+        <table>
+            <tr><th>Codice errore</th><td>${codice}</td></tr>
+            <tr><th>Piano</th><td>${piano}</td></tr>
+            <tr><th>Data</th><td>${giorno}/${mese}/20${anno}</td></tr>
+            <tr><th>Ora</th><td>${ora}:${min}:${sec}</td></tr>
+        </table>
+
+        <h3>Ingressi al momento dell’errore</h3>
+    `;
+
+    const bitsIn = parseInt(ingressi,16).toString(2).padStart(8,"0");
+    for (let i=0;i<8;i++) {
+        html += `<span class="gemma ${bitsIn[7-i]==="1"?"on":"off"}"></span>`;
+    }
+
+    html += `<h3>Uscite al momento dell’errore</h3>`;
+
+    const bitsOut = parseInt(uscite,16).toString(2).padStart(8,"0");
+    for (let i=0;i<8;i++) {
+        html += `<span class="gemma ${bitsOut[7-i]==="1"?"on":"off"}"></span>`;
+    }
+
+    document.getElementById("risultati").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
