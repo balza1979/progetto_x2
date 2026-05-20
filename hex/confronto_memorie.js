@@ -82,7 +82,8 @@ function ricostruisciValore(bytes) {
 // Mappa indirizzo → parametro
 function buildAddressToParamMap() {
     const map = {};
-
+return map;
+}
 // ============================================================
 //  BLOCCO 2/6 — CONFRONTO MEMORIA
 //  Luca – 20/05/2026 09:55
