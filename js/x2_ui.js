@@ -197,32 +197,83 @@ function x2_popolaValori(param) {
         btn.onclick = null;
     });
 
-    let nomeJSON;
-    if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
-        nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
-    }
+    // ------------------------------------------------------------
+    // 1) PARAMETRI A ELENCO (JSON)  → FUNZIONA GIÀ
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-    x2_caricaJSON(nomeJSON, function(data) {
+        let nomeJSON;
 
-        // Costruzione tendina
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = `"${voce.id}" ${voce.text}`;
-            tendina.appendChild(opt);
+        if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
+            nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
+        }
+
+        x2_caricaJSON(nomeJSON, function(data) {
+
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = `"${voce.id}" ${voce.text}`;
+                tendina.appendChild(opt);
+            });
+
+            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            x2_aggiornaValoriParametro(param, valorePulito);
         });
 
-        // Valore iniziale
-        const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-        tendina.value = valorePulito;
+        return;
+    }
 
-        // Aggiorna val1…val8
-        x2_aggiornaValoriDaSelezione(data, valorePulito);
-    });
+    // ------------------------------------------------------------
+    // 2) PARAMETRI NUMERICI (MIN_MAX)
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "MIN_MAX") {
+
+        const min = parseInt(param.MIN);
+        const max = parseInt(param.MAX);
+
+        for (let i = min; i <= max; i++) {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            tendina.appendChild(opt);
+        }
+
+        tendina.value = param.VALORE;
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // 3) PARAMETRI DECIMALI
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "DECIMALE") {
+
+        const min = parseFloat(param.MIN);
+        const max = parseFloat(param.MAX);
+        const dec = parseInt(param.DECIMALI);
+        const step = 1 / Math.pow(10, dec);
+
+        for (let v = min; v <= max + 0.0000001; v += step) {
+            const opt = document.createElement("option");
+            opt.value = v.toFixed(dec);
+            opt.textContent = v.toFixed(dec);
+            tendina.appendChild(opt);
+        }
+
+        tendina.value = param.VALORE;
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // 4) FALLBACK
+    // ------------------------------------------------------------
+    tendina.innerHTML = "<option>— nessun valore —</option>";
 }
 
 
