@@ -188,42 +188,78 @@ function x2_calcolaHex(param) {
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
-    tendina.innerHTML = "";
+    const inputNum = document.getElementById("input_valore_num");
+    const unita = document.getElementById("unita_misura");
 
-    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-    pulsanti.forEach(btn => {
-        btn.textContent = "-";
-        btn.disabled = true;
-        btn.onclick = null;
-    });
+    // Reset UI
+    tendina.style.display = "none";
+    inputNum.style.display = "none";
+    unita.textContent = "";
 
-    let nomeJSON;
-    if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
-        nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
+    // ------------------------------------------------------------
+    // 1) PARAMETRI A ELENCO (JSON)
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
+
+        tendina.style.display = "block";
+        tendina.innerHTML = "";
+
+        const nomeJson = param.PARAMETRO + ".json";
+
+        fetch("json_tendine/" + nomeJson)
+            .then(r => r.json())
+            .then(data => {
+                data.valori.forEach(v => {
+                    const opt = document.createElement("option");
+                    opt.value = v.id;
+                    opt.textContent = v.text;
+                    tendina.appendChild(opt);
+                });
+
+                tendina.value = param.VALORE;
+            })
+            .catch(() => {
+                tendina.innerHTML = "<option>ERRORE JSON</option>";
+            });
+
+        return;
     }
 
-    x2_caricaJSON(nomeJSON, function(data) {
+    // ------------------------------------------------------------
+    // 2) PARAMETRI NUMERICI (MIN/MAX)
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "MIN_MAX") {
 
-        // Costruzione tendina
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = `"${voce.id}" ${voce.text}`;
-            tendina.appendChild(opt);
-        });
+        inputNum.style.display = "block";
+        inputNum.type = "number";
+        inputNum.min = param.MIN;
+        inputNum.max = param.MAX;
+        inputNum.step = "1";
+        inputNum.value = param.VALORE;
 
-        // Valore iniziale
-        const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-        tendina.value = valorePulito;
+        unita.textContent = param.UNITA !== "/" ? param.UNITA : "";
 
-        // Aggiorna val1…val8
-        x2_aggiornaValoriDaSelezione(data, valorePulito);
-    });
+        return;
+    }
+
+    // ------------------------------------------------------------
+    // 3) PARAMETRI DECIMALI
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "DECIMALE") {
+
+        inputNum.style.display = "block";
+        inputNum.type = "number";
+        inputNum.min = param.MIN;
+        inputNum.max = param.MAX;
+        inputNum.step = "0." + "1".padStart(param.DECIMALI, "0");
+        inputNum.value = param.VALORE;
+
+        unita.textContent = param.UNITA !== "/" ? param.UNITA : "";
+
+        return;
+    }
 }
+
 
 
 // ------------------------------------------------------------
