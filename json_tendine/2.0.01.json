@@ -1,7 +1,7 @@
 {
   "valori": [
-    {"id": "00", "text": "1 velocità"},
-    {"id": "01", "text": "2 velocità"},
+    {"id": "00", "text": "1 velocita'"},
+    {"id": "01", "text": "2 velocita'"},
     {"id": "02", "text": "Encoder  incr."},
     {"id": "03", "text": "DISPONIBILE ( Futuro encoder  ass.)"}
   ],
