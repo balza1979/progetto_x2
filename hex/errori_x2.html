@@ -1,595 +1,380 @@
-<!-- errori.html - Pagina errori X2 - v2026-05-21 09:30 -->
+<!-- errori_x2.html – versione mobile-first – v2026-05-21 09:45 -->
 
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>X2 - Pagina errori</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 8px;
-      background: #111;
-      color: #eee;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X2 – Errori (Mobile)</title>
 
-    h1 {
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
+<style>
+/* ---------------------------------------------------------
+   STILE MOBILE-FIRST – APP MODERNA
+--------------------------------------------------------- */
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
+body {
+  margin: 0;
+  padding: 10px;
+  background: #0d0d0d;
+  color: #e6e6e6;
+  font-family: Arial, sans-serif;
+}
 
-    .mem-buttons button,
-    .ai-button button {
-      padding: 4px 8px;
-      margin-right: 4px;
-      border: 1px solid #555;
-      background: #222;
-      color: #eee;
-      cursor: pointer;
-      border-radius: 3px;
-      font-size: 12px;
-    }
+/* Titolo */
+h1 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-align: center;
+}
 
-    .mem-buttons button.active {
-      background: #0a84ff;
-      border-color: #0a84ff;
-    }
+/* Pulsanti memoria */
+.mem-buttons {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
 
-    .mem-buttons button:hover,
-    .ai-button button:hover {
-      background: #333;
-    }
+.mem-buttons button {
+  flex: 1;
+  padding: 10px 0;
+  background: #1c1c1c;
+  border: 1px solid #333;
+  color: #eee;
+  border-radius: 6px;
+  font-size: 14px;
+}
 
-    .layout {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+.mem-buttons button.active {
+  background: #007aff;
+  border-color: #007aff;
+}
 
-    /* Tabella errori */
-    .table-container {
-      max-height: 220px;
-      overflow: auto;
-      border: 1px solid #444;
-      border-radius: 4px;
-      background: #181818;
-    }
+/* Pulsante AI */
+.ai-button {
+  text-align: right;
+  margin-bottom: 10px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-    }
+.ai-button button {
+  padding: 10px 14px;
+  background: #222;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+}
 
-    thead {
-      position: sticky;
-      top: 0;
-      background: #222;
-      z-index: 1;
-    }
+/* ---------------------------------------------------------
+   LISTA ERRORI (invece della tabella)
+--------------------------------------------------------- */
 
-    th, td {
-      padding: 4px 6px;
-      border-bottom: 1px solid #333;
-      text-align: left;
-      white-space: nowrap;
-    }
+.error-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-    tr.selected {
-      background: #264f78;
-    }
+.error-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+}
 
-    tr:hover {
-      background: #222;
-      cursor: pointer;
-    }
+.error-card.selected {
+  border-color: #007aff;
+  background: #112233;
+}
 
-    /* Gemme */
-    .gem-section {
-      border: 1px solid #444;
-      border-radius: 4px;
-      padding: 6px;
-      background: #181818;
-    }
+.error-title {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
 
-    .gem-section-title {
-      font-size: 12px;
-      margin-bottom: 4px;
-      font-weight: bold;
-    }
+.error-sub {
+  font-size: 12px;
+  opacity: 0.8;
+}
 
-    .gem-grid {
-      display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      gap: 4px;
-      margin-bottom: 6px;
-    }
+/* ---------------------------------------------------------
+   DETTAGLI ERRORE
+--------------------------------------------------------- */
 
-    .gem {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10px;
-    }
+.details {
+  margin-top: 12px;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 13px;
+}
 
-    .gem-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border: 1px solid #555;
-      background: #222;
-    }
+/* ---------------------------------------------------------
+   GEMME – versione compatta
+--------------------------------------------------------- */
 
-    .gem-dot.on.in {
-      background: #00c853;
-      box-shadow: 0 0 4px #00c853;
-    }
+.gem-section {
+  margin-top: 12px;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
 
-    .gem-dot.on.out {
-      background: #00b0ff;
-      box-shadow: 0 0 4px #00b0ff;
-    }
+.gem-title {
+  font-size: 13px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
 
-    .gem-dot.on.flag {
-      background: #ffab00;
-      box-shadow: 0 0 4px #ffab00;
-    }
+.gem-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
 
-    .gem-label {
-      color: #ccc;
-    }
+.gem {
+  text-align: center;
+  font-size: 9px;
+}
 
-    /* Dettagli errore selezionato */
-    .details {
-      font-size: 11px;
-      margin-top: 4px;
-      color: #ccc;
-    }
+.gem-dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 auto 2px auto;
+  border-radius: 50%;
+  background: #222;
+  border: 1px solid #555;
+}
 
-    .details span {
-      margin-right: 12px;
-    }
+.gem-dot.on.in { background: #00c853; box-shadow: 0 0 4px #00c853; }
+.gem-dot.on.out { background: #00b0ff; box-shadow: 0 0 4px #00b0ff; }
+.gem-dot.on.flag { background: #ffab00; box-shadow: 0 0 4px #ffab00; }
 
-    @media (max-width: 600px) {
-      th, td {
-        font-size: 10px;
-      }
-      .gem-label {
-        font-size: 9px;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
 
-<h1>ERRORI X2 – Memorie A/B/C + Gemme IN/OUT/FLAG</h1>
+<h1>ERRORI X2</h1>
 
-<div class="top-bar">
-  <div class="mem-buttons">
-    <button id="btnMemA" class="active">Memoria A</button>
-    <button id="btnMemB">Memoria B</button>
-    <button id="btnMemC">Memoria C</button>
-    <button id="btnLoadFile">Carica file…</button>
-  </div>
-  <div class="ai-button">
-    <button id="btnAI">Analizza con AI (mock)</button>
-  </div>
+<!-- Pulsanti memorie -->
+<div class="mem-buttons">
+  <button id="btnMemA" class="active">A</button>
+  <button id="btnMemB">B</button>
+  <button id="btnMemC">C</button>
+  <button id="btnLoadFile">File</button>
 </div>
 
-<div class="layout">
+<!-- Pulsante AI -->
+<div class="ai-button">
+  <button id="btnAI">Analizza con AI</button>
+</div>
 
-  <!-- TABELLONE ERRORI -->
-  <div class="table-container">
-    <table id="tblErrori">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Data</th>
-          <th>Ora</th>
-          <th>Piano</th>
-          <th>Codice</th>
-          <th>Descrizione</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- righe generate via JS -->
-      </tbody>
-    </table>
-  </div>
+<!-- LISTA ERRORI -->
+<div id="errorList" class="error-list"></div>
 
-  <!-- DETTAGLI ERRORE SELEZIONATO -->
-  <div class="details" id="detailsErrore">
-    Nessun errore selezionato.
-  </div>
+<!-- DETTAGLI -->
+<div id="detailsErrore" class="details">
+  Nessun errore selezionato.
+</div>
 
-  <!-- GEMME IN -->
-  <div class="gem-section">
-    <div class="gem-section-title">Ingressi (IN01 – IN64)</div>
-    <div class="gem-grid" id="gridIN">
-      <!-- gemme IN generate via JS -->
-    </div>
-  </div>
+<!-- GEMME IN -->
+<div class="gem-section">
+  <div class="gem-title">Ingressi (IN01–IN64)</div>
+  <div id="gridIN" class="gem-grid"></div>
+</div>
 
-  <!-- GEMME OUT -->
-  <div class="gem-section">
-    <div class="gem-section-title">Uscite (OUT01 – OUT64)</div>
-    <div class="gem-grid" id="gridOUT">
-      <!-- gemme OUT generate via JS -->
-    </div>
-  </div>
+<!-- GEMME OUT -->
+<div class="gem-section">
+  <div class="gem-title">Uscite (OUT01–OUT64)</div>
+  <div id="gridOUT" class="gem-grid"></div>
+</div>
 
-  <!-- GEMME FLAG -->
-  <div class="gem-section">
-    <div class="gem-section-title">Flag (FLAG01 – FLAG32)</div>
-    <div class="gem-grid" id="gridFLAG">
-      <!-- gemme FLAG generate via JS -->
-    </div>
-  </div>
-
+<!-- GEMME FLAG -->
+<div class="gem-section">
+  <div class="gem-title">Flag (FLAG01–FLAG32)</div>
+  <div id="gridFLAG" class="gem-grid"></div>
 </div>
 
 <script>
-/* =========================================================================
-   Pagina errori X2 - logica base
-   v2026-05-21 09:30
-   - Tabella errori (16 errori x 16 byte, da 0x800 a 0x8FF)
-   - Gemme IN/OUT/FLAG (placeholder, tutte spente)
-   - Tasto AI (mock)
-   ======================================================================= */
+/* ---------------------------------------------------------
+   LOGICA JS – identica alla tua, adattata al layout mobile
+--------------------------------------------------------- */
 
-/* -----------------------------------------------------------------------
-   1. Placeholder memorie A/B/C
-   -------------------------------------------------------------------- */
-/*
-   QUI dovrai sostituire memA, memB, memC con i dati reali letti dalla
-   EEPROM (zona 0x800–0x8FF). Per ora metto array finti per vedere la
-   struttura funzionare.
-*/
+const memA = new Uint8Array(0x1000);
+const memB = new Uint8Array(0x1000);
+const memC = new Uint8Array(0x1000);
 
-const memA = new Uint8Array(0x1000); // placeholder
-const memB = new Uint8Array(0x1000); // placeholder
-const memC = new Uint8Array(0x1000); // placeholder
-
-// Per test: riempiamo qualche errore finto in memA
-(function initFakeErrors() {
+(function initFake() {
   for (let i = 0; i < 16; i++) {
     const base = 0x800 + i * 16;
-    memA[base + 0] = 10 + i;      // codice errore
-    memA[base + 1] = i % 8;       // piano
-    memA[base + 2] = 21;          // giorno
-    memA[base + 3] = 5;           // mese
-    memA[base + 4] = 26;          // anno (2026 -> 26)
-    memA[base + 5] = 8;           // ora
-    memA[base + 6] = i * 3;       // minuto
-    memA[base + 7] = 0;           // secondi (placeholder)
-    // byte 8–15: per ora li lasciamo a 0 (gemme tutte spente)
+    memA[base + 0] = 20 + i;
+    memA[base + 1] = i % 8;
+    memA[base + 2] = 21;
+    memA[base + 3] = 5;
+    memA[base + 4] = 26;
+    memA[base + 5] = 8;
+    memA[base + 6] = i * 3;
   }
 })();
 
-/* -----------------------------------------------------------------------
-   2. Stato corrente
-   -------------------------------------------------------------------- */
+let currentMem = 'A';
+let currentSelected = -1;
 
-let currentMem = 'A';   // 'A', 'B', 'C'
-let currentSelectedIndex = -1; // indice errore selezionato (0–15)
-
-/* -----------------------------------------------------------------------
-   3. Utility: accesso memoria corrente
-   -------------------------------------------------------------------- */
-
-function getCurrentMemArray() {
-  if (currentMem === 'A') return memA;
-  if (currentMem === 'B') return memB;
-  return memC;
+function getMem() {
+  return currentMem === 'A' ? memA : currentMem === 'B' ? memB : memC;
 }
 
-/* -----------------------------------------------------------------------
-   4. Costruzione gemme (IN/OUT/FLAG)
-   -------------------------------------------------------------------- */
+/* ---------------------------------------------------------
+   COSTRUZIONE LISTA ERRORI (mobile)
+--------------------------------------------------------- */
 
-function createGems() {
-  const gridIN = document.getElementById('gridIN');
-  const gridOUT = document.getElementById('gridOUT');
-  const gridFLAG = document.getElementById('gridFLAG');
+function buildErrorList() {
+  const list = document.getElementById('errorList');
+  list.innerHTML = '';
 
-  // IN01–IN64
-  for (let i = 1; i <= 64; i++) {
-    const gem = document.createElement('div');
-    gem.className = 'gem';
-    const dot = document.createElement('div');
-    dot.className = 'gem-dot in';
-    dot.dataset.type = 'in';
-    dot.dataset.index = i;
-    const label = document.createElement('span');
-    label.className = 'gem-label';
-    label.textContent = 'IN' + String(i).padStart(2, '0');
-    gem.appendChild(dot);
-    gem.appendChild(label);
-    gridIN.appendChild(gem);
-  }
+  const mem = getMem();
 
-  // OUT01–OUT64
-  for (let i = 1; i <= 64; i++) {
-    const gem = document.createElement('div');
-    gem.className = 'gem';
-    const dot = document.createElement('div');
-    dot.className = 'gem-dot out';
-    dot.dataset.type = 'out';
-    dot.dataset.index = i;
-    const label = document.createElement('span');
-    label.className = 'gem-label';
-    label.textContent = 'OUT' + String(i).padStart(2, '0');
-    gem.appendChild(dot);
-    gem.appendChild(label);
-    gridOUT.appendChild(gem);
-  }
-
-  // FLAG01–FLAG32
-  for (let i = 1; i <= 32; i++) {
-    const gem = document.createElement('div');
-    gem.className = 'gem';
-    const dot = document.createElement('div');
-    dot.className = 'gem-dot flag';
-    dot.dataset.type = 'flag';
-    dot.dataset.index = i;
-    const label = document.createElement('span');
-    label.className = 'gem-label';
-    label.textContent = 'FLAG' + String(i).padStart(2, '0');
-    gem.appendChild(dot);
-    gem.appendChild(label);
-    gridFLAG.appendChild(gem);
-  }
-}
-
-/* -----------------------------------------------------------------------
-   5. Aggiornamento gemme da bit (placeholder)
-   -------------------------------------------------------------------- */
-/*
-   Quando avrai la mappa dei bit, qui dentro useremo i byte 8–15
-   del blocco errore per accendere/spegnere le gemme.
-
-   Per ora: tutte spente.
-*/
-
-function updateGemsForError(errorIndex) {
-  const dots = document.querySelectorAll('.gem-dot');
-  dots.forEach(dot => dot.classList.remove('on'));
-
-  if (errorIndex < 0) return;
-
-  const mem = getCurrentMemArray();
-  const base = 0x800 + errorIndex * 16;
-
-  // byte 8–15: dettagli IN/OUT/FLAG (placeholder)
-  const detailBytes = [];
-  for (let i = 0; i < 8; i++) {
-    detailBytes.push(mem[base + 8 + i]);
-  }
-
-  // QUI in futuro:
-  // - decodifica detailBytes in bit
-  // - accendi le gemme corrispondenti
-  // Esempio futuro (pseudo):
-  // if (bit IN01 = 1) -> gem-dot[data-type="in"][data-index="1"].classList.add('on');
-
-  // Per ora lasciamo tutto spento.
-}
-
-/* -----------------------------------------------------------------------
-   6. Costruzione tabella errori
-   -------------------------------------------------------------------- */
-
-function buildErrorTable() {
-  const tbody = document.querySelector('#tblErrori tbody');
-  tbody.innerHTML = '';
-
-  const mem = getCurrentMemArray();
-
-  // Ora: 16 errori (0–15). In futuro potrai portarlo a 64.
-  const maxErrori = 16;
-
-  for (let i = 0; i < maxErrori; i++) {
+  for (let i = 0; i < 16; i++) {
     const base = 0x800 + i * 16;
-    const codice = mem[base + 0];
-    const piano  = mem[base + 1];
-    const giorno = mem[base + 2];
-    const mese   = mem[base + 3];
-    const anno   = mem[base + 4];
-    const ora    = mem[base + 5];
-    const minuto = mem[base + 6];
-    const secondo= mem[base + 7];
+    const cod = mem[base + 0];
+    const piano = mem[base + 1];
+    const g = mem[base + 2];
+    const m = mem[base + 3];
+    const a = mem[base + 4];
+    const h = mem[base + 5];
+    const min = mem[base + 6];
 
-    // Se codice = 0 e tutto il resto è 0, possiamo considerarlo "vuoto"
-    const isEmpty = (codice === 0 && piano === 0 && giorno === 0 &&
-                     mese === 0 && anno === 0 && ora === 0 &&
-                     minuto === 0 && secondo === 0);
+    const card = document.createElement('div');
+    card.className = 'error-card';
+    card.dataset.index = i;
 
-    if (isEmpty) {
-      // Puoi decidere se saltare la riga o mostrarla vuota.
-      // Per ora la mostro lo stesso, ma con descrizione "—".
-    }
+    card.innerHTML = `
+      <div class="error-title">Errore ${cod}</div>
+      <div class="error-sub">
+        Piano ${piano} – ${String(g).padStart(2,'0')}/${String(m).padStart(2,'0')}/20${a}
+        – ${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}
+      </div>
+    `;
 
-    const tr = document.createElement('tr');
-    tr.dataset.index = i;
-
-    const tdIdx = document.createElement('td');
-    tdIdx.textContent = i + 1;
-
-    const tdData = document.createElement('td');
-    tdData.textContent =
-      String(giorno).toString().padStart(2, '0') + '/' +
-      String(mese).toString().padStart(2, '0') + '/20' +
-      String(anno).toString().padStart(2, '0');
-
-    const tdOra = document.createElement('td');
-    tdOra.textContent =
-      String(ora).toString().padStart(2, '0') + ':' +
-      String(minuto).toString().padStart(2, '0');
-
-    const tdPiano = document.createElement('td');
-    tdPiano.textContent = piano;
-
-    const tdCod = document.createElement('td');
-    tdCod.textContent = codice;
-
-    const tdDesc = document.createElement('td');
-    // Descrizione: per ora placeholder. In futuro useremo una tabella codici.
-    tdDesc.textContent = isEmpty ? '—' : ('Errore ' + codice);
-
-    tr.appendChild(tdIdx);
-    tr.appendChild(tdData);
-    tr.appendChild(tdOra);
-    tr.appendChild(tdPiano);
-    tr.appendChild(tdCod);
-    tr.appendChild(tdDesc);
-
-    tr.addEventListener('click', () => onSelectErrorRow(i));
-
-    tbody.appendChild(tr);
+    card.onclick = () => selectError(i);
+    list.appendChild(card);
   }
 }
 
-/* -----------------------------------------------------------------------
-   7. Selezione riga errore
-   -------------------------------------------------------------------- */
+/* ---------------------------------------------------------
+   SELEZIONE ERRORE
+--------------------------------------------------------- */
 
-function onSelectErrorRow(index) {
-  currentSelectedIndex = index;
+function selectError(i) {
+  currentSelected = i;
 
-  // evidenzia riga
-  const rows = document.querySelectorAll('#tblErrori tbody tr');
-  rows.forEach(r => r.classList.remove('selected'));
-  const row = document.querySelector('#tblErrori tbody tr[data-index="' + index + '"]');
-  if (row) row.classList.add('selected');
+  document.querySelectorAll('.error-card')
+    .forEach(c => c.classList.remove('selected'));
 
-  // aggiorna dettagli
-  updateDetailsForError(index);
+  const card = document.querySelector(`.error-card[data-index="${i}"]`);
+  if (card) card.classList.add('selected');
 
-  // aggiorna gemme
-  updateGemsForError(index);
+  updateDetails(i);
+  updateGems(i);
 }
 
-/* -----------------------------------------------------------------------
-   8. Dettagli errore selezionato
-   -------------------------------------------------------------------- */
+/* ---------------------------------------------------------
+   DETTAGLI
+--------------------------------------------------------- */
 
-function updateDetailsForError(index) {
-  const details = document.getElementById('detailsErrore');
-  if (index < 0) {
-    details.textContent = 'Nessun errore selezionato.';
+function updateDetails(i) {
+  const mem = getMem();
+  const base = 0x800 + i * 16;
+
+  const cod = mem[base + 0];
+  const piano = mem[base + 1];
+  const g = mem[base + 2];
+  const m = mem[base + 3];
+  const a = mem[base + 4];
+  const h = mem[base + 5];
+  const min = mem[base + 6];
+  const s = mem[base + 7];
+
+  document.getElementById('detailsErrore').innerHTML = `
+    <strong>Errore:</strong> ${cod}<br>
+    <strong>Piano:</strong> ${piano}<br>
+    <strong>Data:</strong> ${String(g).padStart(2,'0')}/${String(m).padStart(2,'0')}/20${a}<br>
+    <strong>Ora:</strong> ${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}
+  `;
+}
+
+/* ---------------------------------------------------------
+   GEMME (placeholder)
+--------------------------------------------------------- */
+
+function updateGems(i) {
+  document.querySelectorAll('.gem-dot').forEach(d => d.classList.remove('on'));
+}
+
+/* ---------------------------------------------------------
+   COSTRUZIONE GEMME
+--------------------------------------------------------- */
+
+function buildGems() {
+  const IN = document.getElementById('gridIN');
+  const OUT = document.getElementById('gridOUT');
+  const FLAG = document.getElementById('gridFLAG');
+
+  for (let i = 1; i <= 64; i++) {
+    IN.innerHTML += `<div class="gem"><div class="gem-dot in"></div>IN${String(i).padStart(2,'0')}</div>`;
+    OUT.innerHTML += `<div class="gem"><div class="gem-dot out"></div>OUT${String(i).padStart(2,'0')}</div>`;
+  }
+
+  for (let i = 1; i <= 32; i++) {
+    FLAG.innerHTML += `<div class="gem"><div class="gem-dot flag"></div>F${String(i).padStart(2,'0')}</div>`;
+  }
+}
+
+/* ---------------------------------------------------------
+   MEMORIE
+--------------------------------------------------------- */
+
+function setMem(m) {
+  currentMem = m;
+  currentSelected = -1;
+
+  document.getElementById('btnMemA').classList.toggle('active', m === 'A');
+  document.getElementById('btnMemB').classList.toggle('active', m === 'B');
+  document.getElementById('btnMemC').classList.toggle('active', m === 'C');
+
+  buildErrorList();
+  document.getElementById('detailsErrore').textContent = 'Nessun errore selezionato.';
+  updateGems(-1);
+}
+
+/* ---------------------------------------------------------
+   AI MOCK
+--------------------------------------------------------- */
+
+function aiMock() {
+  if (currentSelected < 0) {
+    alert("Seleziona un errore.");
     return;
   }
-
-  const mem = getCurrentMemArray();
-  const base = 0x800 + index * 16;
-
-  const codice = mem[base + 0];
-  const piano  = mem[base + 1];
-  const giorno = mem[base + 2];
-  const mese   = mem[base + 3];
-  const anno   = mem[base + 4];
-  const ora    = mem[base + 5];
-  const minuto = mem[base + 6];
-  const secondo= mem[base + 7];
-
-  const dataStr =
-    String(giorno).padStart(2, '0') + '/' +
-    String(mese).padStart(2, '0') + '/20' +
-    String(anno).padStart(2, '0');
-
-  const oraStr =
-    String(ora).padStart(2, '0') + ':' +
-    String(minuto).padStart(2, '0') + ':' +
-    String(secondo).padStart(2, '0');
-
-  details.innerHTML =
-    '<span><strong>Errore:</strong> ' + codice + '</span>' +
-    '<span><strong>Piano:</strong> ' + piano + '</span>' +
-    '<span><strong>Data:</strong> ' + dataStr + '</span>' +
-    '<span><strong>Ora:</strong> ' + oraStr + '</span>';
+  alert("AI (mock): analisi errore " + currentSelected);
 }
 
-/* -----------------------------------------------------------------------
-   9. Gestione tasti memorie A/B/C
-   -------------------------------------------------------------------- */
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
 
-function setMemoria(mem) {
-  currentMem = mem;
-  currentSelectedIndex = -1;
+document.addEventListener('DOMContentLoaded', () => {
+  buildGems();
+  buildErrorList();
 
-  document.getElementById('btnMemA').classList.toggle('active', mem === 'A');
-  document.getElementById('btnMemB').classList.toggle('active', mem === 'B');
-  document.getElementById('btnMemC').classList.toggle('active', mem === 'C');
-
-  buildErrorTable();
-  updateDetailsForError(-1);
-  updateGemsForError(-1);
-}
-
-/* -----------------------------------------------------------------------
-   10. Tasto AI (mock)
-   -------------------------------------------------------------------- */
-
-function onAIAnalyze() {
-  if (currentSelectedIndex < 0) {
-    alert('Seleziona prima un errore nella tabella.');
-    return;
-  }
-
-  const mem = getCurrentMemArray();
-  const base = 0x800 + currentSelectedIndex * 16;
-
-  const codice = mem[base + 0];
-  const piano  = mem[base + 1];
-
-  // Qui in futuro manderemo i dati reali all’AI.
-  // Ora facciamo solo una simulazione testuale.
-  const msg =
-    'AI (simulazione)\n\n' +
-    'Errore ' + codice + ' al piano ' + piano + '.\n\n' +
-    'Possibili cause (esempio):\n' +
-    '- Controllare sensori di piano\n' +
-    '- Verificare porte e sicurezze\n' +
-    '- Controllare cablaggi e alimentazioni\n\n' +
-    '(In futuro questo testo arriverà dall’AI, usando i dati reali.)';
-
-  alert(msg);
-}
-
-/* -----------------------------------------------------------------------
-   11. Tasto "Carica file…" (placeholder)
-   -------------------------------------------------------------------- */
-
-function onLoadFile() {
-  alert('Placeholder: qui in futuro potrai caricare una memoria da file.\n' +
-        'Per ora la pagina usa memA/memB/memC fittizie.');
-}
-
-/* -----------------------------------------------------------------------
-   12. Inizializzazione pagina
-   -------------------------------------------------------------------- */
-
-function initPage() {
-  createGems();
-  buildErrorTable();
-
-  document.getElementById('btnMemA').addEventListener('click', () => setMemoria('A'));
-  document.getElementById('btnMemB').addEventListener('click', () => setMemoria('B'));
-  document.getElementById('btnMemC').addEventListener('click', () => setMemoria('C'));
-  document.getElementById('btnAI').addEventListener('click', onAIAnalyze);
-  document.getElementById('btnLoadFile').addEventListener('click', onLoadFile);
-}
-
-document.addEventListener('DOMContentLoaded', initPage);
+  document.getElementById('btnMemA').onclick = () => setMem('A');
+  document.getElementById('btnMemB').onclick = () => setMem('B');
+  document.getElementById('btnMemC').onclick = () => setMem('C');
+  document.getElementById('btnAI').onclick = aiMock;
+});
 </script>
 
 </body>
