@@ -1,0 +1,12 @@
+{
+  "valori": [
+    {"id": "00", "text": "Immed./blocco"},
+    {"id": "01", "text": "p. più vicino"},
+    {"id": "02", "text": "Immed./no blocco"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
