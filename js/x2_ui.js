@@ -190,7 +190,9 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // Caso 1: PARAMETRO A ELENCO (usa JSON)
+    // ------------------------------------------------------------
+    // 1) PARAMETRI A ELENCO (JSON)
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         const nomeJSON =
@@ -213,10 +215,11 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // Caso 2: PARAMETRO NUMERICO (MIN_MAX)
+    // ------------------------------------------------------------
+    // 2) PARAMETRI NUMERICI (MIN_MAX)
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
-        // Creiamo opzioni da MIN a MAX
         const min = parseInt(param.MIN);
         const max = parseInt(param.MAX);
 
@@ -231,7 +234,9 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // Caso 3: PARAMETRO DECIMALE
+    // ------------------------------------------------------------
+    // 3) PARAMETRI DECIMALI
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "DECIMALE") {
 
         const min = parseFloat(param.MIN);
@@ -239,7 +244,7 @@ function x2_popolaValori(param) {
         const dec = parseInt(param.DECIMALI);
         const step = 1 / Math.pow(10, dec);
 
-        for (let v = min; v <= max; v += step) {
+        for (let v = min; v <= max + 0.0000001; v += step) {
             const opt = document.createElement("option");
             opt.value = v.toFixed(dec);
             opt.textContent = v.toFixed(dec);
@@ -250,7 +255,9 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // Caso fallback
+    // ------------------------------------------------------------
+    // 4) FALLBACK
+    // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
 }
 
