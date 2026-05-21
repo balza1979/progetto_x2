@@ -1,0 +1,14 @@
+{
+  "valori": [
+    {"id": "00", "text": "Input EM base"},
+    {"id": "01", "text": "Sch. est. EMG"},
+    {"id": "02", "text": "Sch. Est. DIA"},
+    {"id": "03", "text": "Sch. Int. ESV"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
