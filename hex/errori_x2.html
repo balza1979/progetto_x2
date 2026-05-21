@@ -1,509 +1,596 @@
-GR09	EQU	$9E0  ;	 Dati visualizzati e modificati con gruppo 9
-
-		VDLBLP	EQU	$9E0  ; 01 Tempo blocco programmato - settimane
-		TIMWEK	EQU	$9E1  ; 02 Timer conta settimane (da 0 a 99) - incr. ogni settimana
-		TIMDAY	EQU	$9E2  ; 03   "   conta giorni (da 7 a 0) - si azzera ogni 7 giorni
-		TIM6MIN	EQU	$9E3  ; 04   "   conta 6 min.(da 243 a 0)- si azzera ogni 243x6 min.
-		CODRWM	EQU	$9E4  ; 05 Codice lettura/scrittura FROM con PROG3
-		FLGMM	EQU	$9E5  ; 06 FLGM memorizzato
-
-		;		$9E6/$9E7	2 byte disponibili
-
-		PASSBL	EQU	$9E8  ; 09 Tipo blocco
-		CCBDM	EQU	$9E9  ; 10 Numero corse per blocco (x 10.000)
-		CCBCT	EQU	$9EA  ; 11    "     "         "    (x 100)
-		CCBUN	EQU	$9EB  ; 12    "     "         "    (x 1)
-
-		PASS1H	EQU	$9EC  ; 13 Password 1°livello - esadecimale da 00 a FF
-		PASS1L	EQU	$9ED  ; 14    "         "	      "       da 00 a FF
-		PASS2H	EQU	$9EE  ; 15 Password 2°livello - esadecimale da 00 a FF
-		PASS2L	EQU	$9EF  ; 16    "         "	      "       da 00 a FF
-
-		CNTCDM	EQU	$9F0  ; 17 Contatore corse (x 10.000) - da 00 a 99 (=990000)
-		CNTCCT	EQU	$9F1  ; 18    "        "   (x 100)    - da 00 a 99 (=9900)
-		CNTCUN	EQU	$9F2  ; 19    "        "   (x 1 )     - da 00 a 99
-
-		CNTPASS	EQU	$9F3  ; 20 Contatore tentativi accesso con PASSWORD
-
-		;		$9F4/$9F7	4 byte disponibili
-
-		CODDGM	EQU	$9F8  ; 25 Codice dell'ultimo guasto memorizzato
-		POSCABM	EQU	$9F9  ; 26 Posizione cabina memorizzata
-		PUDGM	EQU	$9FA  ; 27 Puntatore codici diagnostici memorizzato
-		CODBLM	EQU	$9FB  ; 28 Codice di blocco memorizzato
-									
-		;CODEE	EQU	$9FC  ; 29 Codice riconoscimento EEPROM - serie precedente
-		;	EQU	$9FD  ; 30    "          "	      "       "       " 	 "
-		;CODEEH	EQU	$9FE  ; 31    "          "	      "  
-		;CODEEL	EQU	$9FF  ; 32    "          "	      "
-
-		;	fine area EEPROM - da $200 a $9FF - 2048 byte
-
-
-		BUFLC	EQU	$A00  ;	 Buffer display PROG2 (64 byte)
-		*		$A3F  ;
-
-		BUFPC	EQU	$A40  ;	 Protezioni I/O espansioni cabina (x8)
-		BUFPB	EQU	$A48  ;	 Protezioni I/O espansioni base   (x8)
-		BUFSP	EQU	$A50  ;	 Memorizza uscite espansione comandate (x8)
--------------------------------------------------------------------------------------
-
-GR07	EQU	$A58  ;	  "         "       "  gruppo 7 - Prova
-
-		MASKPSHH	EQU	$A58  ; 01 Maschera prenot. sup. all'ultimo piano (x4)
-		MASKPSHL	EQU	$A59  ; 02
-		MASKPSH	EQU	$A5A  ; 03
-		MASKPSL	EQU	$A5B  ; 04
-
-		;MASKOPHH	EQU	$A5C  ; 05 Maschera prenotazioni registrate su ESP4
-		MASKOPHL	EQU	$A5D  ; 06 Maschera prenotazioni registrate su ESP3
-		MASKOPH	EQU	$A5E  ; 07 Maschera prenotazioni registrate su ESP2
-		MASKOPL	EQU	$A5F  ; 08 Maschera prenotazioni registrate su ESP1
--------------------------------------------------------------------------------------
-				 
-		BUFIS	EQU	$A60  ;	 Buffer per ingressi espansioni speciali (x8)
-
-		BUFI4	EQU	$A63  ;
-		BUFI5	EQU	$A64  ;
-		BUFI6	EQU	$A65  ;
-				 
-		BUFOS	EQU	$A68  ;	 Buffer per uscite espansioni speciali (x8)
--------------------------------------------------------------------------------------
-
-		BUFO4	EQU	$A6B  ;
-		BUFO5	EQU	$A6C  ;
-		BUFO6	EQU	$A6D  ;
-		*		$A6F  ;	 predisposto per uso da programmi speciali
--------------------------------------------------------------------------------------
-
-		;SPCLPH	EQU	$A70  ;	 Livello piano successivo	   (non usato)
-		;SPCLPL	EQU	$A71  ;
-		;SPCLRH	EQU	$A72  ;	 Livello riferimento con encoder (non usato)
-		;SPCLRL	EQU	$A73  ;
--------------------------------------------------------------------------------------
-
-		TPULSAH	EQU	$A74  ;	 Lettura TIMIMP con impulso A
-		TPULSAL	EQU	$A75  ;	    "
-		TPULSBH	EQU	$A76  ;	 Lettura TIMIMP con impulso B
-		TPULSBL	EQU	$A77  ;	    "
--------------------------------------------------------------------------------------
-
-		BETADH	EQU	$A78  ;    Dato per diagnostica DIAGB
-		BETADL	EQU	$A79  ;     "   "	    "       DIAGB
-		BETDAT	EQU	$A7A  ;	  "    "	     "      DIAGB
-		TIPDAT	EQU	$A7B  ;	 Tipo dato per trasmissione PC
-		TASDIA	EQU	$A7C  ;    Tasti diagnostica interna da DIA
--------------------------------------------------------------------------------------
-
-		*	EQU	$A7D  ;    DISPONIBILE 3 byte
-				 
-		BUFWR	EQU	$A80  ;    Buffer scrittura ROM (32 byte)
-		*         EQU       $A9F  ;    Fine buffer scrittura ROM
-
-		BUFRC     EQU       $AA0  ;    Buffer ricezione SC2 (48 byte)
-		*         EQU       $ACF  ;    Fine buffer ricezione
--------------------------------------------------------------------------------------
-
-		INP0A	EQU	$AD0  ;    Buffer antirimbalzo input quadro gruppo B1 / INPB
-		INP1A	EQU	$AD1  ;      "        "	"        "      "    B2 / INPC
-		INP0B	EQU	$AD2  ;    Antirimbalzo input doppio buffer (non usato)
-		INP1B	EQU	$AD3  ;    Antirimbalzo input doppio buffer
-
-		BUFPI	EQU	$AD4  ;    Buffer esclusione pulsanti incastrati (x14)
-		*		$AE1  ;    Fine buffer pulsanti incastrati
-		BUFDP1	EQU	$AE2  ;    Buffer timer ritardo parzializzazione Y1
-
--------------------------------------------------------------------------------------
-		TIPSCP	EQU	$AE3  ;	 Tipo scheda da PROG
-		TIPROG	EQU	$AE4  ;	 Tipo programmatore da PROG
-		RVSWPH	EQU	$AE5  ;	 Revisione software da PROG
-		RVSWPL	EQU	$AE6  ;	     "         "         " 
-		;DIMSWP	EQU	$AE7  ;	 Non usato
-		STBLHL	EQU	$AE8  ;	 Inizio blocco da scrivere/leggere
-		STBLH	EQU	$AE9  ;       "      "          "       " 
-		STBLL	EQU	$AEA  ;       "      "          "       " 
-		ACKR	EQU	$AEB  ;	 Acknowledge ricevuto
-		ACKT	EQU	$AEC  ;	      "      trasmesso
-		ERSEC	EQU	$AED  ;	 Settore cancellato
--------------------------------------------------------------------------------------
-
-		CNTGSM	EQU	$AEE  ;    Contatore dati inviati al CAN bus per GSM
-		DTRGSM	EQU	$AEF  ;    Dato trasmesso al GSM500 - Modalita 2 / Byte 1
-		BUFCANT	EQU	$AF0  ;    Buffer trasmissione CAN
-		BUFCANR	EQU	$AF8  ;    Buffer ricezione CAN
--------------------------------------------------------------------------------------
-
-
-* Prenotazioni attive lato A
-
-GR08	EQU	$B00  ;    Dati visualizzati e modificati con gruppo 8
-
-PACHH	EQU	$B00  ; 01 Prenotazioni attive di cabina
-PACHL	EQU	$B01  ; 02      "         "	       "
-PACH	EQU	$B02  ; 03      "         "	       "
-PACL	EQU	$B03  ; 04      "         "	       "
-PADHH	EQU	$B04  ; 05 Prenotazioni attive di discesa
-PADHL	EQU	$B05  ; 06      "         "	       "
-PADH	EQU	$B06  ; 07      "         "	       "
-PADL	EQU	$B07  ; 08      "         "	       "
-PASHH	EQU	$B08  ; 09 Prenotazioni attive di salita
-PASHL	EQU	$B09  ; 10      "         "	       "
-PASH	EQU	$B0A  ; 11      "         "	       "
-PASL	EQU	$B0B  ; 12      "         "	       "
-
-* Prenotazioni attive lato B
-PACBHH	EQU	$B0C  ; 13 Prenotazioni attive di cabina   - Sel. 31B/24B
-PACBHL	EQU	$B0D  ; 14      "         "	       "     - Sel. 23B/16B
-PACBH	EQU	$B0E  ; 15      "         "	       "     - Sel. 15B/8B
-PACBL	EQU	$B0F  ; 16      "         "	       "     - Sel.  7B/0B
-PADBHH	EQU	$B10  ; 17 Prenotazioni attive di discesa  - Sel. 31B/24B
-PADBHL	EQU	$B11  ; 18      "         "	       "     - Sel. 23B/16B
-PADBH	EQU	$B12  ; 19      "         "	       "     - Sel. 15B/8B
-PADBL	EQU	$B13  ; 20      "         "	       "     - Sel.  7B/0B
-PASBHH	EQU	$B14  ; 21 Prenotazioni attive di salita   - Sel. 31B/24B
-PASBHL	EQU	$B15  ; 22      "         "	       "     - Sel. 23B/16B
-PASBH	EQU	$B16  ; 23      "         "	       "     - Sel. 15B/8B
-PASBL	EQU	$B17  ; 24      "         "	       "     - Sel.  7B/0B
-
-* Prenotazioni attive lato C - solo se VARPCC non è 0
-PACCH	EQU	$B18  ; 25 Prenotazioni attive cabina - Sel. 15C / 8C
-PACCL	EQU	$B19  ; 26 Prenotazioni attive cabina -  "    7C / 0C
-PADCH	EQU	$B1A  ; 27 Prenotazioni  discesa	 "   15C / 8C
-PADCL	EQU	$B1B  ; 28 Prenotazioni     "            "    7C / 0C
-PASCH	EQU	$B1C  ; 29 Prenotazioni  salita	 "   15C / 8C
-PASCL	EQU	$B1D  ; 30 Prenotazioni     "            "    7C / 0C
-
-
-* Prenotazioni per gruppi - usate solo dalla scheda master (solo lato A/B)
-
-PRDHH	EQU	$B1E  ; 31 Prenotazioni discesa 31/24	lato A
-PRDHL	EQU	$B1F  ; 32 Prenotazioni    "    23/16     "
-PRDH	EQU	$B20  ; 33 Prenotazioni    "    15/8      "
-PRDL	EQU	$B21  ; 34 Prenotazioni    "    7/0       "
-PRSHH	EQU	$B22  ; 35 Prenotazioni salita  31/24	  "
-PRSHL	EQU	$B23  ; 36 Prenotazioni    "    23/16     "
-PRSH	EQU	$B24  ; 37 Prenotazioni    "    15/8      "
-PRSL	EQU	$B25  ; 38 Prenotazioni    "    7/0       "
-
-PRDBHH	EQU	$B26  ; 39 Prenotazioni discesa 31/24	lato B
-PRDBHL	EQU	$B27  ; 40 Prenotazioni    "    23/16     "
-PRDBH	EQU	$B28  ; 41 Prenotazioni    "    15/8      "
-PRDBL	EQU	$B29  ; 42 Prenotazioni    "    7/0       "
-PRSBHH	EQU	$B2A  ; 43 Prenotazioni salita  31/24	  "
-PRSBHL	EQU	$B2B  ; 44 Prenotazioni    "    23/16     "
-PRSBH	EQU	$B2C  ; 45 Prenotazioni    "    15/8      "
-PRSBL	EQU	$B2D  ; 46 Prenotazioni    "    7/0       "
-
-
-* Stato pulsanti da SPB
-
-PSDHH	EQU	$B30  ; 49 Pulsanti discesa 31/24	lato A
-PSDHL	EQU	$B31  ; 50 Pulsanti    "    23/16     "
-PSDH	EQU	$B32  ; 51 Pulsanti    "    15/8      "
-PSDL	EQU	$B33  ; 52 Pulsanti    "    7/0       "
-PSSHH	EQU	$B34  ; 53 Pulsanti salita  31/24	  "
-PSSHL	EQU	$B35  ; 54 Pulsanti    "    23/16     "
-PSSH	EQU	$B36  ; 55 Pulsanti    "    15/8      "
-PSSL	EQU	$B37  ; 56 Pulsanti    "    7/0       "
-
-PSDBHH	EQU	$B38  ; 57 Pulsanti discesa 31/24	lato B
-PSDBHL	EQU	$B39  ; 58 Pulsanti    "    23/16     "
-PSDBH	EQU	$B3A  ; 59 Pulsanti    "    15/8      "
-PSDBL	EQU	$B3B  ; 60 Pulsanti    "    7/0       "
-PSSBHH	EQU	$B3C  ; 61 Pulsanti salita  31/24	  "
-PSSBHL	EQU	$B3D  ; 62 Pulsanti    "    23/16     "
-PSSBH	EQU	$B3E  ; 63 Pulsanti    "    15/8      "
-PSSBL	EQU	$B3F  ; 64 Pulsanti    "    7/0       "
-
-PSDCHH	EQU	$B40  ; 65 Pulsanti discesa 31/24	lato C
-PSDCHL	EQU	$B41  ; 66 Pulsanti    "    23/16     "
-PSDCH	EQU	$B42  ; 67 Pulsanti    "    15/8      "
-PSDCL	EQU	$B43  ; 68 Pulsanti    "    7/0       "
-PSSCHH	EQU	$B44  ; 69 Pulsanti salita  31/24	  "
-PSSCHL	EQU	$B45  ; 70 Pulsanti    "    23/16     "
-PSSCH	EQU	$B46  ; 71 Pulsanti    "    15/8      "
-PSSCL	EQU	$B47  ; 72 Pulsanti    "    7/0       "
-
-
-* Prenotazioni registrate da SPB e da master/slave - OUT per SPB
-
-PSRDHH	EQU	$B48  ; 73 Prenotazioni discesa 31/24	lato A
-PSRDHL	EQU	$B49  ; 74 Prenotazioni    "    23/16     "
-PSRDH	EQU	$B4A  ; 75 Prenotazioni    "    15/8      "
-PSRDL	EQU	$B4B  ; 76 Prenotazioni    "    7/0       "
-PSRSHH	EQU	$B4C  ; 77 Prenotazioni salita  31/24	  "
-PSRSHL	EQU	$B4D  ; 78 Prenotazioni    "    23/16     "
-PSRSH	EQU	$B4E  ; 79 Prenotazioni    "    15/8      "
-PSRSL	EQU	$B4F  ; 80 Prenotazioni    "    7/0       "
-
-PSRDBHH	EQU	$B50  ; 81 Prenotazioni discesa 31/24	lato B
-PSRDBHL	EQU	$B51  ; 82 Prenotazioni    "    23/16     "
-PSRDBH	EQU	$B52  ; 83 Prenotazioni    "    15/8      "
-PSRDBL	EQU	$B53  ; 84 Prenotazioni    "    7/0       "
-PSRSBHH	EQU	$B54  ; 85 Prenotazioni salita  31/24	  "
-PSRSBHL	EQU	$B55  ; 86 Prenotazioni    "    23/16     "
-PSRSBH	EQU	$B56  ; 87 Prenotazioni    "    15/8      "
-PSRSBL	EQU	$B57  ; 88 Prenotazioni    "    7/0       "
-
-PSRDCHH	EQU	$B58  ; 89 Prenotazioni discesa 31/24	lato C
-PSRDCHL	EQU	$B59  ; 90 Prenotazioni    "    23/16     "
-PSRDCH	EQU	$B5A  ; 91 Prenotazioni    "    15/8      "
-PSRDCL	EQU	$B5B  ; 92 Prenotazioni    "    7/0       "
-PSRSCHH	EQU	$B5C  ; 93 Prenotazioni salita  31/24	  "
-PSRSCHL	EQU	$B5D  ; 94 Prenotazioni    "    23/16     "
-PSRSCH	EQU	$B5E  ; 95 Prenotazioni    "    15/8      "
-PSRSCL	EQU	$B5F  ; 96 Prenotazioni    "    7/0       "
-
-
-CNTLCC	EQU	$B60  ;    Contatore dati trasmessi per LCD su CAN bus
-*
-BUFTFT	EQU	$B63  ;	 Dati ricevuti da TFT
-TFTAS	EQU	$B6B  ;
-
-PGSEC	EQU	$B70  ;    Secondi per programmatore
-PGMIN	EQU	$B71  ;    Minuti per programmatore
-PGHOU	EQU	$B72  ;    Ore per programmatore
-PGDAY	EQU	$B73  ;    Giorni per programmatore
-PGWEE	EQU	$B74  ;    Settimane per programmatore
-PGMON	EQU	$B75  ;    Mesi per programmatore
-PGYEA	EQU	$B76  ;    Anni per programmatore
-
-T1VPH	EQU	$B80  ;	 Valore memorizzato di T1C0VH
-T1VPL	EQU	$B81  ;	 Valore memorizzato di T1C0VL
-T1VDH	EQU	$B82  ;	 Differenza valore di T1C0VH
-T1VDL	EQU	$B83  ;	 Differenza valore di T1C0VL
-
-VELIMP	EQU	$B84  ;    Velocità calcolata da impulsi ESV/A
-VELOUT	EQU	$B85  ;    Velocità memorizzata per VELOUT
-
-POSSPA	EQU	$B86  ;    Pos.trasmessa alle SPB e sul CAN bus per duplex
-OUTSPA	EQU	$B87  ;    Output trasmessi alle SPB e sul CAN bus per duplex
-
-POSSPB	EQU	$B88  ;    Pos.ricev.dalle SPB dell'altro dal CAN bus
-INPSPB	EQU	$B89  ;    Input ricev.dalle SPB dell'altro dal CAN bus
-
-CKCANR	EQU	$B8A  ;    Valore di CLKIRQ al momento di CANRIRQ
-
-CNTERR15	EQU	$B8B  ;    Contatore ERR15
-
-PORSPT	EQU	$B8C  ;    Lato porta per indirizzamento SPB
-
-;	EQU	$B8D  ;    Disponibile 3 byte
-
-DVDHL	EQU	$B90  ; 47 Variabili per operazioni aritmetiche
-DVDH	EQU	$B91  ; 48
-DVDL	EQU	$B92  ; 49
-DVSH	EQU	$B93  ; 50
-DVSL	EQU	$B94  ; 51
-QZH	EQU	$B95  ; 52
-QZL	EQU	$B96  ; 53
-R1HH	EQU	$B97  ; 54
-R1HL	EQU	$B98  ; 55
-R1H 	EQU	$B99  ; 56
-R1L 	EQU	$B9A  ; 57
-R2HH	EQU	$B9B  ; 58
-R2HL	EQU	$B9C  ; 59
-R2H	EQU	$B9D  ; 60
-R2L	EQU	$B9E  ; 61
-
-; 29/09/2025 - Variabili ausiliare per l'algoritmo di selezione del metodo di reset del blocco F08
-
-VARPCMN	EQU	$B9F  ; 62 Valore minimo dell'insieme dei valori di VARPCA, VARPCB e VARPCC su tutte le fermate
-VARPCMX	EQU	$BA0  ; 63 Valore massimo dell'insieme dei valori di VARPCA, VARPCB e VARPCC su tutte le fermate
-SELPORO	EQU	$BA1  ; 64 Risultato dell'operazione di OR su tutti i valori di SELPOR
-
-;GR08	EQU	$C00  ;    Dati visualizzati e modificati con gruppo 8
-
-EVN	EQU	$C00  ; 01
-PGADMAX	EQU	$C01  ; 02 Valore di PGADD del record di STOP
-
-RECSRTH	EQU	$C02  ; 03 Start del record
-RECSRTL	EQU	$C03  ; 04   "         "
-
-SMPNH	EQU	$C04  ; 05
-SMPNL	EQU	$C05  ; 06
-
-POSCM	EQU	$C06  ; 07
-CODGM	EQU	$C07  ; 08
-
-POSCP	EQU	$C08  ; 09
-CODGP	EQU	$C09  ; 10
-
-POSCS	EQU	$C0A  ; 11
-CODGS	EQU	$C0B  ; 12
-
-POSCV	EQU	$C0C  ; 13 Posizione cabina visualizzata
-CODGV	EQU	$C0D  ; 14 Codice errore visualizzato
-
-		      ;	2 byte disponibili
-		      
-		      ;    Buffer per Evento tipo A	tipo B	Start	Stop
-		      				
-RECB	EQU	$C10  ; 17/01 n. del ciclo SMPNH	idem	$FF	SMPNH
-		      ; 18/02  "       "   SMPNL	idem	CNTCDM	SMPNL
-		      ; 19/03 stato impianto FLG0	idem	CNTCCT	CODDG
-		      ; 20/04 dato cambiato n.FLI/O	$00	CNTCUN	$FF
-		      ; 21/05 dato precedente		POSCAB	POSCAB	Mese
-		      ; 22/06 dato successivo		CODDG	CODDG	Giorno
-		      ; 23/07 posiz.in mm.POSIMPH	idem	(RECNH)	Ora
-		      ; 24/08 posiz.in mm.POSIMPL	idem	(RECNL)	Minuto
-
-;	EQU	$C17  ; 24 Fine buffer record da memorizzare
-
-
-FLIOM	EQU	$C20  ; 33 Inizio blocco FLIO precedenti x 8
-;	EQU	$C27  ; 40 Fine blocco FLIO precedenti
-
-DTRGM	EQU	$C28  ; 41 Dati per GSM modalità 1 - valori precedenti
-;	EQU	$C2E  ; 47 Fine blocco dati GSM
-
-;	EQU	$FFF	fine primo blocco RAM - 4 Kbyte 
-
-RECCM	EQU	$1000 ;   Inizio area registrazione corsa - REC0
-
-;	da	$1000	secondo blocco RAM - 2 Kbyte 
-;	a	$17FF
-
-
-;	da	$1800	high page register - 256 byte 
-;	a	$18FF
-
-*
-* GRUPPO 4 - TIMER *
-
-FUN4	EQU	$1900  ;	 Dati visualizzati con funzione 4
-GR04	EQU	$1900  ;	   "        "       "  gruppo 4
-TDEC100	EQU	$1900  ;    Timer decr. ogni 1/100 sec
-
-TIMUG	EQU	$1900  ; 01   "   soft-start / soft-stop (VDLUG x 10)
-TIMFP	EQU	$1901  ; 02   "   fermata al piano
-TIMVA	EQU	$1902  ; 03   "   tensione alimentazione
-TIMPZ	EQU	$1903  ; 04   "   antipizzico in apertura
-TIMAPE	EQU	$1904  ; 05   "   comando inverter porte
-TIMVC	EQU	$1905  ; 06   "   apertura sicurezze ISVC - ingresso 6
-TIMSL	EQU	$1906  ; 07   "   trasmissione dati master/slave
-TIMCS	EQU	$1907  ; 08   "   controllo CS alla partenza
-TIMSS	EQU	$1908  ; 09   "   uscita SST - soft start (VDLSS x 10)
-TIMOS	EQU	$1909  ; 10   "   accensione frecce di piano al cambio POS
-TIMCSA	EQU	$190A  ; 11   "   controllo CS aperto fuori piano
-TIMAPS	EQU	$190B  ; 12   "   apertura porte di piano dopo serratura
-TIMOFY1	EQU	$190C  ; 13   "   disattivazione ORY1 per selezione serratura
-TIMVDX	EQU	$190D  ; 14   "   valvole emendamento A3
-TIMBA3	EQU	$190E  ; 15   "   ingresso per blocco IPBA3
-TIMCFP	EQU	$190F  ; 16   "   controllo uscita dal piano a porte ap.  
-TIMCMF	EQU	$1910  ; 17   "   controllo microswitch freno
-
-;		       ; disponibile 15 byte
-
-TDEC10	EQU	$1920  ;    Timer decr. ogni 1/10 sec.
-
-TIMRL	EQU	$1920  ; 33 occupato, luce, rich. porte (VDLRL x 10)
-TIMOC	EQU	$1921  ; 34 occupato dopo chiusura (VDLOC x 10)
-TIMRP	EQU	$1922  ; 35 ritardo partenza
-TIMCT	EQU	$1923  ; 36 controllo teleruttori marcia CT
-TIMCO	EQU	$1924  ; 37 controllo teleruttori porte CO
-TIMVF	EQU	$1925  ; 38 tempo massimo fermata (con VVF)
-TIMPR	EQU	$1926  ; 39 ritardo caduta pattino alla fermata
-TIMRC	EQU	$1927  ; 40 ritardo caduta teleruttori chiusura
-TIMEC	EQU	$1928  ; 41 intervento extracorsa
-TIMST	EQU	$1929  ; 42 avviamento stella triangolo
-TIMSD	EQU	$192A  ; 43 caduta S/D alla fermata
-TIMAB	EQU	$192B  ; 44 ritardo cambio velocità
-TIMFC	EQU	$192C  ; 45 fine chiusura porte / rit. ap. dopo pattino
-TIMFA	EQU	$192D  ; 46 fine apertura porte
-TIMTC	EQU	$192E  ; 47 trasmissione cabina
-TIMTD	EQU	$192F  ; 48     "        diagnostica
-TIMDP1	EQU	$1930  ; 49 ritardo parzializzazione uscita 1 - SOLO PER KAPPA
-TIMDP2	EQU	$1931  ; 50     "          "            "   2 - NON USATO
-TIMCSF	EQU	$1932  ; 51     "   avviamento dopo pattino
-TIMAUP	EQU	$1933  ; 52     "   per arresto all'uscita dal piano
-TIMAC	EQU	$1934  ; 53 timer arresto cabina
-TIMAPD	EQU	$1935  ; 54 tempo minimo comando apertura porte
-TIMTA3	EQU	$1936  ; 55 timer comando manuale per test A3
-TIMNGV	EQU	$1937  ; 56 timer controllo RDY/RUN per NGV / VX per Hydronic
-TIMV0	EQU	$1938  ; 57 azzeramento velocità misurata da ESV canale A
-;		       ; disponibile 8 byte
-*
-TDEC1S	EQU	$1940  ;    Timer decr. ogni secondo
-
-TIMMP	EQU	$1940  ; 65 decr. 1/2 sec - tempo max. porte (VDLMP x 2)
-TIMMC	EQU	$1941  ; 66 controllo movimento cabina
-TIMAMN	EQU	$1942  ; 67 timer arresto cabina in manutenzione
-TIMBZ	EQU	$1943  ; 68   "   buzzer fotocellula
-TIMCP	EQU	$1944  ; 69   "   cancella prenot. per chiusura impedita
-TIMBP	EQU	$1945  ; 70 ( "   blocco prenotazioni per duplex - da 226 VARMOD)
-TIMPH	EQU	$1946  ; 71   "   controllo fasi
-TIMEM	EQU	$1947  ; 72   "   inserimento manovra emergenza
-TIMIL	EQU	$1948  ; 73   "   intervento limite corrente
-TIMCANR	EQU	$1949  ; 74   "   ricezione CANBUS
-TIMSRE	EQU	$194A  ; 75   "   disattivazione serratura elettrica (VDLSRE x 10)
-TIMRVX	EQU	$194B  ; 76   "   EMA3 - caduta VDX Hydronic
-TIMTP1	EQU	$194C  ; 77   "   EMA3 - prova valvole periodica
-TIMPRPS	EQU	$194D  ; 78   "   ritardo partenza ripescaggio
-TIMPSL	EQU	$194E  ; 79   "   tempo ap./chius. porte senza fine corsa
-TIMSMB	EQU	$194F  ; 80   "   sblocco manut.da fossa con chiamata est.piano0
-TIMVCK	EQU	$1950  ; 81   "   ritardo reset guasto inverter OVCK - MOD. B330L
-TIMTPB	EQU	$1951  ; 82   "   tempo prova batterie
-
-;		       ; disponibile 14 byte
-
-TDEC1M	EQU	$1960  ;   Timer decr. ogni 15 secondi
-
-TIMRA	EQU	$1960  ; 97   "   ritorno piano inferiore
-TIMPP	EQU	$1961  ; 98   "   ritorno piano parcheggio
-TIMCF	EQU	$1962  ; 99   "   chiusura forzata
-TIMLR	EQU	$1963  ; 100   "   luce cabina ritardata
-TIMCB	EQU	$1964  ; 101   "   caricabatterie - per manovre "EP"
-TIMTS	EQU	$1965  ; 102   "   richiesta invio SMS
-TIMDSL	EQU	$1966  ; 103   "   luminosita display
-;	EQU	$1967  ; 104   "   disponibile
-
-;		       ; disponibile 9 byte
-
-*		       ;    Timer vari per uso generale
-
-TIMRSH	EQU	$1970  ; 113   "   ritardo inizializzazione software
-TIMRSL	EQU	$1971  ; 114   "      "	  "            "
-TIMTP2	EQU	$1972  ; 115   "   si azzera ogni 6 minuti (24 x 15 sec. - CLK1M)
-TIMTP3	EQU	$1973  ; 116   "   decrem. ogni 6 minuti
-CNTCSE	EQU	$1974  ; 117 Contatore fermate con CS aperto 
-TIMIMPE	EQU	$1975  ; 118   "       controllo impulsi encoder
-TIMVMAX	EQU	$1976  ; 119   "       controllo velocita max
-TIMVPA	EQU	$1977  ; 120   "       controllo velocità preapertura
-CNTERC5   EQU	$1978  ; 121   "       intervento guasto C5
-
-;		       ;  disponibile 7 byte
-
-;		$197F  ; fine timer
-
-;		$1980  ;  disponibile 512 byte
-;		$217F
-
-;	29/09/2025 - Secondo il DS della CPU MC9S08DZ128 la RAM disponibile è pari a 6144 bytes (0x1800) sulla parte bassa più
-;	una seconda sezione tra 0x1870 e 0x 20EF, composta da 2176 bytes
-;	EQU	$217F  ; fine area RAM
-*
-
-
-*
-* MAPPA DI MEMORIA EEPROM - totale 8 Kb *
-
-; 	da	$060	riservato per uso con BK01B200 0,5 Kb
-;	a	$1FF
-
-;	da	$200      parametri - vedi mappa RAM - stessi indirizzi
-;	a	$7FF
-
-;	da	$800	errori - vedi mappa RAM - stessi indirizzi
-;	a	$8FF
-
-;	da	$900	varie/blocchi (comuni a BK01B200)
-;	a	$9FF
-
-;	da	$A00	disponibile 1,5 Kb
-;	a	$FFF
-
-;	da	$1000	disponibile 4 Kb
-;	a	$1FFF
-
-
+<!-- errori.html - Pagina errori X2 - v2026-05-21 09:30 -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>X2 - Pagina errori</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 8px;
+      background: #111;
+      color: #eee;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mem-buttons button,
+    .ai-button button {
+      padding: 4px 8px;
+      margin-right: 4px;
+      border: 1px solid #555;
+      background: #222;
+      color: #eee;
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .mem-buttons button.active {
+      background: #0a84ff;
+      border-color: #0a84ff;
+    }
+
+    .mem-buttons button:hover,
+    .ai-button button:hover {
+      background: #333;
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Tabella errori */
+    .table-container {
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #181818;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      background: #222;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tr.selected {
+      background: #264f78;
+    }
+
+    tr:hover {
+      background: #222;
+      cursor: pointer;
+    }
+
+    /* Gemme */
+    .gem-section {
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 6px;
+      background: #181818;
+    }
+
+    .gem-section-title {
+      font-size: 12px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .gem-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .gem {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+    }
+
+    .gem-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid #555;
+      background: #222;
+    }
+
+    .gem-dot.on.in {
+      background: #00c853;
+      box-shadow: 0 0 4px #00c853;
+    }
+
+    .gem-dot.on.out {
+      background: #00b0ff;
+      box-shadow: 0 0 4px #00b0ff;
+    }
+
+    .gem-dot.on.flag {
+      background: #ffab00;
+      box-shadow: 0 0 4px #ffab00;
+    }
+
+    .gem-label {
+      color: #ccc;
+    }
+
+    /* Dettagli errore selezionato */
+    .details {
+      font-size: 11px;
+      margin-top: 4px;
+      color: #ccc;
+    }
+
+    .details span {
+      margin-right: 12px;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 10px;
+      }
+      .gem-label {
+        font-size: 9px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>ERRORI X2 – Memorie A/B/C + Gemme IN/OUT/FLAG</h1>
+
+<div class="top-bar">
+  <div class="mem-buttons">
+    <button id="btnMemA" class="active">Memoria A</button>
+    <button id="btnMemB">Memoria B</button>
+    <button id="btnMemC">Memoria C</button>
+    <button id="btnLoadFile">Carica file…</button>
+  </div>
+  <div class="ai-button">
+    <button id="btnAI">Analizza con AI (mock)</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- TABELLONE ERRORI -->
+  <div class="table-container">
+    <table id="tblErrori">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data</th>
+          <th>Ora</th>
+          <th>Piano</th>
+          <th>Codice</th>
+          <th>Descrizione</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- righe generate via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DETTAGLI ERRORE SELEZIONATO -->
+  <div class="details" id="detailsErrore">
+    Nessun errore selezionato.
+  </div>
+
+  <!-- GEMME IN -->
+  <div class="gem-section">
+    <div class="gem-section-title">Ingressi (IN01 – IN64)</div>
+    <div class="gem-grid" id="gridIN">
+      <!-- gemme IN generate via JS -->
+    </div>
+  </div>
+
+  <!-- GEMME OUT -->
+  <div class="gem-section">
+    <div class="gem-section-title">Uscite (OUT01 – OUT64)</div>
+    <div class="gem-grid" id="gridOUT">
+      <!-- gemme OUT generate via JS -->
+    </div>
+  </div>
+
+  <!-- GEMME FLAG -->
+  <div class="gem-section">
+    <div class="gem-section-title">Flag (FLAG01 – FLAG32)</div>
+    <div class="gem-grid" id="gridFLAG">
+      <!-- gemme FLAG generate via JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =========================================================================
+   Pagina errori X2 - logica base
+   v2026-05-21 09:30
+   - Tabella errori (16 errori x 16 byte, da 0x800 a 0x8FF)
+   - Gemme IN/OUT/FLAG (placeholder, tutte spente)
+   - Tasto AI (mock)
+   ======================================================================= */
+
+/* -----------------------------------------------------------------------
+   1. Placeholder memorie A/B/C
+   -------------------------------------------------------------------- */
+/*
+   QUI dovrai sostituire memA, memB, memC con i dati reali letti dalla
+   EEPROM (zona 0x800–0x8FF). Per ora metto array finti per vedere la
+   struttura funzionare.
+*/
+
+const memA = new Uint8Array(0x1000); // placeholder
+const memB = new Uint8Array(0x1000); // placeholder
+const memC = new Uint8Array(0x1000); // placeholder
+
+// Per test: riempiamo qualche errore finto in memA
+(function initFakeErrors() {
+  for (let i = 0; i < 16; i++) {
+    const base = 0x800 + i * 16;
+    memA[base + 0] = 10 + i;      // codice errore
+    memA[base + 1] = i % 8;       // piano
+    memA[base + 2] = 21;          // giorno
+    memA[base + 3] = 5;           // mese
+    memA[base + 4] = 26;          // anno (2026 -> 26)
+    memA[base + 5] = 8;           // ora
+    memA[base + 6] = i * 3;       // minuto
+    memA[base + 7] = 0;           // secondi (placeholder)
+    // byte 8–15: per ora li lasciamo a 0 (gemme tutte spente)
+  }
+})();
+
+/* -----------------------------------------------------------------------
+   2. Stato corrente
+   -------------------------------------------------------------------- */
+
+let currentMem = 'A';   // 'A', 'B', 'C'
+let currentSelectedIndex = -1; // indice errore selezionato (0–15)
+
+/* -----------------------------------------------------------------------
+   3. Utility: accesso memoria corrente
+   -------------------------------------------------------------------- */
+
+function getCurrentMemArray() {
+  if (currentMem === 'A') return memA;
+  if (currentMem === 'B') return memB;
+  return memC;
+}
+
+/* -----------------------------------------------------------------------
+   4. Costruzione gemme (IN/OUT/FLAG)
+   -------------------------------------------------------------------- */
+
+function createGems() {
+  const gridIN = document.getElementById('gridIN');
+  const gridOUT = document.getElementById('gridOUT');
+  const gridFLAG = document.getElementById('gridFLAG');
+
+  // IN01–IN64
+  for (let i = 1; i <= 64; i++) {
+    const gem = document.createElement('div');
+    gem.className = 'gem';
+    const dot = document.createElement('div');
+    dot.className = 'gem-dot in';
+    dot.dataset.type = 'in';
+    dot.dataset.index = i;
+    const label = document.createElement('span');
+    label.className = 'gem-label';
+    label.textContent = 'IN' + String(i).padStart(2, '0');
+    gem.appendChild(dot);
+    gem.appendChild(label);
+    gridIN.appendChild(gem);
+  }
+
+  // OUT01–OUT64
+  for (let i = 1; i <= 64; i++) {
+    const gem = document.createElement('div');
+    gem.className = 'gem';
+    const dot = document.createElement('div');
+    dot.className = 'gem-dot out';
+    dot.dataset.type = 'out';
+    dot.dataset.index = i;
+    const label = document.createElement('span');
+    label.className = 'gem-label';
+    label.textContent = 'OUT' + String(i).padStart(2, '0');
+    gem.appendChild(dot);
+    gem.appendChild(label);
+    gridOUT.appendChild(gem);
+  }
+
+  // FLAG01–FLAG32
+  for (let i = 1; i <= 32; i++) {
+    const gem = document.createElement('div');
+    gem.className = 'gem';
+    const dot = document.createElement('div');
+    dot.className = 'gem-dot flag';
+    dot.dataset.type = 'flag';
+    dot.dataset.index = i;
+    const label = document.createElement('span');
+    label.className = 'gem-label';
+    label.textContent = 'FLAG' + String(i).padStart(2, '0');
+    gem.appendChild(dot);
+    gem.appendChild(label);
+    gridFLAG.appendChild(gem);
+  }
+}
+
+/* -----------------------------------------------------------------------
+   5. Aggiornamento gemme da bit (placeholder)
+   -------------------------------------------------------------------- */
+/*
+   Quando avrai la mappa dei bit, qui dentro useremo i byte 8–15
+   del blocco errore per accendere/spegnere le gemme.
+
+   Per ora: tutte spente.
+*/
+
+function updateGemsForError(errorIndex) {
+  const dots = document.querySelectorAll('.gem-dot');
+  dots.forEach(dot => dot.classList.remove('on'));
+
+  if (errorIndex < 0) return;
+
+  const mem = getCurrentMemArray();
+  const base = 0x800 + errorIndex * 16;
+
+  // byte 8–15: dettagli IN/OUT/FLAG (placeholder)
+  const detailBytes = [];
+  for (let i = 0; i < 8; i++) {
+    detailBytes.push(mem[base + 8 + i]);
+  }
+
+  // QUI in futuro:
+  // - decodifica detailBytes in bit
+  // - accendi le gemme corrispondenti
+  // Esempio futuro (pseudo):
+  // if (bit IN01 = 1) -> gem-dot[data-type="in"][data-index="1"].classList.add('on');
+
+  // Per ora lasciamo tutto spento.
+}
+
+/* -----------------------------------------------------------------------
+   6. Costruzione tabella errori
+   -------------------------------------------------------------------- */
+
+function buildErrorTable() {
+  const tbody = document.querySelector('#tblErrori tbody');
+  tbody.innerHTML = '';
+
+  const mem = getCurrentMemArray();
+
+  // Ora: 16 errori (0–15). In futuro potrai portarlo a 64.
+  const maxErrori = 16;
+
+  for (let i = 0; i < maxErrori; i++) {
+    const base = 0x800 + i * 16;
+    const codice = mem[base + 0];
+    const piano  = mem[base + 1];
+    const giorno = mem[base + 2];
+    const mese   = mem[base + 3];
+    const anno   = mem[base + 4];
+    const ora    = mem[base + 5];
+    const minuto = mem[base + 6];
+    const secondo= mem[base + 7];
+
+    // Se codice = 0 e tutto il resto è 0, possiamo considerarlo "vuoto"
+    const isEmpty = (codice === 0 && piano === 0 && giorno === 0 &&
+                     mese === 0 && anno === 0 && ora === 0 &&
+                     minuto === 0 && secondo === 0);
+
+    if (isEmpty) {
+      // Puoi decidere se saltare la riga o mostrarla vuota.
+      // Per ora la mostro lo stesso, ma con descrizione "—".
+    }
+
+    const tr = document.createElement('tr');
+    tr.dataset.index = i;
+
+    const tdIdx = document.createElement('td');
+    tdIdx.textContent = i + 1;
+
+    const tdData = document.createElement('td');
+    tdData.textContent =
+      String(giorno).toString().padStart(2, '0') + '/' +
+      String(mese).toString().padStart(2, '0') + '/20' +
+      String(anno).toString().padStart(2, '0');
+
+    const tdOra = document.createElement('td');
+    tdOra.textContent =
+      String(ora).toString().padStart(2, '0') + ':' +
+      String(minuto).toString().padStart(2, '0');
+
+    const tdPiano = document.createElement('td');
+    tdPiano.textContent = piano;
+
+    const tdCod = document.createElement('td');
+    tdCod.textContent = codice;
+
+    const tdDesc = document.createElement('td');
+    // Descrizione: per ora placeholder. In futuro useremo una tabella codici.
+    tdDesc.textContent = isEmpty ? '—' : ('Errore ' + codice);
+
+    tr.appendChild(tdIdx);
+    tr.appendChild(tdData);
+    tr.appendChild(tdOra);
+    tr.appendChild(tdPiano);
+    tr.appendChild(tdCod);
+    tr.appendChild(tdDesc);
+
+    tr.addEventListener('click', () => onSelectErrorRow(i));
+
+    tbody.appendChild(tr);
+  }
+}
+
+/* -----------------------------------------------------------------------
+   7. Selezione riga errore
+   -------------------------------------------------------------------- */
+
+function onSelectErrorRow(index) {
+  currentSelectedIndex = index;
+
+  // evidenzia riga
+  const rows = document.querySelectorAll('#tblErrori tbody tr');
+  rows.forEach(r => r.classList.remove('selected'));
+  const row = document.querySelector('#tblErrori tbody tr[data-index="' + index + '"]');
+  if (row) row.classList.add('selected');
+
+  // aggiorna dettagli
+  updateDetailsForError(index);
+
+  // aggiorna gemme
+  updateGemsForError(index);
+}
+
+/* -----------------------------------------------------------------------
+   8. Dettagli errore selezionato
+   -------------------------------------------------------------------- */
+
+function updateDetailsForError(index) {
+  const details = document.getElementById('detailsErrore');
+  if (index < 0) {
+    details.textContent = 'Nessun errore selezionato.';
+    return;
+  }
+
+  const mem = getCurrentMemArray();
+  const base = 0x800 + index * 16;
+
+  const codice = mem[base + 0];
+  const piano  = mem[base + 1];
+  const giorno = mem[base + 2];
+  const mese   = mem[base + 3];
+  const anno   = mem[base + 4];
+  const ora    = mem[base + 5];
+  const minuto = mem[base + 6];
+  const secondo= mem[base + 7];
+
+  const dataStr =
+    String(giorno).padStart(2, '0') + '/' +
+    String(mese).padStart(2, '0') + '/20' +
+    String(anno).padStart(2, '0');
+
+  const oraStr =
+    String(ora).padStart(2, '0') + ':' +
+    String(minuto).padStart(2, '0') + ':' +
+    String(secondo).padStart(2, '0');
+
+  details.innerHTML =
+    '<span><strong>Errore:</strong> ' + codice + '</span>' +
+    '<span><strong>Piano:</strong> ' + piano + '</span>' +
+    '<span><strong>Data:</strong> ' + dataStr + '</span>' +
+    '<span><strong>Ora:</strong> ' + oraStr + '</span>';
+}
+
+/* -----------------------------------------------------------------------
+   9. Gestione tasti memorie A/B/C
+   -------------------------------------------------------------------- */
+
+function setMemoria(mem) {
+  currentMem = mem;
+  currentSelectedIndex = -1;
+
+  document.getElementById('btnMemA').classList.toggle('active', mem === 'A');
+  document.getElementById('btnMemB').classList.toggle('active', mem === 'B');
+  document.getElementById('btnMemC').classList.toggle('active', mem === 'C');
+
+  buildErrorTable();
+  updateDetailsForError(-1);
+  updateGemsForError(-1);
+}
+
+/* -----------------------------------------------------------------------
+   10. Tasto AI (mock)
+   -------------------------------------------------------------------- */
+
+function onAIAnalyze() {
+  if (currentSelectedIndex < 0) {
+    alert('Seleziona prima un errore nella tabella.');
+    return;
+  }
+
+  const mem = getCurrentMemArray();
+  const base = 0x800 + currentSelectedIndex * 16;
+
+  const codice = mem[base + 0];
+  const piano  = mem[base + 1];
+
+  // Qui in futuro manderemo i dati reali all’AI.
+  // Ora facciamo solo una simulazione testuale.
+  const msg =
+    'AI (simulazione)\n\n' +
+    'Errore ' + codice + ' al piano ' + piano + '.\n\n' +
+    'Possibili cause (esempio):\n' +
+    '- Controllare sensori di piano\n' +
+    '- Verificare porte e sicurezze\n' +
+    '- Controllare cablaggi e alimentazioni\n\n' +
+    '(In futuro questo testo arriverà dall’AI, usando i dati reali.)';
+
+  alert(msg);
+}
+
+/* -----------------------------------------------------------------------
+   11. Tasto "Carica file…" (placeholder)
+   -------------------------------------------------------------------- */
+
+function onLoadFile() {
+  alert('Placeholder: qui in futuro potrai caricare una memoria da file.\n' +
+        'Per ora la pagina usa memA/memB/memC fittizie.');
+}
+
+/* -----------------------------------------------------------------------
+   12. Inizializzazione pagina
+   -------------------------------------------------------------------- */
+
+function initPage() {
+  createGems();
+  buildErrorTable();
+
+  document.getElementById('btnMemA').addEventListener('click', () => setMemoria('A'));
+  document.getElementById('btnMemB').addEventListener('click', () => setMemoria('B'));
+  document.getElementById('btnMemC').addEventListener('click', () => setMemoria('C'));
+  document.getElementById('btnAI').addEventListener('click', onAIAnalyze);
+  document.getElementById('btnLoadFile').addEventListener('click', onLoadFile);
+}
+
+document.addEventListener('DOMContentLoaded', initPage);
+</script>
+
+</body>
+</html>
