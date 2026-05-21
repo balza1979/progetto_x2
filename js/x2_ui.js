@@ -188,42 +188,71 @@ function x2_calcolaHex(param) {
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
-    const inputNum = document.getElementById("input_valore_num");
-    const unita = document.getElementById("unita_misura");
+    tendina.innerHTML = "";
 
-    // Reset UI
-    tendina.style.display = "none";
-    inputNum.style.display = "none";
-    unita.textContent = "";
-
-    // ------------------------------------------------------------
-    // 1) PARAMETRI A ELENCO (JSON)
-    // ------------------------------------------------------------
+    // Caso 1: PARAMETRO A ELENCO (usa JSON)
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-        tendina.style.display = "block";
-        tendina.innerHTML = "";
+        const nomeJSON =
+            param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI !== "/"
+            ? param.JS_FONTE_ELENCO_VALORI
+            : param.PARAMETRO;
 
-        const nomeJson = param.PARAMETRO + ".json";
+        x2_caricaJSON(nomeJSON, function(data) {
 
-        fetch("json_tendine/" + nomeJson)
-            .then(r => r.json())
-            .then(data => {
-                data.valori.forEach(v => {
-                    const opt = document.createElement("option");
-                    opt.value = v.id;
-                    opt.textContent = v.text;
-                    tendina.appendChild(opt);
-                });
-
-                tendina.value = param.VALORE;
-            })
-            .catch(() => {
-                tendina.innerHTML = "<option>ERRORE JSON</option>";
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = voce.text;
+                tendina.appendChild(opt);
             });
+
+            tendina.value = param.VALORE;
+        });
 
         return;
     }
+
+    // Caso 2: PARAMETRO NUMERICO (MIN_MAX)
+    if (param.TIPO_ELENCO === "MIN_MAX") {
+
+        // Creiamo opzioni da MIN a MAX
+        const min = parseInt(param.MIN);
+        const max = parseInt(param.MAX);
+
+        for (let i = min; i <= max; i++) {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            tendina.appendChild(opt);
+        }
+
+        tendina.value = param.VALORE;
+        return;
+    }
+
+    // Caso 3: PARAMETRO DECIMALE
+    if (param.TIPO_ELENCO === "DECIMALE") {
+
+        const min = parseFloat(param.MIN);
+        const max = parseFloat(param.MAX);
+        const dec = parseInt(param.DECIMALI);
+        const step = 1 / Math.pow(10, dec);
+
+        for (let v = min; v <= max; v += step) {
+            const opt = document.createElement("option");
+            opt.value = v.toFixed(dec);
+            opt.textContent = v.toFixed(dec);
+            tendina.appendChild(opt);
+        }
+
+        tendina.value = param.VALORE;
+        return;
+    }
+
+    // Caso fallback
+    tendina.innerHTML = "<option>— nessun valore —</option>";
+}
 
     // ------------------------------------------------------------
     // 2) PARAMETRI NUMERICI (MIN/MAX)
