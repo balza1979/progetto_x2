@@ -190,112 +190,40 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // ------------------------------------------------------------
-    // 1) PARAMETRI A ELENCO (JSON)
-    // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
+    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+    pulsanti.forEach(btn => {
+        btn.textContent = "-";
+        btn.disabled = true;
+        btn.onclick = null;
+    });
 
-        const nomeJSON =
-            param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI !== "/"
-            ? param.JS_FONTE_ELENCO_VALORI
-            : param.PARAMETRO;
+    let nomeJSON;
+    if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
+        nomeJSON = param.PARAMETRO.trim();
+    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
+        nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+    } else {
+        nomeJSON = param.PARAMETRO.trim();
+    }
 
-        x2_caricaJSON(nomeJSON, function(data) {
+    x2_caricaJSON(nomeJSON, function(data) {
 
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = voce.text;
-                tendina.appendChild(opt);
-            });
-
-            tendina.value = param.VALORE;
+        // Costruzione tendina
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce.id;
+            opt.textContent = `"${voce.id}" ${voce.text}`;
+            tendina.appendChild(opt);
         });
 
-        return;
-    }
+        // Valore iniziale
+        const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+        tendina.value = valorePulito;
 
-    // ------------------------------------------------------------
-    // 2) PARAMETRI NUMERICI (MIN_MAX)
-    // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "MIN_MAX") {
-
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
-
-        for (let i = min; i <= max; i++) {
-            const opt = document.createElement("option");
-            opt.value = i;
-            opt.textContent = i;
-            tendina.appendChild(opt);
-        }
-
-        tendina.value = param.VALORE;
-        return;
-    }
-
-    // ------------------------------------------------------------
-    // 3) PARAMETRI DECIMALI
-    // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "DECIMALE") {
-
-        const min = parseFloat(param.MIN);
-        const max = parseFloat(param.MAX);
-        const dec = parseInt(param.DECIMALI);
-        const step = 1 / Math.pow(10, dec);
-
-        for (let v = min; v <= max + 0.0000001; v += step) {
-            const opt = document.createElement("option");
-            opt.value = v.toFixed(dec);
-            opt.textContent = v.toFixed(dec);
-            tendina.appendChild(opt);
-        }
-
-        tendina.value = param.VALORE;
-        return;
-    }
-
-    // ------------------------------------------------------------
-    // 4) FALLBACK
-    // ------------------------------------------------------------
-    tendina.innerHTML = "<option>— nessun valore —</option>";
+        // Aggiorna val1…val8
+        x2_aggiornaValoriDaSelezione(data, valorePulito);
+    });
 }
-
-    // ------------------------------------------------------------
-    // 2) PARAMETRI NUMERICI (MIN/MAX)
-    // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "MIN_MAX") {
-
-        inputNum.style.display = "block";
-        inputNum.type = "number";
-        inputNum.min = param.MIN;
-        inputNum.max = param.MAX;
-        inputNum.step = "1";
-        inputNum.value = param.VALORE;
-
-        unita.textContent = param.UNITA !== "/" ? param.UNITA : "";
-
-        return;
-    }
-
-    // ------------------------------------------------------------
-    // 3) PARAMETRI DECIMALI
-    // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "DECIMALE") {
-
-        inputNum.style.display = "block";
-        inputNum.type = "number";
-        inputNum.min = param.MIN;
-        inputNum.max = param.MAX;
-        inputNum.step = "0." + "1".padStart(param.DECIMALI, "0");
-        inputNum.value = param.VALORE;
-
-        unita.textContent = param.UNITA !== "/" ? param.UNITA : "";
-
-        return;
-    }
-}
-
 
 
 // ------------------------------------------------------------
