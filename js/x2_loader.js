@@ -7,16 +7,18 @@
 // - Ripristinata funzione x2_caricaJSON()
 // - Gestione errori fetch JSON
 // - Percorso json_tendine/<nome>.json
-// - FIX: nomeFile ora è usato così com'è (niente .json aggiunto)
+// - FIX: rimuove eventuale ".json" doppio
 // ======================================================================
 
 // … codice loader …
 
 function x2_caricaJSON(nomeFile, callback) {
 
-    // ⚠️ IMPORTANTE:
-    // nomeFile DEVE essere già senza estensione
-    // esempio: "2.2.xx" → apre "json_tendine/2.2.xx.json"
+    // Se il nome contiene già ".json", lo rimuovo
+    // così evitiamo ".json.json"
+    if (nomeFile.endsWith(".json")) {
+        nomeFile = nomeFile.slice(0, -5);
+    }
 
     fetch("json_tendine/" + nomeFile + ".json")
         .then(response => {
