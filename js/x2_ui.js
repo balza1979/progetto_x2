@@ -240,8 +240,9 @@ function x2_popolaValori(param) {
 
         for (let i = min; i <= max; i++) {
             const opt = document.createElement("option");
-            opt.value = i;
-            opt.textContent = i;
+            opt.value = String(i).padStart(2,"0");
+            opt.textContent = String(i).padStart(2,"0");
+
             tendina.appendChild(opt);
         }
 
@@ -261,12 +262,15 @@ function x2_popolaValori(param) {
 
         for (let v = min; v <= max + 0.0000001; v += step) {
             const opt = document.createElement("option");
-            opt.value = v.toFixed(dec);
-            opt.textContent = v.toFixed(dec);
+            const val = v.toFixed(dec);
+            opt.value = val.padStart(2,"0");
+            opt.textContent = val.padStart(2,"0");
+
             tendina.appendChild(opt);
         }
 
-        tendina.value = param.VALORE;
+      tendina.value = String(param.VALORE).padStart(2,"0");
+
         return;
     }
 
