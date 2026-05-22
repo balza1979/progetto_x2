@@ -1,0 +1,24 @@
+{
+  "valori": [
+    {"id": "00", "text": "Non attivo"},
+    {"id": "01", "text": "Duplex"},
+    {"id": "02", "text": "Non attivo"},
+    {"id": "03", "text": "Non attivo"},
+    {"id": "04", "text": "GSM 500"},
+    {"id": "05", "text": "Non attivo"},
+    {"id": "06", "text": "Non attivo"},
+    {"id": "07", "text": "Non attivo"},
+    {"id": "08", "text": "Riservato"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "05": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "06": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "07": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "08": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
