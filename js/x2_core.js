@@ -78,9 +78,23 @@ function x2_gestisciParametroSpeciale(param, id) {
 // ------------------------------------------------------------
 function x2_aggiornaValoriParametro(param, id) {
 
-    const nomeFile = param.JS_FONTE_ELENCO_VALORI;
+    // Se NON è un parametro a tendina JSON → NON caricare JSON
+    if (param.TIPO_ELENCO !== "ELENCO_PREDEFINITO") {
+        return;
+    }
 
-    x2_caricaJSON(nomeFile, function(data) {
+    let nomeJSON = null;
+    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+
+    if (fonte === "parametro") {
+        nomeJSON = param.PARAMETRO.trim();
+    } else if (fonte && fonte !== "/") {
+        nomeJSON = fonte;
+    } else {
+        nomeJSON = param.PARAMETRO.trim();
+    }
+
+    x2_caricaJSON(nomeJSON, function(data) {
 
         const lista =
             data.file_parametro[id] ||
@@ -102,6 +116,7 @@ function x2_aggiornaValoriParametro(param, id) {
         }
     });
 }
+
 
 // ------------------------------------------------------------
 // MOSTRA PARAMETRO (normale o speciale)
