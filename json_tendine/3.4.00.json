@@ -1,0 +1,20 @@
+{
+  "valori": [
+    {"id": "00", "text": "Non attive"},
+    {"id": "01", "text": "Cabina manuali / Piano manuali"},
+    {"id": "02", "text": "Cabina senza / Piano motorizzate"},
+    {"id": "03", "text": "Cabina automatiche / Piano manuali"},
+    {"id": "04", "text": "Cabina automatiche / Piano abbinate"},
+    {"id": "05", "text": "Cabina automatiche / Piano motorizzate"},
+    {"id": "06", "text": "Cabina automatiche / Piano mant. apertura"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "05": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "06": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
