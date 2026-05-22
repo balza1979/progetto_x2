@@ -7,6 +7,7 @@ const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
+
 function apriErrori() {
     window.location.href = "errori_x2.html";
 }
@@ -100,6 +101,28 @@ function buildAddressToParamMap() {
 }
 
 // ============================================================
+//  CERCA IMPOSTAZIONE NEL JSON
+// ============================================================
+
+async function x2_trovaImpostazione(parametroCodice, valore) {
+
+    return new Promise(resolve => {
+
+        x2_caricaJSON(parametroCodice, function(data) {
+
+            if (!data || !data.valori) {
+                resolve("—");
+                return;
+            }
+
+            const voce = data.valori.find(v => v.id === valore);
+
+            resolve(voce ? voce.text : "—");
+        });
+    });
+}
+
+// ============================================================
 //  CONFRONTO MEMORIA
 // ============================================================
 
@@ -148,23 +171,20 @@ function compareMemory(memA, memB, addrMap) {
         const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
-   const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
+        const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-// Se diversi → sempre dentro
-// Se uguali → dentro SOLO se flag attivo
-if (diversi || valA !== valB || visualizzaTutto) {
-    diff.push({
-        base,
-        len,
-        nome,
-        codice: p.PARAMETRO,
-        bytesA,
-        bytesB,
-        valA_str,
-        valB_str
-    });
-}
-
+        if (diversi || valA !== valB || visualizzaTutto) {
+            diff.push({
+                base,
+                len,
+                nome,
+                codice: p.PARAMETRO,
+                bytesA,
+                bytesB,
+                valA_str,
+                valB_str
+            });
+        }
     }
 
     return { diff, runtime };
@@ -174,7 +194,7 @@ if (diversi || valA !== valB || visualizzaTutto) {
 //  RENDER RISULTATI
 // ============================================================
 
-function renderResults(result) {
+async function renderResults(result) {
 
     const lista = result.diff;
     const runtime = result.runtime;
@@ -208,6 +228,7 @@ function renderResults(result) {
                     <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
                     <th>Parametro</th>
                     <th>Valore complessivo</th>
+                    <th>Impostazione</th>
                 </tr>
         `;
 
@@ -228,6 +249,18 @@ function renderResults(result) {
                         <td rowspan="${d.len}" style="text-align:center;">
                             <b>${confrontoAttivo.split("-")[0]}:</b> ${d.valA_str}<br>
                             <b>${confrontoAttivo.split("-")[1]}:</b> ${d.valB_str}
+                        </td>
+                    `;
+
+                    // ⭐ COLONNA IMPOSTAZIONE
+                    let valore = d.valA_str.split(" ")[0];
+                    valore = String(valore).padStart(2,"0");
+
+                    const testoImp = await x2_trovaImpostazione(d.codice, valore);
+
+                    html += `
+                        <td rowspan="${d.len}" style="text-align:center;">
+                            ${testoImp}
                         </td>
                     `;
                 }
@@ -280,18 +313,17 @@ function renderResults(result) {
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
- btn.addEventListener("click", () => {
-    if (section.style.display === "none") {
-        section.style.display = "block";
-        btn.textContent = "Nascondi valori runtime non programmabili";
-    } else {
-        section.style.display = "none";
-        btn.textContent = "Mostra valori runtime non programmabili";
-    }
-});
+    btn.addEventListener("click", () => {
+        if (section.style.display === "none") {
+            section.style.display = "block";
+            btn.textContent = "Nascondi valori runtime non programmabili";
+        } else {
+            section.style.display = "none";
+            btn.textContent = "Mostra valori runtime non programmabili";
+        }
+    });
 
-// ⭐ Applica i filtri colonne dopo aver generato la tabella
-applyColumnFilters();
+    applyColumnFilters();
 }
 
 // ============================================================
@@ -350,6 +382,7 @@ function isNumber(x) {
 function debugLog(msg) {
     // console.log("[DEBUG]", msg);
 }
+
 function applyColumnFilters() {
     document.querySelectorAll(".col-flag").forEach(flag => {
         const colIndex = parseInt(flag.dataset.col);
@@ -364,7 +397,8 @@ function applyColumnFilters() {
             });
         });
     });
-}   //  ⭐ MANCAVA QUESTA GRAFFA QUI
+}
+
 function evidenziaPulsante(idAttivo) {
     const ids = ["btnAB", "btnAC", "btnBC"];
 
@@ -378,10 +412,12 @@ function evidenziaPulsante(idAttivo) {
             btn.classList.remove("attivo");
         }
     });
+}
 
 // ============================================================
-//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE  –  20/05/2026
+//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
 // ============================================================
+
 function salvaFile(lettera, input) {
     const file = input.files[0];
     if (!file) return;
@@ -392,7 +428,4 @@ function salvaFile(lettera, input) {
         localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
     };
     reader.readAsText(file);
-}
-
-    
 }
