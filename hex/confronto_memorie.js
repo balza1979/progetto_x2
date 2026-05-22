@@ -304,13 +304,27 @@ async function renderResults(result) {
     for (let r of righe) {
 
         const codice = r.dataset.codice;
-        let valore = r.dataset.valA.split(" ")[0];
-        valore = String(valore).padStart(2,"0");
+      let valore = r.dataset.valA.split(" ")[0].trim();
 
-        const testo = await x2_trovaImpostazione(codice, valore);
+// Se è "--" → nessuna impostazione
+if (valore === "--") {
+    const cella = r.querySelector(".col-impostazione");
+    if (cella) cella.textContent = "—";
+    continue;
+}
 
-        const cella = r.querySelector(".col-impostazione");
-        if (cella) cella.textContent = testo;
+// Converte in numero → poi in 2 cifre
+if (!isNaN(valore)) {
+    valore = String(parseInt(valore)).padStart(2,"0");
+}
+
+// Cerca nel JSON
+const testo = await x2_trovaImpostazione(codice, valore);
+
+// Scrive nella cella
+const cella = r.querySelector(".col-impostazione");
+if (cella) cella.textContent = testo;
+
     }
 
     // toggle runtime
