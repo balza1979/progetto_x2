@@ -118,6 +118,7 @@ function x2_aggiornaValoriParametro(param, id) {
 }
 
 
+
 // ------------------------------------------------------------
 // MOSTRA PARAMETRO (normale o speciale)
 // ------------------------------------------------------------
