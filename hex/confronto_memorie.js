@@ -108,17 +108,26 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
 
     return new Promise(resolve => {
 
-        x2_caricaJSON(parametroCodice, function(data) {
+        const url = "/progetto_x2/json_tendine/" + parametroCodice + ".json";
 
-            if (!data || !data.valori) {
-                resolve("—");
-                return;
-            }
+        fetch(url)
+            .then(r => {
+                if (!r.ok) {
+                    resolve("—");
+                    return null;
+                }
+                return r.json();
+            })
+            .then(data => {
+                if (!data || !data.valori) {
+                    resolve("—");
+                    return;
+                }
 
-            const voce = data.valori.find(v => v.id === valore);
-
-            resolve(voce ? voce.text : "—");
-        });
+                const voce = data.valori.find(v => v.id === valore);
+                resolve(voce ? voce.text : "—");
+            })
+            .catch(() => resolve("—"));
     });
 }
 
@@ -237,10 +246,11 @@ async function renderResults(result) {
             for (let i = 0; i < d.len; i++) {
 
                 html += `
-                    <tr class="param-row"
+                    <tr class="param-row" ${i === 0 ? `
                         data-codice="${d.codice}"
                         data-valA="${d.bytesA[0]}"
-                        data-valB="${d.bytesB[0]}">
+                        data-valB="${d.bytesB[0]}"
+                    ` : ""}>
                         <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td>${formatVal(d.bytesA[i])}</td>
                         <td>${formatVal(d.bytesB[i])}</td>
@@ -303,7 +313,7 @@ async function renderResults(result) {
     document.getElementById("risultati").innerHTML = html;
 
     // ⭐ DOPO AVER INSERITO L’HTML → RIEMPIAMO LA COLONNA IMPOSTAZIONE
-    const righe = document.querySelectorAll("#tabDiff tr.param-row");
+    const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
 
     for (let r of righe) {
 
