@@ -48,7 +48,7 @@
     {"id": "45", "text": "Apertura porte in manutenzione"},
     {"id": "46", "text": "Chiusura porte in manutenzione"},
     {"id": "47", "text": "Controllo bypass sicurezze porte"},
-    {"id": "48", "text": "Relè porte cabina chiuse ( fine corsa )"},
+    {"id": "48", "text": "RelÃ¨ porte cabina chiuse ( fine corsa )"},
     {"id": "49", "text": "Fotocellula lato A"},
     {"id": "50", "text": "Costola mobile lato A"},
     {"id": "51", "text": "Fine apertura lato A"},
@@ -86,7 +86,7 @@
     {"id": "83", "text": "Sblocco manutenzione dalla fossa"},
     {"id": "84", "text": "Controllo porte chiuse EN  81-20"},
     {"id": "85", "text": "Contatto porta chiusa lato B  81-20"},
-    {"id": "86", "text": "Manovra prioritaria\ ospedaliera  in preparazione su b336"},
+    {"id": "86", "text": "Manovra prioritaria / ospedaliera  in preparazione su b336"},
     {"id": "87", "text": "Attiva ciclo automatico"},
     {"id": "88", "text": "Sonda termica non programmabile"}
   ],
