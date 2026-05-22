@@ -1,0 +1,16 @@
+{
+  "valori": [
+    {"id": "00", "text": "Disattivate"},
+    {"id": "01", "text": "Esp.3B -  B3R1 / R6"},
+    {"id": "02", "text": "Esp.6B -  B6R1 / R6"},
+    {"id": "03", "text": "Esp.7B -  B7R1 / R6"},
+    {"id": "04", "text": "Esp.7B -  B7R1 / R4"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}

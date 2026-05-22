@@ -1,0 +1,22 @@
+{
+  "valori": [
+    {"id": "00", "text": "ABCDE / ABCDE"},
+    {"id": "01", "text": "B3 H8/H1 / ABCDE"},
+    {"id": "02", "text": "B6 H8/H1 / ABCDE"},
+    {"id": "03", "text": "B7 H8/H1 / ABCDE"},
+    {"id": "04", "text": "ABCDE / C7 H8/H1"},
+    {"id": "05", "text": "B3 H8/H1 / C7 H8/H1"},
+    {"id": "06", "text": "B6 H8/H1 / C7 H8/H1"},
+    {"id": "07", "text": "B7 H8/H1 / C7 H8/H1"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "05": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "06": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "07": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
