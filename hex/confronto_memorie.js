@@ -193,6 +193,7 @@ function compareMemory(memA, memB, addrMap) {
 // ============================================================
 //  RENDER RISULTATI
 // ============================================================
+
 async function renderResults(result) {
 
     const lista = result.diff;
@@ -236,7 +237,10 @@ async function renderResults(result) {
             for (let i = 0; i < d.len; i++) {
 
                 html += `
-                    <tr class="param-row" data-codice="${d.codice}" data-valA="${d.valA_str}">
+                    <tr class="param-row"
+                        data-codice="${d.codice}"
+                        data-valA="${d.bytesA[0]}"
+                        data-valB="${d.bytesB[0]}">
                         <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td>${formatVal(d.bytesA[i])}</td>
                         <td>${formatVal(d.bytesB[i])}</td>
@@ -304,27 +308,31 @@ async function renderResults(result) {
     for (let r of righe) {
 
         const codice = r.dataset.codice;
-      let valore = r.dataset.valA.split(" ")[0].trim();
 
-// Se è "--" → nessuna impostazione
-if (valore === "--") {
-    const cella = r.querySelector(".col-impostazione");
-    if (cella) cella.textContent = "—";
-    continue;
-}
+        // Valore A (byte reale)
+        let valA = r.dataset.valA;
+        if (!valA || valA === "--") valA = null;
 
-// Converte in numero → poi in 2 cifre
-if (!isNaN(valore)) {
-    valore = String(parseInt(valore)).padStart(2,"0");
-}
+        // Valore B (byte reale)
+        let valB = r.dataset.valB;
+        if (!valB || valB === "--") valB = null;
 
-// Cerca nel JSON
-const testo = await x2_trovaImpostazione(codice, valore);
+        // Cerca impostazione A
+        let impA = "—";
+        if (valA) impA = await x2_trovaImpostazione(codice, valA);
 
-// Scrive nella cella
-const cella = r.querySelector(".col-impostazione");
-if (cella) cella.textContent = testo;
+        // Cerca impostazione B
+        let impB = "—";
+        if (valB) impB = await x2_trovaImpostazione(codice, valB);
 
+        // Scrivi nella cella
+        const cella = r.querySelector(".col-impostazione");
+        if (cella) {
+            cella.innerHTML = `
+                <b>${confrontoAttivo.split("-")[0]}:</b> ${impA}<br>
+                <b>${confrontoAttivo.split("-")[1]}:</b> ${impB}
+            `;
+        }
     }
 
     // toggle runtime
@@ -343,7 +351,6 @@ if (cella) cella.textContent = testo;
 
     applyColumnFilters();
 }
-
 
 // ============================================================
 //  FUNZIONI DI CONFRONTO
