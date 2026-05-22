@@ -1,11 +1,13 @@
 {
   "valori": [
+    {"id": "00", "text": "Codice velocita' 00 non valido impostare da 03 a 06"},
     {"id": "03", "text": "Codice velocita' 03"},
     {"id": "04", "text": "Codice velocita' 04"},
     {"id": "05", "text": "Codice velocita' 05"},
     {"id": "06", "text": "Codice velocita' 06"}
   ],
   "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
     "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
     "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
     "05": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
