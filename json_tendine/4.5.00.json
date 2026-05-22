@@ -1,0 +1,38 @@
+{
+  "valori": [
+    {"id": "00", "text": "Cod.00.  D C B A : 0 0 0 0 0  ( def. / vacon / fuji / ZIEHL-ABEGG )"},
+    {"id": "01", "text": "Cod.01.  D C B A : 0 0 0 0 1"},
+    {"id": "02", "text": "Cod.02.  D C B A : 0 0 0 1 0"},
+    {"id": "03", "text": "Cod.03.  D C B A : 0 0 0 1 1"},
+    {"id": "04", "text": "Cod.04.  D C B A : 0 0 1 0 0"},
+    {"id": "05", "text": "Cod.05.  D C B A : 0 0 1 0 1"},
+    {"id": "06", "text": "Cod.06.  D C B A :  0 0 1 1 0"},
+    {"id": "07", "text": "Cod.07.  D C B A : 0 0 1 1 1"},
+    {"id": "08", "text": "Cod.08.  D C B A :0 1 0 0 0"},
+    {"id": "09", "text": "Cod.09.  D C B A : 0 1 0 0 1"},
+    {"id": "10", "text": "Cod.10.  D C B A : 0 1 0 1 0"},
+    {"id": "11", "text": "Cod.11.  D C B A : 0 1 0 1 1"},
+    {"id": "12", "text": "Cod.12.  D C B A : 0 1 1 0 0"},
+    {"id": "13", "text": "Cod.13.  D C B A : 0 1 1 0 1"},
+    {"id": "14", "text": "Cod.14.  D C B A : 0 1 1 1 0"},
+    {"id": "15", "text": "Cod.15.  D C B A : 0 1 1 1 1"}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "04": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "05": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "06": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "07": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "08": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "09": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "10": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "11": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "12": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "13": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "14": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "15": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
