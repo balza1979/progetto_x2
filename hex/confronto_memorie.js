@@ -193,7 +193,6 @@ function compareMemory(memA, memB, addrMap) {
 // ============================================================
 //  RENDER RISULTATI
 // ============================================================
-
 async function renderResults(result) {
 
     const lista = result.diff;
@@ -221,7 +220,7 @@ async function renderResults(result) {
     } else {
 
         html += `
-            <table>
+            <table id="tabDiff">
                 <tr>
                     <th>Indirizzo</th>
                     <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
@@ -237,7 +236,7 @@ async function renderResults(result) {
             for (let i = 0; i < d.len; i++) {
 
                 html += `
-                    <tr class="param-row">
+                    <tr class="param-row" data-codice="${d.codice}" data-valA="${d.valA_str}">
                         <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td>${formatVal(d.bytesA[i])}</td>
                         <td>${formatVal(d.bytesB[i])}</td>
@@ -250,18 +249,7 @@ async function renderResults(result) {
                             <b>${confrontoAttivo.split("-")[0]}:</b> ${d.valA_str}<br>
                             <b>${confrontoAttivo.split("-")[1]}:</b> ${d.valB_str}
                         </td>
-                    `;
-
-                    // ⭐ COLONNA IMPOSTAZIONE
-                    let valore = d.valA_str.split(" ")[0];
-                    valore = String(valore).padStart(2,"0");
-
-                    const testoImp = await x2_trovaImpostazione(d.codice, valore);
-
-                    html += `
-                        <td rowspan="${d.len}" style="text-align:center;">
-                            ${testoImp}
-                        </td>
+                        <td rowspan="${d.len}" class="col-impostazione">…</td>
                     `;
                 }
 
@@ -310,6 +298,22 @@ async function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
+    // ⭐ DOPO AVER INSERITO L’HTML → RIEMPIAMO LA COLONNA IMPOSTAZIONE
+    const righe = document.querySelectorAll("#tabDiff tr.param-row");
+
+    for (let r of righe) {
+
+        const codice = r.dataset.codice;
+        let valore = r.dataset.valA.split(" ")[0];
+        valore = String(valore).padStart(2,"0");
+
+        const testo = await x2_trovaImpostazione(codice, valore);
+
+        const cella = r.querySelector(".col-impostazione");
+        if (cella) cella.textContent = testo;
+    }
+
+    // toggle runtime
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
@@ -325,6 +329,7 @@ async function renderResults(result) {
 
     applyColumnFilters();
 }
+
 
 // ============================================================
 //  FUNZIONI DI CONFRONTO
