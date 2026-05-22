@@ -1,0 +1,14 @@
+{
+  "valori": [
+    {"id": "00", "text": "Sempre attiva"},
+    {"id": "01", "text": "Porta selez."},
+    {"id": "02", "text": "Porte in chius."},
+    {"id": "03", "text": "Selz. in ch."}
+  ],
+  "file_parametro": {
+    "00": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "01": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "02": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"],
+    "03": ["1.JPG", "2.JPG", "3.JPG", "4.JPG", "5.JPG", "6.JPG", "7.JPG", "8.JPG"]
+  }
+}
