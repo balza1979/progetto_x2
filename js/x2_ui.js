@@ -48,15 +48,10 @@ function x2_popolaSottomenu(codMenu) {
         const opt = document.createElement("option");
         opt.value = riga.cod__menu;
 
-        // Y = parte dopo il punto
         const y = String(riga.cod__menu).split(".")[1];
-
-        // testo dopo "="
         const testo = String(riga.sottomenu).split("=").slice(1).join("=").trim();
 
-        // formato finale
         opt.textContent = `${codMenu}.${y} = ${testo}`;
-
         selSottomenu.appendChild(opt);
     });
 
@@ -66,9 +61,8 @@ function x2_popolaSottomenu(codMenu) {
 }
 
 
-
 // ------------------------------------------------------------
-// PULSANTI MENU (file1_menu…file8_menu)
+// PULSANTI MENU
 // ------------------------------------------------------------
 function x2_aggiornaMenuButtons(codMenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
@@ -92,7 +86,7 @@ function x2_aggiornaMenuButtons(codMenu) {
 
 
 // ------------------------------------------------------------
-// PULSANTI SOTTOMENU (file1_sottomenu…file8_sottomenu)
+// PULSANTI SOTTOMENU
 // ------------------------------------------------------------
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
 
@@ -154,30 +148,25 @@ function x2_popolaParametri(codMenuCompleto) {
 function x2_mostraInfoParametro(param) {
     const box = document.getElementById("info_parametro");
 
-box.innerHTML = `
-    <b>Codice:</b> ${param.PARAMETRO}<br>
-    <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-    <b>Valore grezzo:</b> ${param.VALORE}<br><br>
+    box.innerHTML = `
+        <b>Codice:</b> ${param.PARAMETRO}<br>
+        <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
+        <b>Valore grezzo:</b> ${param.VALORE}<br><br>
 
-    <b>Indirizzo HC64:</b> ${param.LIBERA1 || "LIBERA1 (vuoto)"}<br>
-    <b>Numero byte:</b> ${param.LIBERA2 || "LIBERA2 (vuoto)"}<br>
-    <b>Tipo valore:</b> ${param.LIBERA3 || "LIBERA3 (vuoto)"}<br>
-    <b>Scala:</b> ${param.LIBERA4 || "LIBERA4 (vuoto)"}<br>
-    <b>Valore in HEX:</b> ${x2_calcolaHex(param)}<br>
-`;
-
+        <b>Indirizzo HC64:</b> ${param.LIBERA1 || "LIBERA1 (vuoto)"}<br>
+        <b>Numero byte:</b> ${param.LIBERA2 || "LIBERA2 (vuoto)"}<br>
+        <b>Tipo valore:</b> ${param.LIBERA3 || "LIBERA3 (vuoto)"}<br>
+        <b>Scala:</b> ${param.LIBERA4 || "LIBERA4 (vuoto)"}<br>
+        <b>Valore in HEX:</b> ${x2_calcolaHex(param)}<br>
+    `;
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
 }
 
 function x2_calcolaHex(param) {
-    // Se non abbiamo ancora i dati reali, mostriamo solo un placeholder
     if (!param.VALORE) return "—";
-
-    // Conversione base: decimale → hex a 2 cifre
     let hex = parseInt(param.VALORE).toString(16).toUpperCase().padStart(2, "0");
-
     return hex + "  (elaborazione HTML)";
 }
 
@@ -198,16 +187,17 @@ function x2_popolaValori(param) {
     });
 
     // ------------------------------------------------------------
-    // 1) PARAMETRI A ELENCO (JSON)  → FUNZIONA GIÀ
+    // 1) PARAMETRI A ELENCO (JSON) — PATCH CORRETTA
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-        let nomeJSON;
+        let nomeJSON = null;
+        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-        if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
+        if (fonte === "parametro") {
             nomeJSON = param.PARAMETRO.trim();
-        } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
-            nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
+        } else if (fonte && fonte !== "/") {
+            nomeJSON = fonte;
         } else {
             nomeJSON = param.PARAMETRO.trim();
         }
@@ -231,7 +221,7 @@ function x2_popolaValori(param) {
     }
 
     // ------------------------------------------------------------
-    // 2) PARAMETRI NUMERICI (MIN_MAX)
+    // 2) PARAMETRI NUMERICI
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
@@ -242,7 +232,6 @@ function x2_popolaValori(param) {
             const opt = document.createElement("option");
             opt.value = String(i).padStart(2,"0");
             opt.textContent = String(i).padStart(2,"0");
-
             tendina.appendChild(opt);
         }
 
@@ -265,12 +254,10 @@ function x2_popolaValori(param) {
             const val = v.toFixed(dec);
             opt.value = val.padStart(2,"0");
             opt.textContent = val.padStart(2,"0");
-
             tendina.appendChild(opt);
         }
 
-      tendina.value = String(param.VALORE).padStart(2,"0");
-
+        tendina.value = String(param.VALORE).padStart(2,"0");
         return;
     }
 
@@ -308,7 +295,7 @@ function x2_aggiornaValoriDaSelezione(data, valore) {
 
 
 // ------------------------------------------------------------
-// PULSANTI FILE1…FILE8 (btn_param1…8)
+// PULSANTI FILE1…FILE8
 // ------------------------------------------------------------
 function x2_aggiornaParamButtons(codiceParametro) {
 
@@ -321,9 +308,8 @@ function x2_aggiornaParamButtons(codiceParametro) {
 
     for (let i = 0; i < 8; i++) {
         const nomeCampo = "FILE" + (i + 1);
-       // const file = record ? record[nomeCampo] : "/";
-const file = record ? record[nomeCampo] : "NO_RECORD";
-pulsanti[i].textContent = "VALORE=" + file;
+        const file = record ? record[nomeCampo] : "NO_RECORD";
+        pulsanti[i].textContent = "VALORE=" + file;
 
         if (file && file !== "/" && file.trim() !== "") {
             pulsanti[i].textContent = file;
@@ -350,9 +336,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("tendina_valori").classList.add("tendina_verde");
 
     x2_popolaMenu();
-    // ------------------------------------------------------------
-    // INIZIO MODIFICA 04/05/2026 – Gestione frecce parametro
-    // ------------------------------------------------------------
 
     function x2_cambiaParametro(delta) {
         const sel = document.getElementById("parametro");
@@ -368,10 +351,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
-
-    // ------------------------------------------------------------
-    // FINE MODIFICA 04/05/2026
-    // ------------------------------------------------------------
 
     selMenu.addEventListener("change", function () {
         x2_popolaSottomenu(this.value);
@@ -395,33 +374,38 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-selValore.addEventListener("change", function () {
+    // ------------------------------------------------------------
+    // PATCH EVENTO selValore.change
+    // ------------------------------------------------------------
+    selValore.addEventListener("change", function () {
 
-    const codice = selParametro.value.replace(/"/g, "").trim();
-    const param = x2_parametri.find(p => p.PARAMETRO === codice);
-    if (!param) return;
+        const codice = selParametro.value.replace(/"/g, "").trim();
+        const param = x2_parametri.find(p => p.PARAMETRO === codice);
+        if (!param) return;
 
-    let nomeJSON;
-    if (param.JS_FONTE_ELENCO_VALORI === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (param.JS_FONTE_ELENCO_VALORI && param.JS_FONTE_ELENCO_VALORI.trim() !== "/") {
-        nomeJSON = param.JS_FONTE_ELENCO_VALORI.trim();
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
-    }
+        // SOLO per parametri con tendina JSON
+        if (param.TIPO_ELENCO !== "ELENCO_PREDEFINITO") return;
 
-    const valoreScelto = this.value.toString().trim().padStart(2, "0");
+        let nomeJSON = null;
+        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-    x2_caricaJSON(nomeJSON, function(data) {
-        x2_aggiornaValoriDaSelezione(data, valoreScelto);
+        if (fonte === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (fonte && fonte !== "/") {
+            nomeJSON = fonte;
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
+        }
+
+        const valoreScelto = this.value.toString().trim().padStart(2, "0");
+
+        x2_caricaJSON(nomeJSON, function(data) {
+            x2_aggiornaValoriDaSelezione(data, valoreScelto);
+        });
     });
-});
-// ------------------------------------------------------------
-// CREA MEMORIA HEX
-// ------------------------------------------------------------
-document.getElementById("crea_hex_btn").onclick = function () {
-    window.open("hex/hex_generator.html", "_blank");
-};
+
+    document.getElementById("crea_hex_btn").onclick = function () {
+        window.open("hex/hex_generator.html", "_blank");
+    };
 
 });
-
