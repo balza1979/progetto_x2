@@ -20,16 +20,22 @@ document.addEventListener("mouseover", function (e) {
 
     if (id.startsWith("btn_file")) {
         try {
-            const parametro = parametro?.value;
-            const valore    = tendina_valori?.value;
+            const parametroEl = document.getElementById("parametro");
+            const tendinaEl   = document.getElementById("tendina_valori");
+
+            const parametro = parametroEl?.value;
+            const valore    = tendinaEl?.value;
 
             if (typeof x2_file_parametri !== "undefined" && parametro && valore) {
-                const files = x2_file_parametri[parametro]?.files?.[valore] || [];
-                const index = parseInt(id.replace("btn_file", "").replace("_parametro", ""), 10) - 1;
+                const filesMap = x2_file_parametri[parametro]?.file_parametro || {};
+                const files    = filesMap[valore] || [];
+                const index    = parseInt(id.replace("btn_file", "").replace("_parametro", ""), 10) - 1;
                 const fileAssociato = files[index];
                 if (fileAssociato) file = fileAssociato;
             }
-        } catch (err) {}
+        } catch (err) {
+            // opzionale: dbgFile.innerText = "ERR";
+        }
     }
 
     dbgFile.innerText = file;
