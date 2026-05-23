@@ -169,28 +169,35 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("unita_misura").value = param.UNITA || "";
 }
 
+
 // ------------------------------------------------------------
-// VALORI (val1…val8)
+// CALCOLO HEX
+// ------------------------------------------------------------
+function x2_calcolaHex(param) {
+    if (!param.VALORE) return "—";
+    let hex = parseInt(param.VALORE).toString(16).toUpperCase().padStart(2, "0");
+    return hex + "  (elaborazione HTML)";
+}
+
+
+// ------------------------------------------------------------
+// VALORI (val1…val8) — VERSIONE CORRETTA
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    // ------------------------------------------------------------
-    // RESET PULSANTI val1…val8 (senza errori se mancano)
-    // ------------------------------------------------------------
+    // RESET PULSANTI
     for (let i = 1; i <= 8; i++) {
         const btn = document.getElementById("val" + i);
-        if (!btn) continue;   // evita errori se un ID non esiste
+        if (!btn) continue;
         btn.textContent = "-";
         btn.disabled = true;
         btn.onclick = null;
     }
 
-    // ------------------------------------------------------------
-    // 1) PARAMETRI A ELENCO (JSON)
-    // ------------------------------------------------------------
+    // 1) JSON
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
@@ -216,15 +223,13 @@ function x2_popolaValori(param) {
             const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
             tendina.value = valorePulito;
 
-            x2_aggiornaValoriParametro(param, valorePulito);
+            x2_aggiornaValoriDaSelezione(data, valorePulito);
         });
 
         return;
     }
 
-    // ------------------------------------------------------------
-    // 2) PARAMETRI NUMERICI (MIN/MAX)
-    // ------------------------------------------------------------
+    // 2) MIN/MAX
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
         const min = parseInt(param.MIN);
@@ -241,9 +246,7 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // ------------------------------------------------------------
-    // 3) PARAMETRI DECIMALI
-    // ------------------------------------------------------------
+    // 3) DECIMALI
     if (param.TIPO_ELENCO === "DECIMALE") {
 
         const min = parseFloat(param.MIN);
@@ -262,16 +265,14 @@ function x2_popolaValori(param) {
         tendina.value = String(param.VALORE).padStart(2,"0");
         return;
     }
-}
-    // ------------------------------------------------------------
+
     // 4) FALLBACK
-    // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
 }
 
 
 // ------------------------------------------------------------
-// AGGIORNA SOLO val1…val8
+// AGGIORNA val1…val8 — VERSIONE CORRETTA
 // ------------------------------------------------------------
 function x2_aggiornaValoriDaSelezione(data, valore) {
 
@@ -280,17 +281,18 @@ function x2_aggiornaValoriDaSelezione(data, valore) {
         data.file_parametro[valore.padStart(2, "0")] ||
         data.file_parametro[String(parseInt(valore))];
 
-    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.getElementById("val" + i);
+        if (!btn) continue;
 
-    for (let i = 0; i < 8; i++) {
-        if (lista && lista[i]) {
-            pulsanti[i].textContent = lista[i];
-            pulsanti[i].disabled = false;
-            pulsanti[i].onclick = () => window.open("img/" + lista[i], "_blank");
+        if (lista && lista[i - 1]) {
+            btn.textContent = lista[i - 1];
+            btn.disabled = false;
+            btn.onclick = () => window.open("img/" + lista[i - 1], "_blank");
         } else {
-            pulsanti[i].textContent = "-";
-            pulsanti[i].disabled = true;
-            pulsanti[i].onclick = null;
+            btn.textContent = "-";
+            btn.disabled = true;
+            btn.onclick = null;
         }
     }
 }
@@ -376,16 +378,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // ------------------------------------------------------------
     // PATCH EVENTO selValore.change
-    // ------------------------------------------------------------
     selValore.addEventListener("change", function () {
 
         const codice = selParametro.value.replace(/"/g, "").trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
         if (!param) return;
 
-        // SOLO per parametri con tendina JSON
         if (param.TIPO_ELENCO !== "ELENCO_PREDEFINITO") return;
 
         let nomeJSON = null;
