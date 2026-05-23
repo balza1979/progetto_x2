@@ -177,26 +177,19 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    const pulsanti = [
-    document.getElementById("val1"),
-    document.getElementById("val2"),
-    document.getElementById("val3"),
-    document.getElementById("val4"),
-    document.getElementById("val5"),
-    document.getElementById("val6"),
-    document.getElementById("val7"),
-    document.getElementById("val8")
-];
-
-pulsanti.forEach(btn => {
-    if (!btn) return; // evita errori se un ID non esiste
-    btn.textContent = "-";
-    btn.disabled = true;
-    btn.onclick = null;
-});
+    // ------------------------------------------------------------
+    // RESET PULSANTI val1…val8 (senza errori se mancano)
+    // ------------------------------------------------------------
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.getElementById("val" + i);
+        if (!btn) continue;   // evita errori se un ID non esiste
+        btn.textContent = "-";
+        btn.disabled = true;
+        btn.onclick = null;
+    }
 
     // ------------------------------------------------------------
-    // 1) PARAMETRI A ELENCO (JSON) — PATCH CORRETTA
+    // 1) PARAMETRI A ELENCO (JSON)
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
@@ -230,7 +223,7 @@ pulsanti.forEach(btn => {
     }
 
     // ------------------------------------------------------------
-    // 2) PARAMETRI NUMERICI
+    // 2) PARAMETRI NUMERICI (MIN/MAX)
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
@@ -269,7 +262,7 @@ pulsanti.forEach(btn => {
         tendina.value = String(param.VALORE).padStart(2,"0");
         return;
     }
-
+}
     // ------------------------------------------------------------
     // 4) FALLBACK
     // ------------------------------------------------------------
