@@ -177,12 +177,23 @@ function x2_popolaValori(param) {
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
 
-    const pulsanti = [val1,val2,val3,val4,val5,val6,val7,val8];
-    pulsanti.forEach(btn => {
-        btn.textContent = "-";
-        btn.disabled = true;
-        btn.onclick = null;
-    });
+    const pulsanti = [
+    document.getElementById("val1"),
+    document.getElementById("val2"),
+    document.getElementById("val3"),
+    document.getElementById("val4"),
+    document.getElementById("val5"),
+    document.getElementById("val6"),
+    document.getElementById("val7"),
+    document.getElementById("val8")
+];
+
+pulsanti.forEach(btn => {
+    if (!btn) return; // evita errori se un ID non esiste
+    btn.textContent = "-";
+    btn.disabled = true;
+    btn.onclick = null;
+});
 
     // ------------------------------------------------------------
     // 1) PARAMETRI A ELENCO (JSON) — PATCH CORRETTA
