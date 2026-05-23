@@ -176,12 +176,7 @@ function x2_calcolaHex(param) {
     return hex + "  (elaborazione HTML)";
 }
 
-// --- VISUALIZZAZIONE MIN / MAX / UNITA ---
-// Nessuna logica, solo mostrare i valori presenti nel file dati
 
-document.getElementById("val_min").value = parametro.MIN || "";
-document.getElementById("val_max").value = parametro.MAX || "";
-document.getElementById("unita_misura").value = parametro.UNITA || "";
 // ------------------------------------------------------------
 // VALORI (val1…val8)
 // ------------------------------------------------------------
