@@ -162,6 +162,12 @@ function x2_mostraInfoParametro(param) {
 
     document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
     document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
+    // --- VISUALIZZAZIONE MIN / MAX / UNITA ---
+// Nessuna logica, solo mostrare i valori presenti nel file dati
+
+document.getElementById("val_min").value = parametro.MIN || "";
+document.getElementById("val_max").value = parametro.MAX || "";
+document.getElementById("unita_misura").value = parametro.UNITA || "";
 }
 
 function x2_calcolaHex(param) {
