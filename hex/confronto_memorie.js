@@ -212,6 +212,8 @@ function compareMemory3(memA, memB, memC, addrMap) {
     const runtime = [];
     const giàGestiti = new Set();
 
+    const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
+
     // RUNTIME A‑B‑C
     for (let addr of indirizziRuntime) {
         runtime.push({
@@ -258,32 +260,32 @@ function compareMemory3(memA, memB, memC, addrMap) {
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
         const valC_str = (valC === "--") ? "--" : (unita ? `${valC} ${unita}` : `${valC}`);
 
-        const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
-if (
-    visualizzaTutto ||
-    diversi ||
-    valA !== valB ||
-    valA !== valC ||
-    valB !== valC
-) {
-    diff.push({
-        base,
-        len,
-        nome,
-        codice: p.PARAMETRO,
-        bytesA,
-        bytesB,
-        bytesC,
-        valA_str,
-        valB_str,
-        valC_str
-    });
-}
-
+        // QUI: stessa logica di A‑B, estesa a 3
+        if (
+            visualizzaTutto ||
+            diversi ||
+            valA !== valB ||
+            valA !== valC ||
+            valB !== valC
+        ) {
+            diff.push({
+                base,
+                len,
+                nome,
+                codice: p.PARAMETRO,
+                bytesA,
+                bytesB,
+                bytesC,
+                valA_str,
+                valB_str,
+                valC_str
+            });
+        }
     }
 
     return { diff, runtime };
 }
+
 
 // ============================================================
 //  RENDER RISULTATI
@@ -684,13 +686,35 @@ function debugLog(msg) {
 }
 
 function applyColumnFilters() {
+    const isABC = (confrontoAttivo === "A-B-C");
+
     document.querySelectorAll(".col-flag").forEach(flag => {
-        const colIndex = parseInt(flag.dataset.col);
+        const colIndex = parseInt(flag.dataset.col); // 1‑based come prima
         const hide = !flag.checked;
 
         document.querySelectorAll("table").forEach(table => {
             table.querySelectorAll("tr").forEach(row => {
-                const cell = row.children[colIndex - 1];
+                // indice reale nella riga (0‑based)
+                let realIndex = colIndex - 1;
+
+                // Nella tabella principale, in modalità ABC,
+                // abbiamo una colonna valore in più (A,B,C):
+                // Indirizzo (1)
+                // Val A (2)
+                // Val B (3)
+                // Val C (4)  <-- nuova
+                // Parametro (5)
+                // Valore complessivo (6)
+                // Impostazione (7)
+                //
+                // I tuoi flag sono pensati per layout a 2 valori.
+                // Quindi: per le colonne dopo i valori,
+                // spostiamo di +1.
+                if (isABC && table.id === "tabDiff" && colIndex >= 4) {
+                    realIndex = colIndex; // invece di colIndex-1
+                }
+
+                const cell = row.children[realIndex];
                 if (cell) {
                     cell.style.display = hide ? "none" : "";
                 }
@@ -698,6 +722,7 @@ function applyColumnFilters() {
         });
     });
 }
+
 
 function evidenziaPulsante(idAttivo) {
     const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
