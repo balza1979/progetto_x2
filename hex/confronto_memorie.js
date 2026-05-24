@@ -383,34 +383,47 @@ function confrontaAB() {
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    // Se memoriaA è già caricata automaticamente, NON richiedere file1
-    if (!memoriaA && !f1.files[0]) {
-        return alert("Seleziona File A oppure usa la memoria DEFAULT");
-    }
-
     if (!f2.files[0]) {
         return alert("Seleziona File B");
     }
 
-    // Se memoriaA è già caricata, usala
-    if (memoriaA && !f1.files[0]) {
+    // Se A NON è selezionato → usa memoriaA
+    if (!f1.files[0] && memoriaA) {
         leggiFileHex(f2, hexB => confronta(memoriaA, hexB));
         return;
     }
 
-    // Altrimenti usa i file selezionati
-    leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => confronta(hexA, hexB)));
-}
+    // Se A è selezionato → usa il file
+    if (f1.files[0]) {
+        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => confronta(hexA, hexB)));
+        return;
+    }
 
+    alert("Seleziona File A oppure usa la memoria DEFAULT");
+}
 function confrontaAC() {
     evidenziaPulsante("btnAC");
     confrontoAttivo = "A-C";
+
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
-    if (!f1.files[0] || !f3.files[0]) return alert("Seleziona File A e File C");
-    leggiFileHex(f1, hexA => leggiFileHex(f3, hexC => confronta(hexA, hexC)));
-}
 
+    if (!f3.files[0]) {
+        return alert("Seleziona File C");
+    }
+
+    if (!f1.files[0] && memoriaA) {
+        leggiFileHex(f3, hexC => confronta(memoriaA, hexC));
+        return;
+    }
+
+    if (f1.files[0]) {
+        leggiFileHex(f1, hexA => leggiFileHex(f3, hexC => confronta(hexA, hexC)));
+        return;
+    }
+
+    alert("Seleziona File A oppure usa la memoria DEFAULT");
+}
 function confrontaBC() {
     evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
