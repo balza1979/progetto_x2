@@ -3,13 +3,16 @@
 // ============================================================
 
 
-// [24/05/2026 16:05] Impostazione memoria predefinita "polli" all'apertura
-document.addEventListener("DOMContentLoaded", () => {
-    const defaultPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-    const inputA = document.getElementById("fileA_url");
-    if (inputA) inputA.value = defaultPolli;
-});
+// [24/05/2026 16:12] Impostazione memoria polli quando il campo esiste
+const defaultPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
+const attesaCampo = setInterval(() => {
+    const inputA = document.getElementById("fileA_url");
+    if (inputA) {
+        inputA.value = defaultPolli;
+        clearInterval(attesaCampo);
+    }
+}, 200);
 
 
 
