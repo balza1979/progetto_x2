@@ -1,7 +1,9 @@
 // ============================================================
 //  FUNZIONI BASE
 // ============================================================
-
+let memoriaA = null;
+let memoriaB = null;
+let memoriaC = null;
 // Indirizzi runtime non programmabili
 const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
@@ -387,7 +389,7 @@ function confrontaAB() {
         return alert("Seleziona File B");
     }
 
-    // Se A NON è selezionato → usa memoriaA
+    // Se A non è selezionato → usa memoriaA
     if (!f1.files[0] && memoriaA) {
         leggiFileHex(f2, hexB => confronta(memoriaA, hexB));
         return;
