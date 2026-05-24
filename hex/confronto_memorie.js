@@ -2,6 +2,18 @@
 //  FUNZIONI BASE
 // ============================================================
 
+
+// [24/05/2026 16:05] Impostazione memoria predefinita "polli" all'apertura
+document.addEventListener("DOMContentLoaded", () => {
+    const defaultPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+    const inputA = document.getElementById("fileA_url");
+    if (inputA) inputA.value = defaultPolli;
+});
+
+
+
+
+
 // Indirizzi runtime non programmabili
 const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
