@@ -2,21 +2,6 @@
 //  FUNZIONI BASE
 // ============================================================
 
-
-// [24/05/2026 16:12] Impostazione memoria polli quando il campo esiste
-const defaultPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-
-const attesaCampo = setInterval(() => {
-    const inputA = document.getElementById("fileA_url");
-    if (inputA) {
-        inputA.value = defaultPolli;
-        clearInterval(attesaCampo);
-    }
-}, 200);
-
-
-
-
 // Indirizzi runtime non programmabili
 const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
@@ -480,3 +465,15 @@ function salvaFile(lettera, input) {
     };
     reader.readAsText(file);
 }
+// [24/05/2026 16:20] Caricamento automatico memoria polli in memoriaA
+document.addEventListener("DOMContentLoaded", () => {
+    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            memoriaA = hexToMemoryMap(text);
+            console.log("Memoria polli caricata automaticamente");
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
+});
