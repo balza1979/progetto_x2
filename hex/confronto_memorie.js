@@ -371,12 +371,22 @@ async function renderResults(result) {
 let confrontoAttivo = "A-B";
 
 function confronta(memFileA, memFileB) {
-    const mem1 = hexToMemoryMap(memFileA);
-    const mem2 = hexToMemoryMap(memFileB);
+
+    // Se A è già una mappa → NON riconvertirla
+    const mem1 = typeof memFileA === "string"
+        ? hexToMemoryMap(memFileA)
+        : memFileA;
+
+    // Se B è stringa → converti, altrimenti è già mappa
+    const mem2 = typeof memFileB === "string"
+        ? hexToMemoryMap(memFileB)
+        : memFileB;
+
     const addrMap = buildAddressToParamMap();
     const result = compareMemory(mem1, mem2, addrMap);
     renderResults(result);
 }
+
 
 function confrontaAB() {
     evidenziaPulsante("btnAB");
