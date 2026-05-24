@@ -204,6 +204,20 @@ function compareMemory(memA, memB, addrMap) {
 // ============================================================
 //  RENDER RISULTATI
 // ============================================================
+async function generaTabellaConfronto(memFileA, memFileB) {
+    const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
+    const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
+    const addrMap = buildAddressToParamMap();
+    const result = compareMemory(mem1, mem2, addrMap);
+
+    // invece di scrivere direttamente nel DOM,
+    // facciamo generare l’HTML e lo ritorniamo
+    let backup = document.getElementById("risultati").innerHTML;
+    renderResults(result);
+    const html = document.getElementById("risultati").innerHTML;
+    document.getElementById("risultati").innerHTML = backup;
+    return html;
+}
 
 async function renderResults(result) {
 
@@ -444,42 +458,51 @@ function confrontaBC() {
     if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
     leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => confronta(hexB, hexC)));
 }
-function confrontaABC() {
+async function confrontaABC() {
     evidenziaPulsante("btnABC");
-    confrontoAttivo = "A-B-C";
+    confrontoAttivo = "A-B";   // useremo questo campo solo per il titolo interno
 
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    // Controllo file B e C
     if (!f2.files[0] || !f3.files[0]) {
         return alert("Seleziona File B e File C");
     }
 
-    // Caso 1: A non selezionato → usa memoriaA
-    if (!f1.files[0] && memoriaA) {
-        leggiFileHex(f2, hexB => {
-            leggiFileHex(f3, hexC => {
-                confrontaABC_core(memoriaA, hexB, hexC);
-            });
-        });
-        return;
-    }
-
-    // Caso 2: A selezionato → usa file A
+    // prepara A (file o memoriaA)
+    let sorgenteA;
     if (f1.files[0]) {
-        leggiFileHex(f1, hexA => {
-            leggiFileHex(f2, hexB => {
-                leggiFileHex(f3, hexC => {
-                    confrontaABC_core(hexA, hexB, hexC);
-                });
-            });
-        });
+        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
+    } else if (memoriaA) {
+        sorgenteA = Promise.resolve(memoriaA);
+    } else {
+        alert("Seleziona File A oppure usa la memoria DEFAULT");
         return;
     }
 
-    alert("Seleziona File A oppure usa la memoria DEFAULT");
+    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
+    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+
+    const [memA, memB, memC] = await Promise.all([sorgenteA, sorgenteB, sorgenteC]);
+
+    // qui NON tocchiamo renderResults: lo riusiamo
+    let html = "";
+
+    // A-B
+    confrontoAttivo = "A-B";
+    html += await generaTabellaConfronto(memA, memB);
+
+    // A-C
+    confrontoAttivo = "A-C";
+    html += await generaTabellaConfronto(memA, memC);
+
+    // B-C
+    confrontoAttivo = "B-C";
+    html += await generaTabellaConfronto(memB, memC);
+
+    document.getElementById("risultati").innerHTML = html;
+    applyColumnFilters();
 }
 
 // ============================================================
@@ -531,46 +554,6 @@ function evidenziaPulsante(idAttivo) {
 
 
 
-
-function confrontaABC_core(memA, memB, memC) {
-
-    const mapA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
-    const mapB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
-    const mapC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
-
-    let html = `
-        <h3>CONFRONTO A – B – C</h3>
-        <table>
-            <tr>
-                <th>Indirizzo</th>
-                <th>Valore A</th>
-                <th>Valore B</th>
-                <th>Valore C</th>
-            </tr>
-    `;
-
-    for (let addr = 0; addr <= 0xFFFF; addr++) {
-
-        const a = mapA[addr] ?? "--";
-        const b = mapB[addr] ?? "--";
-        const c = mapC[addr] ?? "--";
-
-        // Mostra solo se almeno uno è diverso
-        if (a !== b || b !== c) {
-            html += `
-                <tr class="diff">
-                    <td>0x${addr.toString(16).padStart(4,"0").toUpperCase()}</td>
-                    <td>${formatVal(a)}</td>
-                    <td>${formatVal(b)}</td>
-                    <td>${formatVal(c)}</td>
-                </tr>
-            `;
-        }
-    }
-
-    html += `</table>`;
-    document.getElementById("risultati").innerHTML = html;
-}
 
 // ============================================================
 //  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
