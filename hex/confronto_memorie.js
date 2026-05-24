@@ -453,7 +453,6 @@ function evidenziaPulsante(idAttivo) {
 // ============================================================
 //  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
 // ============================================================
-
 function salvaFile(lettera, input) {
     const file = input.files[0];
     if (!file) return;
@@ -462,6 +461,12 @@ function salvaFile(lettera, input) {
     reader.onload = e => {
         localStorage.setItem("X2_FILE_" + lettera, e.target.result);
         localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
+
+        // [24/05/2026] Se l’utente seleziona FILE A, togliamo “DEFAULT”
+        if (lettera === "A") {
+            const lbl = document.getElementById("labelFileA");
+            if (lbl) lbl.textContent = "FILE A";
+        }
     };
     reader.readAsText(file);
 }
