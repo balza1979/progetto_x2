@@ -444,6 +444,43 @@ function confrontaBC() {
     if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
     leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => confronta(hexB, hexC)));
 }
+function confrontaABC() {
+    evidenziaPulsante("btnABC");
+    confrontoAttivo = "A-B-C";
+
+    const f1 = document.getElementById("file1");
+    const f2 = document.getElementById("file2");
+    const f3 = document.getElementById("file3");
+
+    // Controllo file B e C
+    if (!f2.files[0] || !f3.files[0]) {
+        return alert("Seleziona File B e File C");
+    }
+
+    // Caso 1: A non selezionato → usa memoriaA
+    if (!f1.files[0] && memoriaA) {
+        leggiFileHex(f2, hexB => {
+            leggiFileHex(f3, hexC => {
+                confrontaABC_core(memoriaA, hexB, hexC);
+            });
+        });
+        return;
+    }
+
+    // Caso 2: A selezionato → usa file A
+    if (f1.files[0]) {
+        leggiFileHex(f1, hexA => {
+            leggiFileHex(f2, hexB => {
+                leggiFileHex(f3, hexC => {
+                    confrontaABC_core(hexA, hexB, hexC);
+                });
+            });
+        });
+        return;
+    }
+
+    alert("Seleziona File A oppure usa la memoria DEFAULT");
+}
 
 // ============================================================
 //  UTILITY FINALI
@@ -490,6 +527,49 @@ function evidenziaPulsante(idAttivo) {
             btn.classList.remove("attivo");
         }
     });
+}
+
+
+
+
+function confrontaABC_core(memA, memB, memC) {
+
+    const mapA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+    const mapB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+    const mapC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+
+    let html = `
+        <h3>CONFRONTO A – B – C</h3>
+        <table>
+            <tr>
+                <th>Indirizzo</th>
+                <th>Valore A</th>
+                <th>Valore B</th>
+                <th>Valore C</th>
+            </tr>
+    `;
+
+    for (let addr = 0; addr <= 0xFFFF; addr++) {
+
+        const a = mapA[addr] ?? "--";
+        const b = mapB[addr] ?? "--";
+        const c = mapC[addr] ?? "--";
+
+        // Mostra solo se almeno uno è diverso
+        if (a !== b || b !== c) {
+            html += `
+                <tr class="diff">
+                    <td>0x${addr.toString(16).padStart(4,"0").toUpperCase()}</td>
+                    <td>${formatVal(a)}</td>
+                    <td>${formatVal(b)}</td>
+                    <td>${formatVal(c)}</td>
+                </tr>
+            `;
+        }
+    }
+
+    html += `</table>`;
+    document.getElementById("risultati").innerHTML = html;
 }
 
 // ============================================================
