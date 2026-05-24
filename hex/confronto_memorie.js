@@ -379,9 +379,26 @@ function confronta(memFileA, memFileB) {
 function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
+
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
-    if (!f1.files[0] || !f2.files[0]) return alert("Seleziona File A e File B");
+
+    // Se memoriaA è già caricata automaticamente, NON richiedere file1
+    if (!memoriaA && !f1.files[0]) {
+        return alert("Seleziona File A oppure usa la memoria DEFAULT");
+    }
+
+    if (!f2.files[0]) {
+        return alert("Seleziona File B");
+    }
+
+    // Se memoriaA è già caricata, usala
+    if (memoriaA && !f1.files[0]) {
+        leggiFileHex(f2, hexB => confronta(memoriaA, hexB));
+        return;
+    }
+
+    // Altrimenti usa i file selezionati
     leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => confronta(hexA, hexB)));
 }
 
