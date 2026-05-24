@@ -379,7 +379,6 @@ function confronta(memFileA, memFileB) {
 }
 
 function confrontaAB() {
-    function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
 
