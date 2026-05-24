@@ -259,21 +259,27 @@ function compareMemory3(memA, memB, memC, addrMap) {
         const valC_str = (valC === "--") ? "--" : (unita ? `${valC} ${unita}` : `${valC}`);
 
         const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
+if (
+    visualizzaTutto ||
+    diversi ||
+    valA !== valB ||
+    valA !== valC ||
+    valB !== valC
+) {
+    diff.push({
+        base,
+        len,
+        nome,
+        codice: p.PARAMETRO,
+        bytesA,
+        bytesB,
+        bytesC,
+        valA_str,
+        valB_str,
+        valC_str
+    });
+}
 
-        if (diversi || visualizzaTutto) {
-            diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
-                bytesA,
-                bytesB,
-                bytesC,
-                valA_str,
-                valB_str,
-                valC_str
-            });
-        }
     }
 
     return { diff, runtime };
