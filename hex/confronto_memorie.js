@@ -424,41 +424,54 @@ function confronta(memFileA, memFileB) {
 function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
-        aggiornaCheckboxColonne();
+
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
     if (!f2.files[0]) return alert("Seleziona File B");
 
     if (!f1.files[0] && memoriaA) {
-        leggiFileHex(f2, hexB => confronta(memoriaA, hexB));
+        leggiFileHex(f2, hexB => {
+            confronta(memoriaA, hexB);
+            aggiornaCheckboxColonne();
+        });
         return;
     }
 
     if (f1.files[0]) {
-        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => confronta(hexA, hexB)));
+        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => {
+            confronta(hexA, hexB);
+            aggiornaCheckboxColonne();
+        }));
         return;
     }
 
     alert("Seleziona File A oppure usa la memoria DEFAULT");
 }
 
+
 function confrontaAC() {
     evidenziaPulsante("btnAC");
     confrontoAttivo = "A-C";
-        aggiornaCheckboxColonne();
+
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
     if (!f3.files[0]) return alert("Seleziona File C");
 
     if (!f1.files[0] && memoriaA) {
-        leggiFileHex(f3, hexC => confronta(memoriaA, hexC));
+        leggiFileHex(f3, hexC => {
+            confronta(memoriaA, hexC);
+            aggiornaCheckboxColonne();
+        });
         return;
     }
 
     if (f1.files[0]) {
-        leggiFileHex(f1, hexA => leggiFileHex(f3, hexC => confronta(hexA, hexC)));
+        leggiFileHex(f1, hexA => leggiFileHex(f3, hexC => {
+            confronta(hexA, hexC);
+            aggiornaCheckboxColonne();
+        }));
         return;
     }
 
@@ -468,16 +481,18 @@ function confrontaAC() {
 function confrontaBC() {
     evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
-        aggiornaCheckboxColonne();
+
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    if (!f2.files[0] || !f3.files[0]) {
-        return alert("Seleziona File B e File C");
-    }
+    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
 
-    leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => confronta(hexB, hexC)));
+    leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => {
+        confronta(hexB, hexC);
+        aggiornaCheckboxColonne();
+    }));
 }
+
 
 async function confrontaABC() {
     evidenziaPulsante("btnABC");
@@ -487,9 +502,7 @@ async function confrontaABC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    if (!f2.files[0] || !f3.files[0]) {
-        return alert("Seleziona File B e File C");
-    }
+    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
 
     let sorgenteA;
     if (f1.files[0]) {
@@ -512,7 +525,9 @@ async function confrontaABC() {
 
     const result = compareMemory3(mA, mB, mC);
     renderResults(result);
+    aggiornaCheckboxColonne();
 }
+
 
 // ------------------------------------------------------------
 //  EVIDENZIA PULSANTE
