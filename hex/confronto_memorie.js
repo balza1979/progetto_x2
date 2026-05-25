@@ -406,7 +406,7 @@ function confrontaAB() {
 
     // Se A non è stato caricato e memoriaA non è pronta
     if (!f1.files[0] && !memoriaA) {
-        alert("Memoria A non disponibile. Attendi il caricamento del default.");
+        alert("Memoria A non disponibile. Attendi 1 secondo e riprova.");
         return;
     }
 
@@ -423,8 +423,14 @@ function confrontaAB() {
 
     // Caso 2: A è la memoria default già caricata
     if (memoriaA) {
+
+        // FIX: se memoriaA è stringa → converti
+        const mA = (typeof memoriaA === "string")
+            ? hexToMemoryMap(memoriaA)
+            : memoriaA;
+
         leggiFileHex(f2, hexB => {
-            confronta(memoriaA, hexB);
+            confronta(mA, hexB);
             aggiornaCheckboxColonne();
         });
         return;
