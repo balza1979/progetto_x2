@@ -638,6 +638,16 @@ function caricaDaGit(slot) {
         });
 }
 
+
+
+function binToMemoryMap(bytes) {
+    const mem = {};
+    for (let i = 0; i < bytes.length; i++) {
+        mem[i] = bytes[i].toString(16).padStart(2, "0").toUpperCase();
+    }
+    return mem;
+}
+
 // ------------------------------------------------------------
 //  CARICAMENTO AUTOMATICO MEMORIA POLLI IN A
 // ------------------------------------------------------------
