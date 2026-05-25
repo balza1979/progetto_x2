@@ -384,14 +384,6 @@ function renderResults(result) {
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO (AB / AC / BC / ABC)
 // ------------------------------------------------------------
-function confronta(memFileA, memFileB) {
-    const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
-    const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
-
-    const result = compareMemory(mem1, mem2);
-    renderResults(result);
-}
-
 function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
@@ -403,6 +395,36 @@ function confrontaAB() {
         alert("Seleziona File B");
         return;
     }
+
+    // Se A non è pronta, aspetta e riprova
+    if (!f1.files[0] && !memoriaA) {
+        console.log("A non pronta, riprovo tra 300ms...");
+        setTimeout(confrontaAB, 300);
+        return;
+    }
+
+    // Caso 1: A viene dal file
+    if (f1.files[0]) {
+        leggiFileHex(f1, hexA => {
+            leggiFileHex(f2, hexB => {
+                confronta(hexA, hexB);
+                aggiornaCheckboxColonne();
+            });
+        });
+        return;
+    }
+
+    // Caso 2: A = memoria default
+    const mA = (typeof memoriaA === "string")
+        ? hexToMemoryMap(memoriaA)
+        : memoriaA;
+
+    leggiFileHex(f2, hexB => {
+        confronta(mA, hexB);
+        aggiornaCheckboxColonne();
+    });
+}
+
 
     // Se A non è stato caricato e memoriaA non è pronta
     if (!f1.files[0] && !memoriaA) {
