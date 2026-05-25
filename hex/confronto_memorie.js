@@ -175,17 +175,21 @@ function compareMemory(memA, memB) {
 }
 
 // ------------------------------------------------------------
-//  CONFRONTO A–B–C
+//  CONFRONTO MEMORIE (A-B, A-C, B-C, A-B-C)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
-
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
-   const visualizzaTutto = (confrontoAttivo === "A-B-C")
-    ? document.getElementById("flagVisualizzaTutto")?.checked
-    : false;
 
+    // Flag "Visualizza tutto" attivo solo se il checkbox è spuntato
+    // e solo nelle modalità AC, BC, ABC
+    const visualizzaTutto =
+        (confrontoAttivo === "A-C" && document.getElementById("flagVisualizzaTutto")?.checked) ||
+        (confrontoAttivo === "B-C" && document.getElementById("flagVisualizzaTutto")?.checked) ||
+        (confrontoAttivo === "A-B-C" && document.getElementById("flagVisualizzaTutto")?.checked);
+
+    // RUNTIME
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -195,47 +199,34 @@ function compareMemory3(memA, memB, memC) {
         });
     }
 
-    for (const p of x2_parametri) {
-
-        const base = parseInt(p.LIBERA1, 16);
-        const len = parseInt(p.LIBERA4);
-        const unita = (p.UNITA === "/" ? "" : p.UNITA);
-        const nome = p.DESCRIZIONE || p.PARAMETRO;
-
-        if (isNaN(base) || isNaN(len)) continue;
-        if (giàGestiti.has(base)) continue;
-        for (let i = 0; i < len; i++) giàGestiti.add(base + i);
-
+    // DIFFERENZE
+    for (let codice in x2_parametri_data) {
+        const p = x2_parametri_data[codice];
         const bytesA = [];
         const bytesB = [];
         const bytesC = [];
-
-        for (let i = 0; i < len; i++) {
-            const a = base + i;
-            bytesA.push(memA[a] ?? "--");
-            bytesB.push(memB[a] ?? "--");
-            bytesC.push(memC[a] ?? "--");
+        for (let i = 0; i < p.len; i++) {
+            bytesA.push(memA[p.base + i] ?? "--");
+            bytesB.push(memB[p.base + i] ?? "--");
+            bytesC.push(memC ? (memC[p.base + i] ?? "--") : null);
         }
 
-        const diversi =
-            bytesA.some((b, i) => b !== bytesB[i]) ||
-            bytesA.some((b, i) => b !== bytesC[i]) ||
-            bytesB.some((b, i) => b !== bytesC[i]);
+        const valA_str = ricostruisciValore(bytesA);
+        const valB_str = ricostruisciValore(bytesB);
+        const valC_str = memC ? ricostruisciValore(bytesC) : null;
 
-        const valA = ricostruisciValore(bytesA);
-        const valB = ricostruisciValore(bytesB);
-        const valC = ricostruisciValore(bytesC);
+        let diverso = false;
+        if (confrontoAttivo === "A-B" && valA_str !== valB_str) diverso = true;
+        if (confrontoAttivo === "A-C" && valA_str !== valC_str) diverso = true;
+        if (confrontoAttivo === "B-C" && valB_str !== valC_str) diverso = true;
+        if (confrontoAttivo === "A-B-C" && (valA_str !== valB_str || valA_str !== valC_str || valB_str !== valC_str)) diverso = true;
 
-        const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
-        const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
-        const valC_str = (valC === "--") ? "--" : (unita ? `${valC} ${unita}` : `${valC}`);
-
-        if (visualizzaTutto || diversi || valA !== valB || valA !== valC || valB !== valC) {
+        if (diverso || visualizzaTutto) {
             diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
+                codice,
+                nome: p.nome,
+                base: p.base,
+                len: p.len,
                 bytesA,
                 bytesB,
                 bytesC,
