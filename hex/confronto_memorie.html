@@ -99,6 +99,48 @@
     .file-block {
         margin-bottom:25px;
     }
+
+    /* POPUP GIT */
+    .popup {
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.75);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+    }
+
+    .popup-content {
+        background:#1a1a1a;
+        border:2px solid #444;
+        padding:20px;
+        width:90%;
+        max-width:500px;
+        max-height:80%;
+        overflow-y:auto;
+        border-radius:10px;
+    }
+
+    .git-item {
+        padding:10px;
+        border-bottom:1px solid #333;
+        cursor:pointer;
+        font-size:18px;
+    }
+
+    .git-item:hover {
+        background:#333;
+    }
+
+    .git-path {
+        font-size:16px;
+        margin-bottom:10px;
+        color:#ffcc66;
+    }
 </style>
 
 </head>
@@ -110,33 +152,32 @@
 
     <h3>File HEX da confrontare</h3>
 
-  <!-- FILE A -->
+<!-- FILE A -->
 <div class="file-block">
     <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
     <input type="file" id="file1" accept=".hex,.bin">
-    <button onclick="caricaDaGit('A')">Apri da Git</button>
+    <button onclick="apriGitBrowser('A')">Apri da Git</button>
 </div>
 
 <!-- FILE B -->
 <div class="file-block">
     <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
     <input type="file" id="file2" accept=".hex,.bin">
-    <button onclick="caricaDaGit('B')">Apri da Git</button>
+    <button onclick="apriGitBrowser('B')">Apri da Git</button>
 </div>
 
 <!-- FILE C -->
 <div class="file-block">
     <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
     <input type="file" id="file3" accept=".hex,.bin">
-    <button onclick="caricaDaGit('C')">Apri da Git</button>
+    <button onclick="apriGitBrowser('C')">Apri da Git</button>
 </div>
+
     <!-- PULSANTI -->
     <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
-    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
+    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confrontta A–C</button>
     <button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
     <button id="btnABC" class="btn-confronto" onclick="confrontaABC()">Confronta A–B–C</button>
-
-    
 
     <button onclick="apriErrori()">Visualizza errori registrati (0x8000–0x8FFF)</button>
 
@@ -163,11 +204,23 @@
 
 </div>
 
+<!-- POPUP GIT -->
+<div id="gitPopup" class="popup" style="display:none;">
+    <div class="popup-content">
+        <h3>Seleziona file da Git</h3>
+        <div id="gitList"></div>
+        <button onclick="chiudiPopup()">Chiudi</button>
+    </div>
+</div>
+
 <!-- DATI PARAMETRI -->
 <script src="../js/x2_parametri_data.js"></script>
 
 <!-- LOGICA COMPLETA -->
 <script src="confronto_memorie.js"></script>
+
+<!-- BROWSER GIT -->
+<script src="git_browser.js"></script>
 
 <!-- FILTRI COLONNE -->
 <script>
