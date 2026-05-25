@@ -190,6 +190,7 @@ function compareMemory3(memA, memB, memC) {
     const giàGestiti = new Set();
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
+    // --- RUNTIME ---
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -199,6 +200,7 @@ function compareMemory3(memA, memB, memC) {
         });
     }
 
+    // --- PARAMETRI ---
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -208,14 +210,11 @@ function compareMemory3(memA, memB, memC) {
 
         if (isNaN(base) || isNaN(len)) continue;
         if (giàGestiti.has(base)) continue;
+
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
+        // --- QUI CI DEVE ESSERE UNA SOLA DICHIARAZIONE ---
         const bytesA = [];
-        const bytesB = [];
-        const bytesC = [];
-
-
-            const bytesA = [];
         const bytesB = [];
         const bytesC = [];
 
