@@ -61,7 +61,7 @@ function hexToMemoryMap(hexText) {
 }
 
 function ricostruisciValore(bytes) {
-    if (bytes.includes("--")) return "--";
+    if (!bytes || bytes.includes("--")) return "--";
 
     const b = bytes.map(x => parseInt(x, 16));
     const len = b.length;
@@ -85,6 +85,11 @@ function ricostruisciValore(bytes) {
 // ------------------------------------------------------------
 async function x2_trovaImpostazione(parametroCodice, valore) {
     return new Promise(resolve => {
+        if (valore === null || valore === undefined || valore === "--") {
+            resolve("—");
+            return;
+        }
+
         const url = "/progetto_x2/json_tendine/" + parametroCodice + ".json";
 
         fetch(url)
@@ -101,7 +106,8 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
                     return;
                 }
 
-                const voce = data.valori.find(v => v.id === valore);
+                const valoreStr = String(valore);
+                const voce = data.valori.find(v => String(v.id) === valoreStr);
                 resolve(voce ? voce.text : "—");
             })
             .catch(() => resolve("—"));
@@ -109,7 +115,7 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
 }
 
 // ------------------------------------------------------------
-//  CONFRONTO A–B
+//  CONFRONTO A–B (2 MEMORIE)
 // ------------------------------------------------------------
 function compareMemory(memA, memB) {
 
@@ -175,7 +181,7 @@ function compareMemory(memA, memB) {
 }
 
 // ------------------------------------------------------------
-//  CONFRONTO A–B–C
+//  CONFRONTO A–B–C (3 MEMORIE)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
 
@@ -292,12 +298,11 @@ async function renderResults(result) {
 
                 html += `
                     <tr class="param-row" ${i === 0 ? `
-    data-codice="${d.codice}"
-    data-valA="${ricostruisciValore(d.bytesA)}"
-    data-valB="${ricostruisciValore(d.bytesB)}"
-    data-valC="${d.bytesC ? ricostruisciValore(d.bytesC) : ""}"
-` : ""}>
-
+                        data-codice="${d.codice}"
+                        data-valA="${ricostruisciValore(d.bytesA)}"
+                        data-valB="${ricostruisciValore(d.bytesB)}"
+                        data-valC="${d.bytesC ? ricostruisciValore(d.bytesC) : ""}"
+                    ` : ""}>
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
@@ -370,10 +375,6 @@ async function renderResults(result) {
 
         const codice = r.dataset.codice;
 
-        let valA = r.dataset.valA;
-        let valB = r.dataset.valB;
-        let valC = r.dataset.valC;
-
         let valA = r.dataset.valA ? r.dataset.valA.trim() : null;
         let valB = r.dataset.valB ? r.dataset.valB.trim() : null;
         let valC = r.dataset.valC ? r.dataset.valC.trim() : null;
@@ -406,9 +407,8 @@ async function renderResults(result) {
         }
     });
 
-  
     // Applica i filtri checkbox
-    applyColumnFilters();
+    aggiornaCheckboxColonne();
 }
 
 // ------------------------------------------------------------
@@ -434,7 +434,6 @@ function confrontaAB() {
     if (!f1.files[0] && memoriaA) {
         leggiFileHex(f2, hexB => {
             confronta(memoriaA, hexB);
-            aggiornaCheckboxColonne();
         });
         return;
     }
@@ -442,14 +441,12 @@ function confrontaAB() {
     if (f1.files[0]) {
         leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => {
             confronta(hexA, hexB);
-            aggiornaCheckboxColonne();
         }));
         return;
     }
 
     alert("Seleziona File A oppure usa la memoria DEFAULT");
 }
-
 
 function confrontaAC() {
     evidenziaPulsante("btnAC");
@@ -476,13 +473,10 @@ function confrontaAC() {
 
         const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
-
-        // B NON ESISTE → PASSIAMO UN OGGETTO VUOTO
         const mB = {};
 
         const result = compareMemory3(mA, mB, mC);
         renderResults(result);
-        aggiornaCheckboxColonne();
     });
 }
 
@@ -504,16 +498,12 @@ function confrontaBC() {
 
         const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
-
-        // A NON ESISTE → PASSIAMO UN OGGETTO VUOTO
         const mA = {};
 
         const result = compareMemory3(mA, mB, mC);
         renderResults(result);
-        aggiornaCheckboxColonne();
     });
 }
-
 
 async function confrontaABC() {
     evidenziaPulsante("btnABC");
@@ -546,9 +536,7 @@ async function confrontaABC() {
 
     const result = compareMemory3(mA, mB, mC);
     renderResults(result);
-    aggiornaCheckboxColonne();
 }
-
 
 // ------------------------------------------------------------
 //  EVIDENZIA PULSANTE
@@ -569,54 +557,7 @@ function evidenziaPulsante(idAttivo) {
 }
 
 // ------------------------------------------------------------
-//  TOGGLE COLONNA C
-// ------------------------------------------------------------
-function toggleColonnaC() {
-    const celleC = document.querySelectorAll(".col-valC");
-    if (!celleC.length) return;
-
-    const hidden = Array.from(celleC).every(c => c.style.display === "none");
-    const nuovoDisplay = hidden ? "" : "none";
-
-    celleC.forEach(c => c.style.display = nuovoDisplay);
-}
-
-// ------------------------------------------------------------
-//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
-// ------------------------------------------------------------
-function salvaFile(lettera, input) {
-    const file = input.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-        localStorage.setItem("X2_FILE_" + lettera, e.target.result);
-        localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
-
-        if (lettera === "A") {
-            const lbl = document.getElementById("labelFileA");
-            if (lbl) lbl.textContent = "FILE A";
-        }
-    };
-    reader.readAsText(file);
-}
-
-// ------------------------------------------------------------
-//  APPLY COLUMN FILTERS (usa le classi, non gli indici)
-// ------------------------------------------------------------
-function applyColumnFilters() {
-    document.querySelectorAll(".col-flag").forEach(flag => {
-        const colClass = flag.dataset.col;
-        const hide = !flag.checked;
-
-        document.querySelectorAll("." + colClass).forEach(cell => {
-            cell.style.display = hide ? "none" : "";
-        });
-    });
-}
-
-// ------------------------------------------------------------
-//  AGGIORNA CHECK
+//  GESTIONE CHECKBOX COLONNE
 // ------------------------------------------------------------
 function aggiornaCheckboxColonne() {
 
@@ -624,7 +565,10 @@ function aggiornaCheckboxColonne() {
     const chkB = document.querySelector('input[data-col="col-valB"]');
     const chkC = document.querySelector('input[data-col="col-valC"]');
 
-    if (!chkA || !chkB || !chkC) return;
+    if (!chkA || !chkB || !chkC) {
+        applyColumnFilters();
+        return;
+    }
 
     if (confrontoAttivo === "A-B") {
         chkA.checked = true;
@@ -651,6 +595,40 @@ function aggiornaCheckboxColonne() {
     }
 
     applyColumnFilters();
+}
+
+// ------------------------------------------------------------
+//  APPLY COLUMN FILTERS (usa le classi, non gli indici)
+// ------------------------------------------------------------
+function applyColumnFilters() {
+    document.querySelectorAll(".col-flag").forEach(flag => {
+        const colClass = flag.dataset.col;
+        const hide = !flag.checked;
+
+        document.querySelectorAll("." + colClass).forEach(cell => {
+            cell.style.display = hide ? "none" : "";
+        });
+    });
+}
+
+// ------------------------------------------------------------
+//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
+// ------------------------------------------------------------
+function salvaFile(lettera, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("X2_FILE_" + lettera, e.target.result);
+        localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
+
+        if (lettera === "A") {
+            const lbl = document.getElementById("labelFileA");
+            if (lbl) lbl.textContent = "FILE A";
+        }
+    };
+    reader.readAsText(file);
 }
 
 // ------------------------------------------------------------
