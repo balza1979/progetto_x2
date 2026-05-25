@@ -399,25 +399,36 @@ function confrontaAB() {
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    if (!f2.files[0]) return alert("Seleziona File B");
+    if (!f2.files[0]) {
+        alert("Seleziona File B");
+        return;
+    }
 
-    if (!f1.files[0] && memoriaA) {
+    // Se A non è stato caricato e memoriaA non è pronta
+    if (!f1.files[0] && !memoriaA) {
+        alert("Memoria A non disponibile. Attendi il caricamento del default.");
+        return;
+    }
+
+    // Caso 1: A viene dal file
+    if (f1.files[0]) {
+        leggiFileHex(f1, hexA => {
+            leggiFileHex(f2, hexB => {
+                confronta(hexA, hexB);
+                aggiornaCheckboxColonne();
+            });
+        });
+        return;
+    }
+
+    // Caso 2: A è la memoria default già caricata
+    if (memoriaA) {
         leggiFileHex(f2, hexB => {
             confronta(memoriaA, hexB);
             aggiornaCheckboxColonne();
         });
         return;
     }
-
-    if (f1.files[0]) {
-        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => {
-            confronta(hexA, hexB);
-            aggiornaCheckboxColonne();
-        }));
-        return;
-    }
-
-    alert("Seleziona File A oppure usa la memoria DEFAULT");
 }
 
 function confrontaAC() {
