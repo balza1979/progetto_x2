@@ -405,17 +405,7 @@ async function renderResults(result) {
         }
     });
 
-    // Nascondi colonne non usate in base al confronto
-    if (confrontoAttivo === "A-B") {
-        document.querySelectorAll(".col-valC").forEach(c => c.style.display = "none");
-    }
-    if (confrontoAttivo === "A-C") {
-        document.querySelectorAll(".col-valB").forEach(c => c.style.display = "none");
-    }
-    if (confrontoAttivo === "B-C") {
-        document.querySelectorAll(".col-valA").forEach(c => c.style.display = "none");
-    }
-
+  
     // Applica i filtri checkbox
     applyColumnFilters();
 }
