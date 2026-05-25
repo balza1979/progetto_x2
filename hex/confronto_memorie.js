@@ -292,11 +292,12 @@ async function renderResults(result) {
 
                 html += `
                     <tr class="param-row" ${i === 0 ? `
-                        data-codice="${d.codice}"
-                        data-valA="${d.bytesA[0]}"
-                        data-valB="${d.bytesB[0]}"
-                        data-valC="${d.bytesC ? d.bytesC[0] : ""}"
-                    ` : ""}>
+    data-codice="${d.codice}"
+    data-valA="${ricostruisciValore(d.bytesA)}"
+    data-valB="${ricostruisciValore(d.bytesB)}"
+    data-valC="${d.bytesC ? ricostruisciValore(d.bytesC) : ""}"
+` : ""}>
+
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
@@ -373,9 +374,9 @@ async function renderResults(result) {
         let valB = r.dataset.valB;
         let valC = r.dataset.valC;
 
-        if (!valA || valA === "--") valA = null;
-        if (!valB || valB === "--") valB = null;
-        if (!valC || valC === "--") valC = null;
+        let valA = r.dataset.valA ? r.dataset.valA.trim() : null;
+        let valB = r.dataset.valB ? r.dataset.valB.trim() : null;
+        let valC = r.dataset.valC ? r.dataset.valC.trim() : null;
 
         let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
         let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
