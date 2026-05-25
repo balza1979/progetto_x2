@@ -663,3 +663,26 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => console.error("Errore caricamento polli:", err));
 });
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("btnAB").onclick = () => {
+        confrontoAttivo = "A-B";
+        aggiornaConfronto();
+    };
+
+    document.getElementById("btnAC").onclick = () => {
+        confrontoAttivo = "A-C";
+        aggiornaConfronto();
+    };
+
+    document.getElementById("btnBC").onclick = () => {
+        confrontoAttivo = "B-C";
+        aggiornaConfronto();
+    };
+
+    document.getElementById("btnABC").onclick = () => {
+        confrontoAttivo = "A-B-C";
+        aggiornaConfronto();
+    };
+
+});
