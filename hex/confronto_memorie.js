@@ -250,6 +250,7 @@ function compareMemory3(memA, memB, memC) {
 }
 
 // ------------------------------------------------------------
+// ------------------------------------------------------------
 //  RENDER RISULTATI
 // ------------------------------------------------------------
 async function renderResults(result) {
@@ -285,7 +286,6 @@ async function renderResults(result) {
                     <th class="col-valC">Valore C</th>
                     <th class="col-parametro">Parametro</th>
                     <th class="col-valore">Valore complessivo</th>
-                    <th class="col-impostazione">Impostazione</th>
                 </tr>
         `;
 
@@ -306,45 +306,25 @@ async function renderResults(result) {
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
-               if (i === 0) {
-    if (confrontoAttivo === "A-C") {
-        html += `
-            <td class="col-valore" rowspan="${d.len}">
-                <b>A:</b> ${d.valA_str}<br><b>C:</b> ${d.valC_str}
-            </td>
-            <td class="col-impostazione" rowspan="${d.len}">
-                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
-            </td>
-        `;
-    } else if (confrontoAttivo === "B-C") {
-        html += `
-            <td class="col-valore" rowspan="${d.len}">
-                <b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
-            </td>
-            <td class="col-impostazione" rowspan="${d.len}">
-                ${await x2_trovaImpostazione(d.codice, d.valB_str)}
-            </td>
-        `;
-    } else if (confrontoAttivo === "A-B-C") {
-        html += `
-            <td class="col-valore" rowspan="${d.len}">
-                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
-            </td>
-            <td class="col-impostazione" rowspan="${d.len}">
-                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
-            </td>
-        `;
-    } else { // default A-B
-        html += `
-            <td class="col-valore" rowspan="${d.len}">
-                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}
-            </td>
-            <td class="col-impostazione" rowspan="${d.len}">
-                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
-            </td>
-        `;
-    }
-}
+                if (i === 0) {
+                    if (confrontoAttivo === "A-C") {
+                        html += `<td class="col-valore" rowspan="${d.len}">
+                            <b>A:</b> ${d.valA_str}<br><b>C:</b> ${d.valC_str}
+                        </td>`;
+                    } else if (confrontoAttivo === "B-C") {
+                        html += `<td class="col-valore" rowspan="${d.len}">
+                            <b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
+                        </td>`;
+                    } else if (confrontoAttivo === "A-B-C") {
+                        html += `<td class="col-valore" rowspan="${d.len}">
+                            <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
+                        </td>`;
+                    } else { // default A-B
+                        html += `<td class="col-valore" rowspan="${d.len}">
+                            <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}
+                        </td>`;
+                    }
+                }
 
                 html += `</tr>`;
             }
@@ -393,36 +373,21 @@ async function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
-   // IMPOSTAZIONI
-const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
+    // ➜ Evento click su ogni parametro
+    document.querySelectorAll("#tabDiff tr.param-row").forEach(riga => {
+        riga.addEventListener("click", async () => {
+            const codice = riga.dataset.codice;
+            const valA = riga.dataset.valA;
+            const valB = riga.dataset.valB;
+            const valC = riga.dataset.valC;
 
-for (let r of righe) {
-    const codice = r.dataset.codice;
-    let valA = r.dataset.valA;
-    let valB = r.dataset.valB;
-    let valC = r.dataset.valC;
+            const impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
+            const impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
+            const impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
 
-    if (!valA || valA === "--") valA = null;
-    if (!valB || valB === "--") valB = null;
-    if (!valC || valC === "--") valC = null;
-
-    let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
-    let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
-    let impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
-
-    const cella = r.querySelector(".col-impostazione");
-    if (cella) {
-        if (confrontoAttivo === "A-C") {
-            cella.innerHTML = `<b>A:</b> ${impA}<br><b>C:</b> ${impC}`;
-        } else if (confrontoAttivo === "B-C") {
-            cella.innerHTML = `<b>B:</b> ${impB}<br><b>C:</b> ${impC}`;
-        } else if (confrontoAttivo === "A-B-C") {
-            cella.innerHTML = `<b>A:</b> ${impA}<br><b>B:</b> ${impB}<br><b>C:</b> ${impC}`;
-        } else { // default A-B
-            cella.innerHTML = `<b>A:</b> ${impA}<br><b>B:</b> ${impB}`;
-        }
-    }
-}
+            alert(`Parametro ${codice}\n\nA = ${valA} → ${impA}\nB = ${valB} → ${impB}\nC = ${valC} → ${impC}`);
+        });
+    });
 
     // Toggle runtime
     const btn = document.getElementById("toggleRuntimeBtn");
@@ -438,14 +403,10 @@ for (let r of righe) {
         }
     });
 
-  
     // Applica i filtri checkbox
     applyColumnFilters();
 }
 
-// ------------------------------------------------------------
-//  FUNZIONI DI CONFRONTO
-// ------------------------------------------------------------
 function confronta(memFileA, memFileB) {
     const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
     const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
@@ -453,6 +414,10 @@ function confronta(memFileA, memFileB) {
     const result = compareMemory(mem1, mem2);
     renderResults(result);
 }
+
+// ------------------------------------------------------------
+//  FUNZIONI DI CONFRONTO
+// ------------------------------------------------------------
 
 function confrontaAB() {
     evidenziaPulsante("btnAB");
