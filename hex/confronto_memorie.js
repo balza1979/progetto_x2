@@ -396,7 +396,7 @@ function confrontaAB() {
         return;
     }
 
-    // Se A non è pronta, aspetta e riprova
+    // Attendi memoriaA se non è pronta
     if (!f1.files[0] && !memoriaA) {
         console.log("A non pronta, riprovo tra 300ms...");
         setTimeout(confrontaAB, 300);
@@ -407,9 +407,12 @@ function confrontaAB() {
     if (f1.files[0]) {
         leggiFileHex(f1, hexA => {
             leggiFileHex(f2, hexB => {
-                const mem1 = hexToMemoryMap(hexA);
-                const mem2 = hexToMemoryMap(hexB);
-                const result = compareMemory(mem1, mem2);
+
+                const mA = hexToMemoryMap(hexA);
+                const mB = hexToMemoryMap(hexB);
+                const mC = {}; // C mancante
+
+                const result = compareMemory3(mA, mB, mC);
                 renderResults(result);
                 aggiornaCheckboxColonne();
             });
@@ -423,8 +426,10 @@ function confrontaAB() {
         : memoriaA;
 
     leggiFileHex(f2, hexB => {
-        const mem2 = hexToMemoryMap(hexB);
-        const result = compareMemory(mA, mem2);
+        const mB = hexToMemoryMap(hexB);
+        const mC = {}; // C mancante
+
+        const result = compareMemory3(mA, mB, mC);
         renderResults(result);
         aggiornaCheckboxColonne();
     });
