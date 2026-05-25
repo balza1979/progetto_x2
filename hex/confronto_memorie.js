@@ -299,9 +299,10 @@ async function renderResults(result) {
                 html += `
                  <tr class="param-row" ${i === 0 ? `
     data-codice="${d.codice}"
-    data-valA="${d.bytesA[0]}"
-    data-valB="${d.bytesB[0]}"
-    data-valC="${d.bytesC ? d.bytesC[0] : ""}"
+ data-valA="${d.bytesA[0] !== '--' ? parseInt(d.bytesA[0], 16) : '--'}"
+data-valB="${d.bytesB[0] !== '--' ? parseInt(d.bytesB[0], 16) : '--'}"
+data-valC="${d.bytesC && d.bytesC[0] !== '--' ? parseInt(d.bytesC[0], 16) : '--'}"
+
 ` : ""}>
 
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
