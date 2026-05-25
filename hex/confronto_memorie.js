@@ -81,32 +81,32 @@ function ricostruisciValore(bytes) {
 }
 
 // ------------------------------------------------------------
-//  CERCA IMPOSTAZIONE NEL JSON
+//  CERCA IMPOSTAZIONE NEL JSON (con cache)
 // ------------------------------------------------------------
+const tendineCache = {};
+
 async function x2_trovaImpostazione(parametroCodice, valore) {
-    return new Promise(resolve => {
+    // Se il JSON è già in cache → uso quello
+    if (tendineCache[parametroCodice]) {
+        const data = tendineCache[parametroCodice];
+        const voce = data.valori.find(v => v.id === valore);
+        return voce ? voce.text : "—";
+    }
+
+    // Altrimenti scarico e salvo in cache
+    try {
         const url = "/progetto_x2/json_tendine/" + parametroCodice + ".json";
-
-        fetch(url)
-            .then(r => {
-                if (!r.ok) {
-                    resolve("—");
-                    return null;
-                }
-                return r.json();
-            })
-            .then(data => {
-                if (!data || !data.valori) {
-                    resolve("—");
-                    return;
-                }
-
-                const voce = data.valori.find(v => v.id === valore);
-                resolve(voce ? voce.text : "—");
-            })
-            .catch(() => resolve("—"));
-    });
+        const r = await fetch(url);
+        if (!r.ok) return "—";
+        const data = await r.json();
+        tendineCache[parametroCodice] = data; // salvo in cache
+        const voce = data.valori.find(v => v.id === valore);
+        return voce ? voce.text : "—";
+    } catch {
+        return "—";
+    }
 }
+
 
 // ------------------------------------------------------------
 //  CONFRONTO A–B
