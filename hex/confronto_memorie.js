@@ -106,7 +106,7 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
                     return;
                 }
 
-               const voce = data.valori.find(v => v.id === valore);
+         const voce = data.valori.find(v => v.id == valore);
 
                 resolve(voce ? voce.text : "—");
             })
