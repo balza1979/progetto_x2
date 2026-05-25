@@ -220,15 +220,15 @@ document.addEventListener("change", function(e) {
 </script>
 <script>
 document.getElementById("flagVisualizzaTutto").addEventListener("change", () => {
-    // Se non c’è un confronto attivo, non fare nulla
     if (!confrontoAttivo) return;
 
-    // Rilancia il confronto attuale
-    if (confrontoAttivo === "A-B") confrontaAB();
-    if (confrontoAttivo === "A-C") confrontaAC();
-    if (confrontoAttivo === "B-C") confrontaBC();
+    if (confrontoAttivo === "A-B")   confrontaAB();
+    if (confrontoAttivo === "A-C")   confrontaAC();
+    if (confrontoAttivo === "B-C")   confrontaBC();
+    if (confrontoAttivo === "A-B-C") confrontaABC();
 });
 </script>
+
 
 </body>
 </html>
