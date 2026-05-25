@@ -182,7 +182,9 @@ function compareMemory3(memA, memB, memC) {
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
-    const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
+   const visualizzaTutto = (confrontoAttivo === "A-B-C")
+    ? document.getElementById("flagVisualizzaTutto")?.checked
+    : false;
 
     for (let addr of indirizziRuntime) {
         runtime.push({
@@ -304,16 +306,45 @@ async function renderResults(result) {
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
-                if (i === 0) {
-                    html += `
-                        <td class="col-valore" rowspan="${d.len}">
-                            <b>A:</b> ${d.valA_str}<br>
-                            <b>B:</b> ${d.valB_str}<br>
-                            ${d.valC_str ? `<b>C:</b> ${d.valC_str}` : ""}
-                        </td>
-                        <td class="col-impostazione" rowspan="${d.len}">…</td>
-                    `;
-                }
+               if (i === 0) {
+    if (confrontoAttivo === "A-C") {
+        html += `
+            <td class="col-valore" rowspan="${d.len}">
+                <b>A:</b> ${d.valA_str}<br><b>C:</b> ${d.valC_str}
+            </td>
+            <td class="col-impostazione" rowspan="${d.len}">
+                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
+            </td>
+        `;
+    } else if (confrontoAttivo === "B-C") {
+        html += `
+            <td class="col-valore" rowspan="${d.len}">
+                <b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
+            </td>
+            <td class="col-impostazione" rowspan="${d.len}">
+                ${await x2_trovaImpostazione(d.codice, d.valB_str)}
+            </td>
+        `;
+    } else if (confrontoAttivo === "A-B-C") {
+        html += `
+            <td class="col-valore" rowspan="${d.len}">
+                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
+            </td>
+            <td class="col-impostazione" rowspan="${d.len}">
+                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
+            </td>
+        `;
+    } else { // default A-B
+        html += `
+            <td class="col-valore" rowspan="${d.len}">
+                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}
+            </td>
+            <td class="col-impostazione" rowspan="${d.len}">
+                ${await x2_trovaImpostazione(d.codice, d.valA_str)}
+            </td>
+        `;
+    }
+}
 
                 html += `</tr>`;
             }
@@ -362,34 +393,36 @@ async function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
-    // IMPOSTAZIONI
-    const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
+   // IMPOSTAZIONI
+const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
 
-    for (let r of righe) {
+for (let r of righe) {
+    const codice = r.dataset.codice;
+    let valA = r.dataset.valA;
+    let valB = r.dataset.valB;
+    let valC = r.dataset.valC;
 
-        const codice = r.dataset.codice;
+    if (!valA || valA === "--") valA = null;
+    if (!valB || valB === "--") valB = null;
+    if (!valC || valC === "--") valC = null;
 
-        let valA = r.dataset.valA;
-        let valB = r.dataset.valB;
-        let valC = r.dataset.valC;
+    let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
+    let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
+    let impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
 
-        if (!valA || valA === "--") valA = null;
-        if (!valB || valB === "--") valB = null;
-        if (!valC || valC === "--") valC = null;
-
-        let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
-        let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
-        let impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
-
-        const cella = r.querySelector(".col-impostazione");
-        if (cella) {
-            cella.innerHTML = `
-                <b>A:</b> ${impA}<br>
-                <b>B:</b> ${impB}<br>
-                <b>C:</b> ${impC}
-            `;
+    const cella = r.querySelector(".col-impostazione");
+    if (cella) {
+        if (confrontoAttivo === "A-C") {
+            cella.innerHTML = `<b>A:</b> ${impA}<br><b>C:</b> ${impC}`;
+        } else if (confrontoAttivo === "B-C") {
+            cella.innerHTML = `<b>B:</b> ${impB}<br><b>C:</b> ${impC}`;
+        } else if (confrontoAttivo === "A-B-C") {
+            cella.innerHTML = `<b>A:</b> ${impA}<br><b>B:</b> ${impB}<br><b>C:</b> ${impC}`;
+        } else { // default A-B
+            cella.innerHTML = `<b>A:</b> ${impA}<br><b>B:</b> ${impB}`;
         }
     }
+}
 
     // Toggle runtime
     const btn = document.getElementById("toggleRuntimeBtn");
