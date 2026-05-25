@@ -407,7 +407,11 @@ function confrontaAB() {
     if (f1.files[0]) {
         leggiFileHex(f1, hexA => {
             leggiFileHex(f2, hexB => {
-                confronta(hexA, hexB);
+                const mem1 = hexToMemoryMap(hexA);
+const mem2 = hexToMemoryMap(hexB);
+const result = compareMemory(mem1, mem2);
+renderResults(result);
+
                 aggiornaCheckboxColonne();
             });
         });
