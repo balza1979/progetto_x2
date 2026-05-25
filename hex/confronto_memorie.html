@@ -2,8 +2,6 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-
-<!-- ⭐ NECESSARIO PER SMARTPHONE -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Confronto Memorie – X2</title>
@@ -17,16 +15,10 @@
         padding:10px;
     }
 
-    /* ⭐ NASCONDI COLONNE */
-    .hide-col {
-        display: none;
-    }
-
-    /* ⭐ STILE PULSANTI DI CONFRONTO */
     .btn-confronto {
-        background:#444 !important;
-        border:2px solid #777 !important;
-        color:#ddd !important;
+        background:#444;
+        border:2px solid #777;
+        color:#ddd;
         width:100%;
         margin-top:10px;
         padding:12px 18px;
@@ -38,9 +30,9 @@
     }
 
     .btn-confronto.attivo {
-        background:#990000 !important;
-        border-color:#ff3333 !important;
-        color:white !important;
+        background:#990000;
+        border-color:#ff3333;
+        color:white;
     }
 
     .page {
@@ -58,7 +50,6 @@
         font-size:26px;
     }
 
-    /* ⭐ TABELLA RESPONSIVE SU SMARTPHONE */
     .table-wrapper {
         overflow-x:auto;
         -webkit-overflow-scrolling: touch;
@@ -68,7 +59,7 @@
     table {
         width:100%;
         border-collapse:collapse;
-        min-width:600px;
+        min-width:700px;
     }
 
     th, td {
@@ -93,14 +84,13 @@
         background:#222244;
     }
 
-    /* ⭐ INPUT FILE PIÙ GRANDE */
     input[type="file"] {
         font-size:18px;
         width:100%;
     }
 
     label {
-        font-size:22px;
+        font-size:18px;
         font-weight:bold;
         display:block;
         margin-bottom:6px;
@@ -109,7 +99,6 @@
     .file-block {
         margin-bottom:25px;
     }
-
 </style>
 
 </head>
@@ -121,7 +110,7 @@
 
     <h3>File HEX da confrontare</h3>
 
-    <!-- FILE  A -->
+    <!-- FILE A -->
     <div class="file-block">
         <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A ("DEFAULT POLLI" O SELEZIONA ALTRO FILE)</label>
         <input type="file" id="file1" accept=".hex" onchange="salvaFile('A', this)">
@@ -131,104 +120,79 @@
     <div class="file-block">
         <label for="file2" style="color:#0066cc;">FILE B</label>
         <input type="file" id="file2" accept=".hex" onchange="salvaFile('B', this)">
-
     </div>
 
     <!-- FILE C -->
     <div class="file-block">
         <label for="file3" style="color:#009933;">FILE C</label>
         <input type="file" id="file3" accept=".hex" onchange="salvaFile('C', this)">
-
     </div>
 
-    <!-- ⭐ PULSANTI CONFRONTO -->
+    <!-- PULSANTI -->
     <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
     <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
     <button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
     <button id="btnABC" class="btn-confronto" onclick="confrontaABC()">Confronta A–B–C</button>
 
-<button onclick="apriErrori()">Visualizza errori registrati (0x8000–0x8FFF)</button>
+    <button id="toggleColC" class="btn-confronto" onclick="toggleColonnaC()">Mostra/Nascondi colonna C</button>
 
+    <button onclick="apriErrori()">Visualizza errori registrati (0x8000–0x8FFF)</button>
 
     <label style="margin-top:15px; display:block;">
-    <input type="checkbox" id="flagVisualizzaTutto">
-    Visualizza TUTTI i parametri (anche quelli uguali)
-</label>
-
-<!-- ============================================================
-     FILTRI COLONNE (SMARTPHONE)
-     ============================================================ -->
-<div id="columnFilters" style="margin-top:20px; margin-bottom:10px;">
-
-    <label style="margin-right:10px;">
-        <input type="checkbox" class="col-flag" data-col="1" checked>
-        Indirizzo
+        <input type="checkbox" id="flagVisualizzaTutto">
+        Visualizza TUTTI i parametri (anche quelli uguali)
     </label>
 
-    <label style="margin-right:10px;">
-        <input type="checkbox" class="col-flag" data-col="2" checked>
-        Valore A
-    </label>
+    <!-- FILTRI COLONNE -->
+    <div id="columnFilters" style="margin-top:20px; margin-bottom:10px;">
 
-    <label style="margin-right:10px;">
-        <input type="checkbox" class="col-flag" data-col="3" checked>
-        Valore B
-    </label>
+        <label><input type="checkbox" class="col-flag" data-col="col-indirizzo" checked> Indirizzo</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valA" checked> Valore A</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valB" checked> Valore B</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valC" checked> Valore C</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-parametro" checked> Parametro</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valore" checked> Valore complessivo</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-impostazione" checked> Impostazione</label>
 
-    <label style="margin-right:10px;">
-        <input type="checkbox" class="col-flag" data-col="4" checked>
-        Parametro
-    </label>
+    </div>
 
-    <label style="margin-right:10px;">
-        <input type="checkbox" class="col-flag" data-col="5" checked>
-        Valore complessivo
-    </label>
-
-</div>
-
-    <!-- ⭐ WRAPPER RESPONSIVE PER LE TABELLE -->
     <div class="table-wrapper">
         <div id="risultati" style="margin-top:30px;"></div>
     </div>
 
 </div>
 
-<!-- CARICA TABELLA PARAMETRI -->
+<!-- DATI PARAMETRI -->
 <script src="../js/x2_parametri_data.js"></script>
 
-<!-- CARICA IL FILE JS COMPLETO -->
+<!-- LOGICA COMPLETA -->
 <script src="confronto_memorie.js"></script>
 
-<!-- ⭐ SCRIPT FILTRI COLONNE -->
+<!-- FILTRI COLONNE -->
 <script>
 document.addEventListener("change", function(e) {
     if (!e.target.classList.contains("col-flag")) return;
 
-    const colIndex = parseInt(e.target.dataset.col);
+    const colClass = e.target.dataset.col;
     const hide = !e.target.checked;
 
-    document.querySelectorAll("table").forEach(table => {
-        table.querySelectorAll("tr").forEach(row => {
-            const cell = row.children[colIndex - 1];
-            if (cell) {
-                cell.style.display = hide ? "none" : "";
-            }
-        });
+    document.querySelectorAll("." + colClass).forEach(cell => {
+        cell.style.display = hide ? "none" : "";
     });
 });
 </script>
+
+<!-- RILANCIO CONFRONTO QUANDO CAMBIA LA SPUNTA -->
 <script>
 document.getElementById("flagVisualizzaTutto").addEventListener("change", () => {
-    if (!confrontoAttivo) return;
 
     if (confrontoAttivo === "A-B")   confrontaAB();
     if (confrontoAttivo === "A-C")   confrontaAC();
     if (confrontoAttivo === "B-C")   confrontaBC();
     if (confrontoAttivo === "A-B-C") confrontaABC();
+
 });
 </script>
-
 
 </body>
 </html>
