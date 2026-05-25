@@ -48,25 +48,10 @@ function salvaFile(lettera, input) {
 // ============================================================
 //  FUNZIONI DI CONFRONTO
 // ============================================================
-function confrontaAB() {
-    confrontoAttivo = "A-B";
-    aggiornaConfronto();
-}
-
-function confrontaAC() {
-    confrontoAttivo = "A-C";
-    aggiornaConfronto();
-}
-
-function confrontaBC() {
-    confrontoAttivo = "B-C";
-    aggiornaConfronto();
-}
-
-function confrontaABC() {
-    confrontoAttivo = "A-B-C";
-    aggiornaConfronto();
-}
+function confrontaAB() { confrontoAttivo = "A-B"; aggiornaConfronto(); }
+function confrontaAC() { confrontoAttivo = "A-C"; aggiornaConfronto(); }
+function confrontaBC() { confrontoAttivo = "B-C"; aggiornaConfronto(); }
+function confrontaABC() { confrontoAttivo = "A-B-C"; aggiornaConfronto(); }
 
 
 // ============================================================
@@ -93,18 +78,22 @@ function compareMemory3(memA, memB, memC) {
     const diff = [];
     const flagChecked = document.getElementById("flagVisualizzaTutto").checked;
 
-    for (let codice in x2_parametri_data) {
+    for (let p of x2_parametri) {
 
-        const p = x2_parametri_data[codice];
+        const codice = p.PARAMETRO;
+        const nome = p.DESCRIZIONE;
+
+        const base = parseInt(p.LIBERA1);
+        const len = parseInt(p.LIBERA2);
 
         const bytesA = [];
         const bytesB = [];
         const bytesC = [];
 
-        for (let i = 0; i < p.len; i++) {
-            bytesA.push(memA[p.base + i] ?? "--");
-            bytesB.push(memB[p.base + i] ?? "--");
-            bytesC.push(memC[p.base + i] ?? "--");
+        for (let i = 0; i < len; i++) {
+            bytesA.push(memA[base + i] ?? "--");
+            bytesB.push(memB[base + i] ?? "--");
+            bytesC.push(memC[base + i] ?? "--");
         }
 
         const valA = ricostruisciValore(bytesA);
@@ -124,9 +113,9 @@ function compareMemory3(memA, memB, memC) {
         ) {
             diff.push({
                 codice,
-                nome: p.nome,
-                base: p.base,
-                len: p.len,
+                nome,
+                base,
+                len,
                 bytesA,
                 bytesB,
                 bytesC,
