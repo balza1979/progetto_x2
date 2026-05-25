@@ -459,23 +459,30 @@ function confrontaAC() {
 
     if (!f3.files[0]) return alert("Seleziona File C");
 
-    if (!f1.files[0] && memoriaA) {
-        leggiFileHex(f3, hexC => {
-            confronta(memoriaA, hexC);
-            aggiornaCheckboxColonne();
-        });
-        return;
-    }
+    let sorgenteA;
 
     if (f1.files[0]) {
-        leggiFileHex(f1, hexA => leggiFileHex(f3, hexC => {
-            confronta(hexA, hexC);
-            aggiornaCheckboxColonne();
-        }));
-        return;
+        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
+    } else if (memoriaA) {
+        sorgenteA = Promise.resolve(memoriaA);
+    } else {
+        return alert("Seleziona File A oppure usa la memoria DEFAULT");
     }
 
-    alert("Seleziona File A oppure usa la memoria DEFAULT");
+    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+
+    Promise.all([sorgenteA, sorgenteC]).then(([memA, memC]) => {
+
+        const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+
+        // B NON ESISTE → PASSIAMO UN OGGETTO VUOTO
+        const mB = {};
+
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
+        aggiornaCheckboxColonne();
+    });
 }
 
 function confrontaBC() {
@@ -485,12 +492,25 @@ function confrontaBC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
+    if (!f2.files[0] || !f3.files[0]) {
+        return alert("Seleziona File B e File C");
+    }
 
-    leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => {
-        confronta(hexB, hexC);
+    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
+    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+
+    Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
+
+        const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+
+        // A NON ESISTE → PASSIAMO UN OGGETTO VUOTO
+        const mA = {};
+
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
         aggiornaCheckboxColonne();
-    }));
+    });
 }
 
 
