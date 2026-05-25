@@ -1,10 +1,7 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – VERSIONE 25/05/2026 (FINALE)
+//  CONFRONTO_MEMORIE.JS – VERSIONE 25/05/2026 (CORRETTA)
 // ============================================================
 
-// ------------------------------------------------------------
-//  VARIABILI BASE
-// ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
 let memoriaC = null;
@@ -19,9 +16,7 @@ const indirizziRuntime = [
 // ------------------------------------------------------------
 //  UTILITY BASE
 // ------------------------------------------------------------
-function apriErrori() {
-    window.location.href = "errori_x2.html";
-}
+function apriErrori() { window.location.href = "errori_x2.html"; }
 
 function formatVal(hexVal) {
     if (hexVal === "--") return "--";
@@ -32,7 +27,6 @@ function formatVal(hexVal) {
 function leggiFileHex(input, callback) {
     const file = input.files[0];
     if (!file) return callback(null);
-
     const reader = new FileReader();
     reader.onload = e => callback(e.target.result);
     reader.readAsText(file);
@@ -41,42 +35,26 @@ function leggiFileHex(input, callback) {
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
-
     for (let line of lines) {
         if (!line.startsWith(":")) continue;
-
         const byteCount = parseInt(line.substr(1, 2), 16);
         const address = parseInt(line.substr(3, 4), 16);
         const recordType = parseInt(line.substr(7, 2), 16);
-
         if (recordType !== 0) continue;
-
         for (let i = 0; i < byteCount; i++) {
             const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
             mem[address + i] = byteHex;
         }
     }
-
     return mem;
 }
 
 function ricostruisciValore(bytes) {
     if (!bytes || bytes.includes("--")) return "--";
-
     const b = bytes.map(x => parseInt(x, 16));
-    const len = b.length;
-
-    if (len === 4) {
-        const LSB = b[1];
-        const MSB = b[0];
-        const LSBH = b[3];
-        const MSBH = b[2];
-        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
-    }
-
-    if (len === 2) return b[0] * 256 + b[1];
-    if (len === 1) return b[0];
-
+    if (b.length === 4) return b[2]*16777216 + b[3]*65536 + b[0]*256 + b[1];
+    if (b.length === 2) return b[0]*256 + b[1];
+    if (b.length === 1) return b[0];
     return "--";
 }
 
@@ -85,29 +63,13 @@ function ricostruisciValore(bytes) {
 // ------------------------------------------------------------
 async function x2_trovaImpostazione(parametroCodice, valore) {
     return new Promise(resolve => {
-        if (valore === null || valore === undefined || valore === "--") {
-            resolve("—");
-            return;
-        }
-
+        if (valore === null || valore === undefined || valore === "--") { resolve("—"); return; }
         const url = "/progetto_x2/json_tendine/" + parametroCodice + ".json";
-
         fetch(url)
-            .then(r => {
-                if (!r.ok) {
-                    resolve("—");
-                    return null;
-                }
-                return r.json();
-            })
+            .then(r => r.ok ? r.json() : null)
             .then(data => {
-                if (!data || !data.valori) {
-                    resolve("—");
-                    return;
-                }
-
+                if (!data || !data.valori) { resolve("—"); return; }
                 const voce = data.valori.find(v => v.id == valore);
-
                 resolve(voce ? voce.text : "—");
             })
             .catch(() => resolve("—"));
@@ -118,309 +80,83 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
 //  CONFRONTO A–B (2 MEMORIE)
 // ------------------------------------------------------------
 function compareMemory(memA, memB) {
-
-    const diff = [];
-    const runtime = [];
-    const giàGestiti = new Set();
+    const diff = [], runtime = [], giàGestiti = new Set();
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
-
-    for (let addr of indirizziRuntime) {
-        runtime.push({
-            addr,
-            vA: memA[addr] ?? "--",
-            vB: memB[addr] ?? "--",
-            vC: "--"
-        });
-    }
-
+    for (let addr of indirizziRuntime) runtime.push({addr,vA:memA[addr]??"--",vB:memB[addr]??"--",vC:"--"});
     for (const p of x2_parametri) {
-
-        const base = parseInt(p.LIBERA1, 16);
-        const len = parseInt(p.LIBERA4);
-        const unita = (p.UNITA === "/" ? "" : p.UNITA);
-        const nome = p.DESCRIZIONE || p.PARAMETRO;
-
-        if (isNaN(base) || isNaN(len)) continue;
-        if (giàGestiti.has(base)) continue;
-        for (let i = 0; i < len; i++) giàGestiti.add(base + i);
-
-        const bytesA = [];
-        const bytesB = [];
-
-        for (let i = 0; i < len; i++) {
-            const a = base + i;
-            bytesA.push(memA[a] ?? "--");
-            bytesB.push(memB[a] ?? "--");
-        }
-
-        const diversi = bytesA.some((b, i) => b !== bytesB[i]);
-
-        const valA = ricostruisciValore(bytesA);
-        const valB = ricostruisciValore(bytesB);
-
-        const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
-        const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
-
-        if (visualizzaTutto || diversi || valA !== valB) {
-            diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
-                bytesA,
-                bytesB,
-                bytesC: null,
-                valA_str,
-                valB_str,
-                valC_str: ""
-            });
-        }
+        const base = parseInt(p.LIBERA1,16), len = parseInt(p.LIBERA4);
+        if (isNaN(base)||isNaN(len)||giàGestiti.has(base)) continue;
+        for (let i=0;i<len;i++) giàGestiti.add(base+i);
+        const bytesA=[],bytesB=[];
+        for (let i=0;i<len;i++){const a=base+i;bytesA.push(memA[a]??"--");bytesB.push(memB[a]??"--");}
+        const diversi=bytesA.some((b,i)=>b!==bytesB[i]);
+        const valA=ricostruisciValore(bytesA), valB=ricostruisciValore(bytesB);
+        if (visualizzaTutto||diversi||valA!==valB) diff.push({base,len,nome:p.DESCRIZIONE||p.PARAMETRO,codice:p.PARAMETRO,bytesA,bytesB,bytesC:null,valA_str:valA,valB_str:valB,valC_str:""});
     }
-
-    return { diff, runtime };
+    return {diff,runtime};
 }
 
+// ===== BLOCCO 1 FINITO =====
 // ------------------------------------------------------------
 //  CONFRONTO A–B–C (3 MEMORIE)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
-
-    const diff = [];
-    const runtime = [];
-    const giàGestiti = new Set();
+    const diff = [], runtime = [], giàGestiti = new Set();
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
-
-    // --- RUNTIME ---
-    for (let addr of indirizziRuntime) {
-        runtime.push({
-            addr,
-            vA: memA[addr] ?? "--",
-            vB: memB[addr] ?? "--",
-            vC: memC[addr] ?? "--"
-        });
-    }
-
-    // --- PARAMETRI ---
+    for (let addr of indirizziRuntime) runtime.push({addr,vA:memA[addr]??"--",vB:memB[addr]??"--",vC:memC[addr]??"--"});
     for (const p of x2_parametri) {
-
-        const base = parseInt(p.LIBERA1, 16);
-        const len = parseInt(p.LIBERA4);
-        const unita = (p.UNITA === "/" ? "" : p.UNITA);
-        const nome = p.DESCRIZIONE || p.PARAMETRO;
-
-        if (isNaN(base) || isNaN(len)) continue;
-        if (giàGestiti.has(base)) continue;
-
-        for (let i = 0; i < len; i++) giàGestiti.add(base + i);
-
-        // --- QUI CI DEVE ESSERE UNA SOLA DICHIARAZIONE ---
-        const bytesA = [];
-        const bytesB = [];
-        const bytesC = [];
-
-        for (let i = 0; i < len; i++) {
-            const a = base + i;
-            bytesA.push(memA[a] ?? "--");
-            bytesB.push(memB[a] ?? "--");
-            bytesC.push(memC[a] ?? "--");
-        }
-
-        const diversi =
-            bytesA.some((b, i) => b !== bytesB[i]) ||
-            bytesA.some((b, i) => b !== bytesC[i]) ||
-            bytesB.some((b, i) => b !== bytesC[i]);
-
-        const valA = ricostruisciValore(bytesA);
-        const valB = ricostruisciValore(bytesB);
-        const valC = ricostruisciValore(bytesC);
-
-        const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
-        const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
-        const valC_str = (valC === "--") ? "--" : (unita ? `${valC} ${unita}` : `${valC}`);
-
-        if (visualizzaTutto || diversi || valA !== valB || valA !== valC || valB !== valC) {
-            diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
-                bytesA,
-                bytesB,
-                bytesC,
-                valA_str,
-                valB_str,
-                valC_str
-            });
-        }
+        const base=parseInt(p.LIBERA1,16), len=parseInt(p.LIBERA4);
+        if (isNaN(base)||isNaN(len)||giàGestiti.has(base)) continue;
+        for (let i=0;i<len;i++) giàGestiti.add(base+i);
+        const bytesA=[],bytesB=[],bytesC=[];
+        for (let i=0;i<len;i++){const a=base+i;bytesA.push(memA[a]??"--");bytesB.push(memB[a]??"--");bytesC.push(memC[a]??"--");}
+        const diversi=bytesA.some((b,i)=>b!==bytesB[i])||bytesA.some((b,i)=>b!==bytesC[i])||bytesB.some((b,i)=>b!==bytesC[i]);
+        const valA=ricostruisciValore(bytesA), valB=ricostruisciValore(bytesB), valC=ricostruisciValore(bytesC);
+        if (visualizzaTutto||diversi||valA!==valB||valA!==valC||valB!==valC) diff.push({base,len,nome:p.DESCRIZIONE||p.PARAMETRO,codice:p.PARAMETRO,bytesA,bytesB,bytesC,valA_str:valA,valB_str:valB,valC_str:valC});
     }
-
-    return { diff, runtime };
+    return {diff,runtime};
 }
 
 // ------------------------------------------------------------
 //  RENDER RISULTATI
 // ------------------------------------------------------------
 async function renderResults(result) {
-
     const lista = result.diff;
     const runtime = result.runtime;
-
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
-
     if (lista.length === 0) {
-        html += `
-            <div style="
-                margin:15px 0;
-                padding:12px;
-                background:#113311;
-                border:1px solid #44aa44;
-                border-radius:6px;
-                color:#88ff88;
-                font-weight:bold;
-            ">
-                ✔ I parametri risultano equivalenti.<br>
-                Nessuna differenza da segnalare.
-            </div>
-        `;
+        html += `<div style="margin:15px;padding:12px;background:#113311;color:#88ff88;">
+        ✔ I parametri risultano equivalenti.</div>`;
     } else {
-
-        html += `
-            <table id="tabDiff">
-                <tr>
-                    <th class="col-indirizzo">Indirizzo</th>
-                    <th class="col-valA">Valore A</th>
-                    <th class="col-valB">Valore B</th>
-                    <th class="col-valC">Valore C</th>
-                    <th class="col-parametro">Parametro</th>
-                    <th class="col-valore">Valore complessivo</th>
-                    <th class="col-impostazione">Impostazione</th>
-                </tr>
-        `;
-
+        html += `<table id="tabDiff"><tr>
+        <th>Indirizzo</th><th>Valore A</th><th>Valore B</th><th>Valore C</th>
+        <th>Parametro</th><th>Valore complessivo</th><th>Impostazione</th></tr>`;
         for (let d of lista) {
-            for (let i = 0; i < d.len; i++) {
-
-                html += `
-                 <tr class="param-row" ${i === 0 ? `
-    data-codice="${d.codice}"
-    data-valA="${d.bytesA[0] !== '--' ? parseInt(d.bytesA[0], 16) : '--'}"
-    data-valB="${d.bytesB[0] !== '--' ? parseInt(d.bytesB[0], 16) : '--'}"
-    data-valC="${d.bytesC && d.bytesC[0] !== '--' ? parseInt(d.bytesC[0], 16) : '--'}"
-` : ""}>
-
-                        <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                        <td class="col-valA">${formatVal(d.bytesA[i])}</td>
-                        <td class="col-valB">${formatVal(d.bytesB[i])}</td>
-                        <td class="col-valC">${d.bytesC ? formatVal(d.bytesC[i]) : "--"}</td>
-                        <td class="col-parametro">${d.codice} – ${d.nome}</td>
-                `;
-
-                if (i === 0) {
-                    html += `
-                        <td class="col-valore" rowspan="${d.len}">
-                            <b>A:</b> ${d.valA_str}<br>
-                            <b>B:</b> ${d.valB_str}<br>
-                            ${d.valC_str ? `<b>C:</b> ${d.valC_str}` : ""}
-                        </td>
-                        <td class="col-impostazione" rowspan="${d.len}">…</td>
-                    `;
+            for (let i=0;i<d.len;i++) {
+                html += `<tr><td>0x${(d.base+i).toString(16).padStart(4,"0").toUpperCase()}</td>
+                <td>${formatVal(d.bytesA[i])}</td>
+                <td>${formatVal(d.bytesB[i])}</td>
+                <td>${d.bytesC?formatVal(d.bytesC[i]):"--"}</td>
+                <td>${d.codice} – ${d.nome}</td>`;
+                if (i===0) {
+                    html += `<td rowspan="${d.len}"><b>A:</b>${d.valA_str}<br><b>B:</b>${d.valB_str}<br><b>C:</b>${d.valC_str}</td>
+                    <td rowspan="${d.len}">…</td>`;
                 }
-
                 html += `</tr>`;
             }
         }
-
         html += `</table>`;
     }
-
-    // RUNTIME
-    html += `
-        <h3 style="margin-top:25px;">
-            <button id="toggleRuntimeBtn"
-                style="padding:6px 12px; font-size:12px; cursor:pointer;">
-                Mostra valori runtime non programmabili
-            </button>
-        </h3>
-
-        <div id="runtimeSection" style="display:none;">
-            <h3>VALORI INTERNI NON PROGRAMMABILI (RUNTIME)</h3>
-            <table>
-                <tr>
-                    <th>Indirizzo</th>
-                    <th>Valore A</th>
-                    <th>Valore B</th>
-                    <th>Valore C</th>
-                    <th>Note</th>
-                </tr>
-    `;
-
-    for (let r of runtime) {
-        html += `
-            <tr class="runtime">
-                <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                <td>${formatVal(r.vA)}</td>
-                <td>${formatVal(r.vB)}</td>
-                <td>${formatVal(r.vC)}</td>
-                <td>Runtime – non programmabile</td>
-            </tr>
-        `;
-    }
-
-    html += `
-            </table>
-        </div>
-    `;
-
     document.getElementById("risultati").innerHTML = html;
-    // IMPOSTAZIONI
-    const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
-
-    for (let r of righe) {
-
-        const codice = r.dataset.codice;
-
-        let valA = r.dataset.valA ? r.dataset.valA.trim() : null;
-        let valB = r.dataset.valB ? r.dataset.valB.trim() : null;
-        let valC = r.dataset.valC ? r.dataset.valC.trim() : null;
-
-        let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
-        let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
-        let impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
-
-        const cella = r.querySelector(".col-impostazione");
-        if (cella) {
-            cella.innerHTML = `
-                <b>A:</b> ${impA}<br>
-                <b>B:</b> ${impB}<br>
-                <b>C:</b> ${impC}
-            `;
-        }
-    }
-
-    // Toggle runtime
-    const btn = document.getElementById("toggleRuntimeBtn");
-    const section = document.getElementById("runtimeSection");
-
-    btn.addEventListener("click", () => {
-        if (section.style.display === "none") {
-            section.style.display = "block";
-            btn.textContent = "Nascondi valori runtime non programmabili";
-        } else {
-            section.style.display = "none";
-            btn.textContent = "Mostra valori runtime non programmabili";
-        }
-    });
-
-    aggiornaCheckboxColonne();
 }
 
+// ===== BLOCCO 2 FINITO =====
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO
 // ------------------------------------------------------------
 function confronta(memFileA, memFileB) {
     const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
     const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
-
     const result = compareMemory(mem1, mem2);
     renderResults(result);
 }
@@ -428,40 +164,27 @@ function confronta(memFileA, memFileB) {
 function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
-
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
-
     if (!f2.files[0]) return alert("Seleziona File B");
-
     if (!f1.files[0] && memoriaA) {
-        leggiFileHex(f2, hexB => {
-            confronta(memoriaA, hexB);
-        });
+        leggiFileHex(f2, hexB => { confronta(memoriaA, hexB); });
         return;
     }
-
     if (f1.files[0]) {
-        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => {
-            confronta(hexA, hexB);
-        }));
+        leggiFileHex(f1, hexA => leggiFileHex(f2, hexB => { confronta(hexA, hexB); }));
         return;
     }
-
     alert("Seleziona File A oppure usa la memoria DEFAULT");
 }
 
 function confrontaAC() {
     evidenziaPulsante("btnAC");
     confrontoAttivo = "A-C";
-
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
-
     if (!f3.files[0]) return alert("Seleziona File C");
-
     let sorgenteA;
-
     if (f1.files[0]) {
         sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
     } else if (memoriaA) {
@@ -469,15 +192,11 @@ function confrontaAC() {
     } else {
         return alert("Seleziona File A oppure usa la memoria DEFAULT");
     }
-
     const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
-
     Promise.all([sorgenteA, sorgenteC]).then(([memA, memC]) => {
-
         const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
         const mB = {};
-
         const result = compareMemory3(mA, mB, mC);
         renderResults(result);
     });
@@ -486,23 +205,15 @@ function confrontaAC() {
 function confrontaBC() {
     evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
-
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
-
-    if (!f2.files[0] || !f3.files[0]) {
-        return alert("Seleziona File B e File C");
-    }
-
+    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
     const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
     const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
-
     Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
-
         const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
         const mA = {};
-
         const result = compareMemory3(mA, mB, mC);
         renderResults(result);
     });
@@ -511,13 +222,10 @@ function confrontaBC() {
 async function confrontaABC() {
     evidenziaPulsante("btnABC");
     confrontoAttivo = "A-B-C";
-
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
-
     if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
-
     let sorgenteA;
     if (f1.files[0]) {
         sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
@@ -527,16 +235,12 @@ async function confrontaABC() {
         alert("Seleziona File A oppure usa la memoria DEFAULT");
         return;
     }
-
     const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
     const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
-
     const [memA, memB, memC] = await Promise.all([sorgenteA, sorgenteB, sorgenteC]);
-
     const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
     const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
     const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
-
     const result = compareMemory3(mA, mB, mC);
     renderResults(result);
 }
@@ -546,16 +250,11 @@ async function confrontaABC() {
 // ------------------------------------------------------------
 function evidenziaPulsante(idAttivo) {
     const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
-
     ids.forEach(id => {
         const btn = document.getElementById(id);
         if (!btn) return;
-
-        if (id === idAttivo) {
-            btn.classList.add("attivo");
-        } else {
-            btn.classList.remove("attivo");
-        }
+        if (id === idAttivo) btn.classList.add("attivo");
+        else btn.classList.remove("attivo");
     });
 }
 
@@ -563,73 +262,41 @@ function evidenziaPulsante(idAttivo) {
 //  GESTIONE CHECKBOX COLONNE
 // ------------------------------------------------------------
 function aggiornaCheckboxColonne() {
-
     const chkA = document.querySelector('input[data-col="col-valA"]');
     const chkB = document.querySelector('input[data-col="col-valB"]');
     const chkC = document.querySelector('input[data-col="col-valC"]');
-
-    if (!chkA || !chkB || !chkC) {
-        applyColumnFilters();
-        return;
-    }
-
-    if (confrontoAttivo === "A-B") {
-        chkA.checked = true;
-        chkB.checked = true;
-        chkC.checked = false;
-    }
-
-    if (confrontoAttivo === "A-C") {
-        chkA.checked = true;
-        chkB.checked = false;
-        chkC.checked = true;
-    }
-
-    if (confrontoAttivo === "B-C") {
-        chkA.checked = false;
-        chkB.checked = true;
-        chkC.checked = true;
-    }
-
-    if (confrontoAttivo === "A-B-C") {
-        chkA.checked = true;
-        chkB.checked = true;
-        chkC.checked = true;
-    }
-
+    if (!chkA || !chkB || !chkC) { applyColumnFilters(); return; }
+    if (confrontoAttivo === "A-B") { chkA.checked = true; chkB.checked = true; chkC.checked = false; }
+    if (confrontoAttivo === "A-C") { chkA.checked = true; chkB.checked = false; chkC.checked = true; }
+    if (confrontoAttivo === "B-C") { chkA.checked = false; chkB.checked = true; chkC.checked = true; }
+    if (confrontoAttivo === "A-B-C") { chkA.checked = true; chkB.checked = true; chkC.checked = true; }
     applyColumnFilters();
 }
 
-// ------------------------------------------------------------
-//  APPLY COLUMN FILTERS
-// ------------------------------------------------------------
 function applyColumnFilters() {
     document.querySelectorAll(".col-flag").forEach(flag => {
         const colClass = flag.dataset.col;
         const hide = !flag.checked;
-
         document.querySelectorAll("." + colClass).forEach(cell => {
             cell.style.display = hide ? "none" : "";
         });
     });
 }
 
+// ===== BLOCCO 3 FINITO =====
 // ------------------------------------------------------------
 //  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
 // ------------------------------------------------------------
 function salvaFile(lettera, input) {
     const file = input.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = e => {
-        localStorage.setItem("X2_FILE_" + lettera, e.target.result);
-        localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
-
-        if (lettera === "A") {
-            const lbl = document.getElementById("labelFileA");
-            if (lbl) lbl.textContent = "FILE A";
-        }
+        const hexText = e.target.result;
+        localStorage.setItem("memoria" + lettera, hexText);
+        if (lettera === "A") memoriaA = hexToMemoryMap(hexText);
+        if (lettera === "B") memoriaB = hexToMemoryMap(hexText);
+        if (lettera === "C") memoriaC = hexToMemoryMap(hexText);
     };
     reader.readAsText(file);
 }
@@ -639,13 +306,9 @@ function salvaFile(lettera, input) {
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
     const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-
     fetch(urlPolli)
         .then(r => r.text())
-        .then(text => {
-            memoriaA = hexToMemoryMap(text);
-            console.log("Memoria polli caricata automaticamente in A");
-        })
+        .then(text => { memoriaA = hexToMemoryMap(text); })
         .catch(err => console.error("Errore caricamento polli:", err));
 });
 
