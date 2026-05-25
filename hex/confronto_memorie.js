@@ -424,7 +424,7 @@ function confronta(memFileA, memFileB) {
 function confrontaAB() {
     evidenziaPulsante("btnAB");
     confrontoAttivo = "A-B";
-
+        aggiornaCheckboxColonne();
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
@@ -446,7 +446,7 @@ function confrontaAB() {
 function confrontaAC() {
     evidenziaPulsante("btnAC");
     confrontoAttivo = "A-C";
-
+        aggiornaCheckboxColonne();
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
@@ -468,7 +468,7 @@ function confrontaAC() {
 function confrontaBC() {
     evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
-
+        aggiornaCheckboxColonne();
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
@@ -577,6 +577,44 @@ function applyColumnFilters() {
             cell.style.display = hide ? "none" : "";
         });
     });
+}
+
+// ------------------------------------------------------------
+//  AGGIORNA CHECK
+// ------------------------------------------------------------
+function aggiornaCheckboxColonne() {
+
+    const chkA = document.querySelector('input[data-col="col-valA"]');
+    const chkB = document.querySelector('input[data-col="col-valB"]');
+    const chkC = document.querySelector('input[data-col="col-valC"]');
+
+    if (!chkA || !chkB || !chkC) return;
+
+    if (confrontoAttivo === "A-B") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = false;
+    }
+
+    if (confrontoAttivo === "A-C") {
+        chkA.checked = true;
+        chkB.checked = false;
+        chkC.checked = true;
+    }
+
+    if (confrontoAttivo === "B-C") {
+        chkA.checked = false;
+        chkB.checked = true;
+        chkC.checked = true;
+    }
+
+    if (confrontoAttivo === "A-B-C") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = true;
+    }
+
+    applyColumnFilters();
 }
 
 // ------------------------------------------------------------
