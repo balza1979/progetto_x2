@@ -250,6 +250,9 @@ function compareMemory3(memA, memB, memC) {
 // ------------------------------------------------------------
 //  RENDER RISULTATI 
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+//  RENDER RISULTATI
+// ------------------------------------------------------------
 async function renderResults(result) {
 
     const lista = result.diff;
@@ -370,7 +373,7 @@ async function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
-    // ➜ Evento click su ogni parametro
+    // ➜ Popup al click
     document.querySelectorAll("#tabDiff tr.param-row").forEach(riga => {
         riga.addEventListener("click", async () => {
             const codice = riga.dataset.codice;
@@ -400,7 +403,6 @@ async function renderResults(result) {
         }
     });
 
-    // Applica i filtri checkbox
     applyColumnFilters();
 }
 
