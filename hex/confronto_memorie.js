@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – VERSIONE FIX 25/05/2026
+//  CONFRONTO_MEMORIE.JS – VERSIONE FIX COMPLETA 25/05/2026
 // ============================================================
 
 // ------------------------------------------------------------
@@ -129,7 +129,7 @@ function compareMemory(memA, memB) {
         const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
-        if (visualizzaTutto || diversi || valA !== valB) {
+        if (visualizzaTutto || diversi) {
             diff.push({
                 base,
                 len,
@@ -148,14 +148,16 @@ function compareMemory(memA, memB) {
     return { diff, runtime };
 }
 
+
 // ------------------------------------------------------------
-//  CONFRONTO A–B–C
+//  CONFRONTO A–B–C (PATCH COMPLETA DIFFERENZE)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
+
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
     // RUNTIME
@@ -191,10 +193,24 @@ function compareMemory3(memA, memB, memC) {
             bytesC.push(memC[a] ?? "--");
         }
 
-        const diversi =
-            bytesA.some((b, i) => b !== bytesB[i]) ||
-            bytesA.some((b, i) => b !== bytesC[i]) ||
-            bytesB.some((b, i) => b !== bytesC[i]);
+        // PATCH DIFFERENZE CORRETTE
+        let diversi = false;
+
+        if (confrontoAttivo === "A-C") {
+            diversi = bytesA.some((b, i) => b !== bytesC[i]);
+        }
+        else if (confrontoAttivo === "B-C") {
+            diversi = bytesB.some((b, i) => b !== bytesC[i]);
+        }
+        else if (confrontoAttivo === "A-B-C") {
+            diversi =
+                bytesA.some((b, i) => b !== bytesB[i]) ||
+                bytesA.some((b, i) => b !== bytesC[i]) ||
+                bytesB.some((b, i) => b !== bytesC[i]);
+        }
+        else { // A-B
+            diversi = bytesA.some((b, i) => b !== bytesB[i]);
+        }
 
         const valA = ricostruisciValore(bytesA);
         const valB = ricostruisciValore(bytesB);
@@ -266,16 +282,11 @@ function renderResults(result) {
             for (let i = 0; i < d.len; i++) {
 
                 html += `
-                    <tr class="param-row" ${i === 0 ? `
-                        data-codice="${d.codice}"
-                        data-valA="${d.bytesA[0]}"
-                        data-valB="${d.bytesB[0]}"
-                        data-valC="${d.bytesC ? d.bytesC[0] : ""}"
-                    ` : ""}>
+                    <tr class="param-row">
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
-                        <td class="col-valC">${d.bytesC ? formatVal(d.bytesC[i]) : "--"}</td>
+                        <td class="col-valC">${formatVal(d.bytesC[i])}</td>
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
@@ -369,9 +380,7 @@ function renderResults(result) {
     });
 
     applyColumnFilters();
-   }
-
-
+}
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO (AB / AC / BC / ABC)
 // ------------------------------------------------------------
@@ -587,4 +596,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => console.error("Errore caricamento polli:", err));
 });
+
+
+
 
