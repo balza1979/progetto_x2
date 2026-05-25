@@ -182,12 +182,8 @@ function compareMemory3(memA, memB, memC) {
     const runtime = [];
     const giàGestiti = new Set();
 
-    // Flag "Visualizza tutto" attivo solo se il checkbox è spuntato
-    // e solo nelle modalità AC, BC, ABC
-    const visualizzaTutto =
-        (confrontoAttivo === "A-C" && document.getElementById("flagVisualizzaTutto")?.checked) ||
-        (confrontoAttivo === "B-C" && document.getElementById("flagVisualizzaTutto")?.checked) ||
-        (confrontoAttivo === "A-B-C" && document.getElementById("flagVisualizzaTutto")?.checked);
+    // Leggi il flag solo se esiste
+    const flagChecked = document.getElementById("flagVisualizzaTutto")?.checked ?? false;
 
     // RUNTIME
     for (let addr of indirizziRuntime) {
@@ -221,7 +217,13 @@ function compareMemory3(memA, memB, memC) {
         if (confrontoAttivo === "B-C" && valB_str !== valC_str) diverso = true;
         if (confrontoAttivo === "A-B-C" && (valA_str !== valB_str || valA_str !== valC_str || valB_str !== valC_str)) diverso = true;
 
-        if (diverso || visualizzaTutto) {
+        // Regola finale:
+        // - In A-B → mostra solo se diverso
+        // - In A-C, B-C, A-B-C → mostra se diverso oppure se flag attivo
+        if (
+            (confrontoAttivo === "A-B" && diverso) ||
+            ((confrontoAttivo === "A-C" || confrontoAttivo === "B-C" || confrontoAttivo === "A-B-C") && (diverso || flagChecked))
+        ) {
             diff.push({
                 codice,
                 nome: p.nome,
