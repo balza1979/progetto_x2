@@ -211,10 +211,15 @@ function compareMemory3(memA, memB, memC) {
         const valC_str = memC ? ricostruisciValore(bytesC) : null;
 
         let diverso = false;
-        if (confrontoAttivo === "A-B" && valA_str !== valB_str) diverso = true;
-        if (confrontoAttivo === "A-C" && valA_str !== valC_str) diverso = true;
-        if (confrontoAttivo === "B-C" && valB_str !== valC_str) diverso = true;
-        if (confrontoAttivo === "A-B-C" && (valA_str !== valB_str || valA_str !== valC_str || valB_str !== valC_str)) diverso = true;
+        if (confrontoAttivo === "A-B") {
+            diverso = (valA_str !== valB_str);
+        } else if (confrontoAttivo === "A-C") {
+            diverso = (valA_str !== valC_str);
+        } else if (confrontoAttivo === "B-C") {
+            diverso = (valB_str !== valC_str);
+        } else if (confrontoAttivo === "A-B-C") {
+            diverso = (valA_str !== valB_str || valA_str !== valC_str || valB_str !== valC_str);
+        }
 
         // Regole finali:
         // - A-B → mostra solo se diverso
