@@ -1,28 +1,34 @@
 // ============================================================
-//  FUNZIONI  BASE
+//  CONFRONTO_MEMORIE.JS – VERSIONE 25/05/2026
 // ============================================================
+
+// ------------------------------------------------------------
+//  VARIABILI BASE
+// ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
 let memoriaC = null;
 
-// Indirizzi runtime non programmabili
+let confrontoAttivo = "A-B";
+
 const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
 
+// ------------------------------------------------------------
+//  UTILITY BASE
+// ------------------------------------------------------------
 function apriErrori() {
     window.location.href = "errori_x2.html";
 }
 
-// Formattazione HEX + DEC
 function formatVal(hexVal) {
     if (hexVal === "--") return "--";
     const num = parseInt(hexVal, 16);
     return `${hexVal} <span style="color:#888;">(${num})</span>`;
 }
 
-// Lettura file HEX
 function leggiFileHex(input, callback) {
     const file = input.files[0];
     if (!file) return callback(null);
@@ -32,7 +38,6 @@ function leggiFileHex(input, callback) {
     reader.readAsText(file);
 }
 
-// Conversione HEX → mappa memoria
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
@@ -55,9 +60,7 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-// Ricostruzione valore (1, 2, 4 byte)
 function ricostruisciValore(bytes) {
-
     if (bytes.includes("--")) return "--";
 
     const b = bytes.map(x => parseInt(x, 16));
@@ -71,46 +74,17 @@ function ricostruisciValore(bytes) {
         return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
     }
 
-    if (len === 2) {
-        return b[0] * 256 + b[1];
-    }
-
-    if (len === 1) {
-        return b[0];
-    }
+    if (len === 2) return b[0] * 256 + b[1];
+    if (len === 1) return b[0];
 
     return "--";
 }
 
-// Mappa indirizzo → parametro
-function buildAddressToParamMap() {
-    const map = {};
-
-    for (let p of x2_parametri) {
-        const base = parseInt(p.LIBERA1, 16);
-        const len = parseInt(p.LIBERA4);
-
-        if (isNaN(base) || isNaN(len)) continue;
-
-        for (let i = 0; i < len; i++) {
-            map[base + i] = {
-                codice: p.PARAMETRO,
-                descrizione: p.DESCRIZIONE
-            };
-        }
-    }
-
-    return map;
-}
-
-// ============================================================
+// ------------------------------------------------------------
 //  CERCA IMPOSTAZIONE NEL JSON
-// ============================================================
-
+// ------------------------------------------------------------
 async function x2_trovaImpostazione(parametroCodice, valore) {
-
     return new Promise(resolve => {
-
         const url = "/progetto_x2/json_tendine/" + parametroCodice + ".json";
 
         fetch(url)
@@ -134,26 +108,25 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
     });
 }
 
-// ============================================================
-//  CONFRONTO MEMORIA (A–B)
-// ============================================================
-
-function compareMemory(memA, memB, addrMap) {
+// ------------------------------------------------------------
+//  CONFRONTO A–B
+// ------------------------------------------------------------
+function compareMemory(memA, memB) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
+    const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-    // RUNTIME
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
-            v1: memA[addr] ?? "--",
-            v2: memB[addr] ?? "--"
+            vA: memA[addr] ?? "--",
+            vB: memB[addr] ?? "--",
+            vC: "--"
         });
     }
 
-    // PARAMETRI
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -162,7 +135,6 @@ function compareMemory(memA, memB, addrMap) {
         const nome = p.DESCRIZIONE || p.PARAMETRO;
 
         if (isNaN(base) || isNaN(len)) continue;
-
         if (giàGestiti.has(base)) continue;
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
@@ -183,9 +155,7 @@ function compareMemory(memA, memB, addrMap) {
         const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
 
-        const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
-
-        if (diversi || valA !== valB || visualizzaTutto) {
+        if (visualizzaTutto || diversi || valA !== valB) {
             diff.push({
                 base,
                 len,
@@ -193,8 +163,10 @@ function compareMemory(memA, memB, addrMap) {
                 codice: p.PARAMETRO,
                 bytesA,
                 bytesB,
+                bytesC: null,
                 valA_str,
-                valB_str
+                valB_str,
+                valC_str: ""
             });
         }
     }
@@ -202,19 +174,16 @@ function compareMemory(memA, memB, addrMap) {
     return { diff, runtime };
 }
 
-// ============================================================
-//  CONFRONTO MEMORIA (A–B–C)
-// ============================================================
-
-function compareMemory3(memA, memB, memC, addrMap) {
+// ------------------------------------------------------------
+//  CONFRONTO A–B–C
+// ------------------------------------------------------------
+function compareMemory3(memA, memB, memC) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
-
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-    // RUNTIME A‑B‑C
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -224,7 +193,6 @@ function compareMemory3(memA, memB, memC, addrMap) {
         });
     }
 
-    // PARAMETRI
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -260,14 +228,7 @@ function compareMemory3(memA, memB, memC, addrMap) {
         const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
         const valC_str = (valC === "--") ? "--" : (unita ? `${valC} ${unita}` : `${valC}`);
 
-        // QUI: stessa logica di A‑B, estesa a 3
-        if (
-            visualizzaTutto ||
-            diversi ||
-            valA !== valB ||
-            valA !== valC ||
-            valB !== valC
-        ) {
+        if (visualizzaTutto || diversi || valA !== valB || valA !== valC || valB !== valC) {
             diff.push({
                 base,
                 len,
@@ -286,34 +247,17 @@ function compareMemory3(memA, memB, memC, addrMap) {
     return { diff, runtime };
 }
 
-
-// ============================================================
+// ------------------------------------------------------------
 //  RENDER RISULTATI
-// ============================================================
-
-async function generaTabellaConfronto(memFileA, memFileB) {
-    const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
-    const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
-    const addrMap = buildAddressToParamMap();
-    const result = compareMemory(mem1, mem2, addrMap);
-
-    let backup = document.getElementById("risultati").innerHTML;
-    renderResults(result);
-    const html = document.getElementById("risultati").innerHTML;
-    document.getElementById("risultati").innerHTML = backup;
-    return html;
-}
-
+// ------------------------------------------------------------
 async function renderResults(result) {
 
     const lista = result.diff;
     const runtime = result.runtime;
-    const isABC = (confrontoAttivo === "A-B-C");
 
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
     if (lista.length === 0) {
-
         html += `
             <div style="
                 margin:15px 0;
@@ -328,95 +272,50 @@ async function renderResults(result) {
                 Nessuna differenza da segnalare.
             </div>
         `;
-
     } else {
 
-        if (!isABC) {
-            html += `
-                <table id="tabDiff">
-                    <tr>
-                        <th>Indirizzo</th>
-                        <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
-                        <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
-                        <th>Parametro</th>
-                        <th>Valore complessivo</th>
-                        <th>Impostazione</th>
-                    </tr>
-            `;
-        } else {
-            html += `
-                <table id="tabDiff">
-                    <tr>
-                        <th>Indirizzo</th>
-                        <th>Valore File A</th>
-                        <th>Valore File B</th>
-                        <th>Valore File C</th>
-                        <th>Parametro</th>
-                        <th>Valore complessivo</th>
-                        <th>Impostazione</th>
-                    </tr>
-            `;
-        }
+        html += `
+            <table id="tabDiff">
+                <tr>
+                    <th class="col-indirizzo">Indirizzo</th>
+                    <th class="col-valA">Valore A</th>
+                    <th class="col-valB">Valore B</th>
+                    <th class="col-valC">Valore C</th>
+                    <th class="col-parametro">Parametro</th>
+                    <th class="col-valore">Valore complessivo</th>
+                    <th class="col-impostazione">Impostazione</th>
+                </tr>
+        `;
 
         for (let d of lista) {
-
             for (let i = 0; i < d.len; i++) {
 
-                if (!isABC) {
+                html += `
+                    <tr class="param-row" ${i === 0 ? `
+                        data-codice="${d.codice}"
+                        data-valA="${d.bytesA[0]}"
+                        data-valB="${d.bytesB[0]}"
+                        data-valC="${d.bytesC ? d.bytesC[0] : ""}"
+                    ` : ""}>
+                        <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
+                        <td class="col-valA">${formatVal(d.bytesA[i])}</td>
+                        <td class="col-valB">${formatVal(d.bytesB[i])}</td>
+                        <td class="col-valC">${d.bytesC ? formatVal(d.bytesC[i]) : "--"}</td>
+                        <td class="col-parametro">${d.codice} – ${d.nome}</td>
+                `;
 
+                if (i === 0) {
                     html += `
-                        <tr class="param-row" ${i === 0 ? `
-                            data-codice="${d.codice}"
-                            data-valA="${d.bytesA[0]}"
-                            data-valB="${d.bytesB[0]}"
-                        ` : ""}>
-                            <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                            <td>${formatVal(d.bytesA[i])}</td>
-                            <td>${formatVal(d.bytesB[i])}</td>
-                            <td>${d.codice} – ${d.nome}</td>
+                        <td class="col-valore" rowspan="${d.len}">
+                            <b>A:</b> ${d.valA_str}<br>
+                            <b>B:</b> ${d.valB_str}<br>
+                            ${d.valC_str ? `<b>C:</b> ${d.valC_str}` : ""}
+                        </td>
+                        <td class="col-impostazione" rowspan="${d.len}">…</td>
                     `;
-
-                    if (i === 0) {
-                        html += `
-                            <td rowspan="${d.len}" style="text-align:center;">
-                                <b>${confrontoAttivo.split("-")[0]}:</b> ${d.valA_str}<br>
-                                <b>${confrontoAttivo.split("-")[1]}:</b> ${d.valB_str}
-                            </td>
-                            <td rowspan="${d.len}" class="col-impostazione">…</td>
-                        `;
-                    }
-
-                    html += `</tr>`;
-
-                } else {
-
-                    html += `
-                        <tr class="param-row" ${i === 0 ? `
-                            data-codice="${d.codice}"
-                            data-valA="${d.bytesA[0]}"
-                            data-valB="${d.bytesB[0]}"
-                            data-valC="${d.bytesC[0]}"
-                        ` : ""}>
-                            <td>0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                            <td>${formatVal(d.bytesA[i])}</td>
-                            <td>${formatVal(d.bytesB[i])}</td>
-                            <td>${formatVal(d.bytesC[i])}</td>
-                            <td>${d.codice} – ${d.nome}</td>
-                    `;
-
-                    if (i === 0) {
-                        html += `
-                            <td rowspan="${d.len}" style="text-align:center;">
-                                <b>A:</b> ${d.valA_str}<br>
-                                <b>B:</b> ${d.valB_str}<br>
-                                <b>C:</b> ${d.valC_str}
-                            </td>
-                            <td rowspan="${d.len}" class="col-impostazione-abc">…</td>
-                        `;
-                    }
-
-                    html += `</tr>`;
                 }
+
+                html += `</tr>`;
             }
         }
 
@@ -437,14 +336,9 @@ async function renderResults(result) {
             <table>
                 <tr>
                     <th>Indirizzo</th>
-                    ${!isABC ? `
-                        <th>Valore File ${confrontoAttivo.split("-")[0]}</th>
-                        <th>Valore File ${confrontoAttivo.split("-")[1]}</th>
-                    ` : `
-                        <th>Valore File A</th>
-                        <th>Valore File B</th>
-                        <th>Valore File C</th>
-                    `}
+                    <th>Valore A</th>
+                    <th>Valore B</th>
+                    <th>Valore C</th>
                     <th>Note</th>
                 </tr>
     `;
@@ -453,14 +347,9 @@ async function renderResults(result) {
         html += `
             <tr class="runtime">
                 <td>0x${r.addr.toString(16).padStart(4, "0").toUpperCase()}</td>
-                ${!isABC ? `
-                    <td>${formatVal(r.v1)}</td>
-                    <td>${formatVal(r.v2)}</td>
-                ` : `
-                    <td>${formatVal(r.vA)}</td>
-                    <td>${formatVal(r.vB)}</td>
-                    <td>${formatVal(r.vC)}</td>
-                `}
+                <td>${formatVal(r.vA)}</td>
+                <td>${formatVal(r.vB)}</td>
+                <td>${formatVal(r.vC)}</td>
                 <td>Runtime – non programmabile</td>
             </tr>
         `;
@@ -476,69 +365,33 @@ async function renderResults(result) {
     // IMPOSTAZIONI
     const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
 
-    if (!isABC) {
+    for (let r of righe) {
 
-        for (let r of righe) {
+        const codice = r.dataset.codice;
 
-            const codice = r.dataset.codice;
+        let valA = r.dataset.valA;
+        let valB = r.dataset.valB;
+        let valC = r.dataset.valC;
 
-            let valA = r.dataset.valA;
-            if (!valA || valA === "--") valA = null;
+        if (!valA || valA === "--") valA = null;
+        if (!valB || valB === "--") valB = null;
+        if (!valC || valC === "--") valC = null;
 
-            let valB = r.dataset.valB;
-            if (!valB || valB === "--") valB = null;
+        let impA = valA ? await x2_trovaImpostazione(codice, valA) : "—";
+        let impB = valB ? await x2_trovaImpostazione(codice, valB) : "—";
+        let impC = valC ? await x2_trovaImpostazione(codice, valC) : "—";
 
-            let impA = "—";
-            if (valA) impA = await x2_trovaImpostazione(codice, valA);
-
-            let impB = "—";
-            if (valB) impB = await x2_trovaImpostazione(codice, valB);
-
-            const cella = r.querySelector(".col-impostazione");
-            if (cella) {
-                cella.innerHTML = `
-                    <b>${confrontoAttivo.split("-")[0]}:</b> ${impA}<br>
-                    <b>${confrontoAttivo.split("-")[1]}:</b> ${impB}
-                `;
-            }
-        }
-
-    } else {
-
-        for (let r of righe) {
-
-            const codice = r.dataset.codice;
-
-            let valA = r.dataset.valA;
-            if (!valA || valA === "--") valA = null;
-
-            let valB = r.dataset.valB;
-            if (!valB || valB === "--") valB = null;
-
-            let valC = r.dataset.valC;
-            if (!valC || valC === "--") valC = null;
-
-            let impA = "—";
-            if (valA) impA = await x2_trovaImpostazione(codice, valA);
-
-            let impB = "—";
-            if (valB) impB = await x2_trovaImpostazione(codice, valB);
-
-            let impC = "—";
-            if (valC) impC = await x2_trovaImpostazione(codice, valC);
-
-            const cella = r.querySelector(".col-impostazione-abc");
-            if (cella) {
-                cella.innerHTML = `
-                    <b>A:</b> ${impA}<br>
-                    <b>B:</b> ${impB}<br>
-                    <b>C:</b> ${impC}
-                `;
-            }
+        const cella = r.querySelector(".col-impostazione");
+        if (cella) {
+            cella.innerHTML = `
+                <b>A:</b> ${impA}<br>
+                <b>B:</b> ${impB}<br>
+                <b>C:</b> ${impC}
+            `;
         }
     }
 
-    // toggle runtime
+    // Toggle runtime
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
@@ -552,27 +405,29 @@ async function renderResults(result) {
         }
     });
 
+    // Nascondi colonne non usate in base al confronto
+    if (confrontoAttivo === "A-B") {
+        document.querySelectorAll(".col-valC").forEach(c => c.style.display = "none");
+    }
+    if (confrontoAttivo === "A-C") {
+        document.querySelectorAll(".col-valB").forEach(c => c.style.display = "none");
+    }
+    if (confrontoAttivo === "B-C") {
+        document.querySelectorAll(".col-valA").forEach(c => c.style.display = "none");
+    }
+
+    // Applica i filtri checkbox
     applyColumnFilters();
 }
 
-// ============================================================
+// ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO
-// ============================================================
-
-let confrontoAttivo = "A-B";
-
+// ------------------------------------------------------------
 function confronta(memFileA, memFileB) {
+    const mem1 = typeof memFileA === "string" ? hexToMemoryMap(memFileA) : memFileA;
+    const mem2 = typeof memFileB === "string" ? hexToMemoryMap(memFileB) : memFileB;
 
-    const mem1 = typeof memFileA === "string"
-        ? hexToMemoryMap(memFileA)
-        : memFileA;
-
-    const mem2 = typeof memFileB === "string"
-        ? hexToMemoryMap(memFileB)
-        : memFileB;
-
-    const addrMap = buildAddressToParamMap();
-    const result = compareMemory(mem1, mem2, addrMap);
+    const result = compareMemory(mem1, mem2);
     renderResults(result);
 }
 
@@ -583,9 +438,7 @@ function confrontaAB() {
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    if (!f2.files[0]) {
-        return alert("Seleziona File B");
-    }
+    if (!f2.files[0]) return alert("Seleziona File B");
 
     if (!f1.files[0] && memoriaA) {
         leggiFileHex(f2, hexB => confronta(memoriaA, hexB));
@@ -607,9 +460,7 @@ function confrontaAC() {
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
-    if (!f3.files[0]) {
-        return alert("Seleziona File C");
-    }
+    if (!f3.files[0]) return alert("Seleziona File C");
 
     if (!f1.files[0] && memoriaA) {
         leggiFileHex(f3, hexC => confronta(memoriaA, hexC));
@@ -627,9 +478,14 @@ function confrontaAC() {
 function confrontaBC() {
     evidenziaPulsante("btnBC");
     confrontoAttivo = "B-C";
+
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
-    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
+
+    if (!f2.files[0] || !f3.files[0]) {
+        return alert("Seleziona File B e File C");
+    }
+
     leggiFileHex(f2, hexB => leggiFileHex(f3, hexC => confronta(hexB, hexC)));
 }
 
@@ -664,66 +520,13 @@ async function confrontaABC() {
     const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
     const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
 
-    const addrMap = buildAddressToParamMap();
-    const result = compareMemory3(mA, mB, mC, addrMap);
+    const result = compareMemory3(mA, mB, mC);
     renderResults(result);
 }
 
-// ============================================================
-//  UTILITY FINALI
-// ============================================================
-
-function toHex4(n) {
-    return "0x" + n.toString(16).padStart(4, "0").toUpperCase();
-}
-
-function isNumber(x) {
-    return typeof x === "number" && !isNaN(x);
-}
-
-function debugLog(msg) {
-    // console.log("[DEBUG]", msg);
-}
-
-function applyColumnFilters() {
-    const isABC = (confrontoAttivo === "A-B-C");
-
-    document.querySelectorAll(".col-flag").forEach(flag => {
-        const colIndex = parseInt(flag.dataset.col); // 1‑based come prima
-        const hide = !flag.checked;
-
-        document.querySelectorAll("table").forEach(table => {
-            table.querySelectorAll("tr").forEach(row => {
-                // indice reale nella riga (0‑based)
-                let realIndex = colIndex - 1;
-
-                // Nella tabella principale, in modalità ABC,
-                // abbiamo una colonna valore in più (A,B,C):
-                // Indirizzo (1)
-                // Val A (2)
-                // Val B (3)
-                // Val C (4)  <-- nuova
-                // Parametro (5)
-                // Valore complessivo (6)
-                // Impostazione (7)
-                //
-                // I tuoi flag sono pensati per layout a 2 valori.
-                // Quindi: per le colonne dopo i valori,
-                // spostiamo di +1.
-                if (isABC && table.id === "tabDiff" && colIndex >= 4) {
-                    realIndex = colIndex; // invece di colIndex-1
-                }
-
-                const cell = row.children[realIndex];
-                if (cell) {
-                    cell.style.display = hide ? "none" : "";
-                }
-            });
-        });
-    });
-}
-
-
+// ------------------------------------------------------------
+//  EVIDENZIA PULSANTE
+// ------------------------------------------------------------
 function evidenziaPulsante(idAttivo) {
     const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
 
@@ -739,9 +542,22 @@ function evidenziaPulsante(idAttivo) {
     });
 }
 
-// ============================================================
+// ------------------------------------------------------------
+//  TOGGLE COLONNA C
+// ------------------------------------------------------------
+function toggleColonnaC() {
+    const celleC = document.querySelectorAll(".col-valC");
+    if (!celleC.length) return;
+
+    const hidden = Array.from(celleC).every(c => c.style.display === "none");
+    const nuovoDisplay = hidden ? "" : "none";
+
+    celleC.forEach(c => c.style.display = nuovoDisplay);
+}
+
+// ------------------------------------------------------------
 //  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
-// ============================================================
+// ------------------------------------------------------------
 function salvaFile(lettera, input) {
     const file = input.files[0];
     if (!file) return;
@@ -751,7 +567,6 @@ function salvaFile(lettera, input) {
         localStorage.setItem("X2_FILE_" + lettera, e.target.result);
         localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
 
-        // [24/05/2026] Se l’utente seleziona FILE A, togliamo “DEFAULT”
         if (lettera === "A") {
             const lbl = document.getElementById("labelFileA");
             if (lbl) lbl.textContent = "FILE A";
@@ -760,7 +575,23 @@ function salvaFile(lettera, input) {
     reader.readAsText(file);
 }
 
-// [24/05/2026 16:20] Caricamento automatico memoria polli in memoriaA
+// ------------------------------------------------------------
+//  APPLY COLUMN FILTERS (usa le classi, non gli indici)
+// ------------------------------------------------------------
+function applyColumnFilters() {
+    document.querySelectorAll(".col-flag").forEach(flag => {
+        const colClass = flag.dataset.col;
+        const hide = !flag.checked;
+
+        document.querySelectorAll("." + colClass).forEach(cell => {
+            cell.style.display = hide ? "none" : "";
+        });
+    });
+}
+
+// ------------------------------------------------------------
+//  CARICAMENTO AUTOMATICO MEMORIA POLLI IN A
+// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
     const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
@@ -768,7 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(r => r.text())
         .then(text => {
             memoriaA = hexToMemoryMap(text);
-            console.log("Memoria polli caricata automaticamente");
+            console.log("Memoria polli caricata automaticamente in A");
         })
         .catch(err => console.error("Errore caricamento polli:", err));
 });
