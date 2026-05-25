@@ -213,7 +213,9 @@ function compareMemory3(memA, memB, memC) {
         const bytesA = [];
         const bytesB = [];
         const bytesC = [];
-        const bytesA = [];
+
+
+            const bytesA = [];
         const bytesB = [];
         const bytesC = [];
 
