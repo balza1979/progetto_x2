@@ -243,7 +243,7 @@ function compareMemory3(memA, memB, memC) {
 
 // ------------------------------------------------------------
 // ------------------------------------------------------------
-//  RENDER RISULTATI
+//  RENDER RISULTATI 
 // ------------------------------------------------------------
 async function renderResults(result) {
 
