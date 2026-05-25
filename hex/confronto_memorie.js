@@ -180,9 +180,8 @@ function compareMemory(memA, memB) {
 function compareMemory3(memA, memB, memC) {
     const diff = [];
     const runtime = [];
-    const giàGestiti = new Set();
 
-    // Leggi il flag solo se esiste
+    // Leggi il flag (true/false)
     const flagChecked = document.getElementById("flagVisualizzaTutto")?.checked ?? false;
 
     // RUNTIME
@@ -217,9 +216,9 @@ function compareMemory3(memA, memB, memC) {
         if (confrontoAttivo === "B-C" && valB_str !== valC_str) diverso = true;
         if (confrontoAttivo === "A-B-C" && (valA_str !== valB_str || valA_str !== valC_str || valB_str !== valC_str)) diverso = true;
 
-        // Regola finale:
-        // - In A-B → mostra solo se diverso
-        // - In A-C, B-C, A-B-C → mostra se diverso oppure se flag attivo
+        // Regole finali:
+        // - A-B → mostra solo se diverso
+        // - A-C / B-C / A-B-C → mostra se diverso, oppure se flag attivo
         if (
             (confrontoAttivo === "A-B" && diverso) ||
             ((confrontoAttivo === "A-C" || confrontoAttivo === "B-C" || confrontoAttivo === "A-B-C") && (diverso || flagChecked))
