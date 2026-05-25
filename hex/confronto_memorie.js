@@ -106,8 +106,8 @@ async function x2_trovaImpostazione(parametroCodice, valore) {
                     return;
                 }
 
-                const valoreStr = String(valore);
-                const voce = data.valori.find(v => String(v.id) === valoreStr);
+               const voce = data.valori.find(v => v.id === valore);
+
                 resolve(voce ? voce.text : "—");
             })
             .catch(() => resolve("—"));
@@ -297,12 +297,13 @@ async function renderResults(result) {
             for (let i = 0; i < d.len; i++) {
 
                 html += `
-                    <tr class="param-row" ${i === 0 ? `
-                        data-codice="${d.codice}"
-                        data-valA="${ricostruisciValore(d.bytesA)}"
-                        data-valB="${ricostruisciValore(d.bytesB)}"
-                        data-valC="${d.bytesC ? ricostruisciValore(d.bytesC) : ""}"
-                    ` : ""}>
+                 <tr class="param-row" ${i === 0 ? `
+    data-codice="${d.codice}"
+    data-valA="${d.bytesA[0]}"
+    data-valB="${d.bytesB[0]}"
+    data-valC="${d.bytesC ? d.bytesC[0] : ""}"
+` : ""}>
+
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
