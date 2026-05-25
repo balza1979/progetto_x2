@@ -213,6 +213,9 @@ function compareMemory3(memA, memB, memC) {
         const bytesA = [];
         const bytesB = [];
         const bytesC = [];
+        const bytesA = [];
+        const bytesB = [];
+        const bytesC = [];
 
         for (let i = 0; i < len; i++) {
             const a = base + i;
@@ -368,7 +371,6 @@ async function renderResults(result) {
     `;
 
     document.getElementById("risultati").innerHTML = html;
-
     // IMPOSTAZIONI
     const righe = document.querySelectorAll("#tabDiff tr.param-row[data-codice]");
 
@@ -408,7 +410,6 @@ async function renderResults(result) {
         }
     });
 
-    // Applica i filtri checkbox
     aggiornaCheckboxColonne();
 }
 
@@ -483,4 +484,168 @@ function confrontaAC() {
 
 function confrontaBC() {
     evidenziaPulsante("btnBC");
-    confrontoAttivo
+    confrontoAttivo = "B-C";
+
+    const f2 = document.getElementById("file2");
+    const f3 = document.getElementById("file3");
+
+    if (!f2.files[0] || !f3.files[0]) {
+        return alert("Seleziona File B e File C");
+    }
+
+    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
+    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+
+    Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
+
+        const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+        const mA = {};
+
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
+    });
+}
+
+async function confrontaABC() {
+    evidenziaPulsante("btnABC");
+    confrontoAttivo = "A-B-C";
+
+    const f1 = document.getElementById("file1");
+    const f2 = document.getElementById("file2");
+    const f3 = document.getElementById("file3");
+
+    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
+
+    let sorgenteA;
+    if (f1.files[0]) {
+        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
+    } else if (memoriaA) {
+        sorgenteA = Promise.resolve(memoriaA);
+    } else {
+        alert("Seleziona File A oppure usa la memoria DEFAULT");
+        return;
+    }
+
+    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
+    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+
+    const [memA, memB, memC] = await Promise.all([sorgenteA, sorgenteB, sorgenteC]);
+
+    const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+    const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+    const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+
+    const result = compareMemory3(mA, mB, mC);
+    renderResults(result);
+}
+
+// ------------------------------------------------------------
+//  EVIDENZIA PULSANTE
+// ------------------------------------------------------------
+function evidenziaPulsante(idAttivo) {
+    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
+
+    ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        if (id === idAttivo) {
+            btn.classList.add("attivo");
+        } else {
+            btn.classList.remove("attivo");
+        }
+    });
+}
+
+// ------------------------------------------------------------
+//  GESTIONE CHECKBOX COLONNE
+// ------------------------------------------------------------
+function aggiornaCheckboxColonne() {
+
+    const chkA = document.querySelector('input[data-col="col-valA"]');
+    const chkB = document.querySelector('input[data-col="col-valB"]');
+    const chkC = document.querySelector('input[data-col="col-valC"]');
+
+    if (!chkA || !chkB || !chkC) {
+        applyColumnFilters();
+        return;
+    }
+
+    if (confrontoAttivo === "A-B") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = false;
+    }
+
+    if (confrontoAttivo === "A-C") {
+        chkA.checked = true;
+        chkB.checked = false;
+        chkC.checked = true;
+    }
+
+    if (confrontoAttivo === "B-C") {
+        chkA.checked = false;
+        chkB.checked = true;
+        chkC.checked = true;
+    }
+
+    if (confrontoAttivo === "A-B-C") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = true;
+    }
+
+    applyColumnFilters();
+}
+
+// ------------------------------------------------------------
+//  APPLY COLUMN FILTERS
+// ------------------------------------------------------------
+function applyColumnFilters() {
+    document.querySelectorAll(".col-flag").forEach(flag => {
+        const colClass = flag.dataset.col;
+        const hide = !flag.checked;
+
+        document.querySelectorAll("." + colClass).forEach(cell => {
+            cell.style.display = hide ? "none" : "";
+        });
+    });
+}
+
+// ------------------------------------------------------------
+//  SALVATAGGIO FILE A/B/C IN LOCALSTORAGE
+// ------------------------------------------------------------
+function salvaFile(lettera, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("X2_FILE_" + lettera, e.target.result);
+        localStorage.setItem("X2_FILE_" + lettera + "_NAME", file.name);
+
+        if (lettera === "A") {
+            const lbl = document.getElementById("labelFileA");
+            if (lbl) lbl.textContent = "FILE A";
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ------------------------------------------------------------
+//  CARICAMENTO AUTOMATICO MEMORIA POLLI IN A
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            memoriaA = hexToMemoryMap(text);
+            console.log("Memoria polli caricata automaticamente in A");
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
+});
+
+// ===== FILE FINITO =====
