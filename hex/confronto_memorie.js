@@ -408,10 +408,9 @@ function confrontaAB() {
         leggiFileHex(f1, hexA => {
             leggiFileHex(f2, hexB => {
                 const mem1 = hexToMemoryMap(hexA);
-const mem2 = hexToMemoryMap(hexB);
-const result = compareMemory(mem1, mem2);
-renderResults(result);
-
+                const mem2 = hexToMemoryMap(hexB);
+                const result = compareMemory(mem1, mem2);
+                renderResults(result);
                 aggiornaCheckboxColonne();
             });
         });
@@ -424,7 +423,9 @@ renderResults(result);
         : memoriaA;
 
     leggiFileHex(f2, hexB => {
-        confronta(mA, hexB);
+        const mem2 = hexToMemoryMap(hexB);
+        const result = compareMemory(mA, mem2);
+        renderResults(result);
         aggiornaCheckboxColonne();
     });
 }
