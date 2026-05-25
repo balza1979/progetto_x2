@@ -597,6 +597,47 @@ function aggiornaCheckboxColonne() {
     applyColumnFilters();
 }
 
+
+
+
+function caricaDaGit(slot) {
+
+    // URL del file Git (puoi cambiarlo quando vuoi)
+    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
+
+    fetch(url)
+        .then(r => r.arrayBuffer())
+        .then(buffer => {
+            const bytes = new Uint8Array(buffer);
+
+            const isHex = (bytes[0] === 58); // ':' = 58
+
+            let mem;
+
+            if (isHex) {
+                const text = new TextDecoder().decode(bytes);
+                mem = hexToMemoryMap(text);
+                console.log(`Caricato HEX da Git in ${slot}`);
+            } else {
+                mem = binToMemoryMap(bytes);
+                console.log(`Caricato BIN da Git in ${slot}`);
+            }
+
+            if (slot === "A") memoriaA = mem;
+            if (slot === "B") memoriaB = mem;
+            if (slot === "C") memoriaC = mem;
+
+            document.getElementById("labelFile" + slot).innerText =
+                `FILE ${slot} (caricato da Git)`;
+
+            alert(`File Git caricato in ${slot}`);
+        })
+        .catch(err => {
+            console.error("Errore Git:", err);
+            alert("Errore nel caricamento del file da Git");
+        });
+}
+
 // ------------------------------------------------------------
 //  CARICAMENTO AUTOMATICO MEMORIA POLLI IN A
 // ------------------------------------------------------------
