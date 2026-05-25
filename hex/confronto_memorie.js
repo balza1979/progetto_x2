@@ -120,10 +120,14 @@ function compareMemory3(memA, memB, memC) {
 // ------------------------------------------------------------
 //  RENDER RISULTATI
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+//  RENDER RISULTATI (corretto per A-B, A-C, B-C, A-B-C)
+// ------------------------------------------------------------
 async function renderResults(result) {
     const lista = result.diff;
     const runtime = result.runtime;
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
+
     if (lista.length === 0) {
         html += `<div style="margin:15px;padding:12px;background:#113311;color:#88ff88;">
         ✔ I parametri risultano equivalenti.</div>`;
@@ -131,23 +135,40 @@ async function renderResults(result) {
         html += `<table id="tabDiff"><tr>
         <th>Indirizzo</th><th>Valore A</th><th>Valore B</th><th>Valore C</th>
         <th>Parametro</th><th>Valore complessivo</th><th>Impostazione</th></tr>`;
+
         for (let d of lista) {
             for (let i=0;i<d.len;i++) {
                 html += `<tr><td>0x${(d.base+i).toString(16).padStart(4,"0").toUpperCase()}</td>
-                <td>${formatVal(d.bytesA[i])}</td>
-                <td>${formatVal(d.bytesB[i])}</td>
-                <td>${d.bytesC?formatVal(d.bytesC[i]):"--"}</td>
+                <td class="col-valA">${formatVal(d.bytesA[i])}</td>
+                <td class="col-valB">${formatVal(d.bytesB[i])}</td>
+                <td class="col-valC">${d.bytesC?formatVal(d.bytesC[i]):"--"}</td>
                 <td>${d.codice} – ${d.nome}</td>`;
+
                 if (i===0) {
-                    html += `<td rowspan="${d.len}"><b>A:</b>${d.valA_str}<br><b>B:</b>${d.valB_str}<br><b>C:</b>${d.valC_str}</td>
-                    <td rowspan="${d.len}">…</td>`;
+                    // --- Valore complessivo ---
+                    if (confrontoAttivo === "A-C") {
+                        html += `<td rowspan="${d.len}"><b>A:</b>${d.valA_str}<br><b>C:</b>${d.valC_str}</td>`;
+                        html += `<td rowspan="${d.len}">${await x2_trovaImpostazione(d.codice, d.valA_str)}</td>`;
+                    } else if (confrontoAttivo === "B-C") {
+                        html += `<td rowspan="${d.len}"><b>B:</b>${d.valB_str}<br><b>C:</b>${d.valC_str}</td>`;
+                        html += `<td rowspan="${d.len}">${await x2_trovaImpostazione(d.codice, d.valB_str)}</td>`;
+                    } else if (confrontoAttivo === "A-B-C") {
+                        html += `<td rowspan="${d.len}"><b>A:</b>${d.valA_str}<br><b>B:</b>${d.valB_str}<br><b>C:</b>${d.valC_str}</td>`;
+                        html += `<td rowspan="${d.len}">${await x2_trovaImpostazione(d.codice, d.valA_str)}</td>`;
+                    } else { // default A-B
+                        html += `<td rowspan="${d.len}"><b>A:</b>${d.valA_str}<br><b>B:</b>${d.valB_str}</td>`;
+                        html += `<td rowspan="${d.len}">${await x2_trovaImpostazione(d.codice, d.valA_str)}</td>`;
+                    }
                 }
                 html += `</tr>`;
             }
         }
         html += `</table>`;
     }
+
     document.getElementById("risultati").innerHTML = html;
+}
+
 }
 
 // ===== BLOCCO 2 FINITO =====
