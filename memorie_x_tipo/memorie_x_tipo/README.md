@@ -1,2 +1,0 @@
-# Memorie X Tipo
-
