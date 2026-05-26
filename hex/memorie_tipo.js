@@ -139,11 +139,13 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
     }
 
     /* ============================================================
-       PATCH: CREA FILE FALSO PER SODDISFARE IL CONFRONTO
+       CREA UN FILE VERO CON IL CONTENUTO REALE DEL FILE GIT
        ============================================================ */
-    const fakeFile = new File([""], nomeFile, { type: "text/plain" });
+    const blob = new Blob([hexText], { type: "text/plain" });
+    const realFile = new File([blob], nomeFile, { type: "text/plain" });
+
     const dt = new DataTransfer();
-    dt.items.add(fakeFile);
+    dt.items.add(realFile);
 
     if (slotAttivo === "A") document.getElementById("file1").files = dt.files;
     if (slotAttivo === "B") document.getElementById("file2").files = dt.files;
