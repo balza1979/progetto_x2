@@ -152,16 +152,20 @@ async function caricaFileGit(path) {
     const resp = await fetch(url);
     const buffer = await resp.arrayBuffer();
 
-    if (path.endsWith(".hex")) {
+    // Normalizza estensione
+    const est = path.toLowerCase();
+
+    if (est.endsWith(".hex")) {
         return new TextDecoder().decode(buffer);
     }
 
-    if (path.endsWith(".bin")) {
+    if (est.endsWith(".bin")) {
         return convertiBinInHex(buffer);
     }
 
     throw new Error("Formato non supportato");
 }
+
 
 /* ============================================================
    7) Conversione BIN → HEX Intel compatibile X2
