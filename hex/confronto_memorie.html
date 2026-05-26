@@ -152,66 +152,66 @@
 
     <h3>File HEX da confrontare</h3>
 
-<!-- FILE A -->
-<div class="file-block">
-    <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
-    <input type="file" id="file1" accept=".hex,.bin">
-</div>
+    <!-- FILE A -->
+    <div class="file-block">
+        <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
+        <input type="file" id="file1" accept=".hex,.bin">
+    </div>
 
-<!-- FILE B -->
-<div class="file-block">
-    <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
-    <input type="file" id="file2" accept=".hex,.bin">
-</div>
+    <!-- FILE B -->
+    <div class="file-block">
+        <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
+        <input type="file" id="file2" accept=".hex,.bin">
+    </div>
 
-<!-- FILE C -->
-<div class="file-block">
-    <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
-    <input type="file" id="file3" accept=".hex,.bin">
-</div>
+    <!-- FILE C -->
+    <div class="file-block">
+        <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
+        <input type="file" id="file3" accept=".hex,.bin">
+    </div>
 
-<!-- ⭐⭐ AGGIUNTA: TASTI CARICA DA GIT ⭐⭐ -->
-<button class="btn-confronto" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
-<button class="btn-confronto" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
-<button class="btn-confronto" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
+    <!-- ⭐⭐ TASTI CARICA DA GIT ⭐⭐ -->
+    <button class="btn-confronto" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
+    <button class="btn-confronto" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
+    <button class="btn-confronto" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
 
-<!-- ⭐⭐ AGGIUNTA: TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
-<div id="selettoreGit" style="display:none; margin-top:20px;">
-    <label>Seleziona file da Git:</label>
-    <select id="gitSelect" style="width:100%; padding:10px; font-size:18px;"></select>
+    <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
+    <div id="selettoreGit" style="display:none; margin-top:20px;">
+        <label>Seleziona file da Git:</label>
+        <select id="gitSelect" style="width:100%; padding:10px; font-size:18px;"></select>
 
-    <button id="btnConfermaGit" class="btn-confronto" style="display:none; margin-top:10px;">
-        Conferma selezione
-    </button>
-</div>
-<!-- FINE AGGIUNTE -->
+        <button id="btnConfermaGit" class="btn-confronto" style="display:none; margin-top:10px;">
+            Conferma selezione
+        </button>
+    </div>
+    <!-- FINE AGGIUNTE -->
 
-<!-- PULSANTI -->
-<button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
-<button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confrontta A–C</button>
-<button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
-<button id="btnABC" class="btn-confronto" onclick="confrontaABC()">Confronta A–B–C</button>
+    <!-- PULSANTI -->
+    <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
+    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confrontta A–C</button>
+    <button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
+    <button id="btnABC" class="btn-confronto" onclick="confrontaABC()">Confronta A–B–C</button>
 
-<button onclick="apriErrori()">Visualizza errori registrati (0x8000–0x8FFF)</button>
+    <button onclick="apriErrori()">Visualizza errori registrati (0x8000–0x8FFF)</button>
 
-<label style="margin-top:15px; display:block;">
-    <input type="checkbox" id="flagVisualizzaTutto">
-    Visualizza TUTTI i parametri (anche quelli uguali)
-</label>
+    <label style="margin-top:15px; display:block;">
+        <input type="checkbox" id="flagVisualizzaTutto">
+        Visualizza TUTTI i parametri (anche quelli uguali)
+    </label>
 
-<!-- FILTRI COLONNE -->
-<div id="columnFilters" style="margin-top:20px; margin-bottom:10px;">
-    <label><input type="checkbox" class="col-flag" data-col="col-indirizzo" checked> Indirizzo</label>
-    <label><input type="checkbox" class="col-flag" data-col="col-valA" checked> Valore A</label>
-    <label><input type="checkbox" class="col-flag" data-col="col-valB" checked> Valore B</label>
-    <label><input type="checkbox" class="col-flag" data-col="col-valC" checked> Valore C</label>
-    <label><input type="checkbox" class="col-flag" data-col="col-parametro" checked> Parametro</label>
-    <label><input type="checkbox" class="col-flag" data-col="col-valore" checked> Valore complessivo</label>
-</div>
+    <!-- FILTRI COLONNE -->
+    <div id="columnFilters" style="margin-top:20px; margin-bottom:10px;">
+        <label><input type="checkbox" class="col-flag" data-col="col-indirizzo" checked> Indirizzo</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valA" checked> Valore A</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valB" checked> Valore B</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valC" checked> Valore C</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-parametro" checked> Parametro</label>
+        <label><input type="checkbox" class="col-flag" data-col="col-valore" checked> Valore complessivo</label>
+    </div>
 
-<div class="table-wrapper">
-    <div id="risultati" style="margin-top:30px;"></div>
-</div>
+    <div class="table-wrapper">
+        <div id="risultati" style="margin-top:30px;"></div>
+    </div>
 
 </div>
 
@@ -227,11 +227,14 @@
 <!-- DATI PARAMETRI -->
 <script src="../js/x2_parametri_data.js"></script>
 
-<!-- LOGICA COMPLETA -->
-<script src="confronto_memorie.js"></script>
-
 <!-- BROWSER GIT (ROOT, NON PIÙ IN /hex/) -->
 <script src="../git_browser.js"></script>
+
+<!-- GESTIONE TIPI MEMORIE (HEX/BIN + GIT) -->
+<script src="memorie_tipo.js"></script>
+
+<!-- LOGICA COMPLETA CONFRONTO -->
+<script src="confronto_memorie.js"></script>
 
 <!-- FILTRI COLONNE -->
 <script>
