@@ -2,7 +2,7 @@
 //  GIT BROWSER DINAMICO PER MEMORIE X TIPO
 //  Funziona su GitHub Pages, NO API, NO LIMITI
 //  Carica file HEX/BIN in A, B o C
-//  Versione per cartella /hex/
+//  Versione per cartella /memorie_x_tipo/
 // ===============================================
 
 // Slot attivo (A, B o C)
@@ -11,7 +11,7 @@ let gitSlot = null;
 // Apri popup e carica cartella principale
 function apriGitBrowser(slot) {
     gitSlot = slot;
-    caricaCartellaGitPages("hex/memorie_x_tipo");
+    caricaCartellaGitPages("memorie_x_tipo");
     document.getElementById("gitPopup").style.display = "block";
 }
 
