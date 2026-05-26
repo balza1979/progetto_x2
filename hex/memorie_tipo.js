@@ -115,30 +115,30 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
         return;
     }
 
-    // 1) Scarica il file da Git (HEX o BIN convertito)
+    // Estrai solo il nome del file
+    const nomeFile = path.split("/").pop();
+
+    // Scarica il file da Git
     const hexText = await caricaFileGit(path);
 
-    // 2) Converti in mappa memoria
+    // Converti in mappa memoria
     const memMap = hexToMemoryMap(hexText);
 
-    // 3) Assegna alla variabile giusta
+    // Assegna alla variabile giusta + aggiorna label
     if (slotAttivo === "A") {
         memoriaA = memMap;
-        console.log("✔ Memoria A caricata da Git");
-        document.getElementById("labelFileA").textContent = "FILE A: " + path;
+        document.getElementById("labelFileA").textContent = "FILE A: " + nomeFile;
     }
     if (slotAttivo === "B") {
         memoriaB = memMap;
-        console.log("✔ Memoria B caricata da Git");
-        document.getElementById("labelFileB").textContent = "FILE B: " + path;
+        document.getElementById("labelFileB").textContent = "FILE B: " + nomeFile;
     }
     if (slotAttivo === "C") {
         memoriaC = memMap;
-        console.log("✔ Memoria C caricata da Git");
-        document.getElementById("labelFileC").textContent = "FILE C: " + path;
+        document.getElementById("labelFileC").textContent = "FILE C: " + nomeFile;
     }
 
-    // 4) Chiudi tendina
+    // Chiudi tendina
     document.getElementById("selettoreGit").style.display = "none";
 });
 
