@@ -105,7 +105,7 @@ function popolaTendina() {
 /* ============================================================
    5) Conferma selezione
    ============================================================ */
-document.getElementById("btnConfermaGit").addEventListener("click", () => {
+document.getElementById("btnConfermaGit").addEventListener("click", async () => {
 
     const select = document.getElementById("gitSelect");
     const path = select.value;
@@ -115,18 +115,30 @@ document.getElementById("btnConfermaGit").addEventListener("click", () => {
         return;
     }
 
-    // Aggiorna label
+    // 1) Scarica il file da Git (HEX o BIN convertito)
+    const hexText = await caricaFileGit(path);
+
+    // 2) Converti in mappa memoria
+    const memMap = hexToMemoryMap(hexText);
+
+    // 3) Assegna alla variabile giusta
     if (slotAttivo === "A") {
+        memoriaA = memMap;
+        console.log("✔ Memoria A caricata da Git");
         document.getElementById("labelFileA").textContent = "FILE A: " + path;
     }
     if (slotAttivo === "B") {
+        memoriaB = memMap;
+        console.log("✔ Memoria B caricata da Git");
         document.getElementById("labelFileB").textContent = "FILE B: " + path;
     }
     if (slotAttivo === "C") {
+        memoriaC = memMap;
+        console.log("✔ Memoria C caricata da Git");
         document.getElementById("labelFileC").textContent = "FILE C: " + path;
     }
 
-    // Nasconde tendina
+    // 4) Chiudi tendina
     document.getElementById("selettoreGit").style.display = "none";
 });
 
