@@ -138,6 +138,17 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
         document.getElementById("labelFileC").textContent = "FILE C: " + nomeFile;
     }
 
+    /* ============================================================
+       PATCH: CREA FILE FALSO PER SODDISFARE IL CONFRONTO
+       ============================================================ */
+    const fakeFile = new File([""], nomeFile, { type: "text/plain" });
+    const dt = new DataTransfer();
+    dt.items.add(fakeFile);
+
+    if (slotAttivo === "A") document.getElementById("file1").files = dt.files;
+    if (slotAttivo === "B") document.getElementById("file2").files = dt.files;
+    if (slotAttivo === "C") document.getElementById("file3").files = dt.files;
+
     // Chiudi tendina
     document.getElementById("selettoreGit").style.display = "none";
 });
@@ -165,7 +176,6 @@ async function caricaFileGit(path) {
 
     throw new Error("Formato non supportato");
 }
-
 
 /* ============================================================
    7) Conversione BIN → HEX Intel compatibile X2
