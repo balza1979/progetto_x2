@@ -14,6 +14,20 @@
         margin:0;
         padding:10px;
     }
+.btn-git {
+    background:#222;
+    border:1px solid #555;
+    color:#ddd;
+    width:100%;
+    margin-top:8px;
+    padding:8px 12px;
+    font-size:16px;
+    border-radius:4px;
+    cursor:pointer;
+}
+.btn-git:hover {
+    background:#333;
+}
 
     .btn-confronto {
         background:#444;
@@ -158,9 +172,7 @@
         <input type="file" id="file1" accept=".hex,.bin">
 
         <!-- Pulsante Git sotto FILE A -->
-        <button class="btn-confronto" onclick="selezionaSlot('A')">
-            Carica FILE A da Git
-        </button>
+        <button class="btn-git" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
     </div>
 
     <!-- FILE B -->
@@ -169,9 +181,7 @@
         <input type="file" id="file2" accept=".hex,.bin">
 
         <!-- Pulsante Git sotto FILE B -->
-        <button class="btn-confronto" onclick="selezionaSlot('B')">
-            Carica FILE B da Git
-        </button>
+        <button class="btn-git" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
     </div>
 
     <!-- FILE C -->
@@ -180,9 +190,7 @@
         <input type="file" id="file3" accept=".hex,.bin">
 
         <!-- Pulsante Git sotto FILE C -->
-        <button class="btn-confronto" onclick="selezionaSlot('C')">
-            Carica FILE C da Git
-        </button>
+       <button class="btn-git" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
     </div>
 
     <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
