@@ -156,24 +156,34 @@
     <div class="file-block">
         <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
         <input type="file" id="file1" accept=".hex,.bin">
+
+        <!-- Pulsante Git sotto FILE A -->
+        <button class="btn-confronto" onclick="selezionaSlot('A')">
+            Carica FILE A da Git
+        </button>
     </div>
 
     <!-- FILE B -->
     <div class="file-block">
         <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
         <input type="file" id="file2" accept=".hex,.bin">
+
+        <!-- Pulsante Git sotto FILE B -->
+        <button class="btn-confronto" onclick="selezionaSlot('B')">
+            Carica FILE B da Git
+        </button>
     </div>
 
     <!-- FILE C -->
     <div class="file-block">
         <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
         <input type="file" id="file3" accept=".hex,.bin">
-    </div>
 
-    <!-- ⭐⭐ TASTI CARICA DA GIT ⭐⭐ -->
-    <button class="btn-confronto" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
-    <button class="btn-confronto" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
-    <button class="btn-confronto" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
+        <!-- Pulsante Git sotto FILE C -->
+        <button class="btn-confronto" onclick="selezionaSlot('C')">
+            Carica FILE C da Git
+        </button>
+    </div>
 
     <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
     <div id="selettoreGit" style="display:none; margin-top:20px;">
@@ -184,11 +194,10 @@
             Conferma selezione
         </button>
     </div>
-    <!-- FINE AGGIUNTE -->
 
     <!-- PULSANTI -->
     <button id="btnAB" class="btn-confronto" onclick="confrontaAB()">Confronta A–B</button>
-    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confrontta A–C</button>
+    <button id="btnAC" class="btn-confronto" onclick="confrontaAC()">Confronta A–C</button>
     <button id="btnBC" class="btn-confronto" onclick="confrontaBC()">Confronta B–C</button>
     <button id="btnABC" class="btn-confronto" onclick="confrontaABC()">Confronta A–B–C</button>
 
@@ -227,13 +236,13 @@
 <!-- DATI PARAMETRI -->
 <script src="../js/x2_parametri_data.js"></script>
 
-<!-- BROWSER GIT (ROOT, NON PIÙ IN /hex/) -->
+<!-- BROWSER GIT -->
 <script src="../git_browser.js"></script>
 
-<!-- GESTIONE TIPI MEMORIE (HEX/BIN + GIT) -->
+<!-- GESTIONE MEMORIE (HEX/BIN + GIT) -->
 <script src="memorie_tipo.js"></script>
 
-<!-- LOGICA COMPLETA CONFRONTO -->
+<!-- LOGICA CONFRONTO -->
 <script src="confronto_memorie.js"></script>
 
 <!-- FILTRI COLONNE -->
