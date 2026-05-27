@@ -626,6 +626,8 @@ function caricaDaGit(slot) {
             if (slot === "A") memoriaA = mem;
             if (slot === "B") memoriaB = mem;
             if (slot === "C") memoriaC = mem;
+			
+					resetConfronto(); // [MOD 2026-05-27 12:40] reset dopo caricamento Git
 
             document.getElementById("labelFile" + slot).innerText =
                 `FILE ${slot} (caricato da Git)`;
@@ -664,5 +666,55 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// ------------------------------------------------------------
+//  INIZIO MODIFICA 2026-05-27 12:30 - resetConfronto
+// ------------------------------------------------------------
+function resetConfronto() {
+    // Azzeriamo il tipo di confronto attivo
+    confrontoAttivo = null;
+
+    // Rimettiamo tutti i pulsanti in stato "non attivo"
+    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
+    ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove("attivo");
+    });
+
+    // Svuotiamo la tabella risultati (adatta l'ID se è diverso)
+    const divRisultati = document.getElementById("risultati");
+    if (divRisultati) {
+        divRisultati.innerHTML = "";
+    }
+
+    // Se hai una funzione che gestisce le checkbox colonne, puoi resettarle qui
+    if (typeof resetCheckboxColonne === "function") {
+        resetCheckboxColonne();
+    }
+}
+// ------------------------------------------------------------
+//  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
+// ------------------------------------------------------------
 
 
+// ------------------------------------------------------------
+//  INIZIO MODIFICA 2026-05-27 12:50 - reset su cambio file locale
+// ------------------------------------------------------------
+
+// FILE A cambiato
+function onFileA_Change() {
+    resetConfronto(); // reset confronto perché A è cambiato
+}
+
+// FILE B cambiato
+function onFileB_Change() {
+    resetConfronto(); // reset confronto perché B è cambiato
+}
+
+// FILE C cambiato
+function onFileC_Change() {
+    resetConfronto(); // reset confronto perché C è cambiato
+}
+
+// ------------------------------------------------------------
+//  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
+// ------------------------------------------------------------
