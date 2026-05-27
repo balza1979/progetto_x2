@@ -1,4 +1,4 @@
-/* MEMORIE_TIPO.JS V 1.4 – VERSIONE FIX COMPLETA – 27/05/2026 14:09 */
+/* MEMORIE_TIPO.JS V 1.4 – VERSIONE COMPLETA – 27/05/2026 14:20 */
 
 let slotAttivo = null;   // A, B o C
 let strutturaGit = {};   // { cartella: [file1, file2...] }
@@ -14,6 +14,35 @@ function isHexBin(name) {
     const n = name.toLowerCase();
     return n.endsWith(".hex") || n.endsWith(".bin");
 }
+
+/* ===== INIZIO MODIFICA 27/05/2026 14:12 – Spinner caricamento Git ===== */
+const spinnerGit = document.createElement("div");
+spinnerGit.id = "spinnerGit";
+spinnerGit.style.cssText = `
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    width:60px;
+    height:60px;
+    margin:-30px 0 0 -30px;
+    border:6px solid #444;
+    border-top:6px solid #ff3333;
+    border-radius:50%;
+    animation: spinGit 0.8s linear infinite;
+    z-index:99999;
+`;
+document.body.appendChild(spinnerGit);
+
+const styleSpin = document.createElement("style");
+styleSpin.textContent = `
+@keyframes spinGit {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(styleSpin);
+/* ===== FINE MODIFICA 27/05/2026 14:12 ===== */
+
 
 /* ============================================================
    1) selezionaSlot(A/B/C)
@@ -77,21 +106,19 @@ function popolaTendina() {
 
     listaCompleta = [];
 
-    // Mappa colori per cartelle (bordo colorato + testo colorato)
     const coloriCartelle = {
-        "DEF": { border: "#ffcc66", text: "#ffcc66" },          // giallo/arancio
-        "GL_TRIFASE_1MS": { border: "#66cc66", text: "#66cc66" }, // verde
-        "HD_DIRETTO_8120": { border: "#66ccff", text: "#66ccff" } // azzurro
+        "DEF": { border: "#ffcc66", text: "#ffcc66" },
+        "GL_TRIFASE_1MS": { border: "#66cc66", text: "#66cc66" },
+        "HD_DIRETTO_8120": { border: "#66ccff", text: "#66ccff" }
     };
 
     for (let cartella in strutturaGit) {
         for (let file of strutturaGit[cartella]) {
-            const voce = {
-                cartella: cartella,
-                file: file,
+            listaCompleta.push({
+                cartella,
+                file,
                 path: (cartella === "DEF") ? file : (cartella + "/" + file)
-            };
-            listaCompleta.push(voce);
+            });
         }
     }
 
@@ -125,37 +152,59 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
     }
 
     const nomeFile = path.split("/").pop();
+
+    /* ===== INIZIO MODIFICA 27/05/2026 14:16 – Avvio spinner ===== */
+    spinnerGit.style.display = "block";
+    /* ===== FINE MODIFICA 27/05/2026 14:16 ===== */
+
+    /* ===== INIZIO MODIFICA 27/05/2026 14:13 – Log Git migliorato ===== */
+    console.log(`[Git] Slot ${slotAttivo} → File selezionato: ${path}`);
+    /* ===== FINE MODIFICA 27/05/2026 14:13 ===== */
+
     const hexText = await caricaFileGit(path);
     const memMap = hexToMemoryMap(hexText);
 
     if (slotAttivo === "A") {
         memoriaA = memMap;
-        document.getElementById("labelFileA").textContent = "FILE A: " + nomeFile;
+        document.getElementById("file1").files = fakeFile(nomeFile, hexText);
     }
     if (slotAttivo === "B") {
         memoriaB = memMap;
-        document.getElementById("labelFileB").textContent = "FILE B: " + nomeFile;
+        document.getElementById("file2").files = fakeFile(nomeFile, hexText);
     }
     if (slotAttivo === "C") {
         memoriaC = memMap;
-        document.getElementById("labelFileC").textContent = "FILE C: " + nomeFile;
+        document.getElementById("file3").files = fakeFile(nomeFile, hexText);
     }
 
-    const blob = new Blob([hexText], { type: "text/plain" });
-    const realFile = new File([blob], nomeFile, { type: "text/plain" });
-    const dt = new DataTransfer();
-    dt.items.add(realFile);
+    /* ===== INIZIO MODIFICA 27/05/2026 14:14 – Reset label + reset confronto ===== */
+    document.getElementById("labelFile" + slotAttivo).style.color = "#ff3333";
+    document.getElementById("labelFile" + slotAttivo).textContent =
+        `FILE ${slotAttivo}: ${nomeFile}`;
 
-    if (slotAttivo === "A") document.getElementById("file1").files = dt.files;
-    if (slotAttivo === "B") document.getElementById("file2").files = dt.files;
-    if (slotAttivo === "C") document.getElementById("file3").files = dt.files;
+    resetConfronto();
+    /* ===== FINE MODIFICA 27/05/2026 14:14 ===== */
 
-    document.getElementById("selettoreGit").style.display = "none";
-   /* ===== INIZIO MODIFICA 27/05/2026 14:05 – Reset confronto dopo caricamento Git ===== */
-resetConfronto();
-/* ===== FINE MODIFICA 27/05/2026 14:05 ===== */
-
+    /* ===== INIZIO MODIFICA 27/05/2026 14:15 – UX popup migliorata ===== */
+    spinnerGit.style.display = "none";
+    document.getElementById("selettoreGit").style.opacity = "0";
+    setTimeout(() => {
+        document.getElementById("selettoreGit").style.display = "none";
+        document.getElementById("selettoreGit").style.opacity = "1";
+    }, 200);
+    /* ===== FINE MODIFICA 27/05/2026 14:15 ===== */
 });
+
+/* ============================================================
+   Fake file per input type="file"
+   ============================================================ */
+function fakeFile(nome, contenuto) {
+    const blob = new Blob([contenuto], { type: "text/plain" });
+    const file = new File([blob], nome, { type: "text/plain" });
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    return dt.files;
+}
 
 /* ============================================================
    6) Carica file RAW da GitHub (HEX o BIN)
@@ -206,6 +255,6 @@ function convertiBinInHex(buffer) {
         address += 16;
     }
 
-    hex += ":00000001FF\n"; // EOF
+    hex += ":00000001FF\n";
     return hex;
 }
