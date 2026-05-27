@@ -1,4 +1,4 @@
-<!--CONFRONTO__MEMORIE.HTML V.1.1  27/5/2026 12:10 -->
+<!--CONFRONTO__MEMORIE.HTML V.1.4 27/5/2026 14:33 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -199,10 +199,23 @@
        <button class="btn-git" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
     </div>
 
-    <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
-    <div id="selettoreGit" style="display:none; margin-top:20px;">
-        <label>Seleziona file da Git:</label>
-        <select id="gitSelect" style="width:100%; padding:10px; font-size:18px;"></select>
+<!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
+<div id="selettoreGit" style="display:none; margin-top:20px;">
+    <label>Seleziona file da Git:</label>
+
+    <!-- ===== INIZIO MODIFICA 27/05/2026 14:32 – Lista moderna Git ===== -->
+    <div id="gitList" 
+         style="
+            max-height:300px;
+            overflow-y:auto;
+            padding:10px;
+            background:#111;
+            border:1px solid #444;
+            border-radius:8px;
+            margin-top:10px;
+         ">
+    </div>
+    <!-- ===== FINE MODIFICA 27/05/2026 14:32 ===== -->
 
 <button id="btnConfermaGit" class="btn-git"
         style="display:none; margin-top:10px;
@@ -212,7 +225,7 @@
     Conferma selezione
 </button>
 
-    </div>
+</div>
 
     <!-- PULSANTI -->
   <button id="btnAB" class="btn-confronto" onclick="confrontaAB()" style="margin-top:45px;">
