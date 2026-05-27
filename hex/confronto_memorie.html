@@ -1,3 +1,4 @@
+<!--CONFRONTO__MEMORIE.HTML V.1.1  27/5/2026 12:10 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -171,7 +172,8 @@
     <!-- FILE A -->
     <div class="file-block">
         <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
-        <input type="file" id="file1" accept=".hex,.bin">
+        <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
+
 
         <!-- Pulsante Git sotto FILE A -->
         <button class="btn-git" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
@@ -180,7 +182,8 @@
     <!-- FILE B -->
     <div class="file-block">
         <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
-        <input type="file" id="file2" accept=".hex,.bin">
+      <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
+
 
         <!-- Pulsante Git sotto FILE B -->
         <button class="btn-git" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
@@ -189,7 +192,8 @@
     <!-- FILE C -->
     <div class="file-block">
         <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
-        <input type="file" id="file3" accept=".hex,.bin">
+        <input type="file" id="file3" accept=".hex,.bin" onchange="onFileC_Change()">
+
 
         <!-- Pulsante Git sotto FILE C -->
        <button class="btn-git" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
