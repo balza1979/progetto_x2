@@ -1,4 +1,4 @@
-/* MEMORIE_TIPO.JS V 1.3 – VERSIONE FIX COMPLETA – 27/05/2026 13:51 */
+/* MEMORIE_TIPO.JS V 1.3 – VERSIONE FIX COMPLETA – 27/05/2026 13:52 */
 
 let slotAttivo = null;   // A, B o C
 let strutturaGit = {};   // { cartella: [file1, file2...] }
@@ -24,7 +24,6 @@ function selezionaSlot(slot) {
     document.getElementById("selettoreGit").style.display = "block";
     document.getElementById("btnConfermaGit").style.display = "block";
 
-    // Carica struttura Git SOLO la prima volta
     if (listaCompleta.length === 0) {
         caricaStrutturaGit();
     } else {
@@ -36,14 +35,12 @@ function selezionaSlot(slot) {
    2) Legge la struttura della cartella Memorie da GitHub
    ============================================================ */
 async function caricaStrutturaGit() {
-
     strutturaGit = {};
     listaCompleta = [];
 
     const resp = await fetch(GIT_API);
     const items = await resp.json();
 
-    // Cartella virtuale DEF
     strutturaGit["DEF"] = [];
 
     for (let item of items) {
@@ -80,7 +77,7 @@ function popolaTendina() {
 
     listaCompleta = [];
 
-    // Mappa colori per cartelle (sfondo scuro + bordo colorato)
+    // Mappa colori per cartelle (bordo colorato + testo colorato)
     const coloriCartelle = {
         "DEF": { border: "#ffcc66", text: "#ffcc66" },          // giallo/arancio
         "GL_TRIFASE_1MS": { border: "#66cc66", text: "#66cc66" }, // verde
@@ -98,7 +95,6 @@ function popolaTendina() {
         }
     }
 
-    // Ordina alfabeticamente
     listaCompleta.sort((a, b) => a.path.localeCompare(b.path));
 
     listaCompleta.forEach(v => {
@@ -106,11 +102,10 @@ function popolaTendina() {
         opt.value = v.path;
         opt.textContent = v.cartella + " / " + v.file;
 
-        // Applica stile elegante
         if (coloriCartelle[v.cartella]) {
             opt.style.borderLeft = "6px solid " + coloriCartelle[v.cartella].border;
             opt.style.color = coloriCartelle[v.cartella].text;
-            opt.style.backgroundColor = "#1a1a1a"; // sfondo scuro coerente
+            opt.style.backgroundColor = "#1a1a1a";
         }
 
         select.appendChild(opt);
