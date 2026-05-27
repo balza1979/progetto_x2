@@ -1,4 +1,4 @@
-/* MEMORIE_TIPO.JS V 1.3 – VERSIONE FIX COMPLETA – 27/05/2026 13:52 */
+/* MEMORIE_TIPO.JS V 1.4 – VERSIONE FIX COMPLETA – 27/05/2026 13:52 */
 
 let slotAttivo = null;   // A, B o C
 let strutturaGit = {};   // { cartella: [file1, file2...] }
