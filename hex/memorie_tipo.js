@@ -151,6 +151,10 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
     if (slotAttivo === "C") document.getElementById("file3").files = dt.files;
 
     document.getElementById("selettoreGit").style.display = "none";
+   /* ===== INIZIO MODIFICA 27/05/2026 14:05 – Reset confronto dopo caricamento Git ===== */
+resetConfronto();
+/* ===== FINE MODIFICA 27/05/2026 14:05 ===== */
+
 });
 
 /* ============================================================
