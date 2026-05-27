@@ -1,7 +1,4 @@
-/* ============================================================
-   GESTIONE SELEZIONE FILE A/B/C DA GIT (AUTOMATICA)
-   File: memorie_tipo.js
-   ============================================================ */
+/* MEMORIE_TIPO.JS V 1.3 – VERSIONE FIX COMPLETA – 27/05/2026 13:51 */
 
 let slotAttivo = null;   // A, B o C
 let strutturaGit = {};   // { cartella: [file1, file2...] }
@@ -9,6 +6,14 @@ let listaCompleta = [];  // lista finale per la tendina
 
 const GIT_API = "https://api.github.com/repos/balza1979/progetto_x2/contents/Memorie";
 const RAW_BASE = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/";
+
+/* ============================================================
+   Helper: filtro HEX/BIN case-insensitive
+   ============================================================ */
+function isHexBin(name) {
+    const n = name.toLowerCase();
+    return n.endsWith(".hex") || n.endsWith(".bin");
+}
 
 /* ============================================================
    1) selezionaSlot(A/B/C)
@@ -42,14 +47,10 @@ async function caricaStrutturaGit() {
     strutturaGit["DEF"] = [];
 
     for (let item of items) {
-
-        if (item.type === "file") {
-            // FILE FUORI DALLE CARTELLE → vanno in DEF
+        if (item.type === "file" && isHexBin(item.name)) {
             strutturaGit["DEF"].push(item.name);
         }
-
         if (item.type === "dir") {
-            // CARTELLA → leggo i file dentro
             strutturaGit[item.name] = await leggiCartella(item.path);
         }
     }
@@ -61,13 +62,12 @@ async function caricaStrutturaGit() {
    3) Legge i file dentro una cartella
    ============================================================ */
 async function leggiCartella(path) {
-
     const url = "https://api.github.com/repos/balza1979/progetto_x2/contents/" + path;
     const resp = await fetch(url);
     const items = await resp.json();
 
     return items
-        .filter(x => x.type === "file")
+        .filter(x => x.type === "file" && isHexBin(x.name))
         .map(x => x.name);
 }
 
@@ -75,29 +75,44 @@ async function leggiCartella(path) {
    4) Popola la tendina con DEF + cartelle
    ============================================================ */
 function popolaTendina() {
-
     const select = document.getElementById("gitSelect");
     select.innerHTML = "";
 
     listaCompleta = [];
 
+    // Mappa colori per cartelle (sfondo scuro + bordo colorato)
+    const coloriCartelle = {
+        "DEF": { border: "#ffcc66", text: "#ffcc66" },          // giallo/arancio
+        "GL_TRIFASE_1MS": { border: "#66cc66", text: "#66cc66" }, // verde
+        "HD_DIRETTO_8120": { border: "#66ccff", text: "#66ccff" } // azzurro
+    };
+
     for (let cartella in strutturaGit) {
         for (let file of strutturaGit[cartella]) {
-
             const voce = {
                 cartella: cartella,
                 file: file,
                 path: (cartella === "DEF") ? file : (cartella + "/" + file)
             };
-
             listaCompleta.push(voce);
         }
     }
+
+    // Ordina alfabeticamente
+    listaCompleta.sort((a, b) => a.path.localeCompare(b.path));
 
     listaCompleta.forEach(v => {
         const opt = document.createElement("option");
         opt.value = v.path;
         opt.textContent = v.cartella + " / " + v.file;
+
+        // Applica stile elegante
+        if (coloriCartelle[v.cartella]) {
+            opt.style.borderLeft = "6px solid " + coloriCartelle[v.cartella].border;
+            opt.style.color = coloriCartelle[v.cartella].text;
+            opt.style.backgroundColor = "#1a1a1a"; // sfondo scuro coerente
+        }
+
         select.appendChild(opt);
     });
 }
@@ -106,7 +121,6 @@ function popolaTendina() {
    5) Conferma selezione
    ============================================================ */
 document.getElementById("btnConfermaGit").addEventListener("click", async () => {
-
     const select = document.getElementById("gitSelect");
     const path = select.value;
 
@@ -115,16 +129,10 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
         return;
     }
 
-    // Estrai solo il nome del file
     const nomeFile = path.split("/").pop();
-
-    // Scarica il file da Git
     const hexText = await caricaFileGit(path);
-
-    // Converti in mappa memoria
     const memMap = hexToMemoryMap(hexText);
 
-    // Assegna alla variabile giusta + aggiorna label
     if (slotAttivo === "A") {
         memoriaA = memMap;
         document.getElementById("labelFileA").textContent = "FILE A: " + nomeFile;
@@ -138,12 +146,8 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
         document.getElementById("labelFileC").textContent = "FILE C: " + nomeFile;
     }
 
-    /* ============================================================
-       CREA UN FILE VERO CON IL CONTENUTO REALE DEL FILE GIT
-       ============================================================ */
     const blob = new Blob([hexText], { type: "text/plain" });
     const realFile = new File([blob], nomeFile, { type: "text/plain" });
-
     const dt = new DataTransfer();
     dt.items.add(realFile);
 
@@ -151,7 +155,6 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
     if (slotAttivo === "B") document.getElementById("file2").files = dt.files;
     if (slotAttivo === "C") document.getElementById("file3").files = dt.files;
 
-    // Chiudi tendina
     document.getElementById("selettoreGit").style.display = "none";
 });
 
@@ -159,23 +162,17 @@ document.getElementById("btnConfermaGit").addEventListener("click", async () => 
    6) Carica file RAW da GitHub (HEX o BIN)
    ============================================================ */
 async function caricaFileGit(path) {
-
     const url = RAW_BASE + path;
-
     const resp = await fetch(url);
     const buffer = await resp.arrayBuffer();
-
-    // Normalizza estensione
     const est = path.toLowerCase();
 
     if (est.endsWith(".hex")) {
         return new TextDecoder().decode(buffer);
     }
-
     if (est.endsWith(".bin")) {
         return convertiBinInHex(buffer);
     }
-
     throw new Error("Formato non supportato");
 }
 
@@ -183,16 +180,13 @@ async function caricaFileGit(path) {
    7) Conversione BIN → HEX Intel compatibile X2
    ============================================================ */
 function convertiBinInHex(buffer) {
-
     const bytes = new Uint8Array(buffer);
     let hex = "";
     let address = 0;
 
     for (let i = 0; i < bytes.length; i += 16) {
-
         const chunk = bytes.slice(i, i + 16);
         const len = chunk.length;
-
         let checksum = len + ((address >> 8) & 0xFF) + (address & 0xFF);
 
         let line = ":" +
@@ -214,6 +208,5 @@ function convertiBinInHex(buffer) {
     }
 
     hex += ":00000001FF\n"; // EOF
-
     return hex;
 }
