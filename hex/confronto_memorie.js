@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – VERSIONE FIX COMPLETA 27/05/2026 12:01
+//  CONFRONTO_MEMORIE.JS V 1.3 – VERSIONE FIX COMPLETA 27/05/2026 12:44
 // ============================================================
 
 // ------------------------------------------------------------
@@ -624,10 +624,15 @@ function caricaDaGit(slot) {
             }
 
             if (slot === "A") memoriaA = mem;
+            if (slot === "A") document.getElementById("file1").value = ""; // [MOD 2026-05-27 12:15] reset input locale A
+
             if (slot === "B") memoriaB = mem;
+            if (slot === "B") document.getElementById("file2").value = ""; // [MOD 2026-05-27 12:16] reset input locale B
+
             if (slot === "C") memoriaC = mem;
-			
-					resetConfronto(); // [MOD 2026-05-27 12:40] reset dopo caricamento Git
+            if (slot === "C") document.getElementById("file3").value = ""; // [MOD 2026-05-27 12:17] reset input locale C
+
+            resetConfronto(); // [MOD 2026-05-27 12:40] reset dopo caricamento Git
 
             document.getElementById("labelFile" + slot).innerText =
                 `FILE ${slot} (caricato da Git)`;
@@ -639,7 +644,6 @@ function caricaDaGit(slot) {
             alert("Errore nel caricamento del file da Git");
         });
 }
-
 
 
 function binToMemoryMap(bytes) {
@@ -703,16 +707,22 @@ function resetConfronto() {
 // FILE A cambiato
 function onFileA_Change() {
     resetConfronto(); // reset confronto perché A è cambiato
+	document.getElementById("labelFileA").innerText = "FILE A (locale)";
+
 }
 
 // FILE B cambiato
 function onFileB_Change() {
     resetConfronto(); // reset confronto perché B è cambiato
+	document.getElementById("labelFileB").innerText = "FILE B (locale)";
+
 }
 
 // FILE C cambiato
 function onFileC_Change() {
     resetConfronto(); // reset confronto perché C è cambiato
+	document.getElementById("labelFileC").innerText = "FILE C (locale)";
+
 }
 
 // ------------------------------------------------------------
