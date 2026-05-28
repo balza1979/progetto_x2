@@ -248,6 +248,19 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     input.type = "number";
     input.id = "input_minmax";
     input.className = "full";   // stesso stile degli altri input
+  // --- Stile coerente con gli altri input (override stile nativo number) ---
+input.style.backgroundColor = "#1e1e1e";   // sfondo scuro come X2
+input.style.color = "#ffffff";             // testo chiaro
+input.style.border = "1px solid #444";     // bordo standard X2
+input.style.padding = "6px";               // padding coerente
+input.style.height = "32px";               // altezza coerente
+input.style.fontSize = "14px";             // font coerente
+input.style.borderRadius = "4px";          // come gli altri input
+
+// Rimuove le freccette su Chrome/Edge
+input.style.MozAppearance = "textfield";
+input.style.appearance = "textfield";
+
     input.value = param.VALORE; // valore attuale
 
     // 4) Inseriamo l'input PRIMA della tendina
