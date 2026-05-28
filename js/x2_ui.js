@@ -323,44 +323,68 @@ input.addEventListener("input", function () {
 });
 
 
-    // 7) Validazione completa su uscita dal campo
-    input.addEventListener("blur", function () {
+input.addEventListener("blur", function () {
 
-        let v = parseInt(this.value);
+    let raw = this.value;
 
-        if (isNaN(v)) {
-            this.value = param.VALORE;
-            return;
-        }
+    // Se vuoto o solo "-" → ripristina valore precedente
+    if (raw === "" || raw === "-") {
+        this.value = param.VALORE;
+        return;
+    }
 
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
+    let v = parseInt(raw);
 
-        if (v < min) v = min;
-        if (v > max) v = max;
+    if (isNaN(v)) {
+        this.value = param.VALORE;
+        return;
+    }
 
-        // padding a 2 cifre
+    const min = parseInt(param.MIN);
+    const max = parseInt(param.MAX);
+
+    if (v < min) v = min;
+    if (v > max) v = max;
+
+    // Padding a 2 cifre, anche per negativi
+    if (v < 0) {
+        this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+    } else {
         this.value = v.toString().padStart(2, "0");
+    }
 
-        param.VALORE = this.value;
-    });
+    param.VALORE = this.value;
+});
+
 
     // 8) Spinner UP
-    btnUp.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const max = parseInt(param.MAX);
-        if (v < max) v++;
-        input.value = v.toString().padStart(2, "0");
-        param.VALORE = input.value;
+btnUp.addEventListener("click", function () {
+    let v = parseInt(input.value) || 0;
+    const max = parseInt(param.MAX);
+    if (v < max) v++;
+
+    input.value = (v < 0)
+        ? "-" + Math.abs(v).toString().padStart(2, "0")
+        : v.toString().padStart(2, "0");
+
+    param.VALORE = input.value;
+});
+
     });
 
     // 9) Spinner DOWN
-    btnDown.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const min = parseInt(param.MIN);
-        if (v > min) v--;
-        input.value = v.toString().padStart(2, "0");
-        param.VALORE = input.value;
+  btnDown.addEventListener("click", function () {
+    let v = parseInt(input.value) || 0;
+    const min = parseInt(param.MIN);
+    if (v > min) v--;
+
+    input.value = (v < 0)
+        ? "-" + Math.abs(v).toString().padStart(2, "0")
+        : v.toString().padStart(2, "0");
+
+    param.VALORE = input.value;
+});
+
     });
 
     // 10) Montiamo tutto
