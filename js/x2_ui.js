@@ -306,7 +306,7 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     spinner.appendChild(btnUp);
     spinner.appendChild(btnDown);
 
-  // 6) Validazione digitazione (numeri + "-" solo se MIN è negativo)
+ // 6) Validazione digitazione (numeri + "-" solo se MIN è negativo)
 input.addEventListener("input", function () {
 
     const min = parseInt(param.MIN);
@@ -322,7 +322,7 @@ input.addEventListener("input", function () {
     }
 });
 
-
+// 7) Validazione completa su uscita dal campo
 input.addEventListener("blur", function () {
 
     let raw = this.value;
@@ -356,8 +356,7 @@ input.addEventListener("blur", function () {
     param.VALORE = this.value;
 });
 
-
-    // 8) Spinner UP
+// 8) Spinner UP
 btnUp.addEventListener("click", function () {
     let v = parseInt(input.value) || 0;
     const max = parseInt(param.MAX);
@@ -370,10 +369,8 @@ btnUp.addEventListener("click", function () {
     param.VALORE = input.value;
 });
 
-    });
-
-    // 9) Spinner DOWN
-  btnDown.addEventListener("click", function () {
+// 9) Spinner DOWN
+btnDown.addEventListener("click", function () {
     let v = parseInt(input.value) || 0;
     const min = parseInt(param.MIN);
     if (v > min) v--;
@@ -385,7 +382,6 @@ btnUp.addEventListener("click", function () {
     param.VALORE = input.value;
 });
 
-    });
 
     // 10) Montiamo tutto
     wrapper.appendChild(input);
