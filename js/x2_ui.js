@@ -184,6 +184,8 @@ function x2_calcolaHex(param) {
 // VALORI (val1…val8) — VERSIONE CORRETTA
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
+        // Ripristina sempre la tendina come visibile
+            tendina.style.display = "block";
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
