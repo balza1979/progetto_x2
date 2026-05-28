@@ -230,21 +230,34 @@ function x2_popolaValori(param) {
     }
 
     // 2) MIN/MAX
-    if (param.TIPO_ELENCO === "MIN_MAX") {
+// =========================================================
+// INIZIO MODIFICA MIN_MAX — 28/05/2026 ore 15:05
+// Sostituzione tendina con input numerico (creazione input)
+// =========================================================
+if (param.TIPO_ELENCO === "MIN_MAX") {
 
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
+    // 1) Nascondiamo la tendina
+    tendina.style.display = "none";
 
-        for (let i = min; i <= max; i++) {
-            const opt = document.createElement("option");
-            opt.value = String(i).padStart(2,"0");
-            opt.textContent = String(i).padStart(2,"0");
-            tendina.appendChild(opt);
-        }
+    // 2) Se esiste già un input precedente, lo rimuoviamo
+    const oldInput = document.getElementById("input_minmax");
+    if (oldInput) oldInput.remove();
 
-        tendina.value = param.VALORE;
-        return;
-    }
+    // 3) Creiamo l'input numerico
+    const input = document.createElement("input");
+    input.type = "number";
+    input.id = "input_minmax";
+    input.className = "full";   // stesso stile degli altri input
+    input.value = param.VALORE; // valore attuale
+
+    // 4) Inseriamo l'input PRIMA della tendina
+    tendina.parentNode.insertBefore(input, tendina);
+
+    return;
+}
+// =========================================================
+// FINE MODIFICA MIN_MAX — 28/05/2026 ore 15:05
+// =========================================================
 
     // 3) DECIMALI
     if (param.TIPO_ELENCO === "DECIMALE") {
