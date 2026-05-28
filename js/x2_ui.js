@@ -186,10 +186,15 @@ function x2_calcolaHex(param) {
 function x2_popolaValori(param) {
     
 
-    const tendina = document.getElementById("tendina_valori");
-    tendina.innerHTML = "";
-        // Ripristina sempre la tendina come visibile
-            tendina.style.display = "block";
+        const tendina = document.getElementById("tendina_valori");
+        tendina.innerHTML = "";
+ // Ripristina sempre la tendina come visibile
+        tendina.style.display = "block";
+
+// Rimuove eventuale input numerico precedente
+        const oldInput = document.getElementById("input_minmax");
+        if (oldInput) oldInput.remove();
+
     // RESET PULSANTI
     for (let i = 1; i <= 8; i++) {
         const btn = document.getElementById("val" + i);
