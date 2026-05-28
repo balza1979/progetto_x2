@@ -190,10 +190,12 @@ function x2_popolaValori(param) {
         tendina.innerHTML = "";
  // Ripristina sempre la tendina come visibile
         tendina.style.display = "block";
+    
 
 // Rimuove eventuale input numerico precedente
         const oldInput = document.getElementById("input_minmax");
         if (oldInput) oldInput.remove();
+    
 
     // RESET PULSANTI
     for (let i = 1; i <= 8; i++) {
@@ -275,6 +277,37 @@ input.style.MozAppearance = "textfield";
 input.style.appearance = "textfield";
 
     input.value = param.VALORE; // valore attuale
+// --- Impostiamo min, max e step ---
+input.min = param.MIN;
+input.max = param.MAX;
+input.step = "1";  // per MIN/MAX è sempre intero
+
+// --- Validazione e aggiornamento valore ---
+input.addEventListener("input", function () {
+
+    let v = parseInt(this.value);
+
+    // Se non è numero → ripristina
+    if (isNaN(v)) {
+        this.value = param.VALORE;
+        return;
+    }
+
+    const min = parseInt(param.MIN);
+    const max = parseInt(param.MAX);
+
+    // Limiti min/max immediati (anche per freccette)
+    if (v < min) v = min;
+    if (v > max) v = max;
+
+    // Aggiorna il campo
+    this.value = v;
+
+    // Aggiorna il valore del parametro
+    param.VALORE = v.toString().padStart(2, "0");
+});
+
+    
 
     // 4) Inseriamo l'input PRIMA della tendina
     tendina.parentNode.insertBefore(input, tendina);
