@@ -240,7 +240,7 @@ function x2_popolaValori(param) {
 
     // 2) MIN/MAX
 // =========================================================
-// INIZIO MODIFICA MIN_MAX — 28/05/2026 ore 16:30
+// INIZIO MODIFICA MIN_MAX — 28/05/2026 ore 16:43
 // Input TEXT + Spinner integrato stile nativo
 // =========================================================
 if (param.TIPO_ELENCO === "MIN_MAX") {
@@ -306,10 +306,22 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     spinner.appendChild(btnUp);
     spinner.appendChild(btnDown);
 
-    // 6) Validazione digitazione (solo numeri)
-    input.addEventListener("input", function () {
+  // 6) Validazione digitazione (numeri + "-" solo se MIN è negativo)
+input.addEventListener("input", function () {
+
+    const min = parseInt(param.MIN);
+
+    if (min < 0) {
+        // Permettiamo "-" solo come primo carattere
+        this.value = this.value
+            .replace(/(?!^-)[^0-9]/g, "")   // rimuove tutto tranne cifre, ma lascia "-" solo se è il primo carattere
+            .replace(/(?!^)-/g, "");        // rimuove eventuali "-" non in prima posizione
+    } else {
+        // Solo numeri, nessun "-"
         this.value = this.value.replace(/[^0-9]/g, "");
-    });
+    }
+});
+
 
     // 7) Validazione completa su uscita dal campo
     input.addEventListener("blur", function () {
@@ -360,7 +372,7 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     return;
 }
 // =========================================================
-// FINE MODIFICA MIN_MAX — 28/05/2026 ore 16:30
+// FINE MODIFICA MIN_MAX — 28/05/2026 ore 16:43
 // =========================================================
 
 
