@@ -1,5 +1,5 @@
 # 🗂️ KANBAN — Programmatore X1/X2
-Versione: 1.0  
+Versione: 1.1  
 Ultimo aggiornamento: {{DATA}}
 
 ---
@@ -29,12 +29,15 @@ Ultimo aggiornamento: {{DATA}}
 - [ ] 4.2 Confronto B vs C  
 - [ ] 4.3 Confronto A vs C  
 - [ ] 4.4 Confronto dettagli A/B/C  
+- [ ] 4.5 Confronto simultaneo A-B-C (tabella unica con evidenza differenze)  
 
 - [ ] 5.1 Pagina analisi errori  
 - [ ] 5.2 Dataset errori → parametri  
 - [ ] 5.3 Compilazione blocchi  
 - [ ] 5.4 Programmazione grafica con immagini  
 - [ ] 5.5 Ricerca AI  
+- [ ] 5.6 Visualizzazione flag e stato impianto (IN/OUT/FLAG)  
+- [ ] 5.7 Gestione errori memorizzati nelle posizioni dedicate  
 
 - [ ] 6.1 CAN: invio singolo parametro  
 - [ ] 6.2 CAN: invio blocco parametri  
