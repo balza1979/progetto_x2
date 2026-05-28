@@ -250,14 +250,20 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     input.type = "number";
     input.id = "input_minmax";
     input.className = "full";   // stesso stile degli altri input
-  // --- Stile coerente con gli altri input (override stile nativo number) ---
-input.style.backgroundColor = "#1e1e1e";   // sfondo scuro come X2
-input.style.color = "#ffffff";             // testo chiaro
-input.style.border = "1px solid #444";     // bordo standard X2
-input.style.padding = "6px";               // padding coerente
-input.style.height = "32px";               // altezza coerente
-input.style.fontSize = "14px";             // font coerente
-input.style.borderRadius = "4px";          // come gli altri input
+// --- Stile identico alla tendina ---
+const cs = getComputedStyle(tendina);
+
+input.style.backgroundColor = cs.backgroundColor;
+input.style.color = cs.color;
+input.style.border = cs.border;
+input.style.borderRadius = cs.borderRadius;
+input.style.padding = cs.padding;
+input.style.height = cs.height;
+input.style.fontSize = cs.fontSize;
+input.style.fontFamily = cs.fontFamily;
+input.style.boxSizing = cs.boxSizing;
+input.style.width = cs.width;
+
 
 // Rimuove le freccette su Chrome/Edge
 input.style.MozAppearance = "textfield";
