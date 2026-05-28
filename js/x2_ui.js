@@ -2,7 +2,7 @@
 // FILE: js/x2_ui.js
 // DATA: 28/05/2026
 // ORA: 16:16
-// DESCRIZIONE:
+// DESCRIZIONE:V1.4
 // Gestione UI Programmatore X2
 // ======================================================================
 
