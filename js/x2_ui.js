@@ -240,107 +240,129 @@ function x2_popolaValori(param) {
 
     // 2) MIN/MAX
 // =========================================================
-// INIZIO MODIFICA MIN_MAX — 28/05/2026 ore 15:05
-// Sostituzione tendina con input numerico (creazione input)
+// INIZIO MODIFICA MIN_MAX — 28/05/2026 ore 16:30
+// Input TEXT + Spinner integrato stile nativo
 // =========================================================
 if (param.TIPO_ELENCO === "MIN_MAX") {
 
     // 1) Nascondiamo la tendina
     tendina.style.display = "none";
 
-    // 2) Se esiste già un input precedente, lo rimuoviamo
+    // 2) Rimuoviamo eventuale input precedente
     const oldInput = document.getElementById("input_minmax");
     if (oldInput) oldInput.remove();
 
-    // 3) Creiamo l'input numerico
+    // 3) Creiamo il contenitore (input + spinner)
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
+    wrapper.style.display = "inline-block";
+    wrapper.style.width = tendina.style.width || "100%";
+
+    // 4) Creiamo l'input TEXT
     const input = document.createElement("input");
-    input.type = "number";
+    input.type = "text";
     input.id = "input_minmax";
-    input.className = "full";   // stesso stile degli altri input
-// --- Stile identico alla tendina ---
-const cs = getComputedStyle(tendina);
+    input.className = "full";
 
-input.style.backgroundColor = cs.backgroundColor;
-input.style.color = cs.color;
-input.style.border = cs.border;
-input.style.borderRadius = cs.borderRadius;
-input.style.padding = cs.padding;
-input.style.height = cs.height;
-input.style.fontSize = cs.fontSize;
-input.style.fontFamily = cs.fontFamily;
-input.style.boxSizing = cs.boxSizing;
-input.style.width = cs.width;
+    // Copia stile tendina
+    const cs = getComputedStyle(tendina);
+    input.style.backgroundColor = cs.backgroundColor;
+    input.style.color = cs.color;
+    input.style.border = cs.border;
+    input.style.borderRadius = cs.borderRadius;
+    input.style.paddingRight = "28px"; // spazio per spinner
+    input.style.height = cs.height;
+    input.style.fontSize = cs.fontSize;
+    input.style.fontFamily = cs.fontFamily;
+    input.style.boxSizing = "border-box";
+    input.style.width = "100%";
 
+    input.value = param.VALORE;
 
-// Rimuove le freccette su Chrome/Edge
-input.style.MozAppearance = "textfield";
-input.style.appearance = "textfield";
+    // 5) Creiamo lo spinner (▲ ▼)
+    const spinner = document.createElement("div");
+    spinner.style.position = "absolute";
+    spinner.style.right = "4px";
+    spinner.style.top = "0";
+    spinner.style.bottom = "0";
+    spinner.style.width = "20px";
+    spinner.style.display = "flex";
+    spinner.style.flexDirection = "column";
+    spinner.style.justifyContent = "center";
+    spinner.style.cursor = "pointer";
 
-    input.value = param.VALORE; // valore attuale
-// --- Impostiamo min, max e step ---
-input.min = param.MIN;
-input.max = param.MAX;
-input.step = "1";  // per MIN/MAX è sempre intero
+    const btnUp = document.createElement("div");
+    btnUp.textContent = "▲";
+    btnUp.style.fontSize = "10px";
+    btnUp.style.textAlign = "center";
+    btnUp.style.userSelect = "none";
 
-// --- Validazione e aggiornamento valore ---
-input.addEventListener("input", function () {
+    const btnDown = document.createElement("div");
+    btnDown.textContent = "▼";
+    btnDown.style.fontSize = "10px";
+    btnDown.style.textAlign = "center";
+    btnDown.style.userSelect = "none";
 
-    let v = parseInt(this.value);
+    spinner.appendChild(btnUp);
+    spinner.appendChild(btnDown);
 
-    // Se non è numero → ripristina
-    if (isNaN(v)) {
-        this.value = param.VALORE;
-        return;
-    }
+    // 6) Validazione digitazione (solo numeri)
+    input.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+    });
 
-    const min = parseInt(param.MIN);
-    const max = parseInt(param.MAX);
+    // 7) Validazione completa su uscita dal campo
+    input.addEventListener("blur", function () {
 
-    // Limiti min/max immediati (anche per freccette)
-    if (v < min) v = min;
-    if (v > max) v = max;
+        let v = parseInt(this.value);
 
-    // Aggiorna il campo
-    this.value = v;
+        if (isNaN(v)) {
+            this.value = param.VALORE;
+            return;
+        }
 
-    // Aggiorna il valore del parametro
-    param.VALORE = v.toString().padStart(2, "0");
-});
-// --- Validazione anche quando si esce dal campo ---
-input.addEventListener("blur", function () {
+        const min = parseInt(param.MIN);
+        const max = parseInt(param.MAX);
 
-    let v = parseInt(this.value);
+        if (v < min) v = min;
+        if (v > max) v = max;
 
-    // Se vuoto o non numero → ripristina valore precedente
-    if (isNaN(v)) {
-        this.value = param.VALORE;
-        return;
-    }
+        // padding a 2 cifre
+        this.value = v.toString().padStart(2, "0");
 
-    const min = parseInt(param.MIN);
-    const max = parseInt(param.MAX);
+        param.VALORE = this.value;
+    });
 
-    // Limiti min/max
-    if (v < min) v = min;
-    if (v > max) v = max;
+    // 8) Spinner UP
+    btnUp.addEventListener("click", function () {
+        let v = parseInt(input.value) || 0;
+        const max = parseInt(param.MAX);
+        if (v < max) v++;
+        input.value = v.toString().padStart(2, "0");
+        param.VALORE = input.value;
+    });
 
-    // Aggiorna campo
-    this.value = v;
+    // 9) Spinner DOWN
+    btnDown.addEventListener("click", function () {
+        let v = parseInt(input.value) || 0;
+        const min = parseInt(param.MIN);
+        if (v > min) v--;
+        input.value = v.toString().padStart(2, "0");
+        param.VALORE = input.value;
+    });
 
-    // Aggiorna valore parametro
-    param.VALORE = v.toString().padStart(2, "0");
-});
+    // 10) Montiamo tutto
+    wrapper.appendChild(input);
+    wrapper.appendChild(spinner);
 
-    
-
-    // 4) Inseriamo l'input PRIMA della tendina
-    tendina.parentNode.insertBefore(input, tendina);
+    tendina.parentNode.insertBefore(wrapper, tendina);
 
     return;
 }
 // =========================================================
-// FINE MODIFICA MIN_MAX — 28/05/2026 ore 15:05
+// FINE MODIFICA MIN_MAX — 28/05/2026 ore 16:30
 // =========================================================
+
 
     // 3) DECIMALI
     if (param.TIPO_ELENCO === "DECIMALE") {
