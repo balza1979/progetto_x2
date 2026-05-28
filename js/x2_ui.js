@@ -306,6 +306,30 @@ input.addEventListener("input", function () {
     // Aggiorna il valore del parametro
     param.VALORE = v.toString().padStart(2, "0");
 });
+// --- Validazione anche quando si esce dal campo ---
+input.addEventListener("blur", function () {
+
+    let v = parseInt(this.value);
+
+    // Se vuoto o non numero → ripristina valore precedente
+    if (isNaN(v)) {
+        this.value = param.VALORE;
+        return;
+    }
+
+    const min = parseInt(param.MIN);
+    const max = parseInt(param.MAX);
+
+    // Limiti min/max
+    if (v < min) v = min;
+    if (v > max) v = max;
+
+    // Aggiorna campo
+    this.value = v;
+
+    // Aggiorna valore parametro
+    param.VALORE = v.toString().padStart(2, "0");
+});
 
     
 
