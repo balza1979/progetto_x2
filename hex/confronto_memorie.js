@@ -821,26 +821,27 @@ function caricaDaGit(slot) {
             }
 
             // --- SLOT A ---
-            if (slot === "A") {
-                memoriaA = mem;
-                document.getElementById("file1").value = ""; // reset input locale A
+         if (slot === "A") {
+    memoriaA = mem;
+    document.getElementById("file1").value = "";
+    if (hexText) {
+        localStorage.setItem("memA_hex", hexText);
+        localStorage.setItem("memA_nome", "Git_A.hex");
+    }
+    aggiornaBloccoCreazione();   // <── AGGIUNTA
+}
 
-                if (hexText) {
-                    localStorage.setItem("memA_hex", hexText);
-                    localStorage.setItem("memA_nome", "Git_A.hex");
-                }
-            }
 
-            // --- SLOT B ---
-            if (slot === "B") {
-                memoriaB = mem;
-                document.getElementById("file2").value = ""; // reset input locale B
+        if (slot === "B") {
+    memoriaB = mem;
+    document.getElementById("file2").value = "";
+    if (hexText) {
+        localStorage.setItem("memB_hex", hexText);
+        localStorage.setItem("memB_nome", "Git_B.hex");
+    }
+    aggiornaBloccoCreazione();   // <── AGGIUNTA
+}
 
-                if (hexText) {
-                    localStorage.setItem("memB_hex", hexText);
-                    localStorage.setItem("memB_nome", "Git_B.hex");
-                }
-            }
 
             // --- SLOT C ---
             if (slot === "C") {
@@ -915,13 +916,24 @@ function resetConfronto() {
 // ------------------------------------------------------------
 //  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
 // ------------------------------------------------------------
+/* ===== INIZIO PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
+function aggiornaBloccoCreazione() {
+    const blocco = document.getElementById("crea-memoria-container");
+    if (!blocco) return;
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    if (hexA && hexB) {
+        blocco.style.display = "block";
+    } else {
+        blocco.style.display = "none";
+    }
+}
+/* ===== FINE PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
 
 
-// ------------------------------------------------------------
-//  INIZIO MODIFICA 2026-05-27 12:50 - reset su cambio file locale
-// ------------------------------------------------------------
-
-/* ===== INIZIO PATCH 2026-05-29 16:38 – Salvataggio FILE A in localStorage ===== */
+/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 function onFileA_Change() {
     resetConfronto();
     document.getElementById("labelFileA").innerText = "FILE A (locale)";
@@ -934,12 +946,15 @@ function onFileA_Change() {
 
         localStorage.setItem("memA_hex", hexA);
         localStorage.setItem("memA_nome", inputA.files[0].name);
+
+        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:38 – Salvataggio FILE A in localStorage ===== */
+/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 
 
-/* ===== INIZIO PATCH 2026-05-29 16:38 – Salvataggio FILE B in localStorage ===== */
+
+/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
 function onFileB_Change() {
     resetConfronto();
     document.getElementById("labelFileB").innerText = "FILE B (locale)";
@@ -952,9 +967,12 @@ function onFileB_Change() {
 
         localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
+
+        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:38 – Salvataggio FILE B in localStorage ===== */
+/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
+
 
 
 // FILE C cambiato
