@@ -86,11 +86,14 @@ if (bloccoC) bloccoC.style.display = "none";
         if (el) el.style.display = "none";
     });
 
-    // 4) Nascondi popup GitHub
-    ["gitPopup", "gitList", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = "none";
-    });
+ // 4) Nascondi SOLO il vecchio popup Git
+["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+});
+
+// NON nascondere gitList → serve per la tendina moderna
+
 
     // 5) Nascondi tabella risultati
     document.querySelectorAll("table").forEach(t => {
