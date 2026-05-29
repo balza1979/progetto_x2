@@ -921,7 +921,7 @@ function resetConfronto() {
 //  INIZIO MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
 
-/* ===== INIZIO PATCH 2026-05-29 16:32 – Salvataggio FILE A ===== */
+/* ===== INIZIO PATCH 2026-05-29 16:38 – Salvataggio FILE A in localStorage ===== */
 function onFileA_Change() {
     resetConfronto();
     document.getElementById("labelFileA").innerText = "FILE A (locale)";
@@ -936,10 +936,10 @@ function onFileA_Change() {
         localStorage.setItem("memA_nome", inputA.files[0].name);
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:32 – Salvataggio FILE A ===== */
+/* ===== FINE PATCH 2026-05-29 16:38 – Salvataggio FILE A in localStorage ===== */
 
 
-/* ===== INIZIO PATCH 2026-05-29 16:32 – Salvataggio FILE B ===== */
+/* ===== INIZIO PATCH 2026-05-29 16:38 – Salvataggio FILE B in localStorage ===== */
 function onFileB_Change() {
     resetConfronto();
     document.getElementById("labelFileB").innerText = "FILE B (locale)";
@@ -954,7 +954,7 @@ function onFileB_Change() {
         localStorage.setItem("memB_nome", inputB.files[0].name);
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:32 – Salvataggio FILE B ===== */
+/* ===== FINE PATCH 2026-05-29 16:38 – Salvataggio FILE B in localStorage ===== */
 
 
 // FILE C cambiato
