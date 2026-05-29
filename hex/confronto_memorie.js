@@ -21,6 +21,41 @@ document.addEventListener("DOMContentLoaded", function () {
         if (blocco) blocco.style.display = "block";
 
         // Carica A/B da localStorage (solo visualizzazione)
+
+		/* ===== INIZIO MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
+
+const hexA = localStorage.getItem("memA_hex");
+const nomeA = localStorage.getItem("memA_nome");
+
+const hexB = localStorage.getItem("memB_hex");
+const nomeB = localStorage.getItem("memB_nome");
+
+// Se esiste A → ricostruisci memoriaA + fake file + label
+if (hexA) {
+    memoriaA = hexToMemoryMap(hexA);
+
+    const fakeA = fakeFile(nomeA || "FILE_A.hex", hexA);
+    const inputA = document.getElementById("file1");
+    if (inputA) inputA.files = fakeA;
+
+    const lblA = document.getElementById("labelFileA");
+    if (lblA) lblA.textContent = `FILE A: ${nomeA}`;
+}
+
+// Se esiste B → ricostruisci memoriaB + fake file + label
+if (hexB) {
+    memoriaB = hexToMemoryMap(hexB);
+
+    const fakeB = fakeFile(nomeB || "FILE_B.hex", hexB);
+    const inputB = document.getElementById("file2");
+    if (inputB) inputB.files = fakeB;
+
+    const lblB = document.getElementById("labelFileB");
+    if (lblB) lblB.textContent = `FILE B: ${nomeB}`;
+}
+
+/* ===== FINE MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
+
         if (window.memorieABC) {
             memorieABC.carica();
             const A = memorieABC.getA();
