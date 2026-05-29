@@ -846,6 +846,7 @@ if (slot === "A") {
 
     document.getElementById("labelFileA").innerText = "FILE A (Git)";
     aggiornaBloccoCreazione();
+    onFileA_Change();
 }
 
 
@@ -863,6 +864,7 @@ if (slot === "B") {
 
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
     aggiornaBloccoCreazione();
+    onFileB_Change();
 }
 
             // --- SLOT C ---
@@ -873,8 +875,8 @@ if (slot === "B") {
 
             resetConfronto(); // reset dopo caricamento Git
 
-            document.getElementById("labelFile" + slot).innerText =
-                `FILE ${slot} (caricato da Git)`;
+           //  document.getElementById("labelFile" + slot).innerText =
+            //     `FILE ${slot} (caricato da Git)`;
 
             alert(`File Git caricato in ${slot}`);
         })
