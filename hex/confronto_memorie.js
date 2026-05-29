@@ -876,12 +876,13 @@ function aggiornaBloccoCreazione() {
 
     if (hexA && hexB) {
         if (blocco) blocco.style.display = "block";
-        if (bloccoC) bloccoC.style.display = "block";
+        if (bloccoC) bloccoC.style.display = "block";   // <── QUESTA È LA CHIAVE
     } else {
         if (blocco) blocco.style.display = "none";
         if (bloccoC) bloccoC.style.display = "none";
     }
 }
+
 
 // ------------------------------------------------------------
 //  onFileA_Change – salva A in localStorage + aggiorna blocco
