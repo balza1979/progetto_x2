@@ -195,7 +195,14 @@ document.addEventListener("DOMContentLoaded", function () {
    setupModalitaCreazione();
 });
 
-
+document.addEventListener("DOMContentLoaded", () => {
+    // Nascondi C se non esiste memC_hex
+    const hexC = localStorage.getItem("memC_hex");
+    if (!hexC) {
+        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+        if (bloccoC) bloccoC.style.display = "none";
+    }
+});
 
 
 
