@@ -16,9 +16,12 @@ function isModalitaCreazione() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    if (isModalitaCreazione()) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
+  if (isModalitaCreazione()) {
+    // NON mostrare subito il blocco creazione
+    // verrà mostrato solo quando A e B sono caricati
+    // const blocco = document.getElementById("crea-memoria-container");
+    // if (blocco) blocco.style.display = "block";
+
 
         // Carica A/B da localStorage (solo visualizzazione)
 
@@ -55,7 +58,7 @@ if (hexB) {
 }
 
 /* ===== FINE MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
-c
+
 
 function disabilitaCaricamentoABC() {
     if (!isModalitaCreazione()) return;
