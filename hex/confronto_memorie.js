@@ -1018,7 +1018,7 @@ function onFileC_Change() {
 }
 
 // ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
+//  FINE MODIFICA 2026-05- 27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
 function resetMemorie() {
     localStorage.removeItem("memA_hex");
