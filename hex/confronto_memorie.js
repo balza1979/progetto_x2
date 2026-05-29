@@ -176,16 +176,19 @@ if (lbl) lbl.style.display = "none";
    //  if (blocco) blocco.style.display = "none";
 
     // 7) Quando B viene caricato → mostra blocco creazione
-    const oldOnFileB = onFileB_Change;
-    onFileB_Change = function (...args) {
-        oldOnFileB.apply(this, args);
+   /* ===== DISATTIVATO 2026-05-29 17:12 – rompe la modalità creazione =====
+const oldOnFileB = onFileB_Change;
+onFileB_Change = function (...args) {
+    oldOnFileB.apply(this, args);
 
-        const B = memorieABC.getB();
-        if (B) {
-            const blocco = document.getElementById("crea-memoria-container");
-            if (blocco) blocco.style.display = "block";
-        }
-    };
+    const B = memorieABC.getB();
+    if (B) {
+        const blocco = document.getElementById("crea-memoria-container");
+        if (blocco) blocco.style.display = "block";
+    }
+};
+===== FINE DISATTIVATO ===== */
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
