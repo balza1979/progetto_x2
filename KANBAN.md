@@ -85,3 +85,111 @@ Ultimo aggiornamento: {{DATA}}
 *(Task che richiedono dipendenze o informazioni mancanti)*
 
 - [ ] *(vuoto per ora)*
+---
+
+# 📚 SEZIONE DI CONSULTAZIONE TECNICA  
+*(Estratti sintetici da X2_MAPPA_COMPLETA — solo per riferimento rapido)*
+
+Questa sezione NON è operativa.  
+Serve solo come memoria rapida per capire dove si trovano tasti, ID, funzioni e flussi nei vari repository collegati al Programmatore X1/X2.
+
+---
+
+## 🔵 REPO: MultipdfElmi (DOCUMENTAZIONE ELMI)
+
+### index.html
+- **Tasti:** pulsante “Apri” (dinamico, senza ID)  
+- **Funzione:**  
+  `onclick → window.location.href = pdf.html?cartella=...&ts=...`  
+- **Flusso:** index → pdf.html → loading.html
+
+### lista.html
+- **Tasti:** “Apri PDF”  
+- **Funzione:**  
+  `onclick → window.open(directUrl)`
+
+### pdf.html
+- Nessun tasto  
+- Redirect immediato a loading.html
+
+### loading.html
+- Solo spinner
+
+---
+
+## 🔵 REPO: Schede_ausiliarie_Elmi
+
+### index.html
+- **Tasti:** “Apri” (dinamico)  
+- **Funzione:**  
+  `onclick → pdf.html?cartella=...`
+
+### lista.html
+- **Tasti:** “Apri / Scarica”, “Vedi Online”  
+- **Funzioni:**  
+  `openFast(url)`  
+  `openSafe(directUrl, gviewUrl)`
+
+### pdf.html (Galleria)
+- **Tasti:**  
+  - prev-btn → precedente  
+  - next-btn → successiva  
+  - slideshow-btn → autoplay  
+  - fullscreen-btn → fullscreen  
+  - mute-btn → audio ON/OFF  
+  - pulsanti card: Apri Immagine / Scarica / Vedi Online / Apri Video  
+- **Funzioni:**  
+  `openFast()`, `openSafe()`, `showItem()`, `mute()`, `fullscreen()`
+
+---
+
+## 🔵 REPO: progetto_x2 (Programmatore X2)
+
+### index.html
+- **Tasti:**  
+  mostra_tutto_btn, home_btn, crea_hex_btn, btnConfronto  
+  menu_btn1..8, sottomenu_btn1..8  
+- **Funzioni:**  
+  popolaMenu(), popolaSottomenu(), popolaParametri(), mostraInfoParametro()
+
+### confronto_memorie.html
+- **Tasti:**  
+  file1/2/3, btnAB/AC/BC/ABC, flagVisualizzaTutto  
+- **Funzioni:**  
+  confrontaAB(), confrontaAC(), confrontaBC(), confrontaABC()
+
+### errori_x2.html
+- **Tasti:**  
+  btnMemA/B/C, btnLoadFile, btnAI  
+- **Funzioni:**  
+  buildErrorList(), selectError(), updateDetails()
+
+### hex_generator.html
+- **Tasti:**  
+  csv_input, genera_hex_btn  
+- **Funzioni:**  
+  creaBufferMemoria(), bufferToIntelHex(), scaricaFile()
+
+---
+
+## 🔵 REPO: Elmi-Ricerca-errori
+- **Tasti:** menu (select)  
+- **Funzioni:** caricaExcel(), aggiornamento campi
+
+---
+
+## 🔵 REPO: errori_vers4
+- **Tasti:** menu, menuDettaglio, chiudiModal  
+- **Funzioni:** loadWorkbook(), caricaExcel(), selezionaFoglio()
+
+---
+
+## 🔵 REPO: Richiesta_Preventivo
+- **Tasti:** miniBtn, selectDispositivi, btnInvia  
+- **Funzioni:** aggiunta voci, mailto, redirect avviso.html
+
+---
+
+# 🔗 NOTE
+Questa sezione è solo consultiva.  
+Per dettagli completi → vedi X2_MAPPA_COMPLETA.md.
