@@ -1,11 +1,9 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – VERSIONE FIX 2026-05-29
-//  - Nasconde FILE C normale in modalità creazione
-//  - Mostra blocco creazione solo quando A e B presenti
+//  CONFRONTO_MEMORIE.JS – VERSIONE FIX DEFINITIVA 2026-05-29
 // ============================================================
 
 // =========================================
-// MODALITÀ CREAZIONE MEMORIA C
+// MODALITÀ CREAZIONE
 // =========================================
 
 function getQueryParam(name) {
@@ -47,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // =========================================
-// NASCONDI TUTTO IL SUPERFLUO IN MODALITÀ CREAZIONE
+// SETUP MODALITÀ CREAZIONE
 // =========================================
 
 function setupModalitaCreazione() {
@@ -83,10 +81,17 @@ function setupModalitaCreazione() {
     const lbl = document.getElementById("lblVisualizzaTutti");
     if (lbl) lbl.style.display = "none";
 
-    // Nascondi pulsanti extra
+    // NASCONDI SOLO I PULSANTI CHE DEVONO DAVVERO SPARIRE
     document.querySelectorAll("button").forEach(btn => {
-        const t = btn.textContent.toLowerCase();
-        if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
+        const id = btn.id;
+
+        if (id === "btnAB" ||
+            id === "btnAC" ||
+            id === "btnBC" ||
+            id === "btnABC" ||
+            id === "btnChiudiGit" ||
+            id === "btnConfermaGit") {
+
             btn.style.display = "none";
         }
     });
