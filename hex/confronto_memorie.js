@@ -66,6 +66,44 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// =========================================
+// PASSO A.4 – Nasconde solo la UI di confronto
+// Versione 2026-05-29 13:40
+// =========================================
+
+function nascondiUIConfronto() {
+    if (!isModalitaCreazione()) return;
+
+    // Nascondi pulsanti confronto
+    ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    // Nascondi filtri e opzioni
+    ["flagVisualizzaTutto", "columnFilters"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    // Nascondi popup GitHub
+    ["gitPopup", "gitList", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    // Nascondi tabella risultati (qualsiasi tabella)
+    document.querySelectorAll("table").forEach(t => {
+        t.style.display = "none";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (isModalitaCreazione()) {
+        nascondiUIConfronto();
+    }
+});
+
 // ------------------------------------------------------------
 //  VARIABILI BASE
 // ------------------------------------------------------------
