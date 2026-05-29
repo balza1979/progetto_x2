@@ -815,7 +815,7 @@ if (slot === "A") {
 
     aggiornaBloccoCreazione();
 	
-	mostraBloccoCreazioneC();
+
 
     onFileA_Change();
 }
@@ -838,7 +838,7 @@ if (slot === "B") {
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
 
     aggiornaBloccoCreazione();
-	mostraBloccoCreazioneC();
+	
 
     onFileB_Change();
 }
