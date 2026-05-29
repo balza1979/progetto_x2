@@ -132,6 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     setupModalitaCreazione();
 });
 
+// 8) Nascondi pulsante "Visualizza TUTTI i parametri"
+document.querySelectorAll("button").forEach(btn => {
+    if (btn.textContent.toLowerCase().includes("tutti i parametri")) {
+        btn.style.display = "none";
+    }
+});
+
 
 
 // ------------------------------------------------------------
