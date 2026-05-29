@@ -142,6 +142,10 @@ function setupModalitaCreazione() {
     });
 
     // 6) Non toccare qui il blocco creazione: lo gestisce aggiornaBloccoCreazione()
+    // FORZA LA VISUALIZZAZIONE DEL BLOCCO C IN MODALITÀ CREAZIONE
+const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+if (bloccoC) bloccoC.style.display = "block";
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
