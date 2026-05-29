@@ -836,17 +836,19 @@ if (slot === "A") {
     memoriaA = mem;
     document.getElementById("file1").value = "";
 
-    // Salva SEMPRE, anche se hexText è vuoto o strano
+    // Salva SEMPRE il contenuto, anche se hexText ha caratteri strani
     const contenuto = hexText || new TextDecoder().decode(bytes);
     const nome = "Git_A.hex";
 
     localStorage.setItem("memA_hex", contenuto);
     localStorage.setItem("memA_nome", nome);
 
+    // Ricrea il file finto come se fosse locale
     const fake = fakeFile(nome, contenuto);
     document.getElementById("file1").files = fake;
 
     document.getElementById("labelFileA").innerText = "FILE A (Git)";
+
     aggiornaBloccoCreazione();
     onFileA_Change();
 }
@@ -867,10 +869,10 @@ if (slot === "B") {
     document.getElementById("file2").files = fake;
 
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
+
     aggiornaBloccoCreazione();
     onFileB_Change();
 }
-
 
             // --- SLOT C ---
             if (slot === "C") {
