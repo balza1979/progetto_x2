@@ -836,13 +836,15 @@ if (slot === "A") {
     memoriaA = mem;
     document.getElementById("file1").value = "";
 
-    if (hexText) {
-        localStorage.setItem("memA_hex", hexText);
-        localStorage.setItem("memA_nome", "Git_A.hex");
+    // Salva SEMPRE, anche se hexText è vuoto o strano
+    const contenuto = hexText || new TextDecoder().decode(bytes);
+    const nome = "Git_A.hex";
 
-        const fake = fakeFile("Git_A.hex", hexText);
-        document.getElementById("file1").files = fake;
-    }
+    localStorage.setItem("memA_hex", contenuto);
+    localStorage.setItem("memA_nome", nome);
+
+    const fake = fakeFile(nome, contenuto);
+    document.getElementById("file1").files = fake;
 
     document.getElementById("labelFileA").innerText = "FILE A (Git)";
     aggiornaBloccoCreazione();
@@ -850,22 +852,25 @@ if (slot === "A") {
 }
 
 
+
 if (slot === "B") {
     memoriaB = mem;
     document.getElementById("file2").value = "";
 
-    if (hexText) {
-        localStorage.setItem("memB_hex", hexText);
-        localStorage.setItem("memB_nome", "Git_B.hex");
+    const contenuto = hexText || new TextDecoder().decode(bytes);
+    const nome = "Git_B.hex";
 
-        const fake = fakeFile("Git_B.hex", hexText);
-        document.getElementById("file2").files = fake;
-    }
+    localStorage.setItem("memB_hex", contenuto);
+    localStorage.setItem("memB_nome", nome);
+
+    const fake = fakeFile(nome, contenuto);
+    document.getElementById("file2").files = fake;
 
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
     aggiornaBloccoCreazione();
     onFileB_Change();
 }
+
 
             // --- SLOT C ---
             if (slot === "C") {
