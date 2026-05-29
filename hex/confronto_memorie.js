@@ -34,6 +34,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+// =========================================
+// PASSO A.3 – Disabilita caricamento A/B/C in modalità creazione
+// Versione 2026-05-29 12:30
+// =========================================
+
+function disabilitaCaricamentoABC() {
+    if (!isModalitaCreazione()) return;
+
+    // Disabilita TUTTI gli input file
+    document.querySelectorAll('input[type="file"]').forEach(el => {
+        el.disabled = true;
+        el.style.opacity = "0.4";
+        el.style.pointerEvents = "none";
+    });
+
+    // Disabilita TUTTI i pulsanti che contengono "A", "B" o "C"
+    document.querySelectorAll('button').forEach(btn => {
+        const t = btn.textContent.toLowerCase();
+        if (t.includes("memoria") || t.includes("carica") || t.includes("scegli")) {
+            btn.disabled = true;
+            btn.style.opacity = "0.4";
+            btn.style.pointerEvents = "none";
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (isModalitaCreazione()) {
+        disabilitaCaricamentoABC();
+    }
+});
 
 // ------------------------------------------------------------
 //  VARIABILI BASE
