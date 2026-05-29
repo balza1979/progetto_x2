@@ -55,43 +55,7 @@ if (hexB) {
 }
 
 /* ===== FINE MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
-
-/* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-/* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-const bloccoCreazione = document.getElementById("crea-memoria-container");
-
-     if (bloccoCreazione) {
-    if (hexA && hexB) {
-        bloccoCreazione.style.display = "block";
-        // NON mostrare mai FILE C in modalità creazione
-    } else {
-        bloccoCreazione.style.display = "none";
-    }
-}
-
-
-/* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-		
-        if (window.memorieABC) {
-            memorieABC.carica();
-            const A = memorieABC.getA();
-            const B = memorieABC.getB();
-
-            const infoA = document.getElementById("info-memoria-a");
-            const infoB = document.getElementById("info-memoria-b");
-
-            if (infoA) infoA.textContent = A ? "caricata" : "non caricata";
-            if (infoB) infoB.textContent = B ? "caricata" : "non caricata";
-        }
-    }
-});
-// =========================================
-// PASSO A.3 – Disabilita caricamento A/B/C in modalità creazione
-// Versione 2026-05-29 12:30
-// =========================================
+c
 
 function disabilitaCaricamentoABC() {
     if (!isModalitaCreazione()) return;
@@ -850,6 +814,9 @@ if (slot === "A") {
     document.getElementById("labelFileA").innerText = "FILE A (Git)";
 
     aggiornaBloccoCreazione();
+	
+	mostraBloccoCreazioneC();
+
     onFileA_Change();
 }
 
@@ -871,6 +838,8 @@ if (slot === "B") {
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
 
     aggiornaBloccoCreazione();
+	mostraBloccoCreazioneC();
+
     onFileB_Change();
 }
 
@@ -955,6 +924,10 @@ function aggiornaBloccoCreazione() {
     }
 }
 /* ===== FINE PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
+function mostraBloccoCreazioneC() {
+    const blocco = document.getElementById("crea-memoria-container");
+    if (blocco) blocco.style.display = "block";
+}
 
 
 /* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
