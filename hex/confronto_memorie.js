@@ -257,6 +257,15 @@ function hexToMemoryMap(hexText) {
 
     return mem;
 }
+function fakeFile(nome, contenuto) {
+    const blob = new Blob([contenuto], { type: "text/plain" });
+    const file = new File([blob], nome, { type: "text/plain" });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+
+    return dataTransfer.files;
+}
 
 function ricostruisciValore(bytes) {
     if (bytes.includes("--")) return "--";
