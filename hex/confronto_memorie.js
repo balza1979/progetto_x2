@@ -823,28 +823,38 @@ function caricaDaGit(slot) {
                 console.log(`Caricato BIN da Git in ${slot}`);
             }
 
-            // --- SLOT A ---
-         if (slot === "A") {
+if (slot === "A") {
     memoriaA = mem;
     document.getElementById("file1").value = "";
+
     if (hexText) {
         localStorage.setItem("memA_hex", hexText);
         localStorage.setItem("memA_nome", "Git_A.hex");
+
+        const fake = fakeFile("Git_A.hex", hexText);
+        document.getElementById("file1").files = fake;
     }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
+
+    document.getElementById("labelFileA").innerText = "FILE A (Git)";
+    aggiornaBloccoCreazione();
 }
 
 
-        if (slot === "B") {
+if (slot === "B") {
     memoriaB = mem;
     document.getElementById("file2").value = "";
+
     if (hexText) {
         localStorage.setItem("memB_hex", hexText);
         localStorage.setItem("memB_nome", "Git_B.hex");
-    }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
-}
 
+        const fake = fakeFile("Git_B.hex", hexText);
+        document.getElementById("file2").files = fake;
+    }
+
+    document.getElementById("labelFileB").innerText = "FILE B (Git)";
+    aggiornaBloccoCreazione();
+}
 
             // --- SLOT C ---
             if (slot === "C") {
