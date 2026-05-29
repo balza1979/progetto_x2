@@ -69,9 +69,10 @@ function disabilitaCaricamentoABC() {
 function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
-    // 1) Nascondi FILE C
-    const fileC = document.getElementById("file3");
-    if (fileC) fileC.style.display = "none";
+    // 1) Nascondi completamente il blocco FILE C
+const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+if (bloccoC) bloccoC.style.display = "none";
+
 
     // 2) Nascondi pulsanti confronto
     ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
