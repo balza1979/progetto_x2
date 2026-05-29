@@ -13,7 +13,8 @@ FILE: index.html
 TASTI / ID:
 - mostra_tutto_btn → mostra tutti i parametri
 - home_btn → torna alla home
-- crea_hex_btn → apre hex_generator.html
+- crea_hex_btn → apre confronto_memorie.html?mode=creazione
+
 - btnConfronto → apre confronto_memorie.html
 - menu_btn1..8 → selezione menu
 - sottomenu_btn1..8 → selezione sottomenu
