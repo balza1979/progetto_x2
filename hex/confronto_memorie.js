@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // 8) Nascondi "Visualizza TUTTI i parametri (anche quelli uguali)" ovunque si trovi
 setTimeout(() => {
     document.querySelectorAll("*").forEach(el => {
-        if (el.textContent && el.textContent.toLowerCase().includes("tutti i parametri")) {
+        if (el.textContent && el.textContent.toLowerCase().includes("TUTTI i parametri")) {
             el.style.display = "none";
         }
     });
