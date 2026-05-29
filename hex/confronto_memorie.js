@@ -172,8 +172,8 @@ if (lbl) lbl.style.display = "none";
 
 	
     // 6) Nascondi il blocco creazione finché B non è caricato
-    const blocco = document.getElementById("crea-memoria-container");
-    if (blocco) blocco.style.display = "none";
+    // const blocco = document.getElementById("crea-memoria-container");
+   //  if (blocco) blocco.style.display = "none";
 
     // 7) Quando B viene caricato → mostra blocco creazione
     const oldOnFileB = onFileB_Change;
