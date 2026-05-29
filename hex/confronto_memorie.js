@@ -196,14 +196,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Nascondi C se non esiste memC_hex
     const hexC = localStorage.getItem("memC_hex");
+    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+
+    if (!bloccoC) return;
+
     if (!hexC) {
-        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-        if (bloccoC) bloccoC.style.display = "none";
+        // Nascondi C se NON esiste
+        bloccoC.style.display = "none";
+    } else {
+        // Mostra C se ESISTE
+        bloccoC.style.display = "block";
+        document.getElementById("labelFileC").innerText = localStorage.getItem("memC_nome") || "FILE C";
     }
 });
-
 
 
 
