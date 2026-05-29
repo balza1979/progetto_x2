@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // ------------------------------------------------------------
-//  VARIABILI BASE
+//  VARIABILI BASE 
 // ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
