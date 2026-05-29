@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX COMPLETA 29/05/2026 13 44
+//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 13 50
 // ============================================================
 // =========================================
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
@@ -65,44 +65,63 @@ document.addEventListener("DOMContentLoaded", function () {
         disabilitaCaricamentoABC();
     }
 });
-
 // =========================================
-// PASSO A.4 – Nasconde solo la UI di confronto
-// Versione 2026-05-29 13:40
+// PASSO A.4.0 – Gestione UI Creazione Memoria
+// Versione 2026-05-29 13:50
 // =========================================
 
-function nascondiUIConfronto() {
+function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
-    // Nascondi pulsanti confronto
+    // 1) Nascondi FILE C
+    const fileC = document.getElementById("file3");
+    if (fileC) fileC.style.display = "none";
+
+    // 2) Nascondi pulsanti confronto
     ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
 
-    // Nascondi filtri e opzioni
+    // 3) Nascondi filtri e opzioni
     ["flagVisualizzaTutto", "columnFilters"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
 
-    // Nascondi popup GitHub
+    // 4) Nascondi popup GitHub
     ["gitPopup", "gitList", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
 
-    // Nascondi tabella risultati (qualsiasi tabella)
+    // 5) Nascondi tabella risultati
     document.querySelectorAll("table").forEach(t => {
         t.style.display = "none";
     });
+
+    // 6) Nascondi il blocco creazione finché B non è caricato
+    const blocco = document.getElementById("crea-memoria-container");
+    if (blocco) blocco.style.display = "none";
+
+    // 7) Quando B viene caricato → mostra blocco creazione
+    const oldOnFileB = onFileB_Change;
+    onFileB_Change = function (...args) {
+        oldOnFileB.apply(this, args);
+
+        const B = memorieABC.getB();
+        if (B) {
+            const blocco = document.getElementById("crea-memoria-container");
+            if (blocco) blocco.style.display = "block";
+        }
+    };
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    if (isModalitaCreazione()) {
-        nascondiUIConfronto();
-    }
+    setupModalitaCreazione();
 });
+
+
 
 // ------------------------------------------------------------
 //  VARIABILI BASE
