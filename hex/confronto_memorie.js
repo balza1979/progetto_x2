@@ -950,9 +950,6 @@ function onFileA_Change() {
         aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
-
-
 
 /* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
 function onFileB_Change() {
