@@ -1,9 +1,11 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 1605
+//  CONFRONTO_MEMORIE.JS – VERSIONE FIX 2026-05-29 16:05
+//  - Nasconde campi non necessari
+//  - Gestisce Memoria C in modalità creazione
 // ============================================================
+
 // =========================================
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
-// Versione 2026-05-29 12:25
 // =========================================
 
 function getQueryParam(name) {
@@ -16,85 +18,58 @@ function isModalitaCreazione() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    if (isModalitaCreazione()) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
+    if (!isModalitaCreazione()) return;
 
-        // Carica A/B da localStorage (solo visualizzazione)
+    // Carica A/B da localStorage (solo visualizzazione)
+    const hexA = localStorage.getItem("memA_hex");
+    const nomeA = localStorage.getItem("memA_nome");
 
-		/* ===== INIZIO MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
+    const hexB = localStorage.getItem("memB_hex");
+    const nomeB = localStorage.getItem("memB_nome");
 
-const hexA = localStorage.getItem("memA_hex");
-const nomeA = localStorage.getItem("memA_nome");
+    // Se esiste A → ricostruisci memoriaA + fake file + label
+    if (hexA) {
+        memoriaA = hexToMemoryMap(hexA);
 
-const hexB = localStorage.getItem("memB_hex");
-const nomeB = localStorage.getItem("memB_nome");
+        const fakeA = fakeFile(nomeA || "FILE_A.hex", hexA);
+        const inputA = document.getElementById("file1");
+        if (inputA) inputA.files = fakeA;
 
-// Se esiste A → ricostruisci memoriaA + fake file + label
-if (hexA) {
-    memoriaA = hexToMemoryMap(hexA);
+        const lblA = document.getElementById("labelFileA");
+        if (lblA) lblA.textContent = `FILE A: ${nomeA}`;
+    }
 
-    const fakeA = fakeFile(nomeA || "FILE_A.hex", hexA);
-    const inputA = document.getElementById("file1");
-    if (inputA) inputA.files = fakeA;
+    // Se esiste B → ricostruisci memoriaB + fake file + label
+    if (hexB) {
+        memoriaB = hexToMemoryMap(hexB);
 
-    const lblA = document.getElementById("labelFileA");
-    if (lblA) lblA.textContent = `FILE A: ${nomeA}`;
-}
+        const fakeB = fakeFile(nomeB || "FILE_B.hex", hexB);
+        const inputB = document.getElementById("file2");
+        if (inputB) inputB.files = fakeB;
 
-// Se esiste B → ricostruisci memoriaB + fake file + label
-if (hexB) {
-    memoriaB = hexToMemoryMap(hexB);
+        const lblB = document.getElementById("labelFileB");
+        if (lblB) lblB.textContent = `FILE B: ${nomeB}`;
+    }
 
-    const fakeB = fakeFile(nomeB || "FILE_B.hex", hexB);
-    const inputB = document.getElementById("file2");
-    if (inputB) inputB.files = fakeB;
+    // Mostra/nasconde blocco creazione + blocco C in base a A/B
+    aggiornaBloccoCreazione();
 
-    const lblB = document.getElementById("labelFileB");
-    if (lblB) lblB.textContent = `FILE B: ${nomeB}`;
-}
+    // Info memorie A/B (se usi memorieABC)
+    if (window.memorieABC) {
+        memorieABC.carica();
+        const A = memorieABC.getA();
+        const B = memorieABC.getB();
 
-/* ===== FINE MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
+        const infoA = document.getElementById("info-memoria-a");
+        const infoB = document.getElementById("info-memoria-b");
 
-/* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-const bloccoCreazione = document.getElementById("crea-memoria-container");
-
-        const bloccoCreazione = document.getElementById("crea-memoria-container");
-
-        if (bloccoCreazione) {
-            if (hexA && hexB) {
-                // A e B presenti → mostra blocco
-                bloccoCreazione.style.display = "block";
-
-                // MOSTRA ANCHE IL BLOCCO C
-                const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-                if (bloccoC) bloccoC.style.display = "block";
-            } else {
-                // Mancano A o B → nascondi blocco
-                bloccoCreazione.style.display = "none";
-            }
-        }
-
-/* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-		
-        if (window.memorieABC) {
-            memorieABC.carica();
-            const A = memorieABC.getA();
-            const B = memorieABC.getB();
-
-            const infoA = document.getElementById("info-memoria-a");
-            const infoB = document.getElementById("info-memoria-b");
-
-            if (infoA) infoA.textContent = A ? "caricata" : "non caricata";
-            if (infoB) infoB.textContent = B ? "caricata" : "non caricata";
-        }
+        if (infoA) infoA.textContent = A ? "caricata" : "non caricata";
+        if (infoB) infoB.textContent = B ? "caricata" : "non caricata";
     }
 });
+
 // =========================================
 // PASSO A.3 – Disabilita caricamento A/B/C in modalità creazione
-// Versione 2026-05-29 12:30
 // =========================================
 
 function disabilitaCaricamentoABC() {
@@ -121,16 +96,14 @@ function disabilitaCaricamentoABC() {
 
 // =========================================
 // PASSO A.4.0 – Gestione UI Creazione Memoria
-// Versione 2026-05-29 13:50
 // =========================================
 
 function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
-    // 1) Nascondi completamente il blocco FILE C
- //const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
- //if (bloccoC) bloccoC.style.display = "none";
-
+    // 1) NON nascondere più il blocco FILE C qui
+    // const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+    // if (bloccoC) bloccoC.style.display = "none";
 
     // 2) Nascondi pulsanti confronto
     ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
@@ -144,68 +117,39 @@ function setupModalitaCreazione() {
         if (el) el.style.display = "none";
     });
 
- // 4) Nascondi SOLO il vecchio popup Git
-["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-});
-
-// NON nascondere gitList → serve per la tendina moderna
-
+    // 4) Nascondi SOLO il vecchio popup Git
+    ["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+    // NON nascondere gitList → serve per la tendina moderna
 
     // 5) Nascondi tabella risultati
     document.querySelectorAll("table").forEach(t => {
         t.style.display = "none";
     });
 
+    // 8) Nascondi la label "Visualizza TUTTI i parametri"
+    const lbl = document.getElementById("lblVisualizzaTutti");
+    if (lbl) lbl.style.display = "none";
 
+    // 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
+    document.querySelectorAll("button").forEach(btn => {
+        const t = btn.textContent.toLowerCase();
+        if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
+            btn.style.display = "none";
+        }
+    });
 
-	// 8) Nascondi la label "Visualizza TUTTI i parametri"
-const lbl = document.getElementById("lblVisualizzaTutti");
-if (lbl) lbl.style.display = "none";
-
-
-	
-		// 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
-		document.querySelectorAll("button").forEach(btn => {
-		    const t = btn.textContent.toLowerCase();
-		
-		    if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
-		        btn.style.display = "none";
-		    }
-		});
-
-
-	
-    // 6) Nascondi il blocco creazione finché B non è caricato
-    // const blocco = document.getElementById("crea-memoria-container");
-   //  if (blocco) blocco.style.display = "none";
-
-    // 7) Quando B viene caricato → mostra blocco creazione
-   /* ===== DISATTIVATO 2026-05-29 17:12 – rompe la modalità creazione =====
-const oldOnFileB = onFileB_Change;
-onFileB_Change = function (...args) {
-    oldOnFileB.apply(this, args);
-
-    const B = memorieABC.getB();
-    if (B) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
-    }
-};
-===== FINE DISATTIVATO ===== */
-
+    // 6) Non toccare qui il blocco creazione: lo gestisce aggiornaBloccoCreazione()
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-   setupModalitaCreazione();
+    setupModalitaCreazione();
 });
 
-
-
-
 // ------------------------------------------------------------
-//  VARIABILI BASE 
+//  VARIABILI BASE
 // ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
@@ -261,6 +205,7 @@ function hexToMemoryMap(hexText) {
 
     return mem;
 }
+
 function fakeFile(nome, contenuto) {
     const blob = new Blob([contenuto], { type: "text/plain" });
     const file = new File([blob], nome, { type: "text/plain" });
@@ -295,7 +240,6 @@ function ricostruisciValore(bytes) {
 //  CONFRONTO A–B
 // ------------------------------------------------------------
 function compareMemory(memA, memB) {
-
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
@@ -313,7 +257,6 @@ function compareMemory(memA, memB) {
 
     // PARAMETRI
     for (const p of x2_parametri) {
-
         const base = parseInt(p.LIBERA1, 16);
         const len = parseInt(p.LIBERA4);
         const unita = (p.UNITA === "/" ? "" : p.UNITA);
@@ -359,12 +302,10 @@ function compareMemory(memA, memB) {
     return { diff, runtime };
 }
 
-
 // ------------------------------------------------------------
 //  CONFRONTO A–B–C (PATCH COMPLETA DIFFERENZE)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
-
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
@@ -383,7 +324,6 @@ function compareMemory3(memA, memB, memC) {
 
     // PARAMETRI
     for (const p of x2_parametri) {
-
         const base = parseInt(p.LIBERA1, 16);
         const len = parseInt(p.LIBERA4);
         const unita = (p.UNITA === "/" ? "" : p.UNITA);
@@ -409,17 +349,14 @@ function compareMemory3(memA, memB, memC) {
 
         if (confrontoAttivo === "A-C") {
             diversi = bytesA.some((b, i) => b !== bytesC[i]);
-        }
-        else if (confrontoAttivo === "B-C") {
+        } else if (confrontoAttivo === "B-C") {
             diversi = bytesB.some((b, i) => b !== bytesC[i]);
-        }
-        else if (confrontoAttivo === "A-B-C") {
+        } else if (confrontoAttivo === "A-B-C") {
             diversi =
                 bytesA.some((b, i) => b !== bytesB[i]) ||
                 bytesA.some((b, i) => b !== bytesC[i]) ||
                 bytesB.some((b, i) => b !== bytesC[i]);
-        }
-        else { // A-B
+        } else { // A-B
             diversi = bytesA.some((b, i) => b !== bytesB[i]);
         }
 
@@ -454,7 +391,6 @@ function compareMemory3(memA, memB, memC) {
 //  RENDER RISULTATI
 // ------------------------------------------------------------
 function renderResults(result) {
-
     const lista = result.diff;
     const runtime = result.runtime;
 
@@ -476,7 +412,6 @@ function renderResults(result) {
             </div>
         `;
     } else {
-
         html += `
             <table id="tabDiff">
                 <tr>
@@ -491,7 +426,6 @@ function renderResults(result) {
 
         for (let d of lista) {
             for (let i = 0; i < d.len; i++) {
-
                 html += `
                     <tr class="param-row">
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
@@ -592,6 +526,7 @@ function renderResults(result) {
 
     applyColumnFilters();
 }
+
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO (AB / AC / BC / ABC)
 // ------------------------------------------------------------
@@ -618,7 +553,6 @@ function confrontaAB() {
     if (f1.files[0]) {
         leggiFileHex(f1, hexA => {
             leggiFileHex(f2, hexB => {
-
                 const mA = hexToMemoryMap(hexA);
                 const mB = hexToMemoryMap(hexB);
                 const mC = {}; // C mancante
@@ -668,7 +602,6 @@ function confrontaAC() {
     const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
 
     Promise.all([sorgenteA, sorgenteC]).then(([memA, memC]) => {
-
         const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
 
@@ -695,7 +628,6 @@ function confrontaBC() {
     const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
 
     Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
-
         const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
         const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
 
@@ -774,7 +706,6 @@ function applyColumnFilters() {
 }
 
 function aggiornaCheckboxColonne() {
-
     const chkA = document.querySelector('input[data-col="col-valA"]');
     const chkB = document.querySelector('input[data-col="col-valB"]');
     const chkC = document.querySelector('input[data-col="col-valC"]');
@@ -808,13 +739,10 @@ function aggiornaCheckboxColonne() {
     applyColumnFilters();
 }
 
-
-
-
-/* ===== INIZIO PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
+// ------------------------------------------------------------
+//  PATCH – Caricamento da Git in A/B/C + salvataggio in localStorage
+// ------------------------------------------------------------
 function caricaDaGit(slot) {
-
-    // URL del file Git (puoi cambiarlo quando vuoi)
     const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
 
     fetch(url)
@@ -836,59 +764,53 @@ function caricaDaGit(slot) {
                 console.log(`Caricato BIN da Git in ${slot}`);
             }
 
-if (slot === "A") {
-    memoriaA = mem;
-    document.getElementById("file1").value = "";
+            if (slot === "A") {
+                memoriaA = mem;
+                document.getElementById("file1").value = "";
 
-    // Salva SEMPRE il contenuto, anche se hexText ha caratteri strani
-    const contenuto = hexText || new TextDecoder().decode(bytes);
-    const nome = "Git_A.hex";
+                const contenuto = hexText || new TextDecoder().decode(bytes);
+                const nome = "Git_A.hex";
 
-    localStorage.setItem("memA_hex", contenuto);
-    localStorage.setItem("memA_nome", nome);
+                localStorage.setItem("memA_hex", contenuto);
+                localStorage.setItem("memA_nome", nome);
 
-    // Ricrea il file finto come se fosse locale
-    const fake = fakeFile(nome, contenuto);
-    document.getElementById("file1").files = fake;
+                const fake = fakeFile(nome, contenuto);
+                document.getElementById("file1").files = fake;
 
-    document.getElementById("labelFileA").innerText = "FILE A (Git)";
+                document.getElementById("labelFileA").innerText = "FILE A (Git)";
 
-    aggiornaBloccoCreazione();
-    onFileA_Change();
-}
-
-
-
-if (slot === "B") {
-    memoriaB = mem;
-    document.getElementById("file2").value = "";
-
-    const contenuto = hexText || new TextDecoder().decode(bytes);
-    const nome = "Git_B.hex";
-
-    localStorage.setItem("memB_hex", contenuto);
-    localStorage.setItem("memB_nome", nome);
-
-    const fake = fakeFile(nome, contenuto);
-    document.getElementById("file2").files = fake;
-
-    document.getElementById("labelFileB").innerText = "FILE B (Git)";
-
-    aggiornaBloccoCreazione();
-    onFileB_Change();
-}
-
-            // --- SLOT C ---
-            if (slot === "C") {
-                memoriaC = mem;
-                document.getElementById("file3").value = ""; // reset input locale C
+                aggiornaBloccoCreazione();
+                onFileA_Change();
             }
 
-            resetConfronto(); // reset dopo caricamento Git
+            if (slot === "B") {
+                memoriaB = mem;
+                document.getElementById("file2").value = "";
 
-           //  document.getElementById("labelFile" + slot).innerText =
-            //     `FILE ${slot} (caricato da Git)`;
+                const contenuto = hexText || new TextDecoder().decode(bytes);
+                const nome = "Git_B.hex";
 
+                localStorage.setItem("memB_hex", contenuto);
+                localStorage.setItem("memB_nome", nome);
+
+                const fake = fakeFile(nome, contenuto);
+                document.getElementById("file2").files = fake;
+
+                document.getElementById("labelFileB").innerText = "FILE B (Git)";
+
+                aggiornaBloccoCreazione();
+                onFileB_Change();
+            }
+
+            if (slot === "C") {
+                memoriaC = mem;
+                document.getElementById("file3").value = "";
+                // Se vuoi, puoi anche salvare C in localStorage:
+                // localStorage.setItem("memC_hex", hexText || new TextDecoder().decode(bytes));
+                // localStorage.setItem("memC_nome", "Git_C.hex");
+            }
+
+            resetConfronto();
             alert(`File Git caricato in ${slot}`);
         })
         .catch(err => {
@@ -896,8 +818,6 @@ if (slot === "B") {
             alert("Errore nel caricamento del file da Git");
         });
 }
-/* ===== FINE PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
-
 
 function binToMemoryMap(bytes) {
     const mem = {};
@@ -922,53 +842,50 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("Errore caricamento polli:", err));
 });
 
-
 // ------------------------------------------------------------
-//  INIZIO MODIFICA 2026-05-27 12:30 - resetConfronto
+//  resetConfronto
 // ------------------------------------------------------------
 function resetConfronto() {
-    // Azzeriamo il tipo di confronto attivo
     confrontoAttivo = null;
 
-    // Rimettiamo tutti i pulsanti in stato "non attivo"
     const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
     ids.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) btn.classList.remove("attivo");
     });
 
-    // Svuotiamo la tabella risultati (adatta l'ID se è diverso)
     const divRisultati = document.getElementById("risultati");
     if (divRisultati) {
         divRisultati.innerHTML = "";
     }
 
-    // Se hai una funzione che gestisce le checkbox colonne, puoi resettarle qui
     if (typeof resetCheckboxColonne === "function") {
         resetCheckboxColonne();
     }
 }
+
 // ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
+//  aggiornaBloccoCreazione – mostra/nasconde blocco + C in base a A/B
 // ------------------------------------------------------------
-/* ===== INIZIO PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
 function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
-    if (!blocco) return;
+    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
 
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
     if (hexA && hexB) {
-        blocco.style.display = "block";
+        if (blocco) blocco.style.display = "block";
+        if (bloccoC) bloccoC.style.display = "block";
     } else {
-        blocco.style.display = "none";
+        if (blocco) blocco.style.display = "none";
+        if (bloccoC) bloccoC.style.display = "none";
     }
 }
-/* ===== FINE PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
 
-
-/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
+// ------------------------------------------------------------
+//  onFileA_Change – salva A in localStorage + aggiorna blocco
+// ------------------------------------------------------------
 function onFileA_Change() {
     resetConfronto();
     document.getElementById("labelFileA").innerText = "FILE A (locale)";
@@ -982,14 +899,13 @@ function onFileA_Change() {
         localStorage.setItem("memA_hex", hexA);
         localStorage.setItem("memA_nome", inputA.files[0].name);
 
-        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
+        aggiornaBloccoCreazione();
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 
-
-
-/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
+// ------------------------------------------------------------
+//  onFileB_Change – salva B in localStorage + aggiorna blocco
+// ------------------------------------------------------------
 function onFileB_Change() {
     resetConfronto();
     document.getElementById("labelFileB").innerText = "FILE B (locale)";
@@ -1003,22 +919,20 @@ function onFileB_Change() {
         localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
 
-        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
+        aggiornaBloccoCreazione();
     });
-}
-/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
-
-
-
-// FILE C cambiato
-function onFileC_Change() {
-    resetConfronto(); // reset confronto perché C è cambiato
-	document.getElementById("labelFileC").innerText = "FILE C (locale)";
-
 }
 
 // ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
+//  onFileC_Change – solo reset confronto + label
+// ------------------------------------------------------------
+function onFileC_Change() {
+    resetConfronto();
+    document.getElementById("labelFileC").innerText = "FILE C (locale)";
+}
+
+// ------------------------------------------------------------
+//  resetMemorie – pulizia localStorage
 // ------------------------------------------------------------
 function resetMemorie() {
     localStorage.removeItem("memA_hex");
