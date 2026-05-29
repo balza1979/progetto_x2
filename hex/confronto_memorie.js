@@ -132,15 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     setupModalitaCreazione();
 });
 
-// 8) Nascondi "Visualizza TUTTI i parametri (anche quelli uguali)" ovunque si trovi
+// 8) Nascondi "Visualizza TUTTI i parametri (anche quelli uguali)"
 setTimeout(() => {
-    document.querySelectorAll("*").forEach(el => {
-        if (el.textContent && el.textContent.toLowerCase().includes("i parametri")) {
-            el.style.display = "none";
-        }
-    });
-}, 200);
+    const btn = Array.from(document.querySelectorAll("button"))
+        .find(b => b.textContent.toLowerCase().includes("tutti i parametri"));
 
+    if (btn) btn.style.display = "none";
+}, 150);
 
 
 
