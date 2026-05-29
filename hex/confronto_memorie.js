@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V 1.3 – VERSIONE FIX COMPLETA 27/05/2026 12:44
+//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX COMPLETA 29/05/2026 13 44
 // ============================================================
 // =========================================
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
