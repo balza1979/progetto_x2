@@ -42,29 +42,25 @@ document.addEventListener("DOMContentLoaded", function () {
 function disabilitaCaricamentoABC() {
     if (!isModalitaCreazione()) return;
 
-    // Disabilita TUTTI gli input file
-    document.querySelectorAll('input[type="file"]').forEach(el => {
-        el.disabled = true;
-        el.style.opacity = "0.4";
-        el.style.pointerEvents = "none";
-    });
+    // Disabilita SOLO FILE C
+    const fileC = document.getElementById("file3");
+    if (fileC) {
+        fileC.disabled = true;
+        fileC.style.opacity = "0.4";
+        fileC.style.pointerEvents = "none";
+    }
 
-    // Disabilita TUTTI i pulsanti che contengono "A", "B" o "C"
-    document.querySelectorAll('button').forEach(btn => {
-        const t = btn.textContent.toLowerCase();
-        if (t.includes("memoria") || t.includes("carica") || t.includes("scegli")) {
-            btn.disabled = true;
-            btn.style.opacity = "0.4";
-            btn.style.pointerEvents = "none";
-        }
-    });
+    // Disabilita SOLO pulsanti Git di C
+    const btnGitC = document.querySelector('button[data-slot="C"]');
+    if (btnGitC) {
+        btnGitC.disabled = true;
+        btnGitC.style.opacity = "0.4";
+        btnGitC.style.pointerEvents = "none";
+    }
+
+    // NON toccare A e B
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    if (isModalitaCreazione()) {
-        disabilitaCaricamentoABC();
-    }
-});
 // =========================================
 // PASSO A.4.0 – Gestione UI Creazione Memoria
 // Versione 2026-05-29 13:50
