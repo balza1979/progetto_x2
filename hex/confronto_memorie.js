@@ -100,6 +100,17 @@ function setupModalitaCreazione() {
         t.style.display = "none";
     });
 
+		// 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
+		document.querySelectorAll("button").forEach(btn => {
+		    const t = btn.textContent.toLowerCase();
+		
+		    if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
+		        btn.style.display = "none";
+		    }
+		});
+
+
+	
     // 6) Nascondi il blocco creazione finché B non è caricato
     const blocco = document.getElementById("crea-memoria-container");
     if (blocco) blocco.style.display = "none";
