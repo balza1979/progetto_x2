@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 1605
+//  COffNFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 1605
 // ============================================================
 // =========================================
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
@@ -62,19 +62,15 @@ if (hexB) {
 
 const bloccoCreazione = document.getElementById("crea-memoria-container");
 
-        if (bloccoCreazione) {
-            if (hexA && hexB) {
-                // A e B presenti → mostra blocco
-                bloccoCreazione.style.display = "block";
+     if (bloccoCreazione) {
+    if (hexA && hexB) {
+        bloccoCreazione.style.display = "block";
+        // NON mostrare mai FILE C in modalità creazione
+    } else {
+        bloccoCreazione.style.display = "none";
+    }
+}
 
-                // MOSTRA ANCHE IL BLOCCO C
-                const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-                if (bloccoC) bloccoC.style.display = "block";
-            } else {
-                // Mancano A o B → nascondi blocco
-                bloccoCreazione.style.display = "none";
-            }
-        }
 
 /* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
