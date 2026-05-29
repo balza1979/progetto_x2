@@ -813,17 +813,10 @@ if (slot === "A") {
     // Ricrea il file finto come se fosse locale
     const fake = fakeFile(nome, contenuto);
     document.getElementById("file1").files = fake;
-
     document.getElementById("labelFileA").innerText = "FILE A (Git)";
-
     aggiornaBloccoCreazione();
-	
-
-
     onFileA_Change();
 }
-
-
 
 if (slot === "B") {
     memoriaB = mem;
@@ -841,30 +834,25 @@ if (slot === "B") {
     document.getElementById("labelFileB").innerText = "FILE B (Git)";
 
     aggiornaBloccoCreazione();
-	
-
     onFileB_Change();
 }
 
-            // --- SLOT C ---
-            if (slot === "C") {
-                memoriaC = mem;
-                document.getElementById("file3").value = ""; // reset input locale C
-            }
-
-            resetConfronto(); // reset dopo caricamento Git
-
-           //  document.getElementById("labelFile" + slot).innerText =
-            //     `FILE ${slot} (caricato da Git)`;
-
-            alert(`File Git caricato in ${slot}`);
-        })
-        .catch(err => {
-            console.error("Errore Git:", err);
-            alert("Errore nel caricamento del file da Git");
-        });
+// --- SLOT C ---
+if (slot === "C") {
+    memoriaC = mem;
+    document.getElementById("file3").value = ""; // reset input locale C
 }
-/* ===== FINE PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
+
+resetConfronto(); // reset dopo caricamento Git
+
+alert(`File Git caricato in ${slot}`);
+})   // <── CHIUSURA DEL .then(buffer => { ... })
+.catch(err => {
+    console.error("Errore Git:", err);
+    alert("Errore nel caricamento del file da Git");
+});
+}   // <── CHIUSURA DELLA FUNZIONE caricaDaGit(slot)
+
 
 
 function binToMemoryMap(bytes) {
