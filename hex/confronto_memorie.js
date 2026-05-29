@@ -100,6 +100,14 @@ function setupModalitaCreazione() {
         t.style.display = "none";
     });
 
+
+
+	// 8) Nascondi la label "Visualizza TUTTI i parametri"
+const lbl = document.getElementById("lblVisualizzaTutti");
+if (lbl) lbl.style.display = "none";
+
+
+	
 		// 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
 		document.querySelectorAll("button").forEach(btn => {
 		    const t = btn.textContent.toLowerCase();
@@ -132,13 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setupModalitaCreazione();
 });
 
-// 8) Nascondi "Visualizza TUTTI i parametri (anche quelli uguali)"
-setTimeout(() => {
-    const btn = Array.from(document.querySelectorAll("button"))
-        .find(b => b.textContent.toLowerCase().includes("tutti i parametri"));
 
-    if (btn) btn.style.display = "none";
-}, 150);
+
 
 
 
