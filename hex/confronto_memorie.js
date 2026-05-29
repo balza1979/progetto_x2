@@ -795,6 +795,7 @@ function aggiornaCheckboxColonne() {
 
 
 
+/* ===== INIZIO PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
 function caricaDaGit(slot) {
 
     // URL del file Git (puoi cambiarlo quando vuoi)
@@ -808,26 +809,46 @@ function caricaDaGit(slot) {
             const isHex = (bytes[0] === 58); // ':' = 58
 
             let mem;
+            let hexText = null;
 
             if (isHex) {
-                const text = new TextDecoder().decode(bytes);
-                mem = hexToMemoryMap(text);
+                hexText = new TextDecoder().decode(bytes);
+                mem = hexToMemoryMap(hexText);
                 console.log(`Caricato HEX da Git in ${slot}`);
             } else {
                 mem = binToMemoryMap(bytes);
                 console.log(`Caricato BIN da Git in ${slot}`);
             }
 
-            if (slot === "A") memoriaA = mem;
-            if (slot === "A") document.getElementById("file1").value = ""; // [MOD 2026-05-27 12:15] reset input locale A
+            // --- SLOT A ---
+            if (slot === "A") {
+                memoriaA = mem;
+                document.getElementById("file1").value = ""; // reset input locale A
 
-            if (slot === "B") memoriaB = mem;
-            if (slot === "B") document.getElementById("file2").value = ""; // [MOD 2026-05-27 12:16] reset input locale B
+                if (hexText) {
+                    localStorage.setItem("memA_hex", hexText);
+                    localStorage.setItem("memA_nome", "Git_A.hex");
+                }
+            }
 
-            if (slot === "C") memoriaC = mem;
-            if (slot === "C") document.getElementById("file3").value = ""; // [MOD 2026-05-27 12:17] reset input locale C
+            // --- SLOT B ---
+            if (slot === "B") {
+                memoriaB = mem;
+                document.getElementById("file2").value = ""; // reset input locale B
 
-            resetConfronto(); // [MOD 2026-05-27 12:40] reset dopo caricamento Git
+                if (hexText) {
+                    localStorage.setItem("memB_hex", hexText);
+                    localStorage.setItem("memB_nome", "Git_B.hex");
+                }
+            }
+
+            // --- SLOT C ---
+            if (slot === "C") {
+                memoriaC = mem;
+                document.getElementById("file3").value = ""; // reset input locale C
+            }
+
+            resetConfronto(); // reset dopo caricamento Git
 
             document.getElementById("labelFile" + slot).innerText =
                 `FILE ${slot} (caricato da Git)`;
@@ -839,6 +860,7 @@ function caricaDaGit(slot) {
             alert("Errore nel caricamento del file da Git");
         });
 }
+/* ===== FINE PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
 
 
 function binToMemoryMap(bytes) {
@@ -899,19 +921,41 @@ function resetConfronto() {
 //  INIZIO MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
 
-// FILE A cambiato
+/* ===== INIZIO PATCH 2026-05-29 16:32 – Salvataggio FILE A ===== */
 function onFileA_Change() {
-    resetConfronto(); // reset confronto perché A è cambiato
-	document.getElementById("labelFileA").innerText = "FILE A (locale)";
+    resetConfronto();
+    document.getElementById("labelFileA").innerText = "FILE A (locale)";
 
+    const inputA = document.getElementById("file1");
+    if (!inputA.files[0]) return;
+
+    leggiFileHex(inputA, hexA => {
+        if (!hexA) return;
+
+        localStorage.setItem("memA_hex", hexA);
+        localStorage.setItem("memA_nome", inputA.files[0].name);
+    });
 }
+/* ===== FINE PATCH 2026-05-29 16:32 – Salvataggio FILE A ===== */
 
-// FILE B cambiato
+
+/* ===== INIZIO PATCH 2026-05-29 16:32 – Salvataggio FILE B ===== */
 function onFileB_Change() {
-    resetConfronto(); // reset confronto perché B è cambiato
-	document.getElementById("labelFileB").innerText = "FILE B (locale)";
+    resetConfronto();
+    document.getElementById("labelFileB").innerText = "FILE B (locale)";
 
+    const inputB = document.getElementById("file2");
+    if (!inputB.files[0]) return;
+
+    leggiFileHex(inputB, hexB => {
+        if (!hexB) return;
+
+        localStorage.setItem("memB_hex", hexB);
+        localStorage.setItem("memB_nome", inputB.files[0].name);
+    });
 }
+/* ===== FINE PATCH 2026-05-29 16:32 – Salvataggio FILE B ===== */
+
 
 // FILE C cambiato
 function onFileC_Change() {
