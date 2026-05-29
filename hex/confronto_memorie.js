@@ -1016,3 +1016,12 @@ function onFileC_Change() {
 // ------------------------------------------------------------
 //  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
+function resetMemorie() {
+    localStorage.removeItem("memA_hex");
+    localStorage.removeItem("memA_nome");
+    localStorage.removeItem("memB_hex");
+    localStorage.removeItem("memB_nome");
+    localStorage.removeItem("memC_hex");
+    localStorage.removeItem("memC_nome");
+    alert("Memorie A, B e C cancellate. Ricarica la pagina.");
+}
