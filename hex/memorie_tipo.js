@@ -124,7 +124,8 @@ async function leggiCartella(path) {
    ============================================================ */
 function popolaListaGit() {
 
-    const container = document.getElementById("gitList");
+    const container = document.querySelector("#selettoreGit #gitList")
+
     container.innerHTML = "";
 
     listaCompleta = [];
