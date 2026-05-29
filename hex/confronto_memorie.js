@@ -58,9 +58,9 @@ if (hexB) {
 
 /* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
-const bloccoCreazione = document.getElementById("crea-memoria-container");
+/* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
-        const bloccoCreazione = document.getElementById("crea-memoria-container");
+const bloccoCreazione = document.getElementById("crea-memoria-container");
 
         if (bloccoCreazione) {
             if (hexA && hexB) {
@@ -937,20 +937,13 @@ function resetConfronto() {
         if (btn) btn.classList.remove("attivo");
     });
 
-    // Svuotiamo la tabella risultati (adatta l'ID se è diverso)
+    // Svuotiamo la tabella risultati
     const divRisultati = document.getElementById("risultati");
     if (divRisultati) {
         divRisultati.innerHTML = "";
     }
-
-    // Se hai una funzione che gestisce le checkbox colonne, puoi resettarle qui
-    if (typeof resetCheckboxColonne === "function") {
-        resetCheckboxColonne();
-    }
 }
-// ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
-// ------------------------------------------------------------
+
 /* ===== INIZIO PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
 function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
@@ -1018,7 +1011,7 @@ function onFileC_Change() {
 }
 
 // ------------------------------------------------------------
-//  FINE MODIFICA 2026-05- 27 12:50 - reset su cambio file locale
+//  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
 function resetMemorie() {
     localStorage.removeItem("memA_hex");
