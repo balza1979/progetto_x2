@@ -189,7 +189,7 @@ if (lbl) lbl.style.display = "none";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  //  setupModalitaCreazione();
+   setupModalitaCreazione();
 });
 
 
