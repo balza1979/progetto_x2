@@ -3,8 +3,9 @@
 # SCOPO: memoria tecnica sintetica del Programmatore X2 + repository collegati
 
 ============================================================
-STRUTTURA PRINCIPALE
+1. PROGRAMMATORE X2 (REPO: progetto_x2)
 ============================================================
+
 index.html → UI principale (menu, sottomenu, parametri, valori)
 confronto_memorie.html → confronto A/B/C
 errori_x2.html → errori 0x8000–0x8FFF + gemme IN/OUT/FLAG
@@ -26,6 +27,7 @@ img/ → icone valori/menu/sottomenu
 ============================================================
 ID PRINCIPALI (TUTTE LE PAGINE)
 ============================================================
+
 index:
 mostra_tutto_btn, home_btn, crea_hex_btn, btnConfronto
 menu, menu_btn1..8
@@ -55,6 +57,7 @@ log
 ============================================================
 FUNZIONI PRINCIPALI (MAPPATURA)
 ============================================================
+
 index / x2_ui.js:
 popolaMenu(), popolaSottomenu()
 popolaParametri()
@@ -87,11 +90,12 @@ scriviParametriDaTabella()
 ============================================================
 FLUSSI PRINCIPALI
 ============================================================
+
 FLUSSO MENU/SOTTOMENU:
-x2_menu_struttura_data.js → x2_ui.js → index.html (menu/sottomenu)
+x2_menu_struttura_data.js → x2_ui.js → index.html
 
 FLUSSO PARAMETRI:
-x2_parametri_data.js → x2_ui.js → index.html (tabella parametri)
+x2_parametri_data.js → x2_ui.js → index.html
 
 FLUSSO VALORI:
 json_tendine/*.json → x2_loader.js → x2_ui.js → UI
@@ -186,3 +190,143 @@ gitList duplicato → unificare
 json_tendine → valori dinamici
 x2_ui.js → file critico
 scriviParametriDaTabella → logica definitiva
+
+============================================================
+2. MULTIPDFELMI (REPO: MultipdfElmi)
+============================================================
+
+FILE:
+index.html, lista.html, pdf.html, loading.html
+
+ID:
+index → folder-container
+lista → titolo, pdf-container
+loading → .loader
+
+FUNZIONI:
+index → fetch elenco.json → genera card → redirect pdf.html
+lista → fetch elenco.json → lista PDF
+pdf → redirect loading.html
+loading → spinner
+
+FLUSSO:
+elenco.json → index → lista → pdf → loading
+
+============================================================
+3. SCHEDE AUSILIARIE ELMI (REPO: Schede_ausiliarie_Elmi)
+============================================================
+
+FILE:
+index.html, lista.html, loading.html, viewer.html, pdf.html (galleria)
+
+ID:
+index → folder-container
+lista → titolo, pdf-container
+viewer → iframe generato
+loading → .loader
+
+pdf.html (galleria):
+big-gallery
+viewer-container
+big-image
+big-video
+fullscreen-btn
+mute-btn
+prev-btn
+next-btn
+slideshow-btn
+speed-control
+counter
+pdf-container
+bottom-spacer
+loadingPopup
+loadingSub
+testFrame
+
+FUNZIONI:
+openFast()
+openSafe()
+showLoading()
+showItem()
+prev/next
+mute
+fullscreen
+
+FLUSSO:
+elenco.json → pdf.html → galleria → viewer → loading
+
+============================================================
+4. ERRORI ELMI (REPO: Elmi-Ricerca-errori)
+============================================================
+
+ID:
+labelA/B/C/D
+menu
+campoB/C/D
+
+FUNZIONI:
+caricaExcel()
+menu.onchange → aggiorna campi
+
+============================================================
+5. ERRORI_VERS4 (REPO: errori_vers4)
+============================================================
+
+ID:
+versione
+titoloErrore
+menu
+manuali-container
+menuDettaglio
+campoB/C/D
+labelA_det, labelB, labelC, labelD
+modal, modalText, chiudiModal
+
+FUNZIONI:
+loadWorkbook()
+caricaExcel()
+selezionaFoglio()
+gestione manuali (colonne 13–20)
+modale fullscreen
+
+============================================================
+6. RICHIESTA PREVENTIVO (REPO: Richiesta_Preventivo)
+============================================================
+
+ID:
+txtID
+txtNome
+txtTelefono
+txtDescrizione
+txtSchede
+selectDispositivi
+miniBtn
+btnInvia
+
+FUNZIONI:
+miniBtn.onclick → aggiunge voce
+selectDispositivi.onchange → aggiunge voce
+btnInvia → valida + mailto + redirect avviso.html
+
+avviso.html:
+goEmail → apre mailto → redirect home
+
+============================================================
+7. VIEWER / LOADER / PDF (TUTTI I REPO)
+============================================================
+
+viewer.html → Google Viewer
+loading.html → spinner
+pdf.html → galleria immagini/video/PDF
+
+============================================================
+8. DIPENDENZE GLOBALI
+============================================================
+
+elenco.json
+errori.xlsx
+pdfManualiErrori/
+pdf/<cartella>/
+loading.html
+Google Docs Viewer
+libreria XLSX
