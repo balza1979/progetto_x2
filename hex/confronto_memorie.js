@@ -1,5 +1,5 @@
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 13 50
+//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 1605
 // ============================================================
 // =========================================
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
