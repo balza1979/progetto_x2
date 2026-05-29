@@ -60,15 +60,21 @@ if (hexB) {
 
 const bloccoCreazione = document.getElementById("crea-memoria-container");
 
-if (bloccoCreazione) {
-    if (hexA && hexB) {
-        // A e B presenti → mostra blocco
-        bloccoCreazione.style.display = "block";
-    } else {
-        // Mancano A o B → nascondi blocco
-        bloccoCreazione.style.display = "none";
-    }
-}
+        const bloccoCreazione = document.getElementById("crea-memoria-container");
+
+        if (bloccoCreazione) {
+            if (hexA && hexB) {
+                // A e B presenti → mostra blocco
+                bloccoCreazione.style.display = "block";
+
+                // MOSTRA ANCHE IL BLOCCO C
+                const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+                if (bloccoC) bloccoC.style.display = "block";
+            } else {
+                // Mancano A o B → nascondi blocco
+                bloccoCreazione.style.display = "none";
+            }
+        }
 
 /* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
@@ -122,8 +128,8 @@ function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
     // 1) Nascondi completamente il blocco FILE C
-const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-if (bloccoC) bloccoC.style.display = "none";
+ //const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+ //if (bloccoC) bloccoC.style.display = "none";
 
 
     // 2) Nascondi pulsanti confronto
@@ -195,21 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
    setupModalitaCreazione();
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const hexC = localStorage.getItem("memC_hex");
-    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-
-    if (!bloccoC) return;
-
-    if (!hexC) {
-        // Nascondi C se NON esiste
-        bloccoC.style.display = "none";
-    } else {
-        // Mostra C se ESISTE
-        bloccoC.style.display = "block";
-        document.getElementById("labelFileC").innerText = localStorage.getItem("memC_nome") || "FILE C";
-    }
-});
 
 
 
