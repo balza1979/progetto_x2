@@ -1,6 +1,39 @@
 // ============================================================
 //  CONFRONTO_MEMORIE.JS V 1.3 – VERSIONE FIX COMPLETA 27/05/2026 12:44
 // ============================================================
+// =========================================
+// MODALITÀ CREAZIONE MEMORIA C (attivazione)
+// Versione 2026-05-29 12:25
+// =========================================
+
+function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+}
+
+function isModalitaCreazione() {
+    return getQueryParam("mode") === "creazione";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (isModalitaCreazione()) {
+        const blocco = document.getElementById("crea-memoria-container");
+        if (blocco) blocco.style.display = "block";
+
+        // Carica A/B da localStorage (solo visualizzazione)
+        if (window.memorieABC) {
+            memorieABC.carica();
+            const A = memorieABC.getA();
+            const B = memorieABC.getB();
+
+            const infoA = document.getElementById("info-memoria-a");
+            const infoB = document.getElementById("info-memoria-b");
+
+            if (infoA) infoA.textContent = A ? "caricata" : "non caricata";
+            if (infoB) infoB.textContent = B ? "caricata" : "non caricata";
+        }
+    }
+});
 
 // ------------------------------------------------------------
 //  VARIABILI BASE
