@@ -178,7 +178,7 @@ function popolaListaGit() {
     });
 }
 /* ===== INIZIO MODIFICA 27/05/2026 16:25 – Chiusura popup Git ===== */
-document.getElementById("btnChiudiGit").addEventListener("click", () => {
+document.getElementById("btnChiudiGitList").addEventListener("click", () => {
     document.getElementById("selettoreGit").style.display = "none";
 });
 /* ===== FINE MODIFICA 27/05/2026 16:25 ===== */
