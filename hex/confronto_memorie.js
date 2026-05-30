@@ -18,7 +18,7 @@ function isModalitaCreazione() {
 document.addEventListener("DOMContentLoaded", function () {
   if (isModalitaCreazione()) {
     // NON mostrare subito il blocco creazione
-    // verrà mostrato solo quando A e B sono caricati
+    // verrà mostrato solo quando A e B sono caricat
     // const blocco = document.getElementById("crea-memoria-container");
     // if (blocco) blocco.style.display = "block";
 
@@ -407,7 +407,7 @@ function compareMemory3(memA, memB, memC) {
                 valB_str,
                 valC_str
             });
-        }
+       // }
     }
 
     return { diff, runtime };
