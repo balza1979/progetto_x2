@@ -991,6 +991,12 @@ function onFileC_Change() {
 /* ===== INIZIO PATCH 2026-06-03 15:10 – Reset completo modalità creazione ===== */
 function resetCreazione() {
 
+    // Evita loop infinito
+    if (sessionStorage.getItem("creazione_resettata") === "1") {
+        return;
+    }
+    sessionStorage.setItem("creazione_resettata", "1");
+
     // Rimuove tutti i dati relativi alla creazione
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memB_hex");
@@ -1005,7 +1011,3 @@ function resetCreazione() {
     // Ricarica la pagina completamente pulita
     location.reload();
 }
-/* ===== FINE PATCH 2026-06-03 15:10 – Reset completo modalità creazione ===== */
-// ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
-// ------------------------------------------------------------
