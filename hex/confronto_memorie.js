@@ -984,7 +984,24 @@ function onFileC_Change() {
 	document.getElementById("labelFileC").innerText = "FILE C (locale)";
 
 }
+/* ===== INIZIO PATCH 2026-06-03 15:10 – Reset completo modalità creazione ===== */
+function resetCreazione() {
 
+    // Rimuove tutti i dati relativi alla creazione
+    localStorage.removeItem("memA_hex");
+    localStorage.removeItem("memB_hex");
+    localStorage.removeItem("memC_hex");
+
+    localStorage.removeItem("memA_nome");
+    localStorage.removeItem("memB_nome");
+    localStorage.removeItem("memC_nome");
+
+    localStorage.removeItem("creazione_attiva");
+
+    // Ricarica la pagina completamente pulita
+    location.reload();
+}
+/* ===== FINE PATCH 2026-06-03 15:10 – Reset completo modalità creazione ===== */
 // ------------------------------------------------------------
 //  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
