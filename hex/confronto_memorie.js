@@ -846,25 +846,26 @@ if (hexText) {
     aggiornaBloccoCreazione();
 }
 if (slot === "B") {
+
+    // 1️⃣ Salvo la memoria B
     memoriaB = mem;
+
+    // 2️⃣ Pulisco l’input file (come fa il locale)
     document.getElementById("file2").value = "";
 
+    // 3️⃣ Salvo in localStorage (come fa il locale)
     if (hexText) {
-
-        // 🔥 SALVATAGGIO SINCRONO E PERSISTENTE
-        setTimeout(() => {
-            localStorage.setItem("memB_hex", hexText);
-            localStorage.setItem("memB_nome", "Git_B.hex");
-        }, 0);
+        localStorage.setItem("memB_hex", hexText);
+        localStorage.setItem("memB_nome", "Git_B.hex");
     }
 
-    // 🔥 ATTIVA MODALITÀ CREAZIONE (come fa il locale)
+    // 4️⃣ Attivo la modalità creazione (come fa il locale)
     localStorage.setItem("creazione_attiva", "1");
 
-    // 🔥 RICOSTRUISCE LA UI (come fa il locale)
+    // 5️⃣ Aggiorno la UI (come fa il locale)
     setupModalitaCreazione();
 
-    // 🔥 MOSTRA C SE A E B CI SONO
+    // 6️⃣ Mostro il blocco C se A e B ci sono (come fa il locale)
     aggiornaBloccoCreazione();
 }
 
