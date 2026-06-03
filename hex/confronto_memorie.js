@@ -192,9 +192,13 @@ onFileB_Change = function (...args) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-   setupModalitaCreazione();
-});
 
+    // 🔥 Reset automatico all'apertura della pagina
+    resetCreazione();
+
+    // Poi attivi la modalità creazione (se serve)
+    setupModalitaCreazione();
+});
 
 
 
