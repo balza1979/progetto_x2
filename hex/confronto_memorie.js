@@ -828,28 +828,33 @@ function caricaDaGit(slot) {
             }
 
             // --- SLOT A ---
-         if (slot === "A") {
+if (slot === "A") {
     memoriaA = mem;
     document.getElementById("file1").value = "";
+
     if (hexText) {
         localStorage.setItem("memA_hex", hexText);
         localStorage.setItem("memA_nome", "Git_A.hex");
     }
 
-    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
+    // 🔥 ATTIVA MODALITÀ CREAZIONE
+    localStorage.setItem("creazione_attiva", "1");
+    setupModalitaCreazione();   // 🔥 RICOSTRUISCE LA UI COME SE FOSSE LOCALE
 
     aggiornaBloccoCreazione();
 }
-			
 if (slot === "B") {
     memoriaB = mem;
     document.getElementById("file2").value = "";
+
     if (hexText) {
         localStorage.setItem("memB_hex", hexText);
         localStorage.setItem("memB_nome", "Git_B.hex");
     }
 
-    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
+    // 🔥 ATTIVA MODALITÀ CREAZIONE
+    localStorage.setItem("creazione_attiva", "1");
+    setupModalitaCreazione();   // 🔥 RICOSTRUISCE LA UI COME SE FOSSE LOCALE
 
     aggiornaBloccoCreazione();
 }
