@@ -935,18 +935,18 @@ function aggiornaBloccoCreazione() {
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
+    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+
     if (hexA && hexB) {
         blocco.style.display = "block";
 
-        // 🔥 MOSTRA IL BLOCCO C QUANDO A E B SONO PRESENTI
-        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+        // 🔥 MOSTRA C QUANDO A E B SONO PRESENTI
         if (bloccoC) bloccoC.style.display = "block";
 
     } else {
         blocco.style.display = "none";
 
         // 🔥 NASCONDI C QUANDO MANCANO A O B
-        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
         if (bloccoC) bloccoC.style.display = "none";
     }
 }
