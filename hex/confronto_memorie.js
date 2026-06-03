@@ -835,18 +835,23 @@ function caricaDaGit(slot) {
         localStorage.setItem("memA_hex", hexText);
         localStorage.setItem("memA_nome", "Git_A.hex");
     }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
+
+    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
+
+    aggiornaBloccoCreazione();
 }
-
-
-        if (slot === "B") {
+			
+if (slot === "B") {
     memoriaB = mem;
     document.getElementById("file2").value = "";
     if (hexText) {
         localStorage.setItem("memB_hex", hexText);
         localStorage.setItem("memB_nome", "Git_B.hex");
     }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
+
+    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
+
+    aggiornaBloccoCreazione();
 }
 
 
