@@ -194,7 +194,7 @@ onFileB_Change = function (...args) {
 document.addEventListener("DOMContentLoaded", function () {
 
     // 🔥 Reset automatico all'apertura della pagina
-    resetCreazione();
+  //   resetCreazione();
 
     // Poi attivi la modalità creazione (se serve)
     setupModalitaCreazione();
