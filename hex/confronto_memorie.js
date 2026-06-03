@@ -923,7 +923,6 @@ function resetConfronto() {
 // ------------------------------------------------------------
 //  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
 // ------------------------------------------------------------
-/* ===== INIZIO PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
 function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
     if (!blocco) return;
@@ -933,12 +932,19 @@ function aggiornaBloccoCreazione() {
 
     if (hexA && hexB) {
         blocco.style.display = "block";
+
+        // 🔥 MOSTRA IL BLOCCO C QUANDO A E B SONO PRESENTI
+        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+        if (bloccoC) bloccoC.style.display = "block";
+
     } else {
         blocco.style.display = "none";
+
+        // 🔥 NASCONDI C QUANDO MANCANO A O B
+        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+        if (bloccoC) bloccoC.style.display = "none";
     }
 }
-/* ===== FINE PATCH 2026-05-29 16:50 – Funzione aggiorna blocco creazione ===== */
-
 
 /* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 function onFileA_Change() {
