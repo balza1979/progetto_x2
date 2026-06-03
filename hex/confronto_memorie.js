@@ -831,11 +831,13 @@ function caricaDaGit(slot) {
 if (slot === "A") {
     memoriaA = mem;
     document.getElementById("file1").value = "";
-
-    if (hexText) {
+if (hexText) {
+    // 🔥 SALVATAGGIO SINCRONO E IMMEDIATO
+    setTimeout(() => {
         localStorage.setItem("memA_hex", hexText);
         localStorage.setItem("memA_nome", "Git_A.hex");
-    }
+    }, 0);
+}
 
     // 🔥 ATTIVA MODALITÀ CREAZIONE
     localStorage.setItem("creazione_attiva", "1");
@@ -848,14 +850,21 @@ if (slot === "B") {
     document.getElementById("file2").value = "";
 
     if (hexText) {
-        localStorage.setItem("memB_hex", hexText);
-        localStorage.setItem("memB_nome", "Git_B.hex");
+
+        // 🔥 SALVATAGGIO SINCRONO E PERSISTENTE
+        setTimeout(() => {
+            localStorage.setItem("memB_hex", hexText);
+            localStorage.setItem("memB_nome", "Git_B.hex");
+        }, 0);
     }
 
-    // 🔥 ATTIVA MODALITÀ CREAZIONE
+    // 🔥 ATTIVA MODALITÀ CREAZIONE (come fa il locale)
     localStorage.setItem("creazione_attiva", "1");
-    setupModalitaCreazione();   // 🔥 RICOSTRUISCE LA UI COME SE FOSSE LOCALE
 
+    // 🔥 RICOSTRUISCE LA UI (come fa il locale)
+    setupModalitaCreazione();
+
+    // 🔥 MOSTRA C SE A E B CI SONO
     aggiornaBloccoCreazione();
 }
 
