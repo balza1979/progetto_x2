@@ -703,34 +703,35 @@ function onFileC_Change() {
 //  CARICAMENTO DA GIT (A, B, C)
 // ------------------------------------------------------------
 function caricaDaGit(slot) {
-
     const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
     fetch(url)
         .then(r => r.text())
         .then(hexText => {
-
             const mem = hexToMemoryMap(hexText);
 
             if (slot === "A") {
                 memoriaA = mem;
                 localStorage.setItem("memA_hex", hexText);
                 localStorage.setItem("memA_nome", "Git_A.hex");
-                document.getElementById("labelFileA").innerText = "FILE A (Git)";
+                const lbl = document.getElementById("labelFileA");
+                if (lbl) lbl.innerText = "FILE A (Git)";
             }
 
             if (slot === "B") {
                 memoriaB = mem;
                 localStorage.setItem("memB_hex", hexText);
                 localStorage.setItem("memB_nome", "Git_B.hex");
-                document.getElementById("labelFileB").innerText = "FILE B (Git)";
+                const lbl = document.getElementById("labelFileB");
+                if (lbl) lbl.innerText = "FILE B (Git)";
             }
 
             if (slot === "C") {
                 memoriaC = mem;
                 localStorage.setItem("memC_hex", hexText);
                 localStorage.setItem("memC_nome", "Git_C.hex");
-                document.getElementById("labelFileC").innerText = "FILE C (Git)";
+                const lbl = document.getElementById("labelFileC");
+                if (lbl) lbl.innerText = "FILE C (Git)";
             }
 
             aggiornaBloccoCreazione();
