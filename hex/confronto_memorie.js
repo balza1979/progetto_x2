@@ -149,9 +149,6 @@ function setupModalitaCreazione() {
     // Nascondi C CREAZIONE all’avvio
     const bloccoCreazione = document.getElementById("crea-memoria-container");
     if (bloccoCreazione) bloccoCreazione.style.display = "none";
-}
-
-
 
     // 2) Nascondi pulsanti confronto
     ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
@@ -165,57 +162,28 @@ function setupModalitaCreazione() {
         if (el) el.style.display = "none";
     });
 
- // 4) Nascondi SOLO il vecchio popup Git
-["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-});
-
-// NON nascondere gitList → serve per la tendina moderna
-
+    // 4) Nascondi SOLO il vecchio popup Git
+    ["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
 
     // 5) Nascondi tabella risultati
     document.querySelectorAll("table").forEach(t => {
         t.style.display = "none";
     });
 
+    // 8) Nascondi la label "Visualizza TUTTI i parametri"
+    const lbl = document.getElementById("lblVisualizzaTutti");
+    if (lbl) lbl.style.display = "none";
 
-
-	// 8) Nascondi la label "Visualizza TUTTI i parametri"
-const lbl = document.getElementById("lblVisualizzaTutti");
-if (lbl) lbl.style.display = "none";
-
-
-	
-		// 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
-		document.querySelectorAll("button").forEach(btn => {
-		    const t = btn.textContent.toLowerCase();
-		
-		    if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
-		        btn.style.display = "none";
-		    }
-		});
-
-
-	
-    // 6) Nascondi il blocco creazione finché B non è caricato
-    // const blocco = document.getElementById("crea-memoria-container");
-   //  if (blocco) blocco.style.display = "none";
-
-    // 7) Quando B viene caricato → mostra blocco creazione
-   /* ===== DISATTIVATO 2026-05-29 17:12 – rompe la modalità creazione =====
-const oldOnFileB = onFileB_Change;
-onFileB_Change = function (...args) {
-    oldOnFileB.apply(this, args);
-
-    const B = memorieABC.getB();
-    if (B) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
-    }
-};
-===== FINE DISATTIVATO ===== */
-
+    // 5.1) Nascondi pulsanti extra
+    document.querySelectorAll("button").forEach(btn => {
+        const t = btn.textContent.toLowerCase();
+        if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
+            btn.style.display = "none";
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
