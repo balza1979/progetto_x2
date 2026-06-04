@@ -735,31 +735,31 @@ function caricaDaGit(slot) {
             const mem = hexToMemoryMap(hexText);
 
             if (slot === "A") {
-                memoriaA = mem;
-                localStorage.setItem("memA_hex", hexText);
-                localStorage.setItem("memA_nome", "Git_A.hex");
-                const lbl = document.getElementById("labelFileA");
-                if (lbl) lbl.innerText = "FILE A (Git)";
-            }
+    memoriaA = mem;
+    localStorage.setItem("memA_hex", hexText);
+    localStorage.setItem("memA_nome", "Git_A.hex");
+    const lbl = document.getElementById("labelFileA");
+    if (lbl) lbl.innerText = "FILE A (Git)";
+}
 
-            if (slot === "B") {
-                memoriaB = mem;
-                localStorage.setItem("memB_hex", hexText);
-                localStorage.setItem("memB_nome", "Git_B.hex");
-                const lbl = document.getElementById("labelFileB");
-                if (lbl) lbl.innerText = "FILE B (Git)";
-            }
+if (slot === "B") {
+    memoriaB = mem;
+    localStorage.setItem("memB_hex", hexText);
+    localStorage.setItem("memB_nome", "Git_B.hex");
+    const lbl = document.getElementById("labelFileB");
+    if (lbl) lbl.innerText = "FILE B (Git)";
+}
 
-            if (slot === "C") {
-                memoriaC = mem;
-                localStorage.setItem("memC_hex", hexText);
-                localStorage.setItem("memC_nome", "Git_C.hex");
-                const lbl = document.getElementById("labelFileC");
-                if (lbl) lbl.innerText = "FILE C (Git)";
-            }
+if (slot === "C") {
+    memoriaC = mem;
+    localStorage.setItem("memC_hex", hexText);
+    localStorage.setItem("memC_nome", "Git_C.hex");
+    const lbl = document.getElementById("labelFileC");
+    if (lbl) lbl.innerText = "FILE C (Git)";
+}
 
-                   setTimeout(aggiornaBloccoCreazione, 50);
-                         // aggiornaBloccoCreazione();
+// 🔥 L’UNICA RIGA DA CAMBIARE
+setTimeout(aggiornaBloccoCreazione, 50);
         })
         .catch(err => console.error("Errore caricamento Git:", err));
 }
