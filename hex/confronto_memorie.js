@@ -857,7 +857,7 @@ if (slot === "A") {
         localStorage.setItem("memA_nome", "Git_A.hex");
     }
 
-    // 4) Aggiorna blocco creazione (A+B → mostra C)
+    // 4) Aggiorna blocco  creazione (A+B → mostra C)
     aggiornaBloccoCreazione();
 
     // 5) Richiama la stessa funzione del caricamento locale
