@@ -1,7 +1,7 @@
 // ============================================================
 //  CONFRONTO_MEMORIE.JS — VERSIONE ORDINATA E OTTIMIZZATA
 //  Modalità confronto + Modalità creazione memoria C
-//  Versione 2026-06-04 — Luca + Copilot
+//  Versione 2026-06-04 — Luca + Copilot 
 // ============================================================
 
 
