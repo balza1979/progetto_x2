@@ -6,6 +6,9 @@
 // MODALITÀ CREAZIONE MEMORIA C (attivazione)
 // Versione 2026-05-29 12:25
 // =========================================
+function resetConfronto() {
+    // funzione vuota per evitare errori
+}
 
 function getQueryParam(name) {
     const params = new URLSearchParams(window.location.search);
