@@ -733,7 +733,6 @@ function caricaDaGit(slot) {
                 document.getElementById("labelFileC").innerText = "FILE C (Git)";
             }
 
-            // 🔥 fondamentale: aggiorna visibilità blocco creazione
             aggiornaBloccoCreazione();
         })
         .catch(err => console.error("Errore caricamento Git:", err));
