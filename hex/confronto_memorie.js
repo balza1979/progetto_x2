@@ -820,8 +820,13 @@ function aggiornaCheckboxColonne() {
 function caricaDaGit(slot) {
 
     // URL del file Git (puoi cambiarlo quando vuoi)
-    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
+   //  const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
+/* ===== INIZIO PATCH 2026-06-04 14:44 – Correzione URL Git ===== */
+const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+/* ===== FINE PATCH 2026-06-04 14:44 – Correzione URL Git ===== */
 
+
+	
     fetch(url)
         .then(r => r.arrayBuffer())
         .then(buffer => {
