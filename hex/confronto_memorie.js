@@ -635,6 +635,26 @@ function setupModalitaCreazione() {
 
 document.addEventListener("DOMContentLoaded", setupModalitaCreazione);
 
+document.addEventListener("DOMContentLoaded", () => {
+    if (!isModalitaCreazione()) return;
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    if (hexA) {
+        memoriaA = hexToMemoryMap(hexA);
+        const lblA = document.getElementById("labelFileA");
+        if (lblA) lblA.innerText = "FILE A (" + (localStorage.getItem("memA_nome") || "mem A") + ")";
+    }
+
+    if (hexB) {
+        memoriaB = hexToMemoryMap(hexB);
+        const lblB = document.getElementById("labelFileB");
+        if (lblB) lblB.innerText = "FILE B (" + (localStorage.getItem("memB_nome") || "mem B") + ")";
+    }
+
+    aggiornaBloccoCreazione();
+});
 
 // ------------------------------------------------------------
 //  MOSTRA BLOCCO CREAZIONE SOLO QUANDO A+B SONO PRESENTI
@@ -643,18 +663,17 @@ function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
     if (!blocco) return;
 
-    // ❌ Se NON siamo in modalità creazione → blocco SEMPRE nascosto
     if (!isModalitaCreazione()) {
         blocco.style.display = "none";
         return;
     }
 
-    // ✔ Siamo in modalità creazione → mostra solo se A+B presenti
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
     blocco.style.display = (hexA && hexB) ? "block" : "none";
 }
+
 
 
 // ------------------------------------------------------------
@@ -682,12 +701,14 @@ function onFileB_Change() {
     if (!inputB.files[0]) return;
 
     leggiFileHex(inputB, hexB => {
+        memoriaB = hexToMemoryMap(hexB);
         localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
         aggiornaBloccoCreazione();
     });
 
-    document.getElementById("labelFileB").innerText = "FILE B (locale)";
+    const lbl = document.getElementById("labelFileB");
+    if (lbl) lbl.innerText = "FILE B (locale)";
 }
 
 
