@@ -143,8 +143,12 @@ function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
     // 1) Nascondi completamente il blocco FILE C
-const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+//const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
 //if (bloccoC) bloccoC.style.display = "none";
+if (isModalitaCreazione()) {
+    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
+    if (bloccoC) bloccoC.style.display = "none";
+}
 
 
     // 2) Nascondi pulsanti confronto
