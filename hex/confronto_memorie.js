@@ -892,25 +892,25 @@ if (slot === "B") {
 }
 
 
+/* ===== SLOT C – PATCH COMPLETA 2026-06-04 14:14 ===== */
+if (slot === "C") {
 
-            // --- SLOT C ---
-            if (slot === "C") {
-                memoriaC = mem;
-                document.getElementById("file3").value = ""; // reset input locale C
-            }
+    // 1) Salva memoria in RAM
+    memoriaC = mem;
 
-            resetConfronto(); // reset dopo caricamento Git
+    // 2) Reset input locale
+    document.getElementById("file3").value = "";
 
-            document.getElementById("labelFile" + slot).innerText =
-                `FILE ${slot} (caricato da Git)`;
+    // 3) Salva in localStorage (coerente con A e B)
+    if (hexText) {
+        localStorage.setItem("memC_hex", hexText);
+        localStorage.setItem("memC_nome", "Git_C.hex");
+    }
 
-            alert(`File Git caricato in ${slot}`);
-        })
-        .catch(err => {
-            console.error("Errore Git:", err);
-            alert("Errore nel caricamento del file da Git");
-        });
+    // 4) Aggiorna label
+    document.getElementById("labelFileC").innerText = "FILE C (caricato da Git)";
 }
+
 /* ===== FINE PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
 
 
