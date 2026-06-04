@@ -643,6 +643,13 @@ function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
     if (!blocco) return;
 
+    // ❌ Se NON siamo in modalità creazione → blocco SEMPRE nascosto
+    if (!isModalitaCreazione()) {
+        blocco.style.display = "none";
+        return;
+    }
+
+    // ✔ Siamo in modalità creazione → mostra solo se A+B presenti
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
