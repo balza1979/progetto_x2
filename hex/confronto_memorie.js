@@ -23,16 +23,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isModalitaCreazione()) {
 		
 		/* ===== INIZIO MODIFICA 2026-06-04 13:55 – Reset memorie + reload pagina ===== */
-const haMemorieSalvate =
-    localStorage.getItem("memA_hex") ||
-    localStorage.getItem("memB_hex") ||
-    localStorage.getItem("memC_hex");
+//const haMemorieSalvate =
+   // localStorage.getItem("memA_hex") ||
+   // localStorage.getItem("memB_hex") ||
+   // localStorage.getItem("memC_hex");
 
-if (haMemorieSalvate) {
-    resetMemorie();        // reset con alert
-    location.reload();     // ricarica la pagina
-    return;                // FERMA l'esecuzione del blocco
-}
+//if (haMemorieSalvate) {
+ //   resetMemorie();        // reset con alert
+  //  location.reload();     // ricarica la pagina
+  //  return;                // FERMA l'esecuzione del blocco
+//}
 /* ===== FINE MODIFICA 2026-06-04 13:55 – Reset memorie + reload pagina ===== */
 
 		
