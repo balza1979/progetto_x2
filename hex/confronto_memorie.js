@@ -842,26 +842,55 @@ function caricaDaGit(slot) {
             }
 
             // --- SLOT A ---
-         if (slot === "A") {
+ /* ===== SLOT A – PATCH COMPLETA 2026-06-04 14:13 ===== */
+if (slot === "A") {
+
+    // 1) Salva memoria in RAM
     memoriaA = mem;
+
+    // 2) Reset input locale
     document.getElementById("file1").value = "";
+
+    // 3) Salva in localStorage come fa il caricamento locale
     if (hexText) {
         localStorage.setItem("memA_hex", hexText);
         localStorage.setItem("memA_nome", "Git_A.hex");
     }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
+
+    // 4) Aggiorna blocco creazione (A+B → mostra C)
+    aggiornaBloccoCreazione();
+
+    // 5) Richiama la stessa funzione del caricamento locale
+    if (typeof onFileA_Change === "function") {
+        onFileA_Change();
+    }
 }
 
 
-        if (slot === "B") {
+/* ===== SLOT B – PATCH COMPLETA 2026-06-04 14:13 ===== */
+if (slot === "B") {
+
+    // 1) Salva memoria in RAM
     memoriaB = mem;
+
+    // 2) Reset input locale
     document.getElementById("file2").value = "";
+
+    // 3) Salva in localStorage come fa il caricamento locale
     if (hexText) {
         localStorage.setItem("memB_hex", hexText);
         localStorage.setItem("memB_nome", "Git_B.hex");
     }
-    aggiornaBloccoCreazione();   // <── AGGIUNTA
+
+    // 4) Aggiorna blocco creazione (A+B → mostra C)
+    aggiornaBloccoCreazione();
+
+    // 5) Richiama la stessa funzione del caricamento locale
+    if (typeof onFileB_Change === "function") {
+        onFileB_Change();
+    }
 }
+
 
 
             // --- SLOT C ---
