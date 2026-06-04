@@ -36,11 +36,10 @@ document.body.appendChild(spinnerGit);
 
 const styleSpin = document.createElement("style");
 styleSpin.textContent = `
-    @keyframes spinGit {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-`;
+@keyframes spinGit {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 .gitItem {
     padding:10px;
@@ -179,6 +178,7 @@ function popolaListaGit() {
         container.appendChild(div);
     });
 }
+
 /* ===== INIZIO MODIFICA 27/05/2026 16:25 – Chiusura popup Git ===== */
 const btnChiudiGitList = document.getElementById("btnChiudiGitList");
 if (btnChiudiGitList) {
@@ -187,6 +187,7 @@ if (btnChiudiGitList) {
     });
 }
 /* ===== FINE MODIFICA 27/05/2026 16:25 ===== */
+
 
 /* ============================================================
    5) Conferma selezione (NUOVA LOGICA)
@@ -203,22 +204,26 @@ async function confermaGit(path) {
 
     if (slotAttivo === "A") {
         memoriaA = memMap;
+        localStorage.setItem("memA_nome", nomeFile);
+        localStorage.setItem("memA_hex", hexText);
         document.getElementById("file1").files = fakeFile(nomeFile, hexText);
     }
     if (slotAttivo === "B") {
         memoriaB = memMap;
+        localStorage.setItem("memB_nome", nomeFile);
+        localStorage.setItem("memB_hex", hexText);
         document.getElementById("file2").files = fakeFile(nomeFile, hexText);
     }
     if (slotAttivo === "C") {
         memoriaC = memMap;
+        localStorage.setItem("memC_nome", nomeFile);
+        localStorage.setItem("memC_hex", hexText);
         document.getElementById("file3").files = fakeFile(nomeFile, hexText);
     }
 
     document.getElementById("labelFile" + slotAttivo).style.color = "#ff3333";
     document.getElementById("labelFile" + slotAttivo).textContent =
         `FILE ${slotAttivo}: ${nomeFile}`;
-
-   // resetConfronto();
 
     spinnerGit.style.display = "none";
     document.getElementById("selettoreGit").style.display = "none";
