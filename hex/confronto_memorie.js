@@ -812,6 +812,32 @@ function resetMemorie() {
     localStorage.removeItem("memC_nome");
 }
 
+// ============================================================
+//  13. CARICAMENTO AUTOMATICO MEMORIA POLLI IN A (sempre)
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            // Carica polli in memoria A
+            memoriaA = hexToMemoryMap(text);
+
+            // Salva anche in localStorage (serve per creazione)
+            localStorage.setItem("memA_hex", text);
+            localStorage.setItem("memA_nome", "def_polli_b335f_ver1.HEX");
+
+            // Aggiorna UI
+            const lbl = document.getElementById("labelFileA");
+            if (lbl) lbl.innerText = "FILE A (default polli)";
+
+            console.log("✔ Memoria polli caricata automaticamente in A");
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
+});
 
 // ============================================================
 //  12. FINE FILE — Programmatore X2
