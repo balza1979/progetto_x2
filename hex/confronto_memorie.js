@@ -707,60 +707,37 @@ function caricaDaGit(slot) {
     const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
     fetch(url)
-        .then(r => r.arrayBuffer())
-        .then(buffer => {
-            const bytes = new Uint8Array(buffer);
-            const isHex = (bytes[0] === 58); // ':'
+        .then(r => r.text())
+        .then(hexText => {
 
-            let mem;
-            let hexText = null;
+            const mem = hexToMemoryMap(hexText);
 
-            if (isHex) {
-                hexText = new TextDecoder().decode(bytes);
-                mem = hexToMemoryMap(hexText);
-            } else {
-                mem = binToMemoryMap(bytes);
-            }
-
-            // SLOT A
             if (slot === "A") {
                 memoriaA = mem;
-                document.getElementById("file1").value = "";
-                if (hexText) {
-                    localStorage.setItem("memA_hex", hexText);
-                    localStorage.setItem("memA_nome", "Git_A.hex");
-                }
-                aggiornaUI_Git("A", "caricato da Git");
-                aggiornaBloccoCreazione();
+                localStorage.setItem("memA_hex", hexText);
+                localStorage.setItem("memA_nome", "Git_A.hex");
+                document.getElementById("labelFileA").innerText = "FILE A (Git)";
             }
 
-            // SLOT B
             if (slot === "B") {
                 memoriaB = mem;
-                document.getElementById("file2").value = "";
-                if (hexText) {
-                    localStorage.setItem("memB_hex", hexText);
-                    localStorage.setItem("memB_nome", "Git_B.hex");
-                }
-                aggiornaUI_Git("B", "caricato da Git");
-                aggiornaBloccoCreazione();
+                localStorage.setItem("memB_hex", hexText);
+                localStorage.setItem("memB_nome", "Git_B.hex");
+                document.getElementById("labelFileB").innerText = "FILE B (Git)";
             }
 
-            // SLOT C
             if (slot === "C") {
                 memoriaC = mem;
-                document.getElementById("file3").value = "";
-                if (hexText) {
-                    localStorage.setItem("memC_hex", hexText);
-                    localStorage.setItem("memC_nome", "Git_C.hex");
-                }
-                document.getElementById("labelFileC").innerText = "FILE C (caricato da Git)";
+                localStorage.setItem("memC_hex", hexText);
+                localStorage.setItem("memC_nome", "Git_C.hex");
+                document.getElementById("labelFileC").innerText = "FILE C (Git)";
             }
 
+            // 🔥 fondamentale: aggiorna visibilità blocco creazione
+            aggiornaBloccoCreazione();
         })
         .catch(err => console.error("Errore caricamento Git:", err));
 }
-
 
 // ------------------------------------------------------------
 //  BIN → MAPPA MEMORIA
