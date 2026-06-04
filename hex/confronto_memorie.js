@@ -1032,7 +1032,7 @@ function onFileB_Change() {
 
 // FILE C cambiato
 function onFileC_Change() {
-    resetConfronto(); // reset confronto perché C è cambiato
+   // resetConfronto(); // reset confronto perché C è cambiato
 	document.getElementById("labelFileC").innerText = "FILE C (locale)";
 
 }
@@ -1046,7 +1046,7 @@ function onFileC_Change() {
 function aggiornaUI_Git(slot, nomeFile) {
 
     // Reset pulito del confronto
-    resetConfronto();
+    //resetConfronto();
 
     // Aggiorna la label del file
     const lbl = document.getElementById("labelFile" + slot);
