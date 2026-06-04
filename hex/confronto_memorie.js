@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		
 		
         const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
+        //if (blocco) blocco.style.display = "block";
 
         // Carica A/B da localStorage (solo visualizzazione)
 
