@@ -755,7 +755,8 @@ function caricaDaGit(slot) {
                 if (lbl) lbl.innerText = "FILE C (Git)";
             }
 
-            aggiornaBloccoCreazione();
+                    setTimeout(aggiornaBloccoCreazione, 50);
+
         })
         .catch(err => console.error("Errore caricamento Git:", err));
 }
