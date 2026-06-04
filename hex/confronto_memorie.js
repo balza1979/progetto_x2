@@ -1,4 +1,4 @@
-// ============================================================
+f// ============================================================
 //  CONFRONTO_MEMORIE.JS — VERSIONE ORDINATA E OTTIMIZZATA
 //  Modalità confronto + Modalità creazione memoria C
 //  Versione 2026-06-04 — Luca + Copilot 
@@ -758,8 +758,8 @@ function caricaDaGit(slot) {
                 if (lbl) lbl.innerText = "FILE C (Git)";
             }
 
-                    setTimeout(aggiornaBloccoCreazione, 50);
-
+                   // setTimeout(aggiornaBloccoCreazione, 50);
+aggiornaBloccoCreazione();
         })
         .catch(err => console.error("Errore caricamento Git:", err));
 }
