@@ -663,6 +663,9 @@ function aggiornaBloccoCreazione() {
     const blocco = document.getElementById("crea-memoria-container");
     if (!blocco) return;
 
+    // 🔥 NON toccare nulla se il popup Git è aperto
+    if (document.getElementById("gitList")?.style.display === "block") return;
+
     if (!isModalitaCreazione()) {
         blocco.style.display = "none";
         return;
