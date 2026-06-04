@@ -1028,6 +1028,11 @@ function onFileC_Change() {
 	document.getElementById("labelFileC").innerText = "FILE C (locale)";
 
 }
+/* ===== INIZIO PATCH 2026-06-04 14:38 – Chiusura corretta caricaDaGit ===== */
+        })  // chiusura .then(buffer => { ... })
+        .catch(err => console.error("Errore caricamento Git:", err));
+} // chiusura function caricaDaGit(slot)
+/* ===== FINE PATCH 2026-06-04 14:38 – Chiusura corretta caricaDaGit ===== */
 
 /* ===== INIZIO PATCH 2026-06-04 14:27 – Funzione sicura aggiornamento UI dopo Git ===== */
 function aggiornaUI_Git(slot, nomeFile) {
