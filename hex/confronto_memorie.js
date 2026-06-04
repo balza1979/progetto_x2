@@ -79,17 +79,17 @@ if (hexB) {
 
 /* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
-const bloccoCreazione = document.getElementById("crea-memoria-container");
+//const bloccoCreazione = document.getElementById("crea-memoria-container");
 
-if (bloccoCreazione) {
-    if (hexA && hexB) {
-        // A e B presenti → mostra blocco
-        bloccoCreazione.style.display = "block";
-    } else {
+//if (bloccoCreazione) {
+   // if (hexA && hexB) {
+       // // A e B presenti → mostra blocco
+       // bloccoCreazione.style.display = "block";
+ //   } else {
         // Mancano A o B → nascondi blocco
-        bloccoCreazione.style.display = "none";
-    }
-}
+      //  bloccoCreazione.style.display = "none";
+  //  }
+//}
 
 /* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
 
