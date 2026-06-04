@@ -36,10 +36,12 @@ document.body.appendChild(spinnerGit);
 
 const styleSpin = document.createElement("style");
 styleSpin.textContent = `
-@keyframes spinGit {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+    @keyframes spinGit {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
 .gitItem {
     padding:10px;
     margin:4px 0;
