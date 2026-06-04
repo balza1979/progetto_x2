@@ -842,7 +842,7 @@ function caricaDaGit(slot) {
             }
 
             // --- SLOT A ---
- /* ===== SLOT A – PATCH COMPLETA 2026-06-04 14:13 ===== */
+/* ===== SLOT A – PATCH COMPLETA 2026-06-04 14:30 ===== */
 if (slot === "A") {
 
     // 1) Salva memoria in RAM
@@ -857,17 +857,16 @@ if (slot === "A") {
         localStorage.setItem("memA_nome", "Git_A.hex");
     }
 
-    // 4) Aggiorna blocco  creazione (A+B → mostra C)
+    // 4) Aggiorna blocco creazione (A+B → mostra C)
     aggiornaBloccoCreazione();
 
-    // 5) Richiama la stessa funzione del caricamento locale
-    if (typeof onFileA_Change === "function") {
-        onFileA_Change();
-    }
+    /* ===== INIZIO PATCH 2026-06-04 14:30 – UI Git A ===== */
+    aggiornaUI_Git("A", "caricato da Git");
+    /* ===== FINE PATCH 2026-06-04 14:30 – UI Git A ===== */
 }
 
 
-/* ===== SLOT B – PATCH COMPLETA 2026-06-04 14:13 ===== */
+/* ===== SLOT B – PATCH COMPLETA 2026-06-04 14:30 ===== */
 if (slot === "B") {
 
     // 1) Salva memoria in RAM
@@ -885,12 +884,10 @@ if (slot === "B") {
     // 4) Aggiorna blocco creazione (A+B → mostra C)
     aggiornaBloccoCreazione();
 
-    // 5) Richiama la stessa funzione del caricamento locale
-    if (typeof onFileB_Change === "function") {
-        onFileB_Change();
-    }
+    /* ===== INIZIO PATCH 2026-06-04 14:30 – UI Git B ===== */
+    aggiornaUI_Git("B", "caricato da Git");
+    /* ===== FINE PATCH 2026-06-04 14:30 – UI Git B ===== */
 }
-
 
 /* ===== SLOT C – PATCH COMPLETA 2026-06-04 14:14 ===== */
 if (slot === "C") {
@@ -1032,6 +1029,24 @@ function onFileC_Change() {
 
 }
 
+/* ===== INIZIO PATCH 2026-06-04 14:27 – Funzione sicura aggiornamento UI dopo Git ===== */
+function aggiornaUI_Git(slot, nomeFile) {
+
+    // Reset pulito del confronto
+    resetConfronto();
+
+    // Aggiorna la label del file
+    const lbl = document.getElementById("labelFile" + slot);
+    if (lbl) {
+        lbl.innerText = `FILE ${slot} (${nomeFile})`;
+    }
+
+    // Aggiorna blocco creazione (A+B → mostra C)
+    aggiornaBloccoCreazione();
+}
+/* ===== FINE PATCH 2026-06-04 14:27 – Funzione sicura aggiornamento UI dopo Git ===== */
+
+			
 // ------------------------------------------------------------
 //  FINE MODIFICA 2026-05-27 12:50 - reset su cambio file locale
 // ------------------------------------------------------------
