@@ -216,7 +216,7 @@ async function confermaGit(path) {
     document.getElementById("labelFile" + slotAttivo).textContent =
         `FILE ${slotAttivo}: ${nomeFile}`;
 
-    resetConfronto();
+   // resetConfronto();
 
     spinnerGit.style.display = "none";
     document.getElementById("selettoreGit").style.display = "none";
