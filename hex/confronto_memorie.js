@@ -142,13 +142,15 @@ function disabilitaCaricamentoABC() {
 function setupModalitaCreazione() {
     if (!isModalitaCreazione()) return;
 
-    // 1) Nascondi completamente il blocco FILE C
-//const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-//if (bloccoC) bloccoC.style.display = "none";
-if (isModalitaCreazione()) {
-    const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-    if (bloccoC) bloccoC.style.display = "none";
+    // Nascondi C NORMALE
+    const bloccoCnormale = document.querySelector('#labelFileC')?.closest('.file-block');
+    if (bloccoCnormale) bloccoCnormale.style.display = "none";
+
+    // Nascondi C CREAZIONE all’avvio
+    const bloccoCreazione = document.getElementById("crea-memoria-container");
+    if (bloccoCreazione) bloccoCreazione.style.display = "none";
 }
+
 
 
     // 2) Nascondi pulsanti confronto
