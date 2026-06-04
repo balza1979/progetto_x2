@@ -148,7 +148,7 @@ function setupModalitaCreazione() {
 
     // Nascondi C CREAZIONE all’avvio
     const bloccoCreazione = document.getElementById("crea-memoria-container");
-    if (bloccoCreazione) bloccoCreazione.style.display = "none";
+   // if (bloccoCreazione) bloccoCreazione.style.display = "none";
 
     // 2) Nascondi pulsanti confronto
     ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
