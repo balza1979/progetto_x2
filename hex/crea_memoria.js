@@ -1,12 +1,14 @@
 // ======================================================
-// CREA_MEMORIA.JS – Versione 2026-06-05 09:20
+// CREA_MEMORIA.JS – VERSIONE COMPLETA
+// Replica IDENTICA del comportamento Git di confronto_memorie
 // ======================================================
+
+// Memorie
+let memoriaA = null;
+let memoriaB = null;
 
 // Slot attivo (A o B)
 let slotCorrente = null;
-
-// Percorso cartella HEX su GitHub
-const GIT_BASE = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/";
 
 // ------------------------------------------------------
 // 1) APRI POPUP GIT
@@ -24,117 +26,112 @@ document.getElementById("btnChiudiGit").onclick = function () {
     document.getElementById("gitPopup").style.display = "none";
 };
 
-// ======================================================
-//  CARICA FILE DA GIT – VERSIONE IDENTICA A CONFRONTO
-// ======================================================
+// ------------------------------------------------------
+// 3) CARICA LISTA FILE DA GITHUB (IDENTICO A CONFRONTO)
+// ------------------------------------------------------
+function caricaListaGit() {
 
-function caricaDaGit(slot) {
+    fetch("https://api.github.com/repos/balza1979/progetto_x2/contents/hex")
+        .then(r => r.json())
+        .then(files => {
 
-    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
+            const list = document.getElementById("gitList");
+            list.innerHTML = "";
 
-    fetch(url)
-        .then(r => r.arrayBuffer())
-        .then(buffer => {
-            const bytes = new Uint8Array(buffer);
+            files.forEach(f => {
+                if (f.name.toLowerCase().endsWith(".hex")) {
 
-            const isHex = (bytes[0] === 58); // ':' = 58
+                    const div = document.createElement("div");
+                    div.className = "git-item";
+                    div.textContent = f.name;
 
-            let mem;
-            let hexText = null;
+                    div.onclick = function () {
+                        selezionaFileGit(f.name);
+                    };
 
-            if (isHex) {
-                hexText = new TextDecoder().decode(bytes);
-                mem = hexToMemoryMap(hexText);
-            } else {
-                mem = binToMemoryMap(bytes);
-            }
-
-            // --- SLOT A ---
-            if (slot === "A") {
-                memoriaA = mem;
-                document.getElementById("fileA").value = "";
-                if (hexText) {
-                    localStorage.setItem("memA_hex", hexText);
-                    localStorage.setItem("memA_nome", "Git_A.hex");
+                    list.appendChild(div);
                 }
-                aggiornaBloccoCreazione();
-            }
-
-            // --- SLOT B ---
-            if (slot === "B") {
-                memoriaB = mem;
-                document.getElementById("fileB").value = "";
-                if (hexText) {
-                    localStorage.setItem("memB_hex", hexText);
-                    localStorage.setItem("memB_nome", "Git_B.hex");
-                }
-                aggiornaBloccoCreazione();
-            }
-
-            // --- LABEL ---
-            document.getElementById("labelFile" + slot).innerText =
-                `FILE ${slot} (caricato da Git)`;
-
-            alert(`File Git caricato in ${slot}`);
-        })
-        .catch(err => {
-            console.error("Errore Git:", err);
-            alert("Errore nel caricamento del file da Git");
+            });
         });
 }
-
 
 // ------------------------------------------------------
 // 4) SELEZIONA FILE GIT → ASSEGNA A SLOT
 // ------------------------------------------------------
 function selezionaFileGit(nomeFile) {
 
-    const url = GIT_BASE + nomeFile;
+    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/" + nomeFile;
 
-    if (slotCorrente === "A") {
-        document.getElementById("labelFileA").textContent = "FILE A: " + nomeFile;
-        document.getElementById("fileA").dataset.git = url;
-    }
+    fetch(url)
+        .then(r => r.text())
+        .then(hexText => {
 
-    if (slotCorrente === "B") {
-        document.getElementById("labelFileB").textContent = "FILE B: " + nomeFile;
-        document.getElementById("fileB").dataset.git = url;
-    }
+            const mem = hexToMemoryMap(hexText);
 
-    document.getElementById("gitPopup").style.display = "none";
+            if (slotCorrente === "A") {
+                memoriaA = mem;
+                document.getElementById("labelFileA").textContent = "FILE A: " + nomeFile;
+                document.getElementById("fileA").value = "";
+            }
+
+            if (slotCorrente === "B") {
+                memoriaB = mem;
+                document.getElementById("labelFileB").textContent = "FILE B: " + nomeFile;
+                document.getElementById("fileB").value = "";
+            }
+
+            aggiornaBloccoCreazione();
+            document.getElementById("gitPopup").style.display = "none";
+        });
 }
 
 // ------------------------------------------------------
-// 5) FILE LOCALE → aggiorna label
+// 5) HEX → MAPPA MEMORIA
 // ------------------------------------------------------
-document.getElementById("fileA").addEventListener("change", function () {
-    if (this.files.length > 0) {
-        document.getElementById("labelFileA").textContent = "FILE A: " + this.files[0].name;
-        delete this.dataset.git;
-    }
-});
+function hexToMemoryMap(hexText) {
+    const lines = hexText.split(/\r?\n/);
+    const mem = {};
 
-document.getElementById("fileB").addEventListener("change", function () {
-    if (this.files.length > 0) {
-        document.getElementById("labelFileB").textContent = "FILE B: " + this.files[0].name;
-        delete this.dataset.git;
+    for (let line of lines) {
+        if (!line.startsWith(":")) continue;
+
+        const byteCount = parseInt(line.substr(1, 2), 16);
+        const address = parseInt(line.substr(3, 4), 16);
+        const recordType = parseInt(line.substr(7, 2), 16);
+
+        if (recordType !== 0) continue;
+
+        for (let i = 0; i < byteCount; i++) {
+            const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
+            mem[address + i] = byteHex;
+        }
     }
-});
+
+    return mem;
+}
 
 // ------------------------------------------------------
-// 6) CREA MEMORIA C (placeholder)
+// 6) MOSTRA BLOCCO CREAZIONE SOLO SE A E B PRESENTI
+// ------------------------------------------------------
+function aggiornaBloccoCreazione() {
+    const blocco = document.getElementById("crea-memoria-container");
+
+    if (memoriaA && memoriaB) {
+        blocco.style.display = "block";
+    } else {
+        blocco.style.display = "none";
+    }
+}
+
+// ------------------------------------------------------
+// 7) CREA MEMORIA C (placeholder)
 // ------------------------------------------------------
 function creaMemoriaC() {
-
     const nome = document.getElementById("nomeC").value.trim();
     if (!nome) {
         alert("Inserisci un nome per la memoria C");
         return;
     }
 
-    document.getElementById("labelFileC").textContent =
-        "Memoria C creata: " + nome + " (funzione da completare)";
-
-    alert("Funzione creaMemoriaC() pronta per essere completata.");
+    alert("Memoria C creata (funzione da completare)");
 }
-
