@@ -186,5 +186,28 @@ document.getElementById("btnResetMemoria").addEventListener("click", () => {
 // ------------------------------------------------------------
 document.getElementById("btnGeneraC").addEventListener("click", () => {
     logDiv.textContent = "";
-    log("Placeholder: qui generiamo la memoria C usando A e B.");
+
+    const nomeC = document.getElementById("nomeMemoriaC").value.trim();
+
+    if (!nomeC) {
+        log("Errore: devi inserire un nome per la memoria C.");
+        return;
+    }
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    if (!hexA || !hexB) {
+        log("Errore: FILE A e FILE B devono essere caricati prima.");
+        return;
+    }
+
+    // 🔥 Per ora: memoria C = copia di B (memoria tipo)
+    const memoriaC_hex = hexB;
+
+    // 🔥 SALVA IN LOCALSTORAGE
+    localStorage.setItem("memC_hex", memoriaC_hex);
+    localStorage.setItem("memC_nome", nomeC + ".js");
+
+    log(`Memoria C creata e salvata come: ${nomeC}.js`);
 });
