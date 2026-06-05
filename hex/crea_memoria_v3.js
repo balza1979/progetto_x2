@@ -1,4 +1,4 @@
-// CREA_MEMORIA.JS – versione 5/6/26 11:24  senza FILE C
+// CREA_MEMORIA.JS V3 5 6 26 1646 – versione 5/6/26 11:24  senza FILE C
 //  – Luca / Copilot
 
 let memoriaA = null;
