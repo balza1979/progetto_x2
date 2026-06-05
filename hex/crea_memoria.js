@@ -1,11 +1,21 @@
-// CREA_MEMORIA.JS – Versione 2026-06-05
+// CREA_MEMORIA.JS – versione base con tendina Git moderna
+// 06/06/2026 10:30 – Luca / Copilot
 
+// ------------------------------------------------------------
+// VARIABILI BASE
+// ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
+let memoriaC = null;
 
+// ------------------------------------------------------------
+// UTILITY: lettura file HEX
+// (serve anche a memorie_tipo.js → hexToMemoryMap)
+// ------------------------------------------------------------
 function leggiFileHex(input, callback) {
     const file = input.files[0];
     if (!file) return callback(null);
+
     const reader = new FileReader();
     reader.onload = e => callback(e.target.result);
     reader.readAsText(file);
@@ -14,39 +24,37 @@ function leggiFileHex(input, callback) {
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
+
     for (let line of lines) {
         if (!line.startsWith(":")) continue;
+
         const byteCount = parseInt(line.substr(1, 2), 16);
         const address = parseInt(line.substr(3, 4), 16);
         const recordType = parseInt(line.substr(7, 2), 16);
+
         if (recordType !== 0) continue;
+
         for (let i = 0; i < byteCount; i++) {
             const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
             mem[address + i] = byteHex;
         }
     }
+
     return mem;
 }
 
-function fakeFile(nome, contenuto) {
-    const blob = new Blob([contenuto], { type: "text/plain" });
-    const file = new File([blob], nome, { type: "text/plain" });
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    return dt.files;
+// ------------------------------------------------------------
+// LOG / PLACEHOLDER OPERATIVO
+// ------------------------------------------------------------
+const logDiv = document.getElementById("log");
+function log(msg) {
+    if (!logDiv) return;
+    logDiv.textContent += msg + "\n";
 }
 
-function aggiornaBloccoCreazione() {
-    const blocco = document.getElementById("crea-memoria-container");
-    const hexA = localStorage.getItem("memA_hex");
-    const hexB = localStorage.getItem("memB_hex");
-
-    document.getElementById("info-memoria-a").textContent = hexA ? "caricata" : "non caricata";
-    document.getElementById("info-memoria-b").textContent = hexB ? "caricata" : "non caricata";
-
-    blocco.style.display = (hexA && hexB) ? "block" : "none";
-}
-
+// ------------------------------------------------------------
+// RIPRISTINO DA LOCALSTORAGE ALL'APERTURA
+// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
     const hexA = localStorage.getItem("memA_hex");
     const nomeA = localStorage.getItem("memA_nome");
@@ -54,127 +62,164 @@ document.addEventListener("DOMContentLoaded", () => {
     const hexB = localStorage.getItem("memB_hex");
     const nomeB = localStorage.getItem("memB_nome");
 
+    const hexC = localStorage.getItem("memC_hex");
+    const nomeC = localStorage.getItem("memC_nome");
+
+    // A
     if (hexA) {
         memoriaA = hexToMemoryMap(hexA);
         const fakeA = fakeFile(nomeA || "FILE_A.hex", hexA);
-        document.getElementById("file1").files = fakeA;
-        document.getElementById("labelFileA").textContent = `FILE A: ${nomeA}`;
+        const inputA = document.getElementById("file1");
+        if (inputA) inputA.files = fakeA;
+
+        const lblA = document.getElementById("labelFileA");
+        if (lblA) lblA.textContent = `FILE A: ${nomeA || "Git_A.hex"}`;
     }
 
+    // B
     if (hexB) {
         memoriaB = hexToMemoryMap(hexB);
         const fakeB = fakeFile(nomeB || "FILE_B.hex", hexB);
-        document.getElementById("file2").files = fakeB;
-        document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
+        const inputB = document.getElementById("file2");
+        if (inputB) inputB.files = fakeB;
+
+        const lblB = document.getElementById("labelFileB");
+        if (lblB) lblB.textContent = `FILE B: ${nomeB || "Git_B.hex"}`;
+    }
+
+    // C (solo visualizzazione, per ora)
+    if (hexC) {
+        memoriaC = hexToMemoryMap(hexC);
+        const fakeC = fakeFile(nomeC || "FILE_C.hex", hexC);
+        const inputC = document.getElementById("file3");
+        if (inputC) inputC.files = fakeC;
+
+        const lblC = document.getElementById("labelFileC");
+        if (lblC) lblC.textContent = `FILE C: ${nomeC || "Git_C.hex"}`;
     }
 
     aggiornaBloccoCreazione();
 });
 
+// ------------------------------------------------------------
+// GESTIONE CAMBI FILE LOCALI
+// ------------------------------------------------------------
 function onFileA_Change() {
     const inputA = document.getElementById("file1");
-    if (!inputA.files[0]) return;
+    const lblA = document.getElementById("labelFileA");
+
+    if (lblA) lblA.textContent = "FILE A (locale)";
+
+    if (!inputA.files[0]) {
+        localStorage.removeItem("memA_hex");
+        localStorage.removeItem("memA_nome");
+        memoriaA = null;
+        aggiornaBloccoCreazione();
+        return;
+    }
+
     leggiFileHex(inputA, hexA => {
+        if (!hexA) return;
+
+        memoriaA = hexToMemoryMap(hexA);
         localStorage.setItem("memA_hex", hexA);
         localStorage.setItem("memA_nome", inputA.files[0].name);
-        document.getElementById("labelFileA").textContent = "FILE A (locale)";
+
         aggiornaBloccoCreazione();
     });
 }
 
 function onFileB_Change() {
     const inputB = document.getElementById("file2");
-    if (!inputB.files[0]) return;
+    const lblB = document.getElementById("labelFileB");
+
+    if (lblB) lblB.textContent = "FILE B (locale)";
+
+    if (!inputB.files[0]) {
+        localStorage.removeItem("memB_hex");
+        localStorage.removeItem("memB_nome");
+        memoriaB = null;
+        aggiornaBloccoCreazione();
+        return;
+    }
+
     leggiFileHex(inputB, hexB => {
+        if (!hexB) return;
+
+        memoriaB = hexToMemoryMap(hexB);
         localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
-        document.getElementById("labelFileB").textContent = "FILE B (locale)";
+
         aggiornaBloccoCreazione();
     });
 }
 
-let slotCorrente = null;
+function onFileC_Change() {
+    const inputC = document.getElementById("file3");
+    const lblC = document.getElementById("labelFileC");
 
-function selezionaSlot(slot) {
-    slotCorrente = slot;
-    document.getElementById("selettoreGit").style.display = "block";
-    caricaListaGit("/");
-}
+    if (lblC) lblC.textContent = "FILE C (locale)";
 
-document.getElementById("btnChiudiGitList").onclick = () => {
-    document.getElementById("selettoreGit").style.display = "none";
-};
-
-document.getElementById("btnConfermaGit").onclick = () => {
-    document.getElementById("selettoreGit").style.display = "none";
-    if (slotCorrente && fileGitSelezionato) {
-        caricaDaGit(slotCorrente, fileGitSelezionato);
+    if (!inputC.files[0]) {
+        localStorage.removeItem("memC_hex");
+        localStorage.removeItem("memC_nome");
+        memoriaC = null;
+        return;
     }
-};
 
-let fileGitSelezionato = null;
+    leggiFileHex(inputC, hexC => {
+        if (!hexC) return;
 
-function caricaListaGit(path) {
-    const base = "https://api.github.com/repos/balza1979/progetto_x2/contents/hex" + path;
-    fetch(base)
-        .then(r => r.json())
-        .then(lista => {
-            const div = document.getElementById("gitList");
-            div.innerHTML = "";
-
-            lista.forEach(item => {
-                const el = document.createElement("div");
-                el.className = "git-item";
-
-                if (item.type === "dir") {
-                    el.style.color = "#ffcc66";
-                    el.textContent = "📁 " + item.name;
-                    el.onclick = () => caricaListaGit(path + "/" + item.name);
-                } else {
-                    el.style.color = "#99ddff";
-                    el.textContent = "📄 " + item.name;
-                    el.onclick = () => {
-                        fileGitSelezionato = item.path.replace("hex/", "");
-                        document.getElementById("btnConfermaGit").style.display = "block";
-                    };
-                }
-
-                div.appendChild(el);
-            });
-        });
+        memoriaC = hexToMemoryMap(hexC);
+        localStorage.setItem("memC_hex", hexC);
+        localStorage.setItem("memC_nome", inputC.files[0].name);
+    });
 }
 
-function caricaDaGit(slot, relativePath) {
-    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/" + relativePath;
+// ------------------------------------------------------------
+// BLOCCO CREAZIONE: VISIBILITÀ
+// ------------------------------------------------------------
+function aggiornaBloccoCreazione() {
+    const blocco = document.getElementById("crea-memoria-container");
+    const bloccoC = document.getElementById("fileC-block");
 
-    fetch(url)
-        .then(r => r.text())
-        .then(hex => {
-            if (slot === "A") {
-                localStorage.setItem("memA_hex", hex);
-                localStorage.setItem("memA_nome", relativePath);
-                document.getElementById("labelFileA").textContent = "FILE A (Git)";
-            }
-            if (slot === "B") {
-                localStorage.setItem("memB_hex", hex);
-                localStorage.setItem("memB_nome", relativePath);
-                document.getElementById("labelFileB").textContent = "FILE B (Git)";
-            }
-            aggiornaBloccoCreazione();
-            alert("File Git caricato in " + slot);
-        });
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    if (!blocco) return;
+
+    if (hexA && hexB) {
+        blocco.style.display = "block";
+        if (bloccoC) bloccoC.style.display = "block";
+    } else {
+        blocco.style.display = "none";
+        if (bloccoC) bloccoC.style.display = "none";
+    }
 }
 
+// ------------------------------------------------------------
+// RESET COMPLETO (se ti serve in futuro)
+// ------------------------------------------------------------
 function resetCreazione() {
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memB_hex");
+    localStorage.removeItem("memC_hex");
+
     localStorage.removeItem("memA_nome");
     localStorage.removeItem("memB_nome");
+    localStorage.removeItem("memC_nome");
+
     location.reload();
 }
 
-document.getElementById("btn-conferma-nome-c").onclick = () => {
-    const nome = document.getElementById("nome-memoria-c").value.trim();
-    if (!nome) return alert("Inserisci un nome");
-    alert("Memoria C salvata come: " + nome);
-};
+// ------------------------------------------------------------
+// PLACEHOLDER GENERAZIONE C (operativa da fare dopo)
+// ------------------------------------------------------------
+const btnGeneraC = document.getElementById("btnGeneraC");
+if (btnGeneraC) {
+    btnGeneraC.addEventListener("click", () => {
+        logDiv.textContent = "";
+        log("Placeholder: qui inseriamo la logica per generare la memoria C.");
+        log("Useremo x2_parametri_data.js e la stessa logica di scrittura parametri di hex_generator.html.");
+    });
+}
