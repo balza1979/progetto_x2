@@ -1,0 +1,92 @@
+<!-- CREA_MEMORIA.HTML  –  V1.0 – 05/06/2026 08:20 -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Creazione Memoria X2</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        .file-block {
+            border: 1px solid #aaa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        #gitList {
+            display: none;
+            border: 1px solid #666;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f0f0f0;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 6px 12px;
+        }
+
+        #crea-memoria-container {
+            display: none;
+            border: 2px solid #0077cc;
+            padding: 15px;
+            background: #e9f4ff;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Creazione Memoria X2</h1>
+
+    <!-- BLOCCO A -->
+    <div class="file-block">
+        <h2>FILE A</h2>
+        <input type="file" id="fileA" accept=".hex">
+        <br>
+        <button onclick="mostraGitList('A')">Carica FILE A da Git</button>
+        <p id="labelFileA">Nessun file caricato</p>
+    </div>
+
+    <!-- BLOCCO B -->
+    <div class="file-block">
+        <h2>FILE B</h2>
+        <input type="file" id="fileB" accept=".hex">
+        <br>
+        <button onclick="mostraGitList('B')">Carica FILE B da Git</button>
+        <p id="labelFileB">Nessun file caricato</p>
+    </div>
+
+    <!-- POPUP LISTA GIT -->
+    <div id="gitList">
+        <h3>Seleziona file da Git</h3>
+        <div id="gitFilesContainer"></div>
+        <button onclick="chiudiGitList()">Chiudi</button>
+    </div>
+
+    <!-- BLOCCO CREAZIONE C -->
+    <div id="crea-memoria-container">
+        <h2>CREA MEMORIA C</h2>
+
+        <label>Nome memoria C:</label><br>
+        <input type="text" id="nomeMemoriaC" placeholder="es: nuova_memoria.hex">
+        <br><br>
+
+        <button onclick="creaMemoriaC()">CREA MEMORIA</button>
+        <p id="labelFileC"></p>
+    </div>
+
+    <script src="crea_memoria.js"></script>
+
+</body>
+</html>
