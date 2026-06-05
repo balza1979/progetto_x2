@@ -13,14 +13,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Genera lista file
+      - name: Genera lista file
       run: |
+        cd "$GITHUB_WORKSPACE"
+
         echo "{" > Memorie/lista_memorie.json
         firstFolder=true
 
         # 1) FILE FUORI DALLE CARTELLE → DEF
         echo -n "\"DEF\": [" >> Memorie/lista_memorie.json
-        files=$(find Memorie -maxdepth 1 -type f | grep -Ei '\.hex$|\.bin$' || true)
+        files=$(find "$GITHUB_WORKSPACE/Memorie" -maxdepth 1 -type f | grep -Ei '\.[Hh][Ee][Xx]$|\.[Bb][Ii][Nn]$' || true)
         first=true
         for f in $files; do
           nome=$(basename "$f")
@@ -35,10 +37,10 @@ jobs:
         firstFolder=false
 
         # 2) SOTTOCARTELLE
-        for dir in Memorie/*; do
+        for dir in "$GITHUB_WORKSPACE"/Memorie/*; do
           if [ -d "$dir" ]; then
             folder=$(basename "$dir")
-            files=$(ls "$dir" | grep -Ei '\.hex$|\.bin$' || true)
+            files=$(ls "$dir" | grep -Ei '\.[Hh][Ee][Xx]$|\.[Bb][Ii][Nn]$' || true)
 
             if [ "$firstFolder" = false ]; then
               echo "," >> Memorie/lista_memorie.json
@@ -62,6 +64,7 @@ jobs:
         done
 
         echo "}" >> Memorie/lista_memorie.json
+
 
     - name: Commit lista_memorie.json
       run: |
