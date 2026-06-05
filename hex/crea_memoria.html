@@ -1,110 +1,242 @@
+<!-- CREA_MEMORIA.HTML V.1.0 – Pagina dedicata creazione Memoria C
+     Versione 2026-06-05 10:15 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Creazione Memoria – X2</title>
 
 <style>
-body {
-    background:#111;
-    color:#eee;
-    font-family:Arial;
-    padding:20px;
-}
+    body {
+        font-family: Arial, sans-serif;
+        background:#0d0d0d;
+        color:#f5f5f5;
+        margin:0;
+        padding:10px;
+    }
 
-.file-block {
-    margin-bottom:20px;
-    padding:15px;
-    border:1px solid #444;
-    border-radius:6px;
-    background:#1a1a1a;
-}
+    .btn-git {
+        background:#222;
+        border:1px solid #555;
+        color:#ddd;
+        width:60%;
+        margin-top:8px;
+        padding:8px 12px;
+        font-size:16px;
+        border-radius:4px;
+        cursor:pointer;
+    }
+    .btn-git:hover {
+        background:#333;
+    }
 
-button {
-    padding:8px 14px;
-    margin-top:8px;
-    cursor:pointer;
-}
+    .page {
+        max-width:900px;
+        margin:0 auto;
+        background:#1a1a1a;
+        border:2px solid #444;
+        padding:15px;
+        border-radius:10px;
+    }
 
-#gitPopup {
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.8);
-    display:none;
-    justify-content:center;
-    align-items:center;
-}
+    h1 {
+        text-align:center;
+        color:#ff3333;
+        font-size:26px;
+    }
 
-#gitBox {
-    background:#222;
-    padding:20px;
-    width:350px;
-    max-height:70%;
-    overflow-y:auto;
-    border-radius:8px;
-}
+    .table-wrapper {
+        overflow-x:auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top:10px;
+    }
 
-.git-item {
-    padding:8px;
-    margin:4px 0;
-    background:#333;
-    cursor:pointer;
-    border-radius:4px;
-}
+    table {
+        width:100%;
+        border-collapse:collapse;
+        min-width:700px;
+    }
 
-.git-item:hover {
-    background:#555;
-}
+    th, td {
+        border:1px solid #555;
+        padding:6px;
+        font-size:12px;
+    }
+
+    th {
+        background:#333;
+    }
+
+    input[type="file"] {
+        font-size:18px;
+        width:100%;
+    }
+
+    label {
+        font-size:18px;
+        font-weight:bold;
+        display:block;
+        margin-bottom:6px;
+    }
+
+    .file-block {
+        margin-bottom:25px;
+    }
+
+    /* POPUP GIT MODERNO */
+    .popup {
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.75);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+    }
+
+    .popup-content {
+        background:#1a1a1a;
+        border:2px solid #444;
+        padding:20px;
+        width:90%;
+        max-width:500px;
+        max-height:80%;
+        overflow-y:auto;
+        border-radius:10px;
+    }
+
+    .git-item {
+        padding:10px;
+        border-bottom:1px solid #333;
+        cursor:pointer;
+        font-size:18px;
+    }
+
+    .git-item:hover {
+        background:#333;
+    }
+
+    .git-path {
+        font-size:16px;
+        margin-bottom:10px;
+        color:#ffcc66;
+    }
 </style>
 
 </head>
 <body>
+<button id="resetMem" onclick="resetCreazione()" style="display:none;"></button>
 
-<h2>CREA MEMORIA C</h2>
+<!-- =========================================
+     BLOCCO NUOVA MODALITÀ - CREAZIONE MEMORIA C
+     Versione 2026-06-05 10:15
+========================================= -->
+<div id="crea-memoria-container" style="display:none; padding:10px; border:1px solid #ccc; margin-bottom:10px;">
+    <h2>Creazione nuova Memoria C (modalità guidata)</h2>
 
-<!-- ============================
-     FILE A
-============================= -->
-<div class="file-block">
-    <h3 id="labelFileA">FILE A: nessun file</h3>
-    <input type="file" id="fileA">
-    <br>
-    <button onclick="selezionaSlot('A')">Carica FILE A da Git</button>
-</div>
+    <div>
+        <strong>Memoria A (da localStorage):</strong>
+        <span id="info-memoria-a">non caricata</span>
+    </div>
 
-<!-- ============================
-     FILE B
-============================= -->
-<div class="file-block">
-    <h3 id="labelFileB">FILE B: nessun file</h3>
-    <input type="file" id="fileB">
-    <br>
-    <button onclick="selezionaSlot('B')">Carica FILE B da Git</button>
-</div>
+    <div>
+        <strong>Memoria B (da localStorage):</strong>
+        <span id="info-memoria-b">non caricata</span>
+    </div>
 
-<!-- ============================
-     CREAZIONE C
-============================= -->
-<div class="file-block" id="crea-memoria-container" style="display:none;">
-    <h3>CREA MEMORIA C</h3>
-    <input type="text" id="nomeC" placeholder="Nome memoria C">
-    <br><br>
-    <button onclick="creaMemoriaC()">CREA MEMORIA C</button>
-</div>
+    <div style="margin-top:10px;">
+        <label for="nome-memoria-c"><strong>Nome nuova Memoria C:</strong></label>
+        <input type="text" id="nome-memoria-c" placeholder="es. PIPPO" />
+    </div>
 
-<!-- ============================
-     POPUP GIT
-============================= -->
-<div id="gitPopup">
-    <div id="gitBox">
-        <h3>Seleziona file da Git</h3>
-        <div id="gitList"></div>
-        <br>
-        <button id="btnChiudiGit">Chiudi</button>
+    <div style="margin-top:10px;">
+        <button id="btn-conferma-nome-c">Conferma nome e salva Memoria C</button>
     </div>
 </div>
+<!-- FINE BLOCCO NUOVA MODALITÀ -->
 
+<div class="page">
+
+    <h1>Creazione Memoria X2</h1>
+
+    <h3>File HEX di partenza</h3>
+
+    <!-- FILE A -->
+    <div class="file-block">
+        <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
+        <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
+
+        <!-- Pulsante Git sotto FILE A -->
+        <button class="btn-git" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
+    </div>
+
+    <!-- FILE B -->
+    <div class="file-block">
+        <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
+        <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
+
+        <!-- Pulsante Git sotto FILE B -->
+        <button class="btn-git" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
+    </div>
+
+    <!-- FILE C NORMALE NON PRESENTE QUI -->
+    <!-- Nessun input file3, nessun pulsante Git C -->
+
+    <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
+    <div id="selettoreGit" style="display:none; margin-top:20px;">
+        <label>Seleziona file da Git:</label>
+
+        <!-- Lista moderna Git -->
+        <div id="gitList"
+             style="
+                max-height:300px;
+                overflow-y:auto;
+                padding:10px;
+                background:#111;
+                border:1px solid #444;
+                border-radius:8px;
+                margin-top:10px;
+             ">
+        </div>
+
+        <button id="btnChiudiGitList" class="btn-git"
+                style="margin-top:10px;
+                       background:#444 !important;
+                       border:2px solid #777 !important;
+                       color:white !important;">
+            Chiudi senza selezionare
+        </button>
+
+        <button id="btnConfermaGit" class="btn-git"
+                style="display:none; margin-top:10px;
+                       background:#990000 !important;
+                       border:2px solid #ff3333 !important;
+                       color:white !important;">
+            Conferma selezione
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <div id="risultati" style="margin-top:30px;"></div>
+    </div>
+
+</div>
+
+<!-- POPUP GIT VECCHIO NON USATO IN QUESTA PAGINA -->
+
+<!-- DATI PARAMETRI (se servono per memorie_tipo) -->
+<script src="../js/x2_parametri_data.js"></script>
+
+<!-- GESTIONE MEMORIE (deve stare in /hex/) -->
+<script src="memorie_tipo.js"></script>
+
+<!-- LOGICA CREAZIONE MEMORIA (nuovo file) -->
 <script src="crea_memoria.js"></script>
+
 </body>
 </html>
