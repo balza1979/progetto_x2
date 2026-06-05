@@ -138,6 +138,22 @@ function aggiornaBloccoCreazione() {
 }
 
 // ------------------------------------------------------------
+// RESET COMPLETO MEMORIA (A e B) + ricarica pagina
+// ------------------------------------------------------------
+document.getElementById("btnResetMemoria").addEventListener("click", () => {
+
+    // Cancella tutto ciò che riguarda le memorie
+    localStorage.removeItem("memA_hex");
+    localStorage.removeItem("memA_nome");
+
+    localStorage.removeItem("memB_hex");
+    localStorage.removeItem("memB_nome");
+
+    // Ricarica pagina pulita
+    location.reload();
+});
+
+// ------------------------------------------------------------
 // PLACEHOLDER GENERAZIONE C
 // ------------------------------------------------------------
 document.getElementById("btnGeneraC").addEventListener("click", () => {
