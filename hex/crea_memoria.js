@@ -24,38 +24,65 @@ document.getElementById("btnChiudiGit").onclick = function () {
     document.getElementById("gitPopup").style.display = "none";
 };
 
-// ------------------------------------------------------
-// 3) CARICA LISTA FILE DA GITHUB
-// ------------------------------------------------------
-function caricaListaGit() {
+// ======================================================
+//  CARICA FILE DA GIT – VERSIONE IDENTICA A CONFRONTO
+// ======================================================
 
-    const url = "https://api.github.com/repos/balza1979/progetto_x2/contents/hex";
+function caricaDaGit(slot) {
+
+    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
 
     fetch(url)
-        .then(r => r.json())
-        .then(files => {
-            const list = document.getElementById("gitList");
-            list.innerHTML = "";
+        .then(r => r.arrayBuffer())
+        .then(buffer => {
+            const bytes = new Uint8Array(buffer);
 
-            files.forEach(f => {
-                if (f.name.toLowerCase().endsWith(".hex")) {
+            const isHex = (bytes[0] === 58); // ':' = 58
 
-                    const div = document.createElement("div");
-                    div.className = "git-item";
-                    div.textContent = f.name;
+            let mem;
+            let hexText = null;
 
-                    div.onclick = function () {
-                        selezionaFileGit(f.name);
-                    };
+            if (isHex) {
+                hexText = new TextDecoder().decode(bytes);
+                mem = hexToMemoryMap(hexText);
+            } else {
+                mem = binToMemoryMap(bytes);
+            }
 
-                    list.appendChild(div);
+            // --- SLOT A ---
+            if (slot === "A") {
+                memoriaA = mem;
+                document.getElementById("fileA").value = "";
+                if (hexText) {
+                    localStorage.setItem("memA_hex", hexText);
+                    localStorage.setItem("memA_nome", "Git_A.hex");
                 }
-            });
+                aggiornaBloccoCreazione();
+            }
+
+            // --- SLOT B ---
+            if (slot === "B") {
+                memoriaB = mem;
+                document.getElementById("fileB").value = "";
+                if (hexText) {
+                    localStorage.setItem("memB_hex", hexText);
+                    localStorage.setItem("memB_nome", "Git_B.hex");
+                }
+                aggiornaBloccoCreazione();
+            }
+
+            // --- LABEL ---
+            document.getElementById("labelFile" + slot).innerText =
+                `FILE ${slot} (caricato da Git)`;
+
+            alert(`File Git caricato in ${slot}`);
         })
         .catch(err => {
-            console.error("Errore caricamento Git:", err);
+            console.error("Errore Git:", err);
+            alert("Errore nel caricamento del file da Git");
         });
 }
+
 
 // ------------------------------------------------------
 // 4) SELEZIONA FILE GIT → ASSEGNA A SLOT
