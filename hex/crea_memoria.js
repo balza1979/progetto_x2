@@ -206,6 +206,8 @@ document.getElementById("btnResetMemoria").addEventListener("click", () => {
 
     localStorage.removeItem("memB_hex");
     localStorage.removeItem("memB_nome");
+    
+    caricaDefaultMemoriaA();
 
     // Ricarica pagina pulita
     location.reload();
