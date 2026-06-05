@@ -561,6 +561,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    };
 
 });
