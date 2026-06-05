@@ -210,6 +210,10 @@ async function confermaGit(path) {
     document.getElementById("labelFile" + slotAttivo).style.color = "#ff3333";
     document.getElementById("labelFile" + slotAttivo).textContent =
         `FILE ${slotAttivo}: ${nomeFile}`;
+// 🔥 PATCH: aggiorna subito la visibilità del blocco creazione
+if (typeof aggiornaBloccoCreazione === "function") {
+    aggiornaBloccoCreazione();
+}
 
     spinnerGit.style.display = "none";
     document.getElementById("selettoreGit").style.display = "none";
