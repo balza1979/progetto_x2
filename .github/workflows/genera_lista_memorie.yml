@@ -1,0 +1,50 @@
+name: Genera lista_memorie.json
+
+on:
+  push:
+    paths:
+      - 'Memorie/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Genera lista file
+      run: |
+        echo "{" > Memorie/lista_memorie.json
+        first=true
+        for dir in Memorie/*; do
+          if [ -d "$dir" ]; then
+            folder=$(basename "$dir")
+            files=$(ls "$dir" | grep -Ei '\.hex$|\.bin$' || true)
+            if [ "$first" = true ]; then
+              first=false
+            else
+              echo "," >> Memorie/lista_memorie.json
+            fi
+            echo -n "\"$folder\": [" >> Memorie/lista_memorie.json
+            ffirst=true
+            for f in $files; do
+              if [ "$ffirst" = true ]; then
+                ffirst=false
+              else
+                echo -n ", " >> Memorie/lista_memorie.json
+              fi
+              echo -n "\"$f\"" >> Memorie/lista_memorie.json
+            done
+            echo -n "]" >> Memorie/lista_memorie.json
+          fi
+        done
+        echo "}" >> Memorie/lista_memorie.json
+
+    - name: Commit lista_memorie.json
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "actions@github.com"
+        git add Memorie/lista_memorie.json
+        git commit -m "Aggiornata lista_memorie.json" || echo "Nessuna modifica"
+        git push
