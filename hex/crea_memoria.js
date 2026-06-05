@@ -1,4 +1,5 @@
-// CREA_MEMORIA.JS – versione stabile 05/06/2026 – Luca / Copilot
+// CREA_MEMORIA.JS – versione 5/6/26 11:24  senza FILE C
+//  – Luca / Copilot
 
 let memoriaA = null;
 let memoriaB = null;
@@ -36,26 +37,34 @@ function hexToMemoryMap(hexText) {
 
     return mem;
 }
+/* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
 
-/* ===== Caricamento automatico DEF POLLI ===== */
 async function caricaDefaultMemoriaA() {
 
+    // 1) Legge la cartella Memorie
     const urlLista = "https://api.github.com/repos/balza1979/progetto_x2/contents/Memorie";
     const resp = await fetch(urlLista);
     const lista = await resp.json();
 
+    // 2) Filtra SOLO i file .hex/.bin NON in sottocartelle
     const filesRoot = lista.filter(x =>
         x.type === "file" &&
         (x.name.toLowerCase().endsWith(".hex") || x.name.toLowerCase().endsWith(".bin"))
     );
 
-    if (filesRoot.length === 0) return;
+    if (filesRoot.length === 0) {
+        console.warn("Nessun file HEX/BIN trovato nella cartella Memorie.");
+        return;
+    }
 
+    // 3) Prende l’unico file (o il primo)
     const fileDefault = filesRoot[0];
     const nomeFile = fileDefault.name;
 
+    // 4) Costruisce URL RAW
     const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
 
+    // 5) Scarica contenuto
     const respRaw = await fetch(urlRaw);
     const buffer = await respRaw.arrayBuffer();
     const est = nomeFile.toLowerCase();
@@ -67,15 +76,22 @@ async function caricaDefaultMemoriaA() {
         hexText = convertiBinInHex(buffer);
     }
 
+    // 6) Converte in mappa memoria
     memoriaA = hexToMemoryMap(hexText);
 
+    // 7) Aggiorna localStorage
     localStorage.setItem("memA_nome", nomeFile);
     localStorage.setItem("memA_hex", hexText);
 
+    // 8) Aggiorna input file A
     document.getElementById("file1").files = fakeFile(nomeFile, hexText);
+
+    // 9) Aggiorna label
     document.getElementById("labelFileA").textContent = `FILE A: ${nomeFile}`;
     document.getElementById("labelFileA").style.color = "#ff3333";
 }
+
+/* ===== FINE MODIFICA 05/06/2026 11:05 ===== */
 
 // ------------------------------------------------------------
 // LOG
@@ -89,28 +105,26 @@ function log(msg) {
 // RIPRISTINO LOCALSTORAGE
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-
     const hexA = localStorage.getItem("memA_hex");
     const nomeA = localStorage.getItem("memA_nome");
 
     const hexB = localStorage.getItem("memB_hex");
     const nomeB = localStorage.getItem("memB_nome");
 
-    // Ripristino A
     if (hexA) {
         memoriaA = hexToMemoryMap(hexA);
         document.getElementById("file1").files = fakeFile(nomeA, hexA);
         document.getElementById("labelFileA").textContent = `FILE A: ${nomeA}`;
-    } else {
-        caricaDefaultMemoriaA(); // NON await
     }
 
-    // Ripristino B
     if (hexB) {
         memoriaB = hexToMemoryMap(hexB);
         document.getElementById("file2").files = fakeFile(nomeB, hexB);
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
+if (!localStorage.getItem("memA_hex")) {
+    caricaDefaultMemoriaA();
+}
 
     aggiornaBloccoCreazione();
 });
@@ -166,33 +180,36 @@ function onFileB_Change() {
 }
 
 // ------------------------------------------------------------
-// MOSTRA BLOCCO C SOLO SE A E B ESISTONO
+// MOSTRA BLOCCO CREAZIONE SOLO SE A E B ESISTONO
 // ------------------------------------------------------------
 function aggiornaBloccoCreazione() {
-    const bloccoC = document.getElementById("crea-memoria-container");
+    const blocco = document.getElementById("crea-memoria-container");
 
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
     if (hexA && hexB) {
-        bloccoC.style.display = "block";
+        blocco.style.display = "block";
     } else {
-        bloccoC.style.display = "none";
+        blocco.style.display = "none";
     }
 }
 
 // ------------------------------------------------------------
-// RESET COMPLETO MEMORIA
+// RESET COMPLETO MEMORIA (A e B) + ricarica pagina
 // ------------------------------------------------------------
 document.getElementById("btnResetMemoria").addEventListener("click", () => {
 
+    // Cancella tutto ciò che riguarda le memorie
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memA_nome");
 
     localStorage.removeItem("memB_hex");
     localStorage.removeItem("memB_nome");
-
+    
     caricaDefaultMemoriaA();
+
+    // Ricarica pagina pulita
     location.reload();
 });
 
