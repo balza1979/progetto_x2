@@ -69,6 +69,7 @@
       border-radius:8px;
       background:#221111;
       border:1px solid #aa3333;
+      display:none;
     }
     #log {
       margin-top:10px;
@@ -129,29 +130,21 @@
       <button type="button" onclick="selezionaSlot('B')">Carica da Git (B)</button>
     </div>
 
-    <!-- FILE C (risultato) -->
-    <div class="file-block" id="fileC-block" style="display:none;">
-      <label id="labelFileC">FILE C (risultato)</label>
-      <input type="file" id="file3" accept=".hex,.bin" onchange="onFileC_Change()">
-      <button type="button" disabled>Carica da Git (C)</button>
-    </div>
-
     <!-- BLOCCO CREAZIONE MEMORIA C -->
-    <div id="crea-memoria-container" style="display:none;">
+    <div id="crea-memoria-container">
       <h2 style="margin-top:0; color:#ff9999;">Creazione Memoria C</h2>
       <p style="font-size:12px; color:#ffcccc;">
-        Quando FILE A e FILE B sono caricati (locale o Git), qui mettiamo la logica operativa
-        per generare la memoria C (HEX) a partire dai parametri.
+        Quando FILE A e FILE B sono caricati (locale o Git), qui generiamo la memoria C.
       </p>
       <button id="btnGeneraC" type="button">[placeholder] Genera Memoria C</button>
       <div id="log"></div>
     </div>
   </div>
 
-  <!-- TABELLA PARAMETRI X2 (per la parte operativa, come in hex_generator) -->
+  <!-- PARAMETRI X2 -->
   <script src="../js/x2_parametri_data.js"></script>
 
-  <!-- TENDINA GIT MODERNA -->
+  <!-- POPUP GIT -->
   <div id="selettoreGit">
     <h2>Seleziona memoria da Git</h2>
     <div id="gitList"></div>
@@ -160,10 +153,10 @@
     </div>
   </div>
 
-  <!-- LOGICA TENDINA GIT MODERNA -->
+  <!-- TENDINA GIT MODERNA -->
   <script src="memorie_tipo.js"></script>
 
-  <!-- LOGICA SPECIFICA CREA_MEMORIA -->
+  <!-- LOGICA CREA MEMORIA -->
   <script src="crea_memoria.js"></script>
 </body>
 </html>
