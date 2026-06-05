@@ -1,5 +1,8 @@
 name: Genera lista_memorie.json
 
+permissions:
+  contents: write
+
 on:
   push:
     paths:
@@ -20,7 +23,6 @@ jobs:
         echo "{" > Memorie/lista_memorie.json
         firstFolder=true
 
-        # 1) FILE FUORI DALLE CARTELLE → DEF
         echo -n "\"DEF\": [" >> Memorie/lista_memorie.json
         files=$(find "$GITHUB_WORKSPACE/Memorie" -maxdepth 1 -type f | grep -Ei '\.[Hh][Ee][Xx]$|\.[Bb][Ii][Nn]$' || true)
         first=true
@@ -36,7 +38,6 @@ jobs:
         echo -n "]" >> Memorie/lista_memorie.json
         firstFolder=false
 
-        # 2) SOTTOCARTELLE
         for dir in "$GITHUB_WORKSPACE"/Memorie/*; do
           if [ -d "$dir" ]; then
             folder=$(basename "$dir")
