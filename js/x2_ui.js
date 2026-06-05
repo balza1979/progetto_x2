@@ -555,8 +555,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    document.getElementById("crea_hex_btn").onclick = function () {
-       window.open("hex/confronto_memorie.html?mode=creazione", "_blank");
+   document.getElementById("crea_hex_btn").onclick = function () {
+    window.open("hex/crea_memoria.html", "_blank");
+};
+
 
     };
 
