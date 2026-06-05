@@ -179,21 +179,6 @@ function onFileB_Change() {
     });
 }
 
-// ------------------------------------------------------------
-// MOSTRA BLOCCO CREAZIONE SOLO SE A E B ESISTONO
-// ------------------------------------------------------------
-function aggiornaBloccoCreazione() {
-    const blocco = document.getElementById("crea-memoria-container");
-
-    const hexA = localStorage.getItem("memA_hex");
-    const hexB = localStorage.getItem("memB_hex");
-
-    if (hexA && hexB) {
-        blocco.style.display = "block";
-    } else {
-        blocco.style.display = "none";
-    }
-}
 
 // ------------------------------------------------------------
 // RESET COMPLETO MEMORIA (A e B) + ricarica pagina
@@ -220,3 +205,21 @@ document.getElementById("btnGeneraC").addEventListener("click", () => {
     logDiv.textContent = "";
     log("Placeholder: qui generiamo la memoria C usando A e B.");
 });
+/* ===== INIZIO MODIFICA 05/06/2026 11:36 – Mostra blocco C quando A e B esistono ===== */
+
+function aggiornaBloccoCreazione() {
+
+    const bloccoC = document.getElementById("crea-memoria-container");
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    // Se A e B sono caricati → mostra blocco C
+    if (hexA && hexB) {
+        bloccoC.style.display = "block";
+    } else {
+        bloccoC.style.display = "none";
+    }
+}
+
+/* ===== FINE MODIFICA 05/06/2026 11:36 ===== */
