@@ -104,7 +104,7 @@ function log(msg) {
 // ------------------------------------------------------------
 // RIPRISTINO LOCALSTORAGE
 // ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     const hexA = localStorage.getItem("memA_hex");
     const nomeA = localStorage.getItem("memA_nome");
@@ -118,8 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("file1").files = fakeFile(nomeA, hexA);
         document.getElementById("labelFileA").textContent = `FILE A: ${nomeA}`;
     } else {
-        // Carica default A e ASPETTA che finisca
-        await caricaDefaultMemoriaA();
+        // Carica default A SENZA bloccare il JS
+        caricaDefaultMemoriaA();
     }
 
     // Ripristino B
@@ -129,9 +129,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
 
-    // SOLO ORA aggiorna il blocco C
+    // Mostra blocco C
     aggiornaBloccoCreazione();
 });
+
 
 
 // ------------------------------------------------------------
