@@ -137,14 +137,27 @@
 
     <!-- BLOCCO CREAZIONE MEMORIA C -->
     <div id="crea-memoria-container">
-      <h2 style="margin-top:0; color:#ff9999;">Creazione Memoria C</h2>
-      <p style="font-size:12px; color:#ffcccc;">
-        Quando FILE A e FILE B sono caricati (locale o Git), qui generiamo la memoria C.
-      </p>
-      <button id="btnGeneraC" type="button">[placeholder] Genera Memoria C</button>
-      <div id="log"></div>
-    </div>
-  </div>
+  <h2 style="margin-top:0; color:#ff9999;">Creazione Memoria C</h2>
+
+  <p style="font-size:12px; color:#ffcccc;">
+    Quando FILE A e FILE B sono caricati, puoi creare la nuova memoria C.
+  </p>
+
+  <!-- ===== INIZIO MODIFICA 05/06/2026 11:28 – Campo nome memoria C ===== -->
+  <label for="nomeMemoriaC" style="font-size:12px; color:#ffcccc;">Nome nuova memoria C:</label>
+  <input 
+      type="text" 
+      id="nomeMemoriaC" 
+      placeholder="Inserisci nome memoria C"
+      style="width:100%; padding:6px; margin-top:4px; margin-bottom:10px; border-radius:6px; border:1px solid #aa3333; background:#1a1a1a; color:#ffcccc;">
+  <!-- ===== FINE MODIFICA 05/06/2026 11:28 ===== -->
+
+  <!-- Pulsante reale per creare memoria C -->
+  <button id="btnGeneraC" type="button">Crea Memoria C</button>
+
+  <div id="log"></div>
+</div>
+
 
   <!-- PARAMETRI X2 -->
   <script src="../js/x2_parametri_data.js"></script>
