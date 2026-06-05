@@ -1,16 +1,22 @@
-# CREA_MEMORIA – MAPPA TECNICA (per Copilot)
+# CREA_MEMORIA – MAPPA TECNICA (2026)
 
-## HTML
-page
- ├─ file-block A
+Questa è la mappa tecnica aggiornata del sistema **crea_memoria**, basata sulla struttura attuale del progetto X2.
+
+---
+
+# 1. STRUTTURA HTML
+
+```
+crea_memoria.html
+ ├─ Blocco FILE A
  │    ├─ #labelFileA
  │    ├─ #file1
- │    └─ button → selezionaSlot("A")
+ │    └─ bottone → selezionaSlot("A")
  │
- ├─ file-block B
+ ├─ Blocco FILE B
  │    ├─ #labelFileB
  │    ├─ #file2
- │    └─ button → selezionaSlot("B")
+ │    └─ bottone → selezionaSlot("B")
  │
  ├─ #btnResetMemoria
  │
@@ -18,73 +24,122 @@ page
  │    ├─ #btnGeneraC
  │    └─ #log
  │
- ├─ #selettoreGit
+ ├─ Popup Git (#selettoreGit)
  │    ├─ #gitList
  │    └─ #btnChiudiGitList
  │
  ├─ SCRIPT: x2_parametri_data.js
  ├─ SCRIPT: memorie_tipo.js
- └─ SCRIPT: crea_memoria.js
+ └─ SCRIPT: crea_memoria_v3_5_6_26_1647.js
+```
 
+---
 
-## JS – crea_memoria.js
-variabili:
- ├─ memoriaA
- ├─ memoriaB
+# 2. JS – CREA_MEMORIA (LOGICA PRINCIPALE)
 
-funzioni:
- ├─ leggiFileHex(input, callback)
- ├─ hexToMemoryMap(hexText)
- ├─ log(msg)
- ├─ onFileA_Change()
- ├─ onFileB_Change()
- ├─ aggiornaBloccoCreazione()
- ├─ resetCreazione()  (non usata dal bottone)
- └─ EVENTI:
-      ├─ DOMContentLoaded → ripristino A/B + aggiornaBloccoCreazione()
-      ├─ #btnGeneraC.click
-      └─ #btnResetMemoria.click → clear localStorage + reload
+### Variabili
+- `memoriaA`
+- `memoriaB`
 
+### Funzioni
+- `leggiFileHex(input, callback)`
+- `hexToMemoryMap(hexText)`
+- `log(msg)`
+- `onFileA_Change()`
+- `onFileB_Change()`
+- `aggiornaBloccoCreazione()`
+- `resetCreazione()` *(non usata)*
 
-## JS – memorie_tipo.js (tendina Git)
-variabili:
- ├─ slotAttivo
- ├─ strutturaGit
- ├─ listaCompleta
+### Eventi
+- `DOMContentLoaded` → ripristina A/B + aggiorna UI  
+- `btnGeneraC.click`  
+- `btnResetMemoria.click` → clear localStorage + reload  
 
-costanti:
- ├─ GIT_API
- └─ RAW_BASE
+---
 
-funzioni:
- ├─ selezionaSlot(slot)
- ├─ caricaStrutturaGit()
- ├─ leggiCartella(path)
- ├─ popolaListaGit()
- ├─ confermaGit(path)
- ├─ fakeFile(nome, contenuto)
- ├─ caricaFileGit(path)
- └─ convertiBinInHex(buffer)
+# 3. JS – MEMORIE_TIPO (GESTIONE TENDINA GIT)
 
-eventi:
- └─ #btnChiudiGitList.click → chiudi popup
+### Variabili
+- `slotAttivo`
+- `strutturaGit` ← contenuto di `lista_memorie.json`
+- `listaCompleta`
 
+### Costanti
+- `RAW_BASE = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/"`
 
-## COLLEGAMENTI LOGICI
-file1 → onFileA_Change → memoriaA + localStorage → aggiornaBloccoCreazione  
-file2 → onFileB_Change → memoriaB + localStorage → aggiornaBloccoCreazione  
+### Funzioni
+- `selezionaSlot(slot)`
+- `caricaStrutturaGit()` → legge `lista_memorie.json`
+- `popolaListaGit()` → riempie la tendina
+- `confermaGit(path)` → scarica file HEX/BIN e lo carica nello slot
+- `fakeFile(nome, contenuto)`
+- `caricaFileGit(path)`
+- `convertiBinInHex(buffer)`
 
-selezionaSlot("A") → memorie_tipo.js → confermaGit("A") → memoriaA + fakeFile + localStorage → aggiornaBloccoCreazione  
-selezionaSlot("B") → memorie_tipo.js → confermaGit("B") → memoriaB + fakeFile + localStorage → aggiornaBloccoCreazione  
+### Eventi
+- `btnChiudiGitList.click`
 
-btnResetMemoria → clear localStorage → reload  
+---
 
-crea-memoria-container → visibile solo se (memA_hex && memB_hex)
+# 4. FLUSSO LOGICO COMPLETO
 
+### FILE A locale
+```
+file1 → onFileA_Change → memoriaA → localStorage → aggiornaBloccoCreazione
+```
 
-## ELEMENTI CHE NON ESISTONO
-(no file C)  
-(no confronto)  
-(no tabella)  
-(no filtri)  
-(no runtime)
+### FILE B locale
+```
+file2 → onFileB_Change → memoriaB → localStorage → aggiornaBloccoCreazione
+```
+
+### FILE A da Git
+```
+selezionaSlot("A")
+ → popup Git
+ → confermaGit(path)
+ → fakeFile
+ → memoriaA
+ → localStorage
+ → aggiornaBloccoCreazione
+```
+
+### FILE B da Git
+```
+selezionaSlot("B")
+ → popup Git
+ → confermaGit(path)
+ → fakeFile
+ → memoriaB
+ → localStorage
+ → aggiornaBloccoCreazione
+```
+
+### Reset
+```
+btnResetMemoria → clear localStorage → reload
+```
+
+### Creazione C
+```
+btnGeneraC → usa memoriaA + memoriaB → genera C → log
+```
+
+---
+
+# 5. ELEMENTI NON PRESENTI
+- nessun file C visibile  
+- nessuna tabella  
+- nessun confronto A/B  
+- nessun filtro  
+- nessun runtime  
+- nessuna API GitHub  
+- nessun token  
+- nessun limite API  
+
+---
+
+# 6. NOTE 2026
+- La tendina Git usa **solo** `lista_memorie.json`
+- Il JSON è aggiornato automaticamente dalla GitHub Action
+- Il sistema è completamente offline e stabile
