@@ -16,17 +16,37 @@ jobs:
     - name: Genera lista file
       run: |
         echo "{" > Memorie/lista_memorie.json
+        firstFolder=true
+
+        # 1) FILE FUORI DALLE CARTELLE → DEF
+        echo -n "\"DEF\": [" >> Memorie/lista_memorie.json
+        files=$(find Memorie -maxdepth 1 -type f | grep -Ei '\.hex$|\.bin$' || true)
         first=true
+        for f in $files; do
+          nome=$(basename "$f")
+          if [ "$first" = true ]; then
+            first=false
+          else
+            echo -n ", " >> Memorie/lista_memorie.json
+          fi
+          echo -n "\"$nome\"" >> Memorie/lista_memorie.json
+        done
+        echo -n "]" >> Memorie/lista_memorie.json
+        firstFolder=false
+
+        # 2) SOTTOCARTELLE
         for dir in Memorie/*; do
           if [ -d "$dir" ]; then
             folder=$(basename "$dir")
             files=$(ls "$dir" | grep -Ei '\.hex$|\.bin$' || true)
-            if [ "$first" = true ]; then
-              first=false
-            else
+
+            if [ "$firstFolder" = false ]; then
               echo "," >> Memorie/lista_memorie.json
             fi
+            firstFolder=false
+
             echo -n "\"$folder\": [" >> Memorie/lista_memorie.json
+
             ffirst=true
             for f in $files; do
               if [ "$ffirst" = true ]; then
@@ -36,9 +56,11 @@ jobs:
               fi
               echo -n "\"$f\"" >> Memorie/lista_memorie.json
             done
+
             echo -n "]" >> Memorie/lista_memorie.json
           fi
         done
+
         echo "}" >> Memorie/lista_memorie.json
 
     - name: Commit lista_memorie.json
