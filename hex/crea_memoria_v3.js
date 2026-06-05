@@ -207,7 +207,7 @@ document.getElementById("btnGeneraC").addEventListener("click", () => {
 
     // 🔥 SALVA IN LOCALSTORAGE
     localStorage.setItem("memC_hex", memoriaC_hex);
-    localStorage.setItem("memC_nome", nomeC + ".js");
+    localStorage.setItem("memC_nome", nomeC + ".hex");
 
-    log(`Memoria C creata e salvata come: ${nomeC}.js`);
+    log(`Memoria C creata e salvata come: ${nomeC}.hex`);
 });
