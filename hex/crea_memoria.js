@@ -37,6 +37,61 @@ function hexToMemoryMap(hexText) {
 
     return mem;
 }
+/* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
+
+async function caricaDefaultMemoriaA() {
+
+    // 1) Legge la cartella Memorie
+    const urlLista = "https://api.github.com/repos/balza1979/progetto_x2/contents/Memorie";
+    const resp = await fetch(urlLista);
+    const lista = await resp.json();
+
+    // 2) Filtra SOLO i file .hex/.bin NON in sottocartelle
+    const filesRoot = lista.filter(x =>
+        x.type === "file" &&
+        (x.name.toLowerCase().endsWith(".hex") || x.name.toLowerCase().endsWith(".bin"))
+    );
+
+    if (filesRoot.length === 0) {
+        console.warn("Nessun file HEX/BIN trovato nella cartella Memorie.");
+        return;
+    }
+
+    // 3) Prende l’unico file (o il primo)
+    const fileDefault = filesRoot[0];
+    const nomeFile = fileDefault.name;
+
+    // 4) Costruisce URL RAW
+    const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
+
+    // 5) Scarica contenuto
+    const respRaw = await fetch(urlRaw);
+    const buffer = await respRaw.arrayBuffer();
+    const est = nomeFile.toLowerCase();
+
+    let hexText = "";
+    if (est.endsWith(".hex")) {
+        hexText = new TextDecoder().decode(buffer);
+    } else if (est.endsWith(".bin")) {
+        hexText = convertiBinInHex(buffer);
+    }
+
+    // 6) Converte in mappa memoria
+    memoriaA = hexToMemoryMap(hexText);
+
+    // 7) Aggiorna localStorage
+    localStorage.setItem("memA_nome", nomeFile);
+    localStorage.setItem("memA_hex", hexText);
+
+    // 8) Aggiorna input file A
+    document.getElementById("file1").files = fakeFile(nomeFile, hexText);
+
+    // 9) Aggiorna label
+    document.getElementById("labelFileA").textContent = `FILE A: ${nomeFile}`;
+    document.getElementById("labelFileA").style.color = "#ff3333";
+}
+
+/* ===== FINE MODIFICA 05/06/2026 11:05 ===== */
 
 // ------------------------------------------------------------
 // LOG
@@ -67,6 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("file2").files = fakeFile(nomeB, hexB);
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
+if (!localStorage.getItem("memA_hex")) {
+    caricaDefaultMemoriaA();
+}
 
     aggiornaBloccoCreazione();
 });
