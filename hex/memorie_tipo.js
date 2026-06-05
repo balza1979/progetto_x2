@@ -84,40 +84,26 @@ function selezionaSlot(slot) {
 }
 
 /* ============================================================
-   2) Legge struttura Git
+   2) Legge struttura Git — VERSIONE SENZA API (PASSO 3)
    ============================================================ */
 async function caricaStrutturaGit() {
     strutturaGit = {};
     listaCompleta = [];
 
-    const resp = await fetch(GIT_API);
-    const items = await resp.json();
+    const url = RAW_BASE + "lista_memorie.json";
+    const resp = await fetch(url);
+    const json = await resp.json();
 
-    strutturaGit["DEF"] = [];
-
-    for (let item of items) {
-        if (item.type === "file" && isHexBin(item.name)) {
-            strutturaGit["DEF"].push(item.name);
-        }
-        if (item.type === "dir") {
-            strutturaGit[item.name] = await leggiCartella(item.path);
-        }
-    }
+    strutturaGit = json;
 
     popolaListaGit();
 }
 
 /* ============================================================
-   3) Legge file in cartella
+   3) Legge file in cartella (NON USATA PIÙ)
    ============================================================ */
 async function leggiCartella(path) {
-    const url = "https://api.github.com/repos/balza1979/progetto_x2/contents/" + path;
-    const resp = await fetch(url);
-    const items = await resp.json();
-
-    return items
-        .filter(x => x.type === "file" && isHexBin(x.name))
-        .map(x => x.name);
+    return [];
 }
 
 /* ============================================================
