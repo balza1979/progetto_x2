@@ -1,11 +1,11 @@
 /* ============================================================
    x2_memoriaC_loader.js
-   Versione: 2.0 — 08/06/2026
+   Versione: 2.1 — 08/06/2026
    Gestione Memoria C in formato Intel‑HEX:
    - Lettura memC_hex (file Intel‑HEX completo)
    - Conversione in mappa di byte {indirizzo: "HH"}
    - Applicazione ai campi VALORE
-   - (Opzionale) scrittura modifiche in RAM
+   - Scrittura modifiche in RAM (solo mappa, non HEX)
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -52,16 +52,15 @@ function loadMemoriaC() {
 }
 
 /* ------------------------------------------------------------
-   4) Legge un byte da Memoria C (offset = indirizzo)
+   4) Legge un byte da Memoria C (indirizzo = LIBERA1)
    ------------------------------------------------------------ */
-function getByteFromC(offset, memC_map) {
-    const hex = memC_map[offset] || "00";
+function getByteFromC(indirizzo, memC_map) {
+    const hex = memC_map[indirizzo] || "00";
     return parseInt(hex, 16);
 }
 
 /* ------------------------------------------------------------
    5) Converte byte → valore leggibile
-      (enum, min/max, bool, ecc.)
    ------------------------------------------------------------ */
 function convertValueFromByte(param, byte) {
 
@@ -77,7 +76,7 @@ function convertValueFromByte(param, byte) {
 
     // NUMERICO
     if (param.tipo === "num") {
-        return byte; // poi potrai gestire scaling, offset, ecc.
+        return byte;
     }
 
     return byte;
@@ -117,7 +116,11 @@ function applyValuesFromC() {
     if (!memC_map) return;
 
     x2_parametri.forEach(param => {
-        const byte   = getByteFromC(param.offset, memC_map);
+
+        // 🔥 LIBERA1 = indirizzo reale del parametro
+        const indirizzo = parseInt(param.LIBERA1);
+
+        const byte   = getByteFromC(indirizzo, memC_map);
         const valore = convertValueFromByte(param, byte);
 
         // Aggiorna param.VALORE
@@ -131,7 +134,6 @@ function applyValuesFromC() {
 
 /* ------------------------------------------------------------
    8) Aggiorna Memoria C quando l’utente modifica un parametro
-   (per ora solo in RAM, senza rigenerare il file Intel‑HEX)
    ------------------------------------------------------------ */
 function updateMemoriaC(param, nuovoValore) {
 
@@ -143,13 +145,11 @@ function updateMemoriaC(param, nuovoValore) {
     // Converti valore → byte
     const nuovoByte = convertValueToByte(param, nuovoValore);
 
-    // Scrivi nel buffer logico
-    memC_map[param.offset] = nuovoByte.toString(16).padStart(2, "0").toUpperCase();
+    // 🔥 LIBERA1 = indirizzo reale
+    const indirizzo = parseInt(param.LIBERA1);
 
-    // 🔴 NOTA:
-    // qui NON rigeneriamo il file Intel‑HEX completo (checksum, record, ecc.)
-    // quindi per ora NON risalviamo memC_hex.
-    // Usiamo Memoria C solo come sorgente di lettura per popolare la UI.
+    // Scrivi nel buffer logico
+    memC_map[indirizzo] = nuovoByte.toString(16).padStart(2, "0").toUpperCase();
 
     // Aggiorna param.VALORE
     param.VALORE = nuovoValore;
