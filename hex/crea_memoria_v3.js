@@ -1,4 +1,4 @@
-// CREA_MEMORIA.JS V3 — versione 5/6/26 11:24
+// CREA_MEMORIA.JS V3 — versione 8/6/26 11:24 resetta anche C
 // Luca / Copilot
 
 let memoriaA = null;
