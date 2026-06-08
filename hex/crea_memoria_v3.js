@@ -39,6 +39,48 @@ function hexToMemoryMap(hexText) {
 }
 /* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
 
+async function caricaDefaultMemoriaA() {// CREA_MEMORIA.JS V3 5 6 26 1724 – versione 5/6/26 11:24  senza FILE C
+//  – Luca / Copilot
+
+let memoriaA = null;
+let memoriaB = null;
+
+// ------------------------------------------------------------
+// Utility HEX
+// ------------------------------------------------------------
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
+
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
+}
+
+function hexToMemoryMap(hexText) {
+    const lines = hexText.split(/\r?\n/);
+    const mem = {};
+
+    for (let line of lines) {
+        if (!line.startsWith(":")) continue;
+
+        const byteCount  = parseInt(line.substr(1, 2), 16);
+        const address    = parseInt(line.substr(3, 4), 16);
+        const recordType = parseInt(line.substr(7, 2), 16);
+
+        if (recordType !== 0) continue;
+
+        for (let i = 0; i < byteCount; i++) {
+            const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
+            mem[address + i] = byteHex;
+        }
+    }
+
+    return mem;
+}
+
+/* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
+
 async function caricaDefaultMemoriaA() {
 
     const nomeFile = "memoria_polli.hex"; // metti qui il tuo file default
@@ -46,7 +88,7 @@ async function caricaDefaultMemoriaA() {
     const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
 
     const respRaw = await fetch(urlRaw);
-    const buffer = await respRaw.arrayBuffer();
+    const buffer  = await respRaw.arrayBuffer();
 
     const hexText = new TextDecoder().decode(buffer);
 
@@ -73,10 +115,10 @@ function log(msg) {
 // RIPRISTINO LOCALSTORAGE
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const hexA = localStorage.getItem("memA_hex");
+    const hexA  = localStorage.getItem("memA_hex");
     const nomeA = localStorage.getItem("memA_nome");
 
-    const hexB = localStorage.getItem("memB_hex");
+    const hexB  = localStorage.getItem("memB_hex");
     const nomeB = localStorage.getItem("memB_nome");
 
     if (hexA) {
@@ -90,9 +132,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("file2").files = fakeFile(nomeB, hexB);
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
-if (!localStorage.getItem("memA_hex")) {
-    caricaDefaultMemoriaA();
-}
+
+    if (!localStorage.getItem("memA_hex")) {
+        caricaDefaultMemoriaA();
+    }
 
     aggiornaBloccoCreazione();
 });
@@ -102,7 +145,7 @@ if (!localStorage.getItem("memA_hex")) {
 // ------------------------------------------------------------
 function onFileA_Change() {
     const inputA = document.getElementById("file1");
-    const lblA = document.getElementById("labelFileA");
+    const lblA   = document.getElementById("labelFileA");
 
     lblA.textContent = "FILE A (locale)";
 
@@ -127,7 +170,7 @@ function onFileA_Change() {
 // ------------------------------------------------------------
 function onFileB_Change() {
     const inputB = document.getElementById("file2");
-    const lblB = document.getElementById("labelFileB");
+    const lblB   = document.getElementById("labelFileB");
 
     lblB.textContent = "FILE B (locale)";
 
