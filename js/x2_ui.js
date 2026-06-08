@@ -244,13 +244,14 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
         const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
         tendina.value = valorePulito;
 
-        x2_aggiornaValoriDaSelezione(data, valorePulito);
+        //x2_aggiornaValoriDaSelezione(data, valorePulito);
+x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
-        // 🔥 PATCH: SALVATAGGIO DEL VALORE MODIFICATO
-        tendina.addEventListener("change", function () {
-            param.VALORE = this.value;
-            updateMemoriaC(param, param.VALORE);   // 🔥 SALVA IN memC_modificata
-        });
+      tendina.onchange = function () {
+    param.VALORE = this.value;
+    updateMemoriaC(param, param.VALORE);
+};
+
     });
 
     return;
@@ -440,13 +441,10 @@ btnDown.addEventListener("click", function () {
 }
 
 
-function x2_aggiornaValoriDaSelezione(data, valore) {
+function x2_aggiornaValoriDaSelezione(param, data, valore) {
 
-    // 🔥 PATCH: aggiorna il valore del parametro
-    param.VALORE = valore;
 
-    // 🔥 PATCH: salva in Memoria C modificata
-    updateMemoriaC(param, param.VALORE);
+   
 
     const lista =
         data.file_parametro[valore] ||
