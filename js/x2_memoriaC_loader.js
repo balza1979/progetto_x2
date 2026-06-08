@@ -1,6 +1,7 @@
 /* ============================================================
    x2_memoriaC_loader.js
-   Versione: 2.1 — 08/06/2026
+   Versione: 2.1 — 08/06/2026 12 27
+   legge c invece di parametri data ma non sala nulla
    Gestione Memoria C in formato Intel‑HEX:
    - Lettura memC_hex (file Intel‑HEX completo)
    - Conversione in mappa di byte {indirizzo: "HH"}
