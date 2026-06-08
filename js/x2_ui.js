@@ -229,7 +229,9 @@ function x2_popolaValori(param) {
                 tendina.appendChild(opt);
             });
 
-            const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+           // const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
+            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+
             tendina.value = valorePulito;
 
             x2_aggiornaValoriDaSelezione(data, valorePulito);
