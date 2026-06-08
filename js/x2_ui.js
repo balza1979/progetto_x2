@@ -146,6 +146,13 @@ function x2_popolaParametri(codMenuCompleto) {
 // INFO PARAMETRO
 // ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
+      // 🔥 STEP 1 — Sincronizza con Memoria C modificata
+    if (memC_modificata) {
+        const indirizzo = parseInt(param.LIBERA1);
+        const byte      = getByteFromC(indirizzo);
+        const valoreC   = convertValueFromByte(param, byte);
+        param.VALORE    = valoreC;
+    }
 
     const box = document.getElementById("info_parametro");
 
