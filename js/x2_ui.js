@@ -219,38 +219,43 @@ function x2_popolaValori(param) {
     }
 
     // 1) JSON
-    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
+if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-        let nomeJSON = null;
-        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+    let nomeJSON = null;
+    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-        if (fonte === "parametro") {
-            nomeJSON = param.PARAMETRO.trim();
-        } else if (fonte && fonte !== "/") {
-            nomeJSON = fonte;
-        } else {
-            nomeJSON = param.PARAMETRO.trim();
-        }
+    if (fonte === "parametro") {
+        nomeJSON = param.PARAMETRO.trim();
+    } else if (fonte && fonte !== "/") {
+        nomeJSON = fonte;
+    } else {
+        nomeJSON = param.PARAMETRO.trim();
+    }
 
-        x2_caricaJSON(nomeJSON, function(data) {
+    x2_caricaJSON(nomeJSON, function(data) {
 
-            data.valori.forEach(voce => {
-                const opt = document.createElement("option");
-                opt.value = voce.id;
-                opt.textContent = `"${voce.id}" ${voce.text}`;
-                tendina.appendChild(opt);
-            });
-
-           // const valorePulito = param.VALORE.toString().trim().padStart(2, "0");
-            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-
-            tendina.value = valorePulito;
-
-            x2_aggiornaValoriDaSelezione(data, valorePulito);
+        data.valori.forEach(voce => {
+            const opt = document.createElement("option");
+            opt.value = voce.id;
+            opt.textContent = `"${voce.id}" ${voce.text}`;
+            tendina.appendChild(opt);
         });
 
-        return;
-    }
+        const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+        tendina.value = valorePulito;
+
+        x2_aggiornaValoriDaSelezione(data, valorePulito);
+
+        // 🔥 PATCH: SALVATAGGIO DEL VALORE MODIFICATO
+        tendina.addEventListener("change", function () {
+            param.VALORE = this.value;
+            updateMemoriaC(param, param.VALORE);   // 🔥 SALVA IN memC_modificata
+        });
+    });
+
+    return;
+}
+
 
     // 2) MIN/MAX
 // =========================================================
