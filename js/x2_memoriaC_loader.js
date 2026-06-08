@@ -148,9 +148,11 @@ function hookUIevents() {
 function initMemoriaC() {
     if (!checkMemoriaC()) return;
 
-    loadMemoriaC();
-    applyValuesFromC();
-    hookUIevents();
+  loadMemoriaC();
+applyValuesFromC();   // SOLO QUI
+// hookUIevents();    // lo lasciamo, non tocca nulla
+// 🔥 MAI più chiamare applyValuesFromC dopo questo punto
+
 }
 
 document.addEventListener("DOMContentLoaded", initMemoriaC);
