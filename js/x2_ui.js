@@ -443,13 +443,13 @@ btnDown.addEventListener("click", function () {
 
 function x2_aggiornaValoriDaSelezione(param, data, valore) {
 
-
-   
+    // 🔥 Normalizza la chiave ("04" → "4")
+    const key = String(parseInt(valore));
 
     const lista =
+        data.file_parametro[key] ||
         data.file_parametro[valore] ||
-        data.file_parametro[valore.padStart(2, "0")] ||
-        data.file_parametro[String(parseInt(valore))];
+        data.file_parametro[valore.padStart(2, "0")];
 
     for (let i = 1; i <= 8; i++) {
         const btn = document.getElementById("val" + i);
