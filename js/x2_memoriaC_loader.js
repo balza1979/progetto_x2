@@ -1,13 +1,17 @@
 /* ============================================================
    x2_memoriaC_loader.js
-   Versione: 2.1 — 08/06/2026 12 27
-   legge c invece di parametri data ma non sala nulla
-   Gestione Memoria C in formato Intel‑HEX:
-   - Lettura memC_hex (file Intel‑HEX completo)
-   - Conversione in mappa di byte {indirizzo: "HH"}
-   - Applicazione ai campi VALORE
-   - Scrittura modifiche in RAM (solo mappa, non HEX)
+   Versione: 2.2 — 08/06/2026 12:40
+   STEP 1: Memoria C modificata resta in RAM (non sparisce)
+   - Lettura memC_hex → memC_modificata
+   - Modifiche scritte in memC_modificata
+   - UI legge sempre da memC_modificata
+   - Nessun salvataggio su HEX o localStorage
    ============================================================ */
+
+/* ------------------------------------------------------------
+   VARIABILE GLOBALE: Memoria C modificata in RAM
+   ------------------------------------------------------------ */
+let memC_modificata = null;
 
 /* ------------------------------------------------------------
    1) Controllo esistenza Memoria C
@@ -43,20 +47,25 @@ function intelHexToMemoryMap(hexText) {
 }
 
 /* ------------------------------------------------------------
-   3) Carica Memoria C dal localStorage → mappa {indirizzo: "HH"}
+   3) Carica Memoria C dal localStorage → memC_modificata
    ------------------------------------------------------------ */
 function loadMemoriaC() {
     const hexText = localStorage.getItem("memC_hex");
     if (!hexText) return null;
 
-    return intelHexToMemoryMap(hexText);
+    // 🔥 Ora carichiamo la memoria C modificabile
+    memC_modificata = intelHexToMemoryMap(hexText);
+
+    return memC_modificata;
 }
 
 /* ------------------------------------------------------------
-   4) Legge un byte da Memoria C (indirizzo = LIBERA1)
+   4) Legge un byte da Memoria C modificata (indirizzo = LIBERA1)
    ------------------------------------------------------------ */
-function getByteFromC(indirizzo, memC_map) {
-    const hex = memC_map[indirizzo] || "00";
+function getByteFromC(indirizzo) {
+    if (!memC_modificata) return 0;
+
+    const hex = memC_modificata[indirizzo] || "00";
     return parseInt(hex, 16);
 }
 
@@ -65,17 +74,14 @@ function getByteFromC(indirizzo, memC_map) {
    ------------------------------------------------------------ */
 function convertValueFromByte(param, byte) {
 
-    // ENUM
     if (param.tipo === "enum") {
         return param.enum[byte] ?? "??";
     }
 
-    // BOOL
     if (param.tipo === "bool") {
         return byte === 1 ? "ON" : "OFF";
     }
 
-    // NUMERICO
     if (param.tipo === "num") {
         return byte;
     }
@@ -88,18 +94,15 @@ function convertValueFromByte(param, byte) {
    ------------------------------------------------------------ */
 function convertValueToByte(param, nuovoValore) {
 
-    // ENUM
     if (param.tipo === "enum") {
         const index = param.enum.indexOf(nuovoValore);
         return index >= 0 ? index : 0;
     }
 
-    // BOOL
     if (param.tipo === "bool") {
         return nuovoValore === "ON" ? 1 : 0;
     }
 
-    // NUMERICO
     if (param.tipo === "num") {
         return Number(nuovoValore);
     }
@@ -108,51 +111,43 @@ function convertValueToByte(param, nuovoValore) {
 }
 
 /* ------------------------------------------------------------
-   7) Applica valori da Memoria C ai campi UI
+   7) Applica valori da Memoria C modificata ai campi UI
    ------------------------------------------------------------ */
 function applyValuesFromC() {
     if (!checkMemoriaC()) return;
 
-    const memC_map = loadMemoriaC();
-    if (!memC_map) return;
+    if (!memC_modificata) loadMemoriaC();
+    if (!memC_modificata) return;
 
     x2_parametri.forEach(param => {
 
-        // 🔥 LIBERA1 = indirizzo reale del parametro
         const indirizzo = parseInt(param.LIBERA1);
 
-        const byte   = getByteFromC(indirizzo, memC_map);
+        const byte   = getByteFromC(indirizzo);
         const valore = convertValueFromByte(param, byte);
 
-        // Aggiorna param.VALORE
         param.VALORE = valore;
 
-        // Aggiorna UI
         const el = document.getElementById(param.id_valore);
         if (el) el.value = valore;
     });
 }
 
 /* ------------------------------------------------------------
-   8) Aggiorna Memoria C quando l’utente modifica un parametro
+   8) Aggiorna Memoria C modificata quando l’utente cambia un parametro
    ------------------------------------------------------------ */
 function updateMemoriaC(param, nuovoValore) {
 
-    const hexText = localStorage.getItem("memC_hex");
-    if (!hexText) return;
+    if (!memC_modificata) return;
 
-    const memC_map = intelHexToMemoryMap(hexText);
-
-    // Converti valore → byte
     const nuovoByte = convertValueToByte(param, nuovoValore);
 
-    // 🔥 LIBERA1 = indirizzo reale
     const indirizzo = parseInt(param.LIBERA1);
 
-    // Scrivi nel buffer logico
-    memC_map[indirizzo] = nuovoByte.toString(16).padStart(2, "0").toUpperCase();
+    // 🔥 Scriviamo nella memoria modificata in RAM
+    memC_modificata[indirizzo] =
+        nuovoByte.toString(16).padStart(2, "0").toUpperCase();
 
-    // Aggiorna param.VALORE
     param.VALORE = nuovoValore;
 }
 
@@ -178,7 +173,8 @@ function hookUIevents() {
 function initMemoriaC() {
     if (!checkMemoriaC()) return;
 
-    applyValuesFromC();
+    loadMemoriaC();     // 🔥 carica in memC_modificata
+    applyValuesFromC(); // 🔥 UI legge da memC_modificata
     hookUIevents();
 }
 
