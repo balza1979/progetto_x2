@@ -199,6 +199,7 @@ function x2_popolaValori(param) {
    
 
         const tendina = document.getElementById("tendina_valori");
+    console.log("TENDINA TROVATA:", tendina);
         tendina.innerHTML = "";
  // Ripristina sempre la tendina come visibile
         tendina.style.display = "block";
