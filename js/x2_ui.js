@@ -147,12 +147,6 @@ function x2_popolaParametri(codMenuCompleto) {
 // ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
 
-    if (typeof getByteFromC === "function" && typeof convertValueFromByte === "function" && memC_modificata) {
-        const indirizzo = parseInt(param.LIBERA1);
-        const byte      = getByteFromC(indirizzo);
-        const valoreC   = convertValueFromByte(param, byte);
-        param.VALORE    = valoreC;
-    }
     const box = document.getElementById("info_parametro");
 
     box.innerHTML = `
@@ -191,13 +185,7 @@ function x2_calcolaHex(param) {
 // VALORI (val1…val8) — VERSIONE CORRETTA
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
-    // 🔥 Sincronizza sempre il VALORE con la Memoria C modificata
-    if (typeof getByteFromC === "function" && typeof convertValueFromByte === "function" && memC_modificata) {
-        const indirizzo = parseInt(param.LIBERA1);
-        const byte      = getByteFromC(indirizzo);
-        const valoreC   = convertValueFromByte(param, byte);
-        param.VALORE    = valoreC;
-    }
+   
 
         const tendina = document.getElementById("tendina_valori");
         tendina.innerHTML = "";
