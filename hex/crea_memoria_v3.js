@@ -164,20 +164,34 @@ function aggiornaBloccoCreazione() {
 }
 
 /* ============================================================
-   RESET COMPLETO MEMORIA (A e B)
+   RESET COMPLETO MEMORIA (A, B e C)
    ============================================================ */
 document.getElementById("btnResetMemoria").addEventListener("click", () => {
 
+    // Cancella A
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memA_nome");
 
+    // Cancella B
     localStorage.removeItem("memB_hex");
     localStorage.removeItem("memB_nome");
-    
+
+    // 🔥 Cancella C (mancava!)
+    localStorage.removeItem("memC_hex");
+    localStorage.removeItem("memC_nome");
+
+    // 🔥 Cancella anche la RAM usata da X2
+    if (typeof memC_modificata !== "undefined") {
+        memC_modificata = null;
+    }
+
+    // Ricarica A di default
     caricaDefaultMemoriaA();
 
+    // Ricarica pagina
     location.reload();
 });
+
 
 /* ============================================================
    GENERAZIONE MEMORIA C
