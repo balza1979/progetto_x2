@@ -1,46 +1,5 @@
-// CREA_MEMORIA.JS V3 5 6 26 1724 – versione 5/6/26 11:24  senza FILE C
-//  – Luca / Copilot
-
-let memoriaA = null;
-let memoriaB = null;
-
-// ------------------------------------------------------------
-// Utility HEX
-// ------------------------------------------------------------
-function leggiFileHex(input, callback) {
-    const file = input.files[0];
-    if (!file) return callback(null);
-
-    const reader = new FileReader();
-    reader.onload = e => callback(e.target.result);
-    reader.readAsText(file);
-}
-
-function hexToMemoryMap(hexText) {
-    const lines = hexText.split(/\r?\n/);
-    const mem = {};
-
-    for (let line of lines) {
-        if (!line.startsWith(":")) continue;
-
-        const byteCount = parseInt(line.substr(1, 2), 16);
-        const address = parseInt(line.substr(3, 4), 16);
-        const recordType = parseInt(line.substr(7, 2), 16);
-
-        if (recordType !== 0) continue;
-
-        for (let i = 0; i < byteCount; i++) {
-            const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
-            mem[address + i] = byteHex;
-        }
-    }
-
-    return mem;
-}
-/* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
-
-async function caricaDefaultMemoriaA() {// CREA_MEMORIA.JS V3 5 6 26 1724 – versione 5/6/26 11:24  senza FILE C
-//  – Luca / Copilot
+// CREA_MEMORIA.JS V3 — versione 5/6/26 11:24
+// Luca / Copilot
 
 let memoriaA = null;
 let memoriaB = null;
@@ -79,11 +38,12 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-/* ===== INIZIO MODIFICA 05/06/2026 11:05 – Caricamento automatico DEF POLLI (API minima) ===== */
+// 🔥 RENDO hexToMemoryMap GLOBALE (serve a memorie_tipo.js)
+window.hexToMemoryMap = hexToMemoryMap;
 
+/* ===== Caricamento automatico Memoria A default ===== */
 async function caricaDefaultMemoriaA() {
-
-    const nomeFile = "memoria_polli.hex"; // metti qui il tuo file default
+    const nomeFile = "memoria_polli.hex";
 
     const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
 
@@ -101,7 +61,6 @@ async function caricaDefaultMemoriaA() {
     document.getElementById("labelFileA").textContent = `FILE A: ${nomeFile}`;
     document.getElementById("labelFileA").style.color = "#ff3333";
 }
-/* ===== FINE MODIFICA 05/06/2026 11:05 ===== */
 
 // ------------------------------------------------------------
 // LOG
@@ -199,19 +158,14 @@ function aggiornaBloccoCreazione() {
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
 
-    if (hexA && hexB) {
-        blocco.style.display = "block";
-    } else {
-        blocco.style.display = "none";
-    }
+    blocco.style.display = (hexA && hexB) ? "block" : "none";
 }
 
 // ------------------------------------------------------------
-// RESET COMPLETO MEMORIA (A e B) + ricarica pagina
+// RESET COMPLETO MEMORIA (A e B)
 // ------------------------------------------------------------
 document.getElementById("btnResetMemoria").addEventListener("click", () => {
 
-    // Cancella tutto ciò che riguarda le memorie
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memA_nome");
 
@@ -220,12 +174,11 @@ document.getElementById("btnResetMemoria").addEventListener("click", () => {
     
     caricaDefaultMemoriaA();
 
-    // Ricarica pagina pulita
     location.reload();
 });
 
 // ------------------------------------------------------------
-// PLACEHOLDER GENERAZIONE C
+// GENERAZIONE MEMORIA C
 // ------------------------------------------------------------
 document.getElementById("btnGeneraC").addEventListener("click", () => {
     logDiv.textContent = "";
@@ -245,10 +198,9 @@ document.getElementById("btnGeneraC").addEventListener("click", () => {
         return;
     }
 
-    // 🔥 Per ora: memoria C = copia di B (memoria tipo)
+    // 🔥 Memoria C = copia perfetta di B
     const memoriaC_hex = hexB;
 
-    // 🔥 SALVA IN LOCALSTORAGE
     localStorage.setItem("memC_hex", memoriaC_hex);
     localStorage.setItem("memC_nome", nomeC + ".hex");
 
