@@ -193,7 +193,7 @@ function x2_calcolaHex(param) {
 
 
 // ------------------------------------------------------------
-// VALORI (val1…val8) — VERSIONE CORRETTA
+// VALORI (val1…val8) — VERSIONE  CORRETTA
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
    
