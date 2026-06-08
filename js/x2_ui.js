@@ -248,6 +248,8 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
       tendina.onchange = function () {
+          console.log("TENDINA CHANGE TRIGGERED");
+
     param.VALORE = this.value;
     updateMemoriaC(param, param.VALORE);
 };
@@ -442,6 +444,7 @@ btnDown.addEventListener("click", function () {
 
 
 function x2_aggiornaValoriDaSelezione(param, data, valore) {
+console.log("AGGIORNA → param:", param.PARAMETRO, "valore:", valore);
 
     // 🔥 Normalizza la chiave ("04" → "4")
     const key = String(parseInt(valore));
