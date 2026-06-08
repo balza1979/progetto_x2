@@ -6,6 +6,7 @@
 // Gestione UI Programmatore X2
 // ======================================================================
 
+let ultimoParametro = null;
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
@@ -146,7 +147,8 @@ function x2_popolaParametri(codMenuCompleto) {
 // INFO PARAMETRO
 // ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
-      // 🔥 STEP 1 — Sincronizza con Memoria C modificata
+
+    // 🔥 STEP 1 — Sincronizza con Memoria C modificata
     if (memC_modificata) {
         const indirizzo = parseInt(param.LIBERA1);
         const byte      = getByteFromC(indirizzo);
@@ -175,8 +177,10 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("val_min").value      = param.MIN   || "";
     document.getElementById("val_max").value      = param.MAX   || "";
     document.getElementById("unita_misura").value = param.UNITA || "";
-}
 
+    // 🔥 STEP 2 — Ricorda qual è il parametro attivo
+    ultimoParametro = param;
+}
 
 // ------------------------------------------------------------
 // CALCOLO HEX
@@ -528,7 +532,13 @@ document.addEventListener("DOMContentLoaded", function () {
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
-  selParametro.addEventListener("change", function () {
+ selParametro.addEventListener("change", function () {
+
+    // 🔥 PASSO 3 — Salva il parametro precedente
+    if (ultimoParametro) {
+        updateMemoriaC(ultimoParametro, ultimoParametro.VALORE);
+    }
+
     const codice = this.value.replace(/"/g, "").trim();
     const param = x2_parametri.find(p => p.PARAMETRO === codice);
     if (!param) return;
@@ -546,6 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
     x2_popolaValori(param);
     x2_aggiornaParamButtons(param.PARAMETRO);
 });
+
 
 
     // PATCH EVENTO selValore.change
