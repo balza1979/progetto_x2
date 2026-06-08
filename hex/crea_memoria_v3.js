@@ -1,18 +1,22 @@
-/* ============================================================
-   x2_memoriaC_loader.js — versione corretta per Intel‑HEX
-   ============================================================ */
+// CREA_MEMORIA.JS V3 — versione 5/6/26 11:24
+// Luca / Copilot
 
-/* ------------------------------------------------------------
-   1) Controllo esistenza Memoria C
-   ------------------------------------------------------------ */
-function checkMemoriaC() {
-    return localStorage.getItem("memC_hex") !== null;
+let memoriaA = null;
+let memoriaB = null;
+
+// ------------------------------------------------------------
+// Utility HEX
+// ------------------------------------------------------------
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
+
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
 }
 
-/* ------------------------------------------------------------
-   2) Converte Intel‑HEX → mappa {indirizzo: byteHex}
-   ------------------------------------------------------------ */
-function intelHexToMemoryMap(hexText) {
+function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
 
@@ -23,7 +27,7 @@ function intelHexToMemoryMap(hexText) {
         const address    = parseInt(line.substr(3, 4), 16);
         const recordType = parseInt(line.substr(7, 2), 16);
 
-        if (recordType !== 0) continue; // solo DATA
+        if (recordType !== 0) continue; // solo record DATA
 
         for (let i = 0; i < byteCount; i++) {
             const byteHex = line.substr(9 + i * 2, 2).toUpperCase();
@@ -34,126 +38,173 @@ function intelHexToMemoryMap(hexText) {
     return mem;
 }
 
-/* ------------------------------------------------------------
-   3) Carica Memoria C dal localStorage
-   ------------------------------------------------------------ */
-function loadMemoriaC() {
-    const hexText = localStorage.getItem("memC_hex");
-    if (!hexText) return null;
+// 🔥 Rendo hexToMemoryMap globale (serve a memorie_tipo.js)
+window.hexToMemoryMap = hexToMemoryMap;
 
-    return intelHexToMemoryMap(hexText);
+/* ============================================================
+   Caricamento automatico Memoria A default
+   ============================================================ */
+async function caricaDefaultMemoriaA() {
+    const nomeFile = "memoria_polli.hex";
+
+    const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
+
+    const respRaw = await fetch(urlRaw);
+    const buffer  = await respRaw.arrayBuffer();
+
+    const hexText = new TextDecoder().decode(buffer);
+
+    memoriaA = hexToMemoryMap(hexText);
+
+    localStorage.setItem("memA_nome", nomeFile);
+    localStorage.setItem("memA_hex", hexText);
+
+    document.getElementById("file1").files = fakeFile(nomeFile, hexText);
+    document.getElementById("labelFileA").textContent = `FILE A: ${nomeFile}`;
+    document.getElementById("labelFileA").style.color = "#ff3333";
 }
 
-/* ------------------------------------------------------------
-   4) Legge un byte da Memoria C
-   ------------------------------------------------------------ */
-function getByteFromC(offset, memC_map) {
-    const hex = memC_map[offset] || "00";
-    return parseInt(hex, 16);
+/* ============================================================
+   LOG
+   ============================================================ */
+const logDiv = document.getElementById("log");
+function log(msg) {
+    if (logDiv) logDiv.textContent += msg + "\n";
 }
 
-/* ------------------------------------------------------------
-   5) Converte byte → valore leggibile
-   ------------------------------------------------------------ */
-function convertValueFromByte(param, byte) {
+/* ============================================================
+   RIPRISTINO LOCALSTORAGE
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const hexA  = localStorage.getItem("memA_hex");
+    const nomeA = localStorage.getItem("memA_nome");
 
-    if (param.tipo === "enum") {
-        return param.enum[byte] ?? "??";
+    const hexB  = localStorage.getItem("memB_hex");
+    const nomeB = localStorage.getItem("memB_nome");
+
+    if (hexA) {
+        memoriaA = hexToMemoryMap(hexA);
+        document.getElementById("file1").files = fakeFile(nomeA, hexA);
+        document.getElementById("labelFileA").textContent = `FILE A: ${nomeA}`;
     }
 
-    if (param.tipo === "bool") {
-        return byte === 1 ? "ON" : "OFF";
+    if (hexB) {
+        memoriaB = hexToMemoryMap(hexB);
+        document.getElementById("file2").files = fakeFile(nomeB, hexB);
+        document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
 
-    if (param.tipo === "num") {
-        return byte;
+    if (!localStorage.getItem("memA_hex")) {
+        caricaDefaultMemoriaA();
     }
 
-    return byte;
-}
+    aggiornaBloccoCreazione();
+});
 
-/* ------------------------------------------------------------
-   6) Converte valore UI → byte
-   ------------------------------------------------------------ */
-function convertValueToByte(param, nuovoValore) {
+/* ============================================================
+   CAMBIO FILE A
+   ============================================================ */
+function onFileA_Change() {
+    const inputA = document.getElementById("file1");
+    const lblA   = document.getElementById("labelFileA");
 
-    if (param.tipo === "enum") {
-        const index = param.enum.indexOf(nuovoValore);
-        return index >= 0 ? index : 0;
+    lblA.textContent = "FILE A (locale)";
+
+    if (!inputA.files[0]) {
+        localStorage.removeItem("memA_hex");
+        localStorage.removeItem("memA_nome");
+        memoriaA = null;
+        aggiornaBloccoCreazione();
+        return;
     }
 
-    if (param.tipo === "bool") {
-        return nuovoValore === "ON" ? 1 : 0;
-    }
-
-    if (param.tipo === "num") {
-        return Number(nuovoValore);
-    }
-
-    return 0;
-}
-
-/* ------------------------------------------------------------
-   7) Applica valori da Memoria C alla UI
-   ------------------------------------------------------------ */
-function applyValuesFromC() {
-    if (!checkMemoriaC()) return;
-
-    const memC_map = loadMemoriaC();
-    if (!memC_map) return;
-
-    x2_parametri.forEach(param => {
-        const byte = getByteFromC(param.offset, memC_map);
-        const valore = convertValueFromByte(param, byte);
-
-        param.VALORE = valore;
-
-        const el = document.getElementById(param.id_valore);
-        if (el) el.value = valore;
+    leggiFileHex(inputA, hexA => {
+        memoriaA = hexToMemoryMap(hexA);
+        localStorage.setItem("memA_hex", hexA);
+        localStorage.setItem("memA_nome", inputA.files[0].name);
+        aggiornaBloccoCreazione();
     });
 }
 
-/* ------------------------------------------------------------
-   8) Aggiorna Memoria C quando l’utente modifica un parametro
-   ------------------------------------------------------------ */
-function updateMemoriaC(param, nuovoValore) {
+/* ============================================================
+   CAMBIO FILE B
+   ============================================================ */
+function onFileB_Change() {
+    const inputB = document.getElementById("file2");
+    const lblB   = document.getElementById("labelFileB");
 
-    const hexText = localStorage.getItem("memC_hex");
-    if (!hexText) return;
+    lblB.textContent = "FILE B (locale)";
 
-    const memC_map = intelHexToMemoryMap(hexText);
+    if (!inputB.files[0]) {
+        localStorage.removeItem("memB_hex");
+        localStorage.removeItem("memB_nome");
+        memoriaB = null;
+        aggiornaBloccoCreazione();
+        return;
+    }
 
-    const nuovoByte = convertValueToByte(param, nuovoValore);
-
-    memC_map[param.offset] = nuovoByte.toString(16).padStart(2, "0").toUpperCase();
-
-    // 🔥 Ricostruzione Intel‑HEX NON implementata (non serve ora)
-    // Per ora aggiorniamo solo param.VALORE
-    param.VALORE = nuovoValore;
-}
-
-/* ------------------------------------------------------------
-   9) Aggancia eventi UI
-   ------------------------------------------------------------ */
-function hookUIevents() {
-    x2_parametri.forEach(param => {
-        const el = document.getElementById(param.id_valore);
-        if (!el) return;
-
-        el.addEventListener("change", () => {
-            updateMemoriaC(param, el.value);
-        });
+    leggiFileHex(inputB, hexB => {
+        memoriaB = hexToMemoryMap(hexB);
+        localStorage.setItem("memB_hex", hexB);
+        localStorage.setItem("memB_nome", inputB.files[0].name);
+        aggiornaBloccoCreazione();
     });
 }
 
-/* ------------------------------------------------------------
-   10) Inizializzazione
-   ------------------------------------------------------------ */
-function initMemoriaC() {
-    if (!checkMemoriaC()) return;
+/* ============================================================
+   MOSTRA BLOCCO CREAZIONE SOLO SE A E B ESISTONO
+   ============================================================ */
+function aggiornaBloccoCreazione() {
+    const blocco = document.getElementById("crea-memoria-container");
 
-    applyValuesFromC();
-    hookUIevents();
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    blocco.style.display = (hexA && hexB) ? "block" : "none";
 }
 
-document.addEventListener("DOMContentLoaded", initMemoriaC);
+/* ============================================================
+   RESET COMPLETO MEMORIA (A e B)
+   ============================================================ */
+document.getElementById("btnResetMemoria").addEventListener("click", () => {
+
+    localStorage.removeItem("memA_hex");
+    localStorage.removeItem("memA_nome");
+
+    localStorage.removeItem("memB_hex");
+    localStorage.removeItem("memB_nome");
+    
+    caricaDefaultMemoriaA();
+
+    location.reload();
+});
+
+/* ============================================================
+   GENERAZIONE MEMORIA C
+   ============================================================ */
+document.getElementById("btnGeneraC").addEventListener("click", () => {
+    logDiv.textContent = "";
+
+    const nomeC = document.getElementById("nomeMemoriaC").value.trim();
+
+    if (!nomeC) {
+        log("Errore: devi inserire un nome per la memoria C.");
+        return;
+    }
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+
+    if (!hexA || !hexB) {
+        log("Errore: FILE A e FILE B devono essere caricati prima.");
+        return;
+    }
+
+    // 🔥 Memoria C = copia perfetta di B
+    const memoriaC_hex = hexB;
+
+    localStorage.setItem("memC_hex", memoriaC_hex);
+    localStorage.setItem("memC_nome", nomeC + ".hex");
+
+    log(`Memoria C creata e salvata come: ${nomeC}.hex`);
+});
