@@ -521,15 +521,25 @@ document.addEventListener("DOMContentLoaded", function () {
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
-    selParametro.addEventListener("change", function () {
-        const codice = this.value.replace(/"/g, "").trim();
-        const param = x2_parametri.find(p => p.PARAMETRO === codice);
-        if (param) {
-            x2_mostraInfoParametro(param);
-            x2_popolaValori(param);
-            x2_aggiornaParamButtons(param.PARAMETRO);
-        }
-    });
+  selParametro.addEventListener("change", function () {
+    const codice = this.value.replace(/"/g, "").trim();
+    const param = x2_parametri.find(p => p.PARAMETRO === codice);
+    if (!param) return;
+
+    // 🔥 STEP 1 — Sincronizza il parametro con Memoria C modificata
+    if (memC_modificata) {
+        const indirizzo = parseInt(param.LIBERA1);
+        const byte      = getByteFromC(indirizzo);
+        const valoreC   = convertValueFromByte(param, byte);
+        param.VALORE    = valoreC;
+    }
+
+    // 🔥 Ora la UI usa il valore aggiornato
+    x2_mostraInfoParametro(param);
+    x2_popolaValori(param);
+    x2_aggiornaParamButtons(param.PARAMETRO);
+});
+
 
     // PATCH EVENTO selValore.change
     selValore.addEventListener("change", function () {
