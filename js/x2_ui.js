@@ -589,7 +589,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         x2_caricaJSON(nomeJSON, function(data) {
           //  x2_aggiornaValoriDaSelezione(data, valoreScelto);
-            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+          //  x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+                            x2_aggiornaValoriDaSelezione(param, data, param.VALORE);
 
         });
     });
