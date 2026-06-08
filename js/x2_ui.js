@@ -440,10 +440,13 @@ btnDown.addEventListener("click", function () {
 }
 
 
-// ------------------------------------------------------------
-// AGGIORNA val1…val8 — VERSIONE CORRETTA
-// ------------------------------------------------------------
 function x2_aggiornaValoriDaSelezione(data, valore) {
+
+    // 🔥 PATCH: aggiorna il valore del parametro
+    param.VALORE = valore;
+
+    // 🔥 PATCH: salva in Memoria C modificata
+    updateMemoriaC(param, param.VALORE);
 
     const lista =
         data.file_parametro[valore] ||
