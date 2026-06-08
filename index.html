@@ -794,13 +794,7 @@ window.addEventListener("load", checkScreenSize);
 <script src="js/x2_menu_struttura_data.js"></script>
 <script src="js/x2_parametri_data.js"></script>
 	
-	<script>
-	x2_parametri_data.forEach(p => {
-    if (p.LIBERA1 && p.LIBERA1.startsWith("0x")) {
-        p.offset = parseInt(p.LIBERA1);
-    }
-});
-</script>
+
 
 <script src="js/x2_loader.js"></script>      <!-- deve stare PRIMA di core -->
 <script src="js/x2_core.js"></script>
