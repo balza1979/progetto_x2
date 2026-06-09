@@ -140,7 +140,13 @@ function salvaMemoriaC() {
 // Aggiorna un byte in Memoria C
 // ------------------------------------------------------------
 function updateMemoriaC(param, nuovoValore) {
-    if (!memC) return;
+
+    // 09/06/2026 11:10 - SE MEMORIA C NON ESISTE → NON SALVO NIENTE
+    if (!memC) {
+        console.warn("Memoria C non esiste: salvataggio ignorato.");
+        return;
+    }
+
     if (!param || !param.LIBERA1) return;
 
     const indirizzo = parseInt(param.LIBERA1);
