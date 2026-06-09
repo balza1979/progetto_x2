@@ -244,7 +244,9 @@ function x2_popolaValori(param) {
             tendina.value = valorePulito;
 
             // Aggiorna pulsanti
-            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+           // x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+// NON aggiornare qui!
+// L’aggiornamento deve avvenire SOLO nell’onchange.
 
             // ------------------------------------------------------------
             // PATCH: ONCHANGE CORRETTO (NESSUN CONFLITTO, NESSUN PARAM SBAGLIATO)
