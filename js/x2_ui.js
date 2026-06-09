@@ -699,10 +699,14 @@ function x2_cambiaParametro(delta) {
     if (modificheInCorso) {
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
         
-       if (!conferma) {
-    modificheInCorso = false;   // ← QUESTO SBLOCCA LE FRECCE
+if (!conferma) {
+    // 09/06/2026 12:40 - RIPRISTINO IL VALORE ORIGINALE
+    document.getElementById("tendina_valori").value = ultimoParametro.VALORE;
+
+    modificheInCorso = false;
     return;
 }
+
 
         // Se conferma → salvo
         const val = document.getElementById("tendina_valori").value;
