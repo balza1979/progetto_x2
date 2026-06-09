@@ -694,6 +694,9 @@ if (memC) {
 
     // Navigazione parametri ↑↓
     function x2_cambiaParametro(delta) {
+        // 09/06/2026 11:40 - AGGIORNO ultimoParametro PRIMA DEL WARNING
+        ultimoParametro = x2_parametri[document.getElementById("parametro").selectedIndex];
+
         // 09/06/2026 10:50 - WARNING SE CI SONO MODIFICHE NON SALVATE
 if (modificheInCorso) {
     const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
