@@ -520,46 +520,28 @@ document.addEventListener("DOMContentLoaded", function () {
     // Carica menu principale
     x2_popolaMenu();
 
-    // ======================================================================
-    // NAVIGAZIONE PARAMETRI ↑↓
+// ======================================================================
+// NAVIGAZIONE PARAMETRI ↑↓
 // ======================================================================
 function x2_cambiaParametro(delta) {
 
-        // -------------------------------------------------------------
-    // INIZIO PATCH PUNTO 1 — FRECCE SU/GIÙ
-    // -------------------------------------------------------------
     if (modificheInCorso) {
 
         const valoreOriginale = ultimoParametro.VALORE;
-
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
         if (!conferma) {
-            // RIPRISTINO SUBITO IL VALORE ORIGINALE NELLA TENDINA
             document.getElementById("tendina_valori").value = valoreOriginale;
-
-            // RESET STATO MODIFICHE
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
-
-            // NON faccio return → il parametro CAMBIA comunque
         } else {
-            // SALVO
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
-
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
         }
     }
-    // -------------------------------------------------------------
-    // FINE PATCH PUNTO 1
-    // -------------------------------------------------------------
 
-
-
-
-	
     const sel = document.getElementById("parametro");
     let nuovo = sel.selectedIndex + delta;
 
@@ -567,40 +549,38 @@ function x2_cambiaParametro(delta) {
     if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
 
     sel.selectedIndex = nuovo;
-
     ultimoParametro = x2_parametri[nuovo];
-
     sel.dispatchEvent(new Event("change"));
-	}
-		
-    document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
-    document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
+}
 
-    // ======================================================================
-    // CAMBIO MENU
-    // ======================================================================
-    selMenu.addEventListener("change", function () {
+document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
+document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
 
-        modificheInCorso = false;
-        document.getElementById("btn_salva_parametro").disabled = true;
+// ======================================================================
+// CAMBIO MENU
+// ======================================================================
+selMenu.addEventListener("change", function () {
 
-        x2_popolaSottomenu(this.value);
-        selSottomenu.dispatchEvent(new Event("change"));
-        x2_aggiornaMenuButtons(this.value);
-    });
+    modificheInCorso = false;
+    document.getElementById("btn_salva_parametro").disabled = true;
 
-    // ======================================================================
-    // CAMBIO SOTTOMENU
-    // ======================================================================
-    selSottomenu.addEventListener("change", function () {
+    x2_popolaSottomenu(this.value);
+    selSottomenu.dispatchEvent(new Event("change"));
+    x2_aggiornaMenuButtons(this.value);
+});
 
-        modificheInCorso = false;
-        document.getElementById("btn_salva_parametro").disabled = true;
+// ======================================================================
+// CAMBIO SOTTOMENU
+// ======================================================================
+selSottomenu.addEventListener("change", function () {
 
-        x2_popolaParametri(this.value);
-        selParametro.dispatchEvent(new Event("change"));
-        x2_aggiornaSottomenuButtons(selMenu.value, this.value);
-    });
+    modificheInCorso = false;
+    document.getElementById("btn_salva_parametro").disabled = true;
+
+    x2_popolaParametri(this.value);
+    selParametro.dispatchEvent(new Event("change"));
+    x2_aggiornaSottomenuButtons(selMenu.value, this.value);
+});
 
 // ======================================================================
 // CAMBIO PARAMETRO
@@ -610,26 +590,19 @@ selParametro.addEventListener("change", function () {
     if (modificheInCorso) {
 
         const parametroOriginale = ultimoParametro.PARAMETRO;
-
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
         if (!conferma) {
-
-            // RIPRISTINO PARAMETRO NELLA TENDINA
             this.value = parametroOriginale;
-
-            // RICARICO COMPLETAMENTE IL PARAMETRO CORRENTE
             ultimoParametro = x2_parametri[this.selectedIndex];
             x2_mostraInfoParametro(ultimoParametro);
             x2_popolaValori(ultimoParametro);
 
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
-
-            return; // blocco il cambio parametro
+            return;
         }
 
-        // SALVO
         const val = document.getElementById("tendina_valori").value;
         updateMemoriaC(ultimoParametro, val);
 
@@ -637,12 +610,10 @@ selParametro.addEventListener("change", function () {
         document.getElementById("btn_salva_parametro").disabled = true;
     }
 
-    // LOGICA ORIGINALE CAMBIO PARAMETRO
     ultimoParametro = x2_parametri[this.selectedIndex];
     x2_mostraInfoParametro(ultimoParametro);
     x2_popolaValori(ultimoParametro);
 });
-
 
 // ======================================================================
 // PULSANTE CREA HEX
@@ -651,10 +622,7 @@ document.getElementById("crea_hex_btn").onclick = function () {
     window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
 };
 
-}); // ← CHIUSURA DOMContentLoaded
-
-
-
+}); // ← CHIUSURA CORRETTA DI DOMContentLoaded
 
 
 window.addEventListener("beforeunload", function (e) {
