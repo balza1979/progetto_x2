@@ -677,7 +677,10 @@ document.getElementById("btn_salva_parametro").disabled = true;
     selValore.classList.add("tendina_verde");
 // 09/06/2026 10:45 - ATTIVO IL BOTTONE SALVA QUANDO IL VALORE CAMBIA
 selValore.addEventListener("change", function () {
+    // 09/06/2026 11:25 - MODIFICHE SOLO SE ESISTE MEMORIA C
+if (memC) {
     modificheInCorso = true;
+}
 
     // 09/06/2026 11:12 - ATTIVO SALVA SOLO SE ESISTE MEMORIA C
     if (memC) {
