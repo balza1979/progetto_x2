@@ -693,41 +693,40 @@ if (memC) {
     x2_popolaMenu();
 
     // Navigazione parametri ↑↓
-    function x2_cambiaParametro(delta) {
-        // 09/06/2026 11:40 - AGGIORNO ultimoParametro PRIMA DEL WARNING
-        ultimoParametro = x2_parametri[document.getElementById("parametro").selectedIndex];
+function x2_cambiaParametro(delta) {
 
-        // 09/06/2026 10:50 - WARNING SE CI SONO MODIFICHE NON SALVATE
-if (modificheInCorso) {
-    const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-    
-    // 09/06/2026 12:15 - SE ANNULLA → BLOCCO IL CAMBIO PARAMETRO
-    if (!conferma) {
-        return; 
+    // 09/06/2026 12:30 - WARNING PRIMA DI CAMBIARE PARAMETRO
+    if (modificheInCorso) {
+        const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+        
+        if (!conferma) {
+            // 09/06/2026 12:30 - ANNULLA → NON CAMBIO PARAMETRO
+            return;
+        }
+
+        // Se conferma → salvo
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
+
+        modificheInCorso = false;
+        document.getElementById("btn_salva_parametro").disabled = true;
     }
 
-    // Se conferma → salvo
-    const val = document.getElementById("tendina_valori").value;
-    updateMemoriaC(ultimoParametro, val);
+    // 09/06/2026 12:30 - SOLO ORA CAMBIO PARAMETRO
+    const sel = document.getElementById("parametro");
+    let nuovo = sel.selectedIndex + delta;
 
-    modificheInCorso = false;
-    document.getElementById("btn_salva_parametro").disabled = true;
+    if (nuovo < 0) nuovo = 0;
+    if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
+
+    sel.selectedIndex = nuovo;
+
+    // aggiorno ultimoParametro SOLO DOPO aver cambiato parametro
+    ultimoParametro = x2_parametri[nuovo];
+
+    sel.dispatchEvent(new Event("change"));
 }
 
-
-
-        
-
-        const sel = document.getElementById("parametro");
-
-        let nuovo = sel.selectedIndex + delta;
-
-        if (nuovo < 0) nuovo = 0;
-        if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
-
-        sel.selectedIndex = nuovo;
-        sel.dispatchEvent(new Event("change"));
-    }
 
     document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
