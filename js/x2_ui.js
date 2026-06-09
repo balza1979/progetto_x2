@@ -1,18 +1,18 @@
 // ======================================================================
-// UI X2 PRO — VERSIONE 1 (SALVA SOLO CON IL BOTTONE)
+// X2 UI — VERSIONE COMPLETA (SALVA SOLO CON BOTTONE)
 // Riscritta da zero — 09/06/2026
+// Compatibile con: x2_menu_struttura_data, x2_parametri, x2_caricaJSON
 // ======================================================================
 
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
-let memC = null;                 // array di byte (8192)
-let memC_modificata = false;
+let memC = null;
 let ultimoParametro = null;
 let modificheInCorso = false;
 
 // ------------------------------------------------------------
-// CARICAMENTO / SALVATAGGIO MEMORIA C (HEX INTEL)
+// MEMORIA C — CARICA / SALVA
 // ------------------------------------------------------------
 function caricaMemoriaC() {
     const raw = localStorage.getItem("memC_hex");
@@ -29,22 +29,34 @@ function salvaMemoriaC() {
     if (!memC) return;
     const hex = bytesToIntelHex(memC);
     localStorage.setItem("memC_hex", hex);
-    memC_modificata = false;
 }
 
 // ------------------------------------------------------------
-// AGGIORNA UN PARAMETRO IN MEMORIA C (SOLO QUANDO PREMI SALVA)
+// CONVERSIONE VALORI ↔ BYTE
+// ------------------------------------------------------------
+function convertValueToByte(param, valore) {
+    if (param.TIPO_ELENCO === "DECIMALE") {
+        return Math.round(parseFloat(valore) * 10);
+    }
+    return parseInt(valore);
+}
+
+function convertValueFromByte(param, byte) {
+    if (param.TIPO_ELENCO === "DECIMALE") {
+        return (byte / 10).toFixed(param.DECIMALI);
+    }
+    return byte.toString().padStart(2, "0");
+}
+
+// ------------------------------------------------------------
+// SALVA PARAMETRO IN MEMORIA C (SOLO CON BOTTONE)
 // ------------------------------------------------------------
 function salvaParametroInMemoria(param, valore) {
     if (!memC) return;
-    if (!param || !param.LIBERA1) return;
-
     const addr = parseInt(param.LIBERA1);
-    if (isNaN(addr) || addr < 0 || addr >= memC.length) return;
+    if (isNaN(addr)) return;
 
-    const byte = convertValueToByte(param, valore);
-    memC[addr] = byte;
-    memC_modificata = true;
+    memC[addr] = convertValueToByte(param, valore);
     salvaMemoriaC();
 }
 
@@ -53,11 +65,9 @@ function salvaParametroInMemoria(param, valore) {
 // ------------------------------------------------------------
 function x2_mostraInfoParametro(param) {
 
-    // Se Memoria C esiste → leggo il valore reale
     if (memC) {
         const addr = parseInt(param.LIBERA1);
-        const byte = memC[addr];
-        param.VALORE = convertValueFromByte(param, byte);
+        param.VALORE = convertValueFromByte(param, memC[addr]);
     }
 
     ultimoParametro = param;
@@ -66,13 +76,12 @@ function x2_mostraInfoParametro(param) {
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
         <b>Valore:</b> ${param.VALORE}<br>
-        <b>Indirizzo:</b> ${param.LIBERA1}<br>
-        <b>HEX:</b> ${x2_calcolaHex(param)}
+        <b>Indirizzo:</b> ${param.LIBERA1}
     `;
 }
 
 // ------------------------------------------------------------
-// POPOLA VALORI (TENDINA O MIN/MAX)
+// POPOLA VALORI (TENDINA / MINMAX / DECIMALI)
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
 
@@ -184,6 +193,145 @@ function x2_popolaValori(param) {
 }
 
 // ------------------------------------------------------------
+// LEGGE VALORE CORRENTE (TENDINA O MINMAX)
+// ------------------------------------------------------------
+function x2_leggiValoreCorrente() {
+    const input = document.getElementById("input_minmax");
+    if (input) return input.value;
+    return document.getElementById("tendina_valori").value;
+}
+
+// ------------------------------------------------------------
+// POPOLA MENU PRINCIPALE
+// ------------------------------------------------------------
+function x2_popolaMenu() {
+    const sel = document.getElementById("menu");
+    sel.innerHTML = "";
+
+    x2_menu_struttura_data.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.ID;
+        opt.textContent = m.NOME;
+        sel.appendChild(opt);
+    });
+}
+
+// ------------------------------------------------------------
+// POPOLA SOTTOMENU
+// ------------------------------------------------------------
+function x2_popolaSottomenu(idMenu) {
+    const sel = document.getElementById("sottomenu");
+    sel.innerHTML = "";
+
+    const menu = x2_menu_struttura_data.find(m => m.ID === idMenu);
+    if (!menu) return;
+
+    menu.SOTTOMENU.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.ID;
+        opt.textContent = s.NOME;
+        sel.appendChild(opt);
+    });
+}
+
+// ------------------------------------------------------------
+// POPOLA PARAMETRI
+// ------------------------------------------------------------
+function x2_popolaParametri(idSottomenu) {
+    const sel = document.getElementById("parametro");
+    sel.innerHTML = "";
+
+    const lista = x2_parametri.filter(p => p.SOTTOMENU === idSottomenu);
+
+    lista.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.ID;
+        opt.textContent = `${p.ID} — ${p.DESCRIZIONE}`;
+        sel.appendChild(opt);
+    });
+}
+
+// ------------------------------------------------------------
+// AGGIORNA PULSANTI MENU
+// ------------------------------------------------------------
+function x2_aggiornaMenuButtons(idMenu) {
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.getElementById("menu" + i);
+        if (!btn) continue;
+
+        const menu = x2_menu_struttura_data[i - 1];
+        if (!menu) {
+            btn.textContent = "-";
+            btn.disabled = true;
+            continue;
+        }
+
+        btn.textContent = menu.NOME;
+        btn.disabled = false;
+        btn.onclick = () => {
+            document.getElementById("menu").value = menu.ID;
+            document.getElementById("menu").dispatchEvent(new Event("change"));
+        };
+    }
+}
+
+// ------------------------------------------------------------
+// AGGIORNA PULSANTI SOTTOMENU
+// ------------------------------------------------------------
+function x2_aggiornaSottomenuButtons(idMenu, idSottomenu) {
+
+    const menu = x2_menu_struttura_data.find(m => m.ID === idMenu);
+    if (!menu) return;
+
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.getElementById("sottomenu" + i);
+        if (!btn) continue;
+
+        const sm = menu.SOTTOMENU[i - 1];
+        if (!sm) {
+            btn.textContent = "-";
+            btn.disabled = true;
+            continue;
+        }
+
+        btn.textContent = sm.NOME;
+        btn.disabled = false;
+        btn.onclick = () => {
+            document.getElementById("sottomenu").value = sm.ID;
+            document.getElementById("sottomenu").dispatchEvent(new Event("change"));
+        };
+    }
+}
+
+// ------------------------------------------------------------
+// AGGIORNA PULSANTI FILE PARAMETRO
+// ------------------------------------------------------------
+function x2_aggiornaParamButtons(codiceParametro) {
+
+    const record = x2_parametri.find(p => p.PARAMETRO === codiceParametro.trim());
+    const pulsanti = [];
+
+    for (let i = 1; i <= 8; i++) {
+        pulsanti.push(document.getElementById("btn_param" + i));
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const nomeCampo = "FILE" + (i + 1);
+        const file = record ? record[nomeCampo] : "";
+
+        if (file && file !== "/" && file.trim() !== "") {
+            pulsanti[i].textContent = file;
+            pulsanti[i].disabled = false;
+            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
+        } else {
+            pulsanti[i].textContent = "-";
+            pulsanti[i].disabled = true;
+            pulsanti[i].onclick = null;
+        }
+    }
+}
+
+// ------------------------------------------------------------
 // CAMBIO PARAMETRO (FRECCE)
 // ------------------------------------------------------------
 function x2_cambiaParametro(delta) {
@@ -209,15 +357,6 @@ function x2_cambiaParametro(delta) {
 
     sel.selectedIndex = nuovo;
     sel.dispatchEvent(new Event("change"));
-}
-
-// ------------------------------------------------------------
-// LEGGE IL VALORE CORRENTE (TENDINA O MINMAX)
-// ------------------------------------------------------------
-function x2_leggiValoreCorrente() {
-    const input = document.getElementById("input_minmax");
-    if (input) return input.value;
-    return document.getElementById("tendina_valori").value;
 }
 
 // ------------------------------------------------------------
@@ -251,6 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ultimoParametro = x2_parametri[selParametro.selectedIndex];
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
+        x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
     });
 
     document.getElementById("parametro_up").onclick = () => x2_cambiaParametro(-1);
@@ -263,6 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         x2_popolaSottomenu(selMenu.value);
         selSottomenu.dispatchEvent(new Event("change"));
+        x2_aggiornaMenuButtons(selMenu.value);
     };
 
     // SOTTOMENU
@@ -272,6 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         x2_popolaParametri(selSottomenu.value);
         selParametro.dispatchEvent(new Event("change"));
+        x2_aggiornaSottomenuButtons(selMenu.value, selSottomenu.value);
     };
 
     x2_popolaMenu();
