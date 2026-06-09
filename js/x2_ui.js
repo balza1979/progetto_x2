@@ -678,8 +678,13 @@ document.getElementById("btn_salva_parametro").disabled = true;
 // 09/06/2026 10:45 - ATTIVO IL BOTTONE SALVA QUANDO IL VALORE CAMBIA
 selValore.addEventListener("change", function () {
     modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
+
+    // 09/06/2026 11:12 - ATTIVO SALVA SOLO SE ESISTE MEMORIA C
+    if (memC) {
+        document.getElementById("btn_salva_parametro").disabled = false;
+    }
 });
+
 
     // Carica menu principale
     x2_popolaMenu();
