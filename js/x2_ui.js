@@ -1,7 +1,7 @@
 // ======================================================================
-// FILE: js/x2_ui.js — VERSIONE PRO
+// FILE: js/x2_ui.js — VERSIONE PRO (HEX VERSION)
 // DATA: 09/06/2026
-// DESCRIZIONE: UI Programmatore X2 — Pulita, Ordinata, Stabile
+// DESCRIZIONE: UI Programmatore X2 — Usa SOLO HEX Intel in Memoria C
 // ======================================================================
 
 // ------------------------------------------------------------
@@ -9,51 +9,164 @@
 // ------------------------------------------------------------
 let ultimoParametro = null;
 
-// Memoria C caricata da localStorage (se esiste)
-let memC = null;
+// memC_bytes = array di 8192 byte (0x0000–0x1FFF)
+let memC = null;              // array di byte
 let memC_modificata = false;
 
-// Carica Memoria C da localStorage
+// ------------------------------------------------------------
+// PARSING HEX INTEL → ARRAY BYTE (8192)
+// ------------------------------------------------------------
+function parseIntelHexToBytes(hexText) {
+    const lines = hexText.split(/\r?\n/).filter(l => l.trim().startsWith(":"));
+    const bytes = new Uint8Array(0x2000); // 8192
+    bytes.fill(0xFF);
+
+    let baseAddr = 0;
+
+    for (const line of lines) {
+        const rec = line.trim();
+        if (rec.length < 11 || rec[0] !== ":") continue;
+
+        const len = parseInt(rec.substr(1, 2), 16);
+        const addr = parseInt(rec.substr(3, 4), 16);
+        const type = parseInt(rec.substr(7, 2), 16);
+
+        if (type === 0x04) {
+            // Extended Linear Address
+            const hi = parseInt(rec.substr(9, 4), 16);
+            baseAddr = hi << 16;
+            continue;
+        }
+
+        if (type === 0x00) {
+            // Data record
+            let offset = baseAddr + addr;
+            for (let i = 0; i < len; i++) {
+                const b = parseInt(rec.substr(9 + i * 2, 2), 16);
+                if (offset >= 0 && offset < 0x2000) {
+                    bytes[offset] = b;
+                }
+                offset++;
+            }
+        }
+
+        if (type === 0x01) {
+            // EOF
+            break;
+        }
+    }
+
+    return Array.from(bytes);
+}
+
+// ------------------------------------------------------------
+// ARRAY BYTE → HEX INTEL (8192, blocchi da 16)
+// ------------------------------------------------------------
+function bytesToIntelHex(bytes) {
+    const lines = [];
+    // Extended Linear Address 0x0000
+    lines.push(":020000040000FA");
+
+    const total = bytes.length; // 8192
+    const recSize = 16;
+
+    for (let addr = 0; addr < total; addr += recSize) {
+        const len = Math.min(recSize, total - addr);
+        const hi = (addr >> 8) & 0xFF;
+        const lo = addr & 0xFF;
+
+        let sum = 0;
+        sum += len;
+        sum += hi;
+        sum += lo;
+        sum += 0x00; // type
+
+        let dataStr = "";
+        for (let i = 0; i < len; i++) {
+            const b = bytes[addr + i] & 0xFF;
+            sum += b;
+            dataStr += b.toString(16).toUpperCase().padStart(2, "0");
+        }
+
+        const chk = ((~sum + 1) & 0xFF);
+        const line =
+            ":" +
+            len.toString(16).toUpperCase().padStart(2, "0") +
+            hi.toString(16).toUpperCase().padStart(2, "0") +
+            lo.toString(16).toUpperCase().padStart(2, "0") +
+            "00" +
+            dataStr +
+            chk.toString(16).toUpperCase().padStart(2, "0");
+
+        lines.push(line);
+    }
+
+    // EOF
+    lines.push(":00000001FF");
+    return lines.join("\r\n");
+}
+
+// ------------------------------------------------------------
+// Carica Memoria C da localStorage (HEX → bytes)
+// ------------------------------------------------------------
 function caricaMemoriaC() {
     const raw = localStorage.getItem("memC_hex");
     if (!raw) return null;
 
     try {
-        return JSON.parse(raw);
+        const bytes = parseIntelHexToBytes(raw);
+        return bytes;
     } catch (e) {
-        console.error("Errore parsing Memoria C:", e);
+        console.error("Errore parsing Memoria C (HEX):", e);
         return null;
     }
 }
 
-// Salva Memoria C modificata
+// ------------------------------------------------------------
+// Salva Memoria C (bytes → HEX in localStorage)
+// ------------------------------------------------------------
 function salvaMemoriaC() {
     if (!memC) return;
-    localStorage.setItem("memC_hex", JSON.stringify(memC));
-    memC_modificata = false;
+    try {
+        const hex = bytesToIntelHex(memC);
+        localStorage.setItem("memC_hex", hex);
+        memC_modificata = false;
+    } catch (e) {
+        console.error("Errore salvataggio Memoria C (HEX):", e);
+    }
 }
 
+// ------------------------------------------------------------
 // Aggiorna un byte in Memoria C
+// ------------------------------------------------------------
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
+    if (!param || !param.LIBERA1) return;
 
     const indirizzo = parseInt(param.LIBERA1);
-    const byte = convertValueToByte(param, nuovoValore);
+    if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
+    const byte = convertValueToByte(param, nuovoValore);
     memC[indirizzo] = byte;
     memC_modificata = true;
     salvaMemoriaC();
 }
 
+// ------------------------------------------------------------
 // Converte valore → byte (per Memoria C)
+// ------------------------------------------------------------
 function convertValueToByte(param, valore) {
+    // qui puoi raffinare in base a scala/decimali, per ora 0–255
     return parseInt(valore) & 0xFF;
 }
 
+// ------------------------------------------------------------
 // Converte byte → valore (per UI)
+// ------------------------------------------------------------
 function convertValueFromByte(param, byte) {
     return String(byte).padStart(2, "0");
 }
+
 // ======================================================================
 // MENU PRINCIPALE
 // ======================================================================
