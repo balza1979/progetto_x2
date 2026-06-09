@@ -572,7 +572,7 @@ function x2_cambiaParametro(delta) {
 
     sel.dispatchEvent(new Event("change"));
 	}
-		}
+		
     document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
 
