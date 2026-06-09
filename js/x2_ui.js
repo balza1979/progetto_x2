@@ -318,8 +318,13 @@ function x2_mostraInfoParametro(param) {
         const indirizzo = parseInt(param.LIBERA1);
         const byte = memC[indirizzo];
         const valoreC = convertValueFromByte(param, byte);
-        param.VALORE = valoreC;
+
+        // 09/06/2026 - NON AGGIORNARE param.VALORE SE SIAMO IN MODIFICA NON SALVATA
+        if (!modificheInCorso) {
+            param.VALORE = valoreC;
+        }
     }
+
 
     const box = document.getElementById("info_parametro");
 
