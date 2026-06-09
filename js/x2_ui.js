@@ -617,7 +617,7 @@ selParametro.addEventListener("change", function () {
 
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
-        if (!conferma) {
+if (!conferma) {
 
     // RIPRISTINO VALORE ORIGINALE NEL MODELLO
     ultimoParametro.VALORE = valoreOriginale;
@@ -637,7 +637,6 @@ selParametro.addEventListener("change", function () {
 
     return; // blocco il cambio parametro
 }
-
 
         // SALVO
         const val = document.getElementById("tendina_valori").value;
