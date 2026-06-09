@@ -616,18 +616,24 @@ selParametro.addEventListener("change", function () {
         const parametroOriginale = ultimoParametro.PARAMETRO;
 
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-
 if (!conferma) {
 
-    // RIPRISTINO VALORE ORIGINALE NEL MODELLO
+    // RIPRISTINO MODELLO
     ultimoParametro.VALORE = valoreOriginale;
 
-    // RIPRISTINO TENDINA VALORI
+    // RIPRISTINO TENDINA PRIMA DI RICARICARE
     document.getElementById("tendina_valori").value = valoreOriginale;
 
-    // RICARICO COMPLETAMENTE LA UI DEL PARAMETRO
+    // RICARICO INFO PARAMETRO
     x2_mostraInfoParametro(ultimoParametro);
+
+    // RICARICO VALORI MA DOPO RIMETTO IL VALORE
     x2_popolaValori(ultimoParametro);
+
+    // FORZO DI NUOVO IL VALORE DOPO LA POPOLAZIONE
+    setTimeout(() => {
+        document.getElementById("tendina_valori").value = valoreOriginale;
+    }, 0);
 
     // RIPRISTINO PARAMETRO NELLA TENDINA
     this.value = parametroOriginale;
@@ -635,8 +641,9 @@ if (!conferma) {
     modificheInCorso = false;
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    return; // blocco il cambio parametro
+    return;
 }
+
 
         // SALVO
         const val = document.getElementById("tendina_valori").value;
