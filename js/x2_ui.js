@@ -634,6 +634,29 @@ function x2_aggiornaParamButtons(codiceParametro) {
 // ======================================================================
 document.addEventListener("DOMContentLoaded", function () {
 
+
+    // ======================================================================
+// 09/06/2026 10:30 - EVENTO CLICK TASTO SALVA PARAMETRO
+// ======================================================================
+document.getElementById("btn_salva_parametro").addEventListener("click", function () {
+
+    // Se non c'è un parametro selezionato, non facciamo nulla
+    if (!ultimoParametro) return;
+
+    // 09/06/2026 10:30 - LEGGO IL VALORE CORRENTE DALLA UI
+    // (per ora leggiamo dalla tendina valori)
+    const val = document.getElementById("tendina_valori").value;
+
+    // 09/06/2026 10:30 - SALVO IL VALORE NELLA MEMORIA C (HEX)
+    updateMemoriaC(ultimoParametro, val);
+
+    // 09/06/2026 10:30 - RESET DEL FLAG MODIFICHE
+    modificheInCorso = false;
+
+    // 09/06/2026 10:30 - FEEDBACK UTENTE
+    alert("Valore salvato.");
+});
+
     // Carica Memoria C se esiste
     memC = caricaMemoriaC();
 
