@@ -570,35 +570,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // PATCH EVENTO selValore.change
-    selValore.addEventListener("change", function () {
+ //   selValore.addEventListener("change", function () {
 
-        const codice = selParametro.value.replace(/"/g, "").trim();
-        const param = x2_parametri.find(p => p.PARAMETRO === codice);
-        if (!param) return;
+     //   const codice = selParametro.value.replace(/"/g, "").trim();
+     //   const param = x2_parametri.find(p => p.PARAMETRO === codice);
+    //    if (!param) return;
 
-        if (param.TIPO_ELENCO !== "ELENCO_PREDEFINITO") return;
+       // if (param.TIPO_ELENCO !== "ELENCO_PREDEFINITO") return;
 
-        let nomeJSON = null;
-        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+     //   let nomeJSON = null;
+     //   const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-        if (fonte === "parametro") {
-            nomeJSON = param.PARAMETRO.trim();
-        } else if (fonte && fonte !== "/") {
-            nomeJSON = fonte;
-        } else {
-            nomeJSON = param.PARAMETRO.trim();
-        }
+    //    if (fonte === "parametro") {
+    //        nomeJSON = param.PARAMETRO.trim();
+    //    } else if (fonte && fonte !== "/") {
+    //        nomeJSON = fonte;
+     //   } else {
+     //       nomeJSON = param.PARAMETRO.trim();
+     //   }
 
-        const valoreScelto = this.value.toString().trim().padStart(2, "0");
+       // const valoreScelto = this.value.toString().trim().padStart(2, "0");
 
-        x2_caricaJSON(nomeJSON, function(data) {
-          //  x2_aggiornaValoriDaSelezione(data, valoreScelto);
-          //  x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-                          //  x2_aggiornaValoriDaSelezione(param, data, param.VALORE);
-                        x2_aggiornaValoriDaSelezione(param, data, valoreScelto);
+      //  x2_caricaJSON(nomeJSON, function(data) {
+        /////  //  x2_aggiornaValoriDaSelezione(data, valoreScelto);
+        /////  //  x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+                      ////   //  x2_aggiornaValoriDaSelezione(param, data, param.VALORE);
+            //            x2_aggiornaValoriDaSelezione(param, data, valoreScelto);
 
-        });
-    });
+    //    });
+ //   });
 
  document.getElementById("crea_hex_btn").onclick = function () {
     window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
