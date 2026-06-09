@@ -663,17 +663,33 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
     const selMenu       = document.getElementById("menu");
     const selSottomenu  = document.getElementById("sottomenu");
     const selParametro  = document.getElementById("parametro");
-    const selValore     = document.getElementById("tendina_valori");
+    const selValore = document.getElementById("tendina_valori");
 // 09/06/2026 10:40 - DISATTIVO IL BOTTONE SALVA ALL’AVVIO
 document.getElementById("btn_salva_parametro").disabled = true;
 
     selValore.classList.add("tendina_verde");
+// 09/06/2026 10:45 - ATTIVO IL BOTTONE SALVA QUANDO IL VALORE CAMBIA
+selValore.addEventListener("change", function () {
+    modificheInCorso = true;
+    document.getElementById("btn_salva_parametro").disabled = false;
+});
 
     // Carica menu principale
     x2_popolaMenu();
 
     // Navigazione parametri ↑↓
     function x2_cambiaParametro(delta) {
+        // 09/06/2026 10:50 - WARNING SE CI SONO MODIFICHE NON SALVATE
+if (modificheInCorso) {
+    const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+    if (conferma) {
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
+    }
+    modificheInCorso = false;
+    document.getElementById("btn_salva_parametro").disabled = true;
+}
+
         const sel = document.getElementById("parametro");
 
         let nuovo = sel.selectedIndex + delta;
