@@ -216,7 +216,7 @@ function x2_popolaValori(param) {
         btn.onclick = null;
     }
 
-    // 1) JSON
+    // SOLO ELENCO PREDEFINITO
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
@@ -243,22 +243,19 @@ function x2_popolaValori(param) {
             const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
             tendina.value = valorePulito;
 
-            // Aggiorna pulsanti
-           // x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-// NON aggiornare qui!
-// L’aggiornamento deve avvenire SOLO nell’onchange.
+            // ❌ NON aggiornare qui!
+            // x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
             // ------------------------------------------------------------
-            // PATCH: ONCHANGE CORRETTO (NESSUN CONFLITTO, NESSUN PARAM SBAGLIATO)
+            // PATCH: ONCHANGE CORRETTO
             // ------------------------------------------------------------
-            const codiceParam = param.PARAMETRO;   // blocca il parametro giusto
+            const codiceParam = param.PARAMETRO;
 
             tendina.onchange = function () {
                 console.log("TENDINA CHANGE TRIGGERED");
 
                 const nuovoValore = this.value.toString().trim().padStart(2, "0");
 
-                // recupera SEMPRE il parametro corretto
                 const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
                 if (!p) return;
 
@@ -269,9 +266,11 @@ function x2_popolaValori(param) {
 
         });
 
-        return;
+        return; // ← QUESTO È CORRETTO, SIAMO DENTRO LA FUNZIONE
     }
-}
+
+} // ← CHIUSURA FUNZIONE (NON TOCCARE)
+
 
     // 2) MIN/MAX
 // =========================================================
