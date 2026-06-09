@@ -276,6 +276,27 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
+
+
+
+function convertValueFromByte(param, byte) {
+
+    const tipo = (param.LIBERA3 || "").trim().toUpperCase();
+    const scala = parseFloat(param.LIBERA4 || "1");
+
+    let valore = byte;
+
+    // Valori con segno (signed)
+    if (tipo === "SIGNED" || tipo === "S") {
+        if (byte > 127) valore = byte - 256;
+    }
+
+    // Applica scala
+    valore = valore * scala;
+
+    return valore.toString();
+}
+
 // ======================================================================
 // INFO PARAMETRO
 // ======================================================================
