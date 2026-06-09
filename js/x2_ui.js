@@ -602,51 +602,39 @@ function x2_cambiaParametro(delta) {
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
-  // ======================================================================
+// ======================================================================
 // CAMBIO PARAMETRO
 // ======================================================================
 selParametro.addEventListener("change", function () {
 
-    // -------------------------------------------------------------
-    // INIZIO PATCH PUNTO 2 — TENDINA PARAMETRO
-    // -------------------------------------------------------------
-if (modificheInCorso) {
+    if (modificheInCorso) {
 
-    const valoreOriginale    = ultimoParametro.VALORE;
-    const parametroOriginale = ultimoParametro.PARAMETRO;
+        const parametroOriginale = ultimoParametro.PARAMETRO;
 
-    const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+        const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
-    if (!conferma) {
+        if (!conferma) {
+            // RIPRISTINO PARAMETRO NELLA TENDINA
+            this.value = parametroOriginale;
 
-        ultimoParametro.VALORE = valoreOriginale;
-        document.getElementById("tendina_valori").value = valoreOriginale;
+            // RICARICO COMPLETAMENTE IL PARAMETRO CORRENTE
+            ultimoParametro = x2_parametri[this.selectedIndex];
+            x2_mostraInfoParametro(ultimoParametro);
+            x2_popolaValori(ultimoParametro);
 
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
+            modificheInCorso = false;
+            document.getElementById("btn_salva_parametro").disabled = true;
 
-        setTimeout(() => {
-            document.getElementById("tendina_valori").value = valoreOriginale;
-        }, 0);
+            return; // blocco il cambio parametro
+        }
 
-        this.value = parametroOriginale;
+        // SALVO
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
 
         modificheInCorso = false;
         document.getElementById("btn_salva_parametro").disabled = true;
-
-        return;
     }
-
-    const val = document.getElementById("tendina_valori").value;
-    updateMemoriaC(ultimoParametro, val);
-
-    modificheInCorso = false;
-    document.getElementById("btn_salva_parametro").disabled = true;
-}   // ✔️ SOLO QUESTA
-// -------------------------------------------------------------
-// FINE PATCH PUNTO 2
-// -------------------------------------------------------------
-
 
     // LOGICA ORIGINALE CAMBIO PARAMETRO
     ultimoParametro = x2_parametri[this.selectedIndex];
