@@ -614,6 +614,7 @@ selParametro.addEventListener("change", function () {
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
         if (!conferma) {
+
             // RIPRISTINO PARAMETRO NELLA TENDINA
             this.value = parametroOriginale;
 
@@ -642,21 +643,20 @@ selParametro.addEventListener("change", function () {
     x2_popolaValori(ultimoParametro);
 });
 
-    // ======================================================================
-    // PULSANTE CREA HEX
-    // ======================================================================
-    document.getElementById("crea_hex_btn").onclick = function () {
-        window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
-    };
-
-});
-
-// ===== FINE BLOCCO 3 =====
-// ===== INIZIO BLOCCO 4 =====
 
 // ======================================================================
-// WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
+// PULSANTE CREA HEX
 // ======================================================================
+document.getElementById("crea_hex_btn").onclick = function () {
+    window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
+};
+
+}); // ← CHIUSURA DOMContentLoaded
+
+
+
+
+
 window.addEventListener("beforeunload", function (e) {
     if (!modificheInCorso) return;
 
