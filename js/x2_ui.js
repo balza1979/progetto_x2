@@ -158,6 +158,7 @@ function updateMemoriaC(param, nuovoValore) {
     salvaMemoriaC();
 }
 
+
 // ------------------------------------------------------------
 // Converte valore → byte (per Memoria C)
 // ------------------------------------------------------------
