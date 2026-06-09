@@ -744,10 +744,11 @@ document.getElementById("btn_salva_parametro").disabled = true;
     // Cambio parametro
     selParametro.addEventListener("change", function () {
 
-        // Salva parametro precedente in Memoria C
-        if (ultimoParametro) {
-            updateMemoriaC(ultimoParametro, ultimoParametro.VALORE);
-        }
+       // 09/06/2026 11:30 - NON SALVARE AUTOMATICAMENTE IL PARAMETRO PRECEDENTE
+// if (ultimoParametro) {
+//     updateMemoriaC(ultimoParametro, ultimoParametro.VALORE);
+// }
+
 
         const codice = this.value.replace(/"/g, "").trim();
         const param = x2_parametri.find(p => p.PARAMETRO === codice);
