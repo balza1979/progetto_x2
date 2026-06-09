@@ -699,10 +699,10 @@ function x2_cambiaParametro(delta) {
     if (modificheInCorso) {
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
         
-        if (!conferma) {
-            // 09/06/2026 12:30 - ANNULLA → NON CAMBIO PARAMETRO
-            return;
-        }
+       if (!conferma) {
+    modificheInCorso = false;   // ← QUESTO SBLOCCA LE FRECCE
+    return;
+}
 
         // Se conferma → salvo
         const val = document.getElementById("tendina_valori").value;
@@ -754,30 +754,30 @@ document.getElementById("btn_salva_parametro").disabled = true;
     });
 
     // Cambio parametro
-    selParametro.addEventListener("change", function () {
+selParametro.addEventListener("change", function () {
 
-       // 09/06/2026 11:30 - NON SALVARE AUTOMATICAMENTE IL PARAMETRO PRECEDENTE
-// if (ultimoParametro) {
-//     updateMemoriaC(ultimoParametro, ultimoParametro.VALORE);
-// }
-
-
-        const codice = this.value.replace(/"/g, "").trim();
-        const param = x2_parametri.find(p => p.PARAMETRO === codice);
-        if (!param) return;
-
-        // Se Memoria C esiste → usa quella
-        if (memC) {
-            const indirizzo = parseInt(param.LIBERA1);
-            const byte = memC[indirizzo];
-            const valoreC = convertValueFromByte(param, byte);
-            param.VALORE = valoreC;
+    // 09/06/2026 12:40 - WARNING SE CI SONO MODIFICHE NON SALVATE
+    if (modificheInCorso) {
+        const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+        
+        if (!conferma) {
+            modificheInCorso = false;   // ← BLOCCA VALORI FANTASMA
+            this.value = ultimoParametro.ID;  // ← TORNA AL PARAMETRO VECCHIO
+            return;
         }
 
-        x2_mostraInfoParametro(param);
-        x2_popolaValori(param);
-        x2_aggiornaParamButtons(param.PARAMETRO);
-    });
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
+        modificheInCorso = false;
+        document.getElementById("btn_salva_parametro").disabled = true;
+    }
+
+    // SE ARRIVIAMO QUI → POSSIAMO CAMBIARE PARAMETRO
+    ultimoParametro = x2_parametri[this.selectedIndex];
+    x2_mostraInfoParametro(ultimoParametro);
+    x2_popolaValori(ultimoParametro);
+});
+
 
     // Pulsante crea HEX
     document.getElementById("crea_hex_btn").onclick = function () {
