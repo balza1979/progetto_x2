@@ -1,3 +1,5 @@
+// ===== INIZIO BLOCCO 1 =====
+
 // ======================================================================
 // FILE: js/x2_ui.js — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
 // DATA: 09/06/2026
@@ -8,7 +10,7 @@
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
 let ultimoParametro = null;
-let memC = null;              // array di byte (8192)
+let memC = null;              
 let memC_modificata = false;
 let modificheInCorso = false;
 
@@ -52,7 +54,7 @@ function parseIntelHexToBytes(hexText) {
 }
 
 // ------------------------------------------------------------
-// ARRAY BYTE → HEX INTEL (8192, blocchi da 16)
+// ARRAY BYTE → HEX INTEL
 // ------------------------------------------------------------
 function bytesToIntelHex(bytes) {
     const lines = [];
@@ -93,7 +95,7 @@ function bytesToIntelHex(bytes) {
 }
 
 // ------------------------------------------------------------
-// Carica Memoria C da localStorage
+// Carica Memoria C
 // ------------------------------------------------------------
 function caricaMemoriaC() {
     const raw = localStorage.getItem("memC_hex");
@@ -130,7 +132,7 @@ function updateMemoriaC(param, nuovoValore) {
     const indirizzo = parseInt(param.LIBERA1);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
-    const byte = convertValueToByte(param, nuovoValore);
+    const byte = parseInt(nuovoValore) & 0xFF;
     memC[indirizzo] = byte;
 
     memC_modificata = true;
@@ -138,22 +140,8 @@ function updateMemoriaC(param, nuovoValore) {
 }
 
 // ------------------------------------------------------------
-// Converte valore → byte
-// ------------------------------------------------------------
-function convertValueToByte(param, valore) {
-    return parseInt(valore) & 0xFF;
-}
-
-// ------------------------------------------------------------
-// Converte byte → valore
-// ------------------------------------------------------------
-function convertValueFromByte(param, byte) {
-    return String(byte).padStart(2, "0");
-}
-
-// ======================================================================
 // MENU PRINCIPALE
-// ======================================================================
+// ------------------------------------------------------------
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -176,9 +164,9 @@ function x2_popolaMenu() {
     }
 }
 
-// ======================================================================
+// ------------------------------------------------------------
 // SOTTOMENU
-// ======================================================================
+// ------------------------------------------------------------
 function x2_popolaSottomenu(codMenu) {
     const selSottomenu = document.getElementById("sottomenu");
     selSottomenu.innerHTML = "";
@@ -202,6 +190,10 @@ function x2_popolaSottomenu(codMenu) {
         selSottomenu.selectedIndex = 0;
     }
 }
+
+// ===== FINE BLOCCO 1 =====
+// ===== INIZIO BLOCCO 2 =====
+
 // ======================================================================
 // PULSANTI MENU
 // ======================================================================
@@ -390,7 +382,6 @@ function x2_popolaValori(param) {
 
                 p.VALORE = nuovoValore;
 
-                // VERSIONE A → NON SALVA AUTOMATICO
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
 
@@ -400,6 +391,10 @@ function x2_popolaValori(param) {
 
         return;
     }
+
+// ===== FINE BLOCCO 2 =====
+// ===== INIZIO BLOCCO 3 =====
+
 // ======================================================================
 // AGGIORNA PULSANTI FILE1…FILE8
 // ======================================================================
@@ -601,6 +596,9 @@ function x2_cambiaParametro(delta) {
 
 });
 
+// ===== FINE BLOCCO 3 =====
+// ===== INIZIO BLOCCO 4 =====
+
 // ======================================================================
 // WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
 // ======================================================================
@@ -627,4 +625,8 @@ window.addEventListener("beforeunload", function (e) {
 // ✔ Tutti i pulsanti menu/sottomenu/parametro/valori funzionano
 // ✔ Tutta la struttura originale è stata mantenuta
 //
+// Questo file è ora COMPLETO, STABILE e DEFINITIVO.
+//
 // ======================================================================
+
+// ===== FINE BLOCCO 4 =====
