@@ -748,6 +748,17 @@ if (modificheInCorso) {
         window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
     };
 });
+
+// ======================================================================
+// 09/06/2026 10:55 - WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
+// ======================================================================
+window.addEventListener("beforeunload", function (e) {
+    if (!modificheInCorso) return;
+
+    e.preventDefault();
+    e.returnValue = "";
+});
+
 // ======================================================================
 // NOTE FINALI — VERSIONE PRO
 // ======================================================================
