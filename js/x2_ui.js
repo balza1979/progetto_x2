@@ -700,13 +700,23 @@ if (memC) {
         // 09/06/2026 10:50 - WARNING SE CI SONO MODIFICHE NON SALVATE
 if (modificheInCorso) {
     const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-    if (conferma) {
-        const val = document.getElementById("tendina_valori").value;
-        updateMemoriaC(ultimoParametro, val);
+    
+    // 09/06/2026 12:15 - SE ANNULLA → BLOCCO IL CAMBIO PARAMETRO
+    if (!conferma) {
+        return; 
     }
+
+    // Se conferma → salvo
+    const val = document.getElementById("tendina_valori").value;
+    updateMemoriaC(ultimoParametro, val);
+
     modificheInCorso = false;
     document.getElementById("btn_salva_parametro").disabled = true;
 }
+
+
+
+        
 
         const sel = document.getElementById("parametro");
 
