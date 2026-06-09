@@ -618,17 +618,26 @@ selParametro.addEventListener("change", function () {
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
         if (!conferma) {
-            // RIPRISTINO VALORE
-            document.getElementById("tendina_valori").value = valoreOriginale;
 
-            // RIPRISTINO PARAMETRO NELLA TENDINA
-            this.value = parametroOriginale;
+    // RIPRISTINO VALORE ORIGINALE NEL MODELLO
+    ultimoParametro.VALORE = valoreOriginale;
 
-            modificheInCorso = false;
-            document.getElementById("btn_salva_parametro").disabled = true;
+    // RIPRISTINO TENDINA VALORI
+    document.getElementById("tendina_valori").value = valoreOriginale;
 
-            return; // blocco il cambio parametro
-        }
+    // RICARICO COMPLETAMENTE LA UI DEL PARAMETRO
+    x2_mostraInfoParametro(ultimoParametro);
+    x2_popolaValori(ultimoParametro);
+
+    // RIPRISTINO PARAMETRO NELLA TENDINA
+    this.value = parametroOriginale;
+
+    modificheInCorso = false;
+    document.getElementById("btn_salva_parametro").disabled = true;
+
+    return; // blocco il cambio parametro
+}
+
 
         // SALVO
         const val = document.getElementById("tendina_valori").value;
