@@ -605,12 +605,14 @@ function x2_cambiaParametro(delta) {
     // ======================================================================
     // CAMBIO PARAMETRO
     // ======================================================================
-           // -------------------------------------------------------------
+    selParametro.addEventListener("change", function () {
+
+        // -------------------------------------------------------------
         // INIZIO PATCH PUNTO 2 — TENDINA PARAMETRO
         // -------------------------------------------------------------
         if (modificheInCorso) {
 
-            const valoreOriginale = ultimoParametro.VALORE;
+            const valoreOriginale   = ultimoParametro.VALORE;
             const parametroOriginale = ultimoParametro.PARAMETRO;
 
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
@@ -625,7 +627,7 @@ function x2_cambiaParametro(delta) {
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
 
-                return; // QUI blocco il cambio parametro
+                return; // blocco il cambio parametro
             }
 
             // SALVO
@@ -639,10 +641,7 @@ function x2_cambiaParametro(delta) {
         // FINE PATCH PUNTO 2
         // -------------------------------------------------------------
 
-
-
-		
-
+        // LOGICA ORIGINALE CAMBIO PARAMETRO
         ultimoParametro = x2_parametri[this.selectedIndex];
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
