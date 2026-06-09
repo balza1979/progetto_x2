@@ -600,6 +600,7 @@ function x2_cambiaParametro(delta) {
     };
 
 });
+
 // ======================================================================
 // WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
 // ======================================================================
@@ -625,7 +626,5 @@ window.addEventListener("beforeunload", function (e) {
 // ✔ Tasto CREA HEX pienamente funzionante
 // ✔ Tutti i pulsanti menu/sottomenu/parametro/valori funzionano
 // ✔ Tutta la struttura originale è stata mantenuta
-//
-// Questo file è ora COMPLETO, STABILE e DEFINITIVO.
 //
 // ======================================================================
