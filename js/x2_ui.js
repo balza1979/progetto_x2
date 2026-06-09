@@ -571,8 +571,8 @@ function x2_cambiaParametro(delta) {
     ultimoParametro = x2_parametri[nuovo];
 
     sel.dispatchEvent(new Event("change"));
-}
-
+	}
+		}
     document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
 
@@ -602,50 +602,50 @@ function x2_cambiaParametro(delta) {
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
-    // ======================================================================
-    // CAMBIO PARAMETRO
-    // ======================================================================
-    selParametro.addEventListener("change", function () {
+  // ======================================================================
+// CAMBIO PARAMETRO
+// ======================================================================
+selParametro.addEventListener("change", function () {
 
-        // -------------------------------------------------------------
-        // INIZIO PATCH PUNTO 2 — TENDINA PARAMETRO
-        // -------------------------------------------------------------
-        if (modificheInCorso) {
+    // -------------------------------------------------------------
+    // INIZIO PATCH PUNTO 2 — TENDINA PARAMETRO
+    // -------------------------------------------------------------
+    if (modificheInCorso) {
 
-            const valoreOriginale   = ultimoParametro.VALORE;
-            const parametroOriginale = ultimoParametro.PARAMETRO;
+        const valoreOriginale    = ultimoParametro.VALORE;
+        const parametroOriginale = ultimoParametro.PARAMETRO;
 
-            const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+        const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
 
-            if (!conferma) {
-                // RIPRISTINO VALORE
-                document.getElementById("tendina_valori").value = valoreOriginale;
+        if (!conferma) {
+            // RIPRISTINO VALORE
+            document.getElementById("tendina_valori").value = valoreOriginale;
 
-                // RIPRISTINO PARAMETRO NELLA TENDINA
-                this.value = parametroOriginale;
-
-                modificheInCorso = false;
-                document.getElementById("btn_salva_parametro").disabled = true;
-
-                return; // blocco il cambio parametro
-            }
-
-            // SALVO
-            const val = document.getElementById("tendina_valori").value;
-            updateMemoriaC(ultimoParametro, val);
+            // RIPRISTINO PARAMETRO NELLA TENDINA
+            this.value = parametroOriginale;
 
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
-        }
-        // -------------------------------------------------------------
-        // FINE PATCH PUNTO 2
-        // -------------------------------------------------------------
 
-        // LOGICA ORIGINALE CAMBIO PARAMETRO
-        ultimoParametro = x2_parametri[this.selectedIndex];
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
-    });
+            return; // blocco il cambio parametro
+        }
+
+        // SALVO
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
+
+        modificheInCorso = false;
+        document.getElementById("btn_salva_parametro").disabled = true;
+    }
+    // -------------------------------------------------------------
+    // FINE PATCH PUNTO 2
+    // -------------------------------------------------------------
+
+    // LOGICA ORIGINALE CAMBIO PARAMETRO
+    ultimoParametro = x2_parametri[this.selectedIndex];
+    x2_mostraInfoParametro(ultimoParametro);
+    x2_popolaValori(ultimoParametro);
+});
 
     // ======================================================================
     // PULSANTE CREA HEX
