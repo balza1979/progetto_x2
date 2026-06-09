@@ -605,22 +605,43 @@ function x2_cambiaParametro(delta) {
     // ======================================================================
     // CAMBIO PARAMETRO
     // ======================================================================
-    selParametro.addEventListener("change", function () {
-
+           // -------------------------------------------------------------
+        // INIZIO PATCH PUNTO 2 — TENDINA PARAMETRO
+        // -------------------------------------------------------------
         if (modificheInCorso) {
+
+            const valoreOriginale = ultimoParametro.VALORE;
+            const parametroOriginale = ultimoParametro.PARAMETRO;
+
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-            
+
             if (!conferma) {
+                // RIPRISTINO VALORE
+                document.getElementById("tendina_valori").value = valoreOriginale;
+
+                // RIPRISTINO PARAMETRO NELLA TENDINA
+                this.value = parametroOriginale;
+
                 modificheInCorso = false;
-                this.value = ultimoParametro.ID;
-                return;
+                document.getElementById("btn_salva_parametro").disabled = true;
+
+                return; // QUI blocco il cambio parametro
             }
 
+            // SALVO
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
+
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
         }
+        // -------------------------------------------------------------
+        // FINE PATCH PUNTO 2
+        // -------------------------------------------------------------
+
+
+
+		
 
         ultimoParametro = x2_parametri[this.selectedIndex];
         x2_mostraInfoParametro(ultimoParametro);
