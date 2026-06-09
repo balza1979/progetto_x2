@@ -193,22 +193,19 @@ function x2_calcolaHex(param) {
 
 
 // ------------------------------------------------------------
-// VALORI (val1…val8) — VERSIONE  CORRETTA
+// VALORI (val1…val8) — VERSIONE CORRETTA
 // ------------------------------------------------------------
 function x2_popolaValori(param) {
-   
 
-        const tendina = document.getElementById("tendina_valori");
+    const tendina = document.getElementById("tendina_valori");
     console.log("TENDINA TROVATA:", tendina);
-        tendina.innerHTML = "";
- // Ripristina sempre la tendina come visibile
-        tendina.style.display = "block";
-    
 
-// Rimuove eventuale input numerico precedente
-        const oldInput = document.getElementById("input_minmax");
-        if (oldInput) oldInput.remove();
-    
+    tendina.innerHTML = "";
+    tendina.style.display = "block";
+
+    // Rimuove eventuale input numerico precedente
+    const oldInput = document.getElementById("input_minmax");
+    if (oldInput) oldInput.remove();
 
     // RESET PULSANTI
     for (let i = 1; i <= 8; i++) {
@@ -220,46 +217,59 @@ function x2_popolaValori(param) {
     }
 
     // 1) JSON
-if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
+    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-    let nomeJSON = null;
-    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+        let nomeJSON = null;
+        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-    if (fonte === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (fonte && fonte !== "/") {
-        nomeJSON = fonte;
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
-    }
+        if (fonte === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (fonte && fonte !== "/") {
+            nomeJSON = fonte;
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
+        }
 
-    x2_caricaJSON(nomeJSON, function(data) {
+        x2_caricaJSON(nomeJSON, function(data) {
 
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = `"${voce.id}" ${voce.text}`;
-            tendina.appendChild(opt);
+            // Popola tendina
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = `"${voce.id}" ${voce.text}`;
+                tendina.appendChild(opt);
+            });
+
+            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            // Aggiorna pulsanti
+            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+
+            // ------------------------------------------------------------
+            // PATCH: ONCHANGE CORRETTO (NESSUN CONFLITTO, NESSUN PARAM SBAGLIATO)
+            // ------------------------------------------------------------
+            const codiceParam = param.PARAMETRO;   // blocca il parametro giusto
+
+            tendina.onchange = function () {
+                console.log("TENDINA CHANGE TRIGGERED");
+
+                const nuovoValore = this.value.toString().trim().padStart(2, "0");
+
+                // recupera SEMPRE il parametro corretto
+                const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
+                if (!p) return;
+
+                p.VALORE = nuovoValore;
+                updateMemoriaC(p, p.VALORE);
+            };
+            // ------------------------------------------------------------
+
         });
 
-        const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-        tendina.value = valorePulito;
-
-        //x2_aggiornaValoriDaSelezione(data, valorePulito);
-x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-
-      tendina.onchange = function () {
-          console.log("TENDINA CHANGE TRIGGERED");
-
-    param.VALORE = this.value;
-    updateMemoriaC(param, param.VALORE);
-};
-
-    });
-
-    return;
+        return;
+    }
 }
-
 
     // 2) MIN/MAX
 // =========================================================
