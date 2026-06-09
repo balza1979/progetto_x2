@@ -706,6 +706,10 @@ if (modificheInCorso) {
 
     // Cambio menu
     selMenu.addEventListener("change", function () {
+        // 09/06/2026 11:00 - RESET MODIFICHE QUANDO CAMBIO MENU/SOTTOMENU
+modificheInCorso = false;
+document.getElementById("btn_salva_parametro").disabled = true;
+
         x2_popolaSottomenu(this.value);
         selSottomenu.dispatchEvent(new Event("change"));
         x2_aggiornaMenuButtons(this.value);
@@ -713,6 +717,10 @@ if (modificheInCorso) {
 
     // Cambio sottomenu
     selSottomenu.addEventListener("change", function () {
+       // 09/06/2026 11:00 - RESET MODIFICHE QUANDO CAMBIO MENU/SOTTOMENU
+modificheInCorso = false;
+document.getElementById("btn_salva_parametro").disabled = true;
+ 
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
