@@ -664,6 +664,8 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
     const selSottomenu  = document.getElementById("sottomenu");
     const selParametro  = document.getElementById("parametro");
     const selValore     = document.getElementById("tendina_valori");
+// 09/06/2026 10:40 - DISATTIVO IL BOTTONE SALVA ALL’AVVIO
+document.getElementById("btn_salva_parametro").disabled = true;
 
     selValore.classList.add("tendina_verde");
 
