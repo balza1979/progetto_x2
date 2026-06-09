@@ -525,22 +525,41 @@ document.addEventListener("DOMContentLoaded", function () {
 // ======================================================================
 function x2_cambiaParametro(delta) {
 
+        // -------------------------------------------------------------
+    // INIZIO PATCH PUNTO 1 — FRECCE SU/GIÙ
+    // -------------------------------------------------------------
     if (modificheInCorso) {
+
+        const valoreOriginale = ultimoParametro.VALORE;
+
         const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-        
+
         if (!conferma) {
-            document.getElementById("tendina_valori").value = ultimoParametro.VALORE;
+            // RIPRISTINO SUBITO IL VALORE ORIGINALE NELLA TENDINA
+            document.getElementById("tendina_valori").value = valoreOriginale;
+
+            // RESET STATO MODIFICHE
             modificheInCorso = false;
-            return;
+            document.getElementById("btn_salva_parametro").disabled = true;
+
+            // NON faccio return → il parametro CAMBIA comunque
+        } else {
+            // SALVO
+            const val = document.getElementById("tendina_valori").value;
+            updateMemoriaC(ultimoParametro, val);
+
+            modificheInCorso = false;
+            document.getElementById("btn_salva_parametro").disabled = true;
         }
-
-        const val = document.getElementById("tendina_valori").value;
-        updateMemoriaC(ultimoParametro, val);
-
-        modificheInCorso = false;
-        document.getElementById("btn_salva_parametro").disabled = true;
     }
+    // -------------------------------------------------------------
+    // FINE PATCH PUNTO 1
+    // -------------------------------------------------------------
 
+
+
+
+	
     const sel = document.getElementById("parametro");
     let nuovo = sel.selectedIndex + delta;
 
