@@ -630,7 +630,7 @@ select#tendina_valori.tendina_verde {
 <!--  VALORI DEL PARAMETRO (tendina sopra, unità sotto)         -->
 <!-- ========================================================= -->
 
-<div class="section-title">VALORI DEL PARAMETRO</div>
+<div class="section-title" id="titolo_valori">VALORI DEL PARAMETRO</div>
 
 <!-- RIGA 1: tendina valori -->
 <div class="row">
@@ -839,13 +839,22 @@ window.addEventListener("load", checkScreenSize);
 <script src="js/x2_compare.js"></script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
 
-	
+    const titolo = document.getElementById("titolo_valori");
+    if (!titolo) return;
 
+    const memC = localStorage.getItem("memoriaC");
+    const nomeC = localStorage.getItem("nomeMemoriaC");
 
+    if (memC && nomeC) {
+        titolo.textContent = "VALORI DEL PARAMETRO : C = " + nomeC;
+    } else {
+        titolo.textContent = "VALORI DEL PARAMETRO";
+    }
+});
+</script>
 
-
-
-  
 </body>
 </html>
