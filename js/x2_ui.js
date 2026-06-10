@@ -665,5 +665,5 @@ window.addEventListener("beforeunload", function (e) {
 
 
 // QUI — SOLO QUI — VA LA CHIUSURA DEL DOMContentLoaded
-});
+//});
 // ===== FINE BLOCCO 3 =====
