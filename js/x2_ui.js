@@ -412,7 +412,7 @@ function x2_popolaValori(param) {
 
         return;
     }
-	}
+	
 // ===== FINE BLOCCO 2 =====
 // ===== INIZIO BLOCCO 3 =====
 
