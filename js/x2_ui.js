@@ -622,9 +622,13 @@ document.getElementById("crea_hex_btn").onclick = function () {
     window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
 };
 
-}); // ← CHIUSURA CORRETTA DI DOMContentLoaded
+// NON CHIUDERE QUI IL DOMContentLoaded
+// LA CHIUSURA È IN FONDO AL FILE
 
 
+// ======================================================================
+// WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
+// ======================================================================
 window.addEventListener("beforeunload", function (e) {
     if (!modificheInCorso) return;
 
@@ -648,8 +652,9 @@ window.addEventListener("beforeunload", function (e) {
 // ✔ Tutti i pulsanti menu/sottomenu/parametro/valori funzionano
 // ✔ Tutta la struttura originale è stata mantenuta
 //
-// Questo file è ora COMPLETO, STABILE e DEFINITIVO.
-//
 // ======================================================================
 
 // ===== FINE BLOCCO 4 =====
+
+// QUI — SOLO QUI — VA LA CHIUSURA DEL DOMContentLoaded
+});
