@@ -115,7 +115,21 @@
 <body>
   <div class="page">
     <h1>Creazione Memoria – X2</h1>
-
+    
+<button id="btn_home" style="
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    background-color: #990000;
+    color: white;
+    border: 2px solid #ff3333;
+    border-radius: 6px;
+    cursor: pointer;
+">
+    PROGETTO X2 HOME
+</button>
     <!-- FILE A -->
     <div class="file-block">
       <label id="labelFileA">FILE A (locale o Git)</label>
@@ -176,5 +190,13 @@
 
   <!-- LOGICA CREA MEMORIA -->
   <script src="crea_memoria_v3.js"></script>
+    </div> <!-- FINE .page -->
+
+<script>
+document.getElementById("btn_home").onclick = function () {
+    window.location.href = "https://balza1979.github.io/progetto_x2/";
+};
+</script>
+
 </body>
 </html>
