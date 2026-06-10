@@ -1,5 +1,5 @@
 // ======================================================================
-// FILE: x2_ui (9RIPRISTINO 10 6 26 1401 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
+// FILE: x2_ui (9RIPRISTINO 10 6 26 1438 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
 // DATA: 09/06/2026
 // DESCRIZIONE: UI Programmatore X2 — Usa SOLO HEX Intel in Memoria C
 // ======================================================================
