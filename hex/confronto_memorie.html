@@ -16,6 +16,8 @@
         margin:0;
         padding:10px;
     }
+
+     
 .btn-git {
     background:#222;
     border:1px solid #555;
@@ -163,6 +165,25 @@
 
 </head>
 <body>
+
+     
+<button id="btn_home" style="
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 9999;
+">
+    HOME
+</button>
+
+     
 <button id="resetMem" onclick="resetMemorie()" style="display:none;"></button>
 <!-- =========================================
      BLOCCO NUOVA MODALITÀ - CREAZIONE MEMORIA C
@@ -348,6 +369,11 @@ document.getElementById("flagVisualizzaTutto").addEventListener("change", () => 
     if (confrontoAttivo === "A-B-C") confrontaABC();
 
 });
+</script>
+<script>
+document.getElementById("btn_home").onclick = function () {
+    window.location.href = "https://balza1979.github.io/progetto_x2/";
+};
 </script>
 
 </body>
