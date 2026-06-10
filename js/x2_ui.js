@@ -764,6 +764,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ultimoParametro = p;
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
+        x2_aggiornaParamButtons(param.PARAMETRO);
+
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
