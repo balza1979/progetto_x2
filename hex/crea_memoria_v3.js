@@ -168,6 +168,10 @@ function aggiornaBloccoCreazione() {
    ============================================================ */
 document.getElementById("btnResetMemoria").addEventListener("click", () => {
 
+    // 🔥 Cancella subito i riferimenti usati da X2
+    localStorage.removeItem("memoriaC");
+    localStorage.removeItem("nomeMemoriaC");
+
     // Cancella A
     localStorage.removeItem("memA_hex");
     localStorage.removeItem("memA_nome");
@@ -176,26 +180,19 @@ document.getElementById("btnResetMemoria").addEventListener("click", () => {
     localStorage.removeItem("memB_hex");
     localStorage.removeItem("memB_nome");
 
-  // 🔥 Cancella C (mancava!)
-localStorage.removeItem("memC_hex");
-localStorage.removeItem("memC_nome");
+    // Cancella C
+    localStorage.removeItem("memC_hex");
+    localStorage.removeItem("memC_nome");
 
-// 🔥 Cancella anche i riferimenti usati da Programmatore X2
-localStorage.removeItem("memoriaC");
-localStorage.removeItem("nomeMemoriaC");
-
-
-    // 🔥 Cancella anche la RAM usata da X2
+    // Cancella RAM
     if (typeof memC_modificata !== "undefined") {
         memC_modificata = null;
     }
 
-    // Ricarica A di default
     caricaDefaultMemoriaA();
-
-    // Ricarica pagina
     location.reload();
 });
+
 
 
 /* ============================================================
