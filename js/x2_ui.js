@@ -396,9 +396,10 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
             // 🔥 CORRETTO: NON param, ma p
             p.VALORE = nuovoValore;
 
+          if (memC) {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
-
+            }
             x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
         };
     });
@@ -516,8 +517,11 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         // 🔥 CORRETTO: aggiorna il parametro attuale
         ultimoParametro.VALORE = this.value;
 
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
+        if (memC) {
+    modificheInCorso = true;
+    document.getElementById("btn_salva_parametro").disabled = false;
+}
+
     });
 
     // ------------------------------------------------------------
@@ -535,8 +539,11 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         // 🔥 CORRETTO
         ultimoParametro.VALORE = input.value;
 
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
+      if (memC) {
+    modificheInCorso = true;
+    document.getElementById("btn_salva_parametro").disabled = false;
+}
+
     });
 
     // ------------------------------------------------------------
@@ -554,8 +561,11 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         // 🔥 CORRETTO
         ultimoParametro.VALORE = input.value;
 
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
+        if (memC) {
+    modificheInCorso = true;
+    document.getElementById("btn_salva_parametro").disabled = false;
+}
+
     });
 
     wrapper.appendChild(input);
