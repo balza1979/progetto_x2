@@ -403,150 +403,166 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // ------------------------------------------------------------
-    // 2) MIN_MAX (versione PRO con input + spinner)
+ // ------------------------------------------------------------
+// 2) MIN_MAX (versione PRO con input + spinner)
 // ------------------------------------------------------------
-    if (param.TIPO_ELENCO === "MIN_MAX") {
+if (param.TIPO_ELENCO === "MIN_MAX") {
 
-        tendina.style.display = "none";
+    tendina.style.display = "none";
 
-        const oldInput2 = document.getElementById("input_minmax");
-        if (oldInput2) oldInput2.remove();
+    const oldInput2 = document.getElementById("input_minmax");
+    if (oldInput2) oldInput2.remove();
 
-        const wrapper = document.createElement("div");
-        wrapper.style.position = "relative";
-        wrapper.style.display = "inline-block";
-        wrapper.style.width = tendina.style.width || "100%";
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "relative";
+    wrapper.style.display = "inline-block";
+    wrapper.style.width = tendina.style.width || "100%";
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.id = "input_minmax";
-        input.className = "full";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "input_minmax";
+    input.className = "full";
 
-        const cs = getComputedStyle(tendina);
-        input.style.backgroundColor = cs.backgroundColor;
-        input.style.color = cs.color;
-        input.style.border = cs.border;
-        input.style.borderRadius = cs.borderRadius;
-        input.style.paddingRight = "28px";
-        input.style.height = cs.height;
-        input.style.fontSize = cs.fontSize;
-        input.style.fontFamily = cs.fontFamily;
-        input.style.boxSizing = "border-box";
-        input.style.width = "100%";
+    const cs = getComputedStyle(tendina);
+    input.style.backgroundColor = cs.backgroundColor;
+    input.style.color = cs.color;
+    input.style.border = cs.border;
+    input.style.borderRadius = cs.borderRadius;
+    input.style.paddingRight = "28px";
+    input.style.height = cs.height;
+    input.style.fontSize = cs.fontSize;
+    input.style.fontFamily = cs.fontFamily;
+    input.style.boxSizing = "border-box";
+    input.style.width = "100%";
 
-        input.value = param.VALORE;
+    input.value = param.VALORE;
 
-        const spinner = document.createElement("div");
-        spinner.style.position = "absolute";
-        spinner.style.right = "4px";
-        spinner.style.top = "0";
-        spinner.style.bottom = "0";
-        spinner.style.width = "20px";
-        spinner.style.display = "flex";
-        spinner.style.flexDirection = "column";
-        spinner.style.justifyContent = "center";
-        spinner.style.cursor = "pointer";
+    const spinner = document.createElement("div");
+    spinner.style.position = "absolute";
+    spinner.style.right = "4px";
+    spinner.style.top = "0";
+    spinner.style.bottom = "0";
+    spinner.style.width = "20px";
+    spinner.style.display = "flex";
+    spinner.style.flexDirection = "column";
+    spinner.style.justifyContent = "center";
+    spinner.style.cursor = "pointer";
 
-        const btnUp = document.createElement("div");
-        btnUp.textContent = "▲";
-        btnUp.style.fontSize = "10px";
-        btnUp.style.textAlign = "center";
-        btnUp.style.userSelect = "none";
+    const btnUp = document.createElement("div");
+    btnUp.textContent = "▲";
+    btnUp.style.fontSize = "10px";
+    btnUp.style.textAlign = "center";
+    btnUp.style.userSelect = "none";
 
-        const btnDown = document.createElement("div");
-        btnDown.textContent = "▼";
-        btnDown.style.fontSize = "10px";
-        btnDown.style.textAlign = "center";
-        btnDown.style.userSelect = "none";
+    const btnDown = document.createElement("div");
+    btnDown.textContent = "▼";
+    btnDown.style.fontSize = "10px";
+    btnDown.style.textAlign = "center";
+    btnDown.style.userSelect = "none";
 
-        spinner.appendChild(btnUp);
-        spinner.appendChild(btnDown);
+    spinner.appendChild(btnUp);
+    spinner.appendChild(btnDown);
 
-        input.addEventListener("input", function () {
+    // ------------------------------------------------------------
+    // INPUT: solo numeri (e segno - se min < 0)
+    // ------------------------------------------------------------
+    input.addEventListener("input", function () {
 
-            const min = parseInt(param.MIN);
+        const min = parseInt(param.MIN);
 
-            if (min < 0) {
-                this.value = this.value
-                    .replace(/(?!^-)[^0-9]/g, "")
-                    .replace(/(?!^)-/g, "");
-            } else {
-                this.value = this.value.replace(/[^0-9]/g, "");
-            }
-        });
+        if (min < 0) {
+            this.value = this.value
+                .replace(/(?!^-)[^0-9]/g, "")
+                .replace(/(?!^)-/g, "");
+        } else {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        }
+    });
 
-        input.addEventListener("blur", function () {
+    // ------------------------------------------------------------
+    // BLUR: normalizzazione + aggiornamento ultimoParametro
+    // ------------------------------------------------------------
+    input.addEventListener("blur", function () {
 
-            let raw = this.value;
+        let raw = this.value;
 
-            if (raw === "" || raw === "-") {
-                this.value = param.VALORE;
-                return;
-            }
+        if (raw === "" || raw === "-") {
+            this.value = ultimoParametro.VALORE;
+            return;
+        }
 
-            let v = parseInt(raw);
+        let v = parseInt(raw);
 
-            if (isNaN(v)) {
-                this.value = param.VALORE;
-                return;
-            }
+        if (isNaN(v)) {
+            this.value = ultimoParametro.VALORE;
+            return;
+        }
 
-            const min = parseInt(param.MIN);
-            const max = parseInt(param.MAX);
+        const min = parseInt(param.MIN);
+        const max = parseInt(param.MAX);
 
-            if (v < min) v = min;
-            if (v > max) v = max;
+        if (v < min) v = min;
+        if (v > max) v = max;
 
-            if (v < 0) {
-                this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-            } else {
-                this.value = v.toString().padStart(2, "0");
-            }
+        if (v < 0) {
+            this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+        } else {
+            this.value = v.toString().padStart(2, "0");
+        }
 
-            param.VALORE = this.value;
+        // 🔥 CORRETTO: aggiorna il parametro attuale
+        ultimoParametro.VALORE = this.value;
 
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-        });
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+    });
 
-        btnUp.addEventListener("click", function () {
-            let v = parseInt(input.value) || 0;
-            const max = parseInt(param.MAX);
-            if (v < max) v++;
+    // ------------------------------------------------------------
+    // SPINNER UP
+    // ------------------------------------------------------------
+    btnUp.addEventListener("click", function () {
+        let v = parseInt(input.value) || 0;
+        const max = parseInt(param.MAX);
+        if (v < max) v++;
 
-            input.value = (v < 0)
-                ? "-" + Math.abs(v).toString().padStart(2, "0")
-                : v.toString().padStart(2, "0");
+        input.value = (v < 0)
+            ? "-" + Math.abs(v).toString().padStart(2, "0")
+            : v.toString().padStart(2, "0");
 
-            param.VALORE = input.value;
+        // 🔥 CORRETTO
+        ultimoParametro.VALORE = input.value;
 
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-        });
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+    });
 
-        btnDown.addEventListener("click", function () {
-            let v = parseInt(input.value) || 0;
-            const min = parseInt(param.MIN);
-            if (v > min) v--;
+    // ------------------------------------------------------------
+    // SPINNER DOWN
+    // ------------------------------------------------------------
+    btnDown.addEventListener("click", function () {
+        let v = parseInt(input.value) || 0;
+        const min = parseInt(param.MIN);
+        if (v > min) v--;
 
-            input.value = (v < 0)
-                ? "-" + Math.abs(v).toString().padStart(2, "0")
-                : v.toString().padStart(2, "0");
+        input.value = (v < 0)
+            ? "-" + Math.abs(v).toString().padStart(2, "0")
+            : v.toString().padStart(2, "0");
 
-            param.VALORE = input.value;
+        // 🔥 CORRETTO
+        ultimoParametro.VALORE = input.value;
 
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-        });
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+    });
 
-        wrapper.appendChild(input);
-        wrapper.appendChild(spinner);
+    wrapper.appendChild(input);
+    wrapper.appendChild(spinner);
 
-        tendina.parentNode.insertBefore(wrapper, tendina);
+    tendina.parentNode.insertBefore(wrapper, tendina);
 
-        return;
-    }
+    return;
+}
+
 
     // ------------------------------------------------------------
     // 3) DECIMALE
