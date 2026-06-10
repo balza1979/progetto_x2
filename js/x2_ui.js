@@ -394,7 +394,9 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
             if (!p) return;
 
             // 🔥 CORRETTO: NON param, ma p
-            p.VALORE = nuovoValore;
+           if (memC) {
+    p.VALORE = nuovoValore;
+}
 
           if (memC) {
             modificheInCorso = true;
@@ -515,7 +517,9 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         }
 
         // 🔥 CORRETTO: aggiorna il parametro attuale
-        ultimoParametro.VALORE = this.value;
+      if (memC) {
+    ultimoParametro.VALORE = this.value;
+}
 
         if (memC) {
     modificheInCorso = true;
@@ -537,7 +541,10 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
             : v.toString().padStart(2, "0");
 
         // 🔥 CORRETTO
-        ultimoParametro.VALORE = input.value;
+    if (memC) {
+    ultimoParametro.VALORE = input.value;
+}
+
 
       if (memC) {
     modificheInCorso = true;
@@ -559,7 +566,10 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
             : v.toString().padStart(2, "0");
 
         // 🔥 CORRETTO
-        ultimoParametro.VALORE = input.value;
+        if (memC) {
+    ultimoParametro.VALORE = input.value;
+}
+
 
         if (memC) {
     modificheInCorso = true;
