@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Creazione Memoria – X2</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,7 +14,8 @@
       margin:0;
       padding:20px;
     }
-  .page {
+
+    .page {
       max-width:800px;
       margin:0 auto;
       background:#111133;
@@ -21,8 +24,8 @@
       box-sizing:border-box;
       border-radius:10px;
       box-shadow:0 0 25px rgba(255,0,0,0.45);
-      position: relative;   /* ← AGGIUNGERE QUESTO */
-}
+      position: relative; /* FONDAMENTALE */
+    }
 
     h1 {
       font-size:20px;
@@ -31,6 +34,7 @@
       margin-top:0;
       text-shadow:0 0 6px rgba(255,0,0,0.5);
     }
+
     .file-block {
       margin:12px 0;
       padding:10px;
@@ -38,16 +42,19 @@
       background:#1a1a1a;
       border:1px solid #444;
     }
+
     .file-block label {
       display:block;
       font-weight:bold;
       margin-bottom:6px;
       color:#ffcccc;
     }
+
     input[type="file"] {
       width:100%;
       box-sizing:border-box;
     }
+
     button {
       margin-top:6px;
       padding:6px 12px;
@@ -60,11 +67,13 @@
       box-shadow:0 0 10px rgba(255,0,0,0.4);
       font-size:12px;
     }
+
     button:disabled {
       opacity:0.4;
       cursor:not-allowed;
       box-shadow:none;
     }
+
     #crea-memoria-container {
       margin-top:18px;
       padding:12px;
@@ -73,6 +82,7 @@
       border:1px solid #aa3333;
       display:none;
     }
+
     #log {
       margin-top:10px;
       font-size:12px;
@@ -97,16 +107,19 @@
       display:none;
       z-index:9999;
     }
+
     #selettoreGit h2 {
       margin:0 0 8px;
       font-size:16px;
       color:#ff6666;
     }
+
     #gitList {
       margin-top:8px;
       max-height:50vh;
       overflow-y:auto;
     }
+
     #gitButtons {
       margin-top:10px;
       text-align:right;
@@ -115,71 +128,65 @@
 </head>
 
 <body>
-  <div class="page">
 
-    <button id="btn_home" style="
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 8px 14px;
-    font-size: 14px;
-    background-color: #990000;
-    color: white;
-    border: 2px solid #ff3333;
-    border-radius: 6px;
-    cursor: pointer;
-">
-    PROGETTO X2 HOME
-</button>
-    
-    <h1>Creazione Memoria – X2</h1>
-    
+<div class="page">
 
-    <!-- FILE A -->
-    <div class="file-block">
-      <label id="labelFileA">FILE A (locale o Git)</label>
-      <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
-      <button type="button" onclick="selezionaSlot('A')">Carica da Git (A)</button>
-    </div>
+  <!-- ⭐ BOTTONE HOME DENTRO PAGE ⭐ -->
+  <button id="btn_home" style="
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 8px 14px;
+      font-size: 14px;
+      background-color: #990000;
+      color: white;
+      border: 2px solid #ff3333;
+      border-radius: 6px;
+      cursor: pointer;
+  ">
+      PROGETTO X2 HOME
+  </button>
 
-    <!-- FILE B -->
-    <div class="file-block">
-      <label id="labelFileB">FILE B (locale o Git)</label>
-      <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
-      <button type="button" onclick="selezionaSlot('B')">Carica da Git (B)</button>
-    </div>
+  <h1>Creazione Memoria – X2</h1>
 
-        <!-- RESET LOCALSTORAGE-->
-    <button type="button" id="btnResetMemoria" style="margin-top:15px; background:#440000;">
-  RESET MEMORIA (pulisci tutto)
-</button>
+  <!-- FILE A -->
+  <div class="file-block">
+    <label id="labelFileA">FILE A (locale o Git)</label>
+    <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
+    <button type="button" onclick="selezionaSlot('A')">Carica da Git (A)</button>
+  </div>
 
-    <!-- BLOCCO CREAZIONE MEMORIA C -->
-    <div id="crea-memoria-container">
-  <h2 style="margin-top:0; color:#ff9999;">Creazione Memoria C</h2>
+  <!-- FILE B -->
+  <div class="file-block">
+    <label id="labelFileB">FILE B (locale o Git)</label>
+    <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
+    <button type="button" onclick="selezionaSlot('B')">Carica da Git (B)</button>
+  </div>
 
-  <p style="font-size:12px; color:#ffcccc;">
-    Quando FILE A e FILE B sono caricati, puoi creare la nuova memoria C.
-  </p>
+  <!-- RESET LOCALSTORAGE -->
+  <button type="button" id="btnResetMemoria" style="margin-top:15px; background:#440000;">
+    RESET MEMORIA (pulisci tutto)
+  </button>
 
-  <!-- ===== INIZIO MODIFICA 05/06/2026 11:28 – Campo nome memoria C ===== -->
-  <label for="nomeMemoriaC" style="font-size:12px; color:#ffcccc;">Nome nuova memoria C:</label>
-  <input 
-      type="text" 
-      id="nomeMemoriaC" 
-      placeholder="Inserisci nome memoria C"
-      style="width:100%; padding:6px; margin-top:4px; margin-bottom:10px; border-radius:6px; border:1px solid #aa3333; background:#1a1a1a; color:#ffcccc;">
-  <!-- ===== FINE MODIFICA 05/06/2026 11:28 ===== -->
+  <!-- BLOCCO CREAZIONE MEMORIA C -->
+  <div id="crea-memoria-container">
+    <h2 style="margin-top:0; color:#ff9999;">Creazione Memoria C</h2>
 
-  <!-- Pulsante reale per creare memoria C -->
-  <button id="btnGeneraC" type="button">Crea Memoria C</button>
+    <p style="font-size:12px; color:#ffcccc;">
+      Quando FILE A e FILE B sono caricati, puoi creare la nuova memoria C.
+    </p>
 
-  <div id="log"></div>
-</div>
+    <label for="nomeMemoriaC" style="font-size:12px; color:#ffcccc;">Nome nuova memoria C:</label>
+    <input 
+        type="text" 
+        id="nomeMemoriaC" 
+        placeholder="Inserisci nome memoria C"
+        style="width:100%; padding:6px; margin-top:4px; margin-bottom:10px; border-radius:6px; border:1px solid #aa3333; background:#1a1a1a; color:#ffcccc;">
 
+    <button id="btnGeneraC" type="button">Crea Memoria C</button>
 
-  <!-- PARAMETRI X2 -->
-  <script src="../js/x2_parametri_data.js"></script>
+    <div id="log"></div>
+  </div>
 
   <!-- POPUP GIT -->
   <div id="selettoreGit">
@@ -190,12 +197,12 @@
     </div>
   </div>
 
-  <!-- TENDINA GIT MODERNA -->
+  <!-- SCRIPT -->
+  <script src="../js/x2_parametri_data.js"></script>
   <script src="memorie_tipo.js"></script>
-
-  <!-- LOGICA CREA MEMORIA -->
   <script src="crea_memoria_v3.js"></script>
-    </div> <!-- FINE .page -->
+
+</div> <!-- FINE PAGE -->
 
 <script>
 document.getElementById("btn_home").onclick = function () {
