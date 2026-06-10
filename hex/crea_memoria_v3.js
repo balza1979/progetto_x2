@@ -176,9 +176,14 @@ document.getElementById("btnResetMemoria").addEventListener("click", () => {
     localStorage.removeItem("memB_hex");
     localStorage.removeItem("memB_nome");
 
-    // 🔥 Cancella C (mancava!)
-    localStorage.removeItem("memC_hex");
-    localStorage.removeItem("memC_nome");
+  // 🔥 Cancella C (mancava!)
+localStorage.removeItem("memC_hex");
+localStorage.removeItem("memC_nome");
+
+// 🔥 Cancella anche i riferimenti usati da Programmatore X2
+localStorage.removeItem("memoriaC");
+localStorage.removeItem("nomeMemoriaC");
+
 
     // 🔥 Cancella anche la RAM usata da X2
     if (typeof memC_modificata !== "undefined") {
