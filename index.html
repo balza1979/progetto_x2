@@ -838,30 +838,7 @@ window.addEventListener("load", checkScreenSize);
 <script src="js/x2_debug.js"></script>       <!-- debug sempre per ultimo -->
 <script src="js/x2_compare.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const memC = localStorage.getItem("memoriaC");
-    if (!memC) return;
 
-    const banner = document.createElement("div");
-    banner.innerHTML = "MEMORIA C ATTIVA";
-    banner.style.position = "fixed";
-    banner.style.top = "10px";
-    banner.style.left = "10px";
-    banner.style.padding = "6px 10px";
-    banner.style.background = "#990000";
-    banner.style.color = "white";
-    banner.style.border = "2px solid #ff3333";
-    banner.style.borderRadius = "6px";
-    banner.style.fontSize = "12px";
-    banner.style.fontWeight = "bold";
-    banner.style.zIndex = "99999";
-    banner.style.boxShadow = "0 0 10px rgba(255,0,0,0.5)";
-    banner.style.opacity = "0.9";
-
-    document.body.appendChild(banner);
-});
-</script>
 
 	
 
