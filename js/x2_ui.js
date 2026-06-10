@@ -381,6 +381,7 @@ function x2_popolaValori(param) {
 
             const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
             tendina.value = valorePulito;
+                                x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
             const codiceParam = param.PARAMETRO;
 
