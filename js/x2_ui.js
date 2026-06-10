@@ -622,10 +622,6 @@ document.getElementById("crea_hex_btn").onclick = function () {
     window.open("https://balza1979.github.io/progetto_x2/hex/crea_memoria.html", "_blank");
 };
 
-// NON CHIUDERE QUI IL DOMContentLoaded
-// LA CHIUSURA È IN FONDO AL FILE
-
-
 // ======================================================================
 // WARNING USCITA PAGINA CON MODIFICHE NON SALVATE
 // ======================================================================
