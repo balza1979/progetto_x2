@@ -218,7 +218,14 @@ document.getElementById("btnGeneraC").addEventListener("click", () => {
     const memoriaC_hex = hexB;
 
     localStorage.setItem("memC_hex", memoriaC_hex);
-    localStorage.setItem("memC_nome", nomeC + ".hex");
+localStorage.setItem("memC_nome", nomeC + ".hex");
+
+/* 🔥 AGGIUNTA NECESSARIA PER PROGRAMMATORE X2 */
+localStorage.setItem("memoriaC", memoriaC_hex);
+localStorage.setItem("nomeMemoriaC", nomeC + ".hex");
+
+log(`Memoria C creata e salvata come: ${nomeC}.hex`);
+
 
     log(`Memoria C creata e salvata come: ${nomeC}.hex`);
 });
