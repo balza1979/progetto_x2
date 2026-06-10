@@ -549,9 +549,13 @@ function x2_cambiaParametro(delta) {
     if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
 
     sel.selectedIndex = nuovo;
-    ultimoParametro = x2_parametri[nuovo];
+
+    const codice = sel.options[nuovo].value;
+    ultimoParametro = x2_parametri.find(p => p.PARAMETRO === codice);
+
     sel.dispatchEvent(new Event("change"));
 }
+
 
 document.getElementById("parametro_up").onclick   = () => x2_cambiaParametro(-1);
 document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
@@ -594,9 +598,13 @@ selParametro.addEventListener("change", function () {
 
         if (!conferma) {
             this.value = parametroOriginale;
-            ultimoParametro = x2_parametri[this.selectedIndex];
-            x2_mostraInfoParametro(ultimoParametro);
-            x2_popolaValori(ultimoParametro);
+
+            const p = x2_parametri.find(x => x.PARAMETRO === parametroOriginale);
+            if (p) {
+                ultimoParametro = p;
+                x2_mostraInfoParametro(ultimoParametro);
+                x2_popolaValori(ultimoParametro);
+            }
 
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
@@ -610,7 +618,11 @@ selParametro.addEventListener("change", function () {
         document.getElementById("btn_salva_parametro").disabled = true;
     }
 
-    ultimoParametro = x2_parametri[this.selectedIndex];
+    const codice = this.value;
+    const p = x2_parametri.find(x => x.PARAMETRO === codice);
+    if (!p) return;
+
+    ultimoParametro = p;
     x2_mostraInfoParametro(ultimoParametro);
     x2_popolaValori(ultimoParametro);
 });
