@@ -188,6 +188,32 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
+// ======================================================================
+// SOTTOMENU
+// ======================================================================
+function x2_popolaSottomenu(codMenu) {
+    const selSottomenu = document.getElementById("sottomenu");
+    selSottomenu.innerHTML = "";
+
+    const lista = x2_menu_struttura_data.filter(r =>
+        String(r.cod__menu).startsWith(codMenu + ".")
+    );
+
+    lista.forEach(riga => {
+        const opt = document.createElement("option");
+        opt.value = riga.cod__menu;
+
+        const y = String(riga.cod__menu).split(".")[1];
+        const testo = String(riga.sottomenu).split("=").slice(1).join("=").trim();
+
+        opt.textContent = `${codMenu}.${y} = ${testo}`;
+        selSottomenu.appendChild(opt);
+    });
+
+    if (selSottomenu.options.length > 0) {
+        selSottomenu.selectedIndex = 0;
+    }
+}
 
 // ======================================================================
 // PULSANTI SOTTOMENU
