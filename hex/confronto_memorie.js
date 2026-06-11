@@ -1,9 +1,5 @@
 /* === INIZIO BLOCCO 1/4 ===================================== */
 
-// ============================================================
-//  CONFRONTO_MEMORIE.JS – BLOCCO 1 CORRETTO
-// ============================================================
-
 let memoriaA = null;
 let memoriaB = null;
 let memoriaC = null;
@@ -15,10 +11,6 @@ const indirizziRuntime = [
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
 
-
-// ------------------------------------------------------------
-//  HEX → MAPPA MEMORIA
-// ------------------------------------------------------------
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
@@ -44,10 +36,6 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-
-// ------------------------------------------------------------
-//  CARICAMENTO AUTOMATICO A/B/C
-// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
 
     const hexA = localStorage.getItem("memA_hex");
@@ -58,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeB = localStorage.getItem("memB_nome");
     const nomeC = localStorage.getItem("memC_nome");
 
-    // ⭐ SE A E B ESISTONO → USO SOLO QUELLI
     if (hexA && hexB) {
 
         memoriaA = hexToMemoryMap(hexA);
@@ -73,23 +60,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         console.log("Uso A/B/C da localStorage");
-        // ⭐ NON FERMARSI QUI — lascia che i pulsanti funzionino
-        return;
+    } else {
+
+        const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+        fetch(urlPolli)
+            .then(r => r.text())
+            .then(text => {
+                memoriaA = hexToMemoryMap(text);
+                document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
+            })
+            .catch(err => console.error("Errore caricamento polli:", err));
     }
-
-    // ⭐ FALLBACK POLLI
-    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-
-    fetch(urlPolli)
-        .then(r => r.text())
-        .then(text => {
-            memoriaA = hexToMemoryMap(text);
-            document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
-        })
-        .catch(err => console.error("Errore caricamento polli:", err));
 });
 
 /* === FINE BLOCCO 1/4 ======================================= */
+
 
 
 
