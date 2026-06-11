@@ -5,35 +5,21 @@
 
 function aggiornaColoreValore(indirizzo) {
 
-    // --- CASO 1: PROGRAMMATORE X2 (usa memC) ---
-    if (typeof memC !== "undefined" && memC) {
-
-        const byteC = memC[indirizzo];
-        const campoProg = document.getElementById("tendina_valori");
-
-        if (campoProg) {
-            campoProg.style.backgroundColor = "";
-            campoProg.style.color = "white";
-
-            if (byteC === undefined) return;
-
-            // Programmatore: verde fisso (non hai A/B)
-            campoProg.style.backgroundColor = "#006600";
-            return;
-        }
+    // --- PROGRAMMATORE X2: tendina valori ---
+    const campoProg = document.getElementById("tendina_valori");
+    if (campoProg) {
+        campoProg.style.backgroundColor = "#006600";
+        campoProg.style.color = "white";
+        return;
     }
 
-    // --- CASO 2: TABELLA CONFRONTO (usa memoriaA/B/C) ---
-    if (typeof memoriaC !== "undefined" &&
-        typeof memoriaA !== "undefined" &&
-        typeof memoriaB !== "undefined") {
+    // --- TABELLA CONFRONTO ---
+    const campoTab = document.getElementById("valoreC_" + indirizzo);
+    if (campoTab && typeof memoriaC !== "undefined") {
 
-        const valA = memoriaA[indirizzo];
-        const valB = memoriaB[indirizzo];
-        const valC = memoriaC[indirizzo];
-
-        const campoTab = document.getElementById("valoreC_" + indirizzo);
-        if (!campoTab) return;
+        const valA = memoriaA?.[indirizzo];
+        const valB = memoriaB?.[indirizzo];
+        const valC = memoriaC?.[indirizzo];
 
         campoTab.style.backgroundColor = "";
         campoTab.style.color = "white";
@@ -53,7 +39,4 @@ function aggiornaColoreValore(indirizzo) {
         campoTab.style.backgroundColor = "#990000"; // rosso
         return;
     }
-
-    // --- SE NON ESISTE NESSUNA MEMORIA ---
-    return;
 }
