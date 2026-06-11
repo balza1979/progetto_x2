@@ -1,9 +1,7 @@
-/* === INIZIO BLOCCO 1 === */
+/* === INIZIO BLOCCO 1 (CORRETTO) === */
 
 // ======================================================================
-// FILE: x2_ui (9RIPRISTINO 10 6 26 1516 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
-// DATA: 09/06/2026
-// DESCRIZIONE: UI Programmatore X2 — Usa SOLO HEX Intel in Memoria C
+// FILE: x2_ui — VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
 // ------------------------------------------------------------
@@ -94,8 +92,10 @@ function bytesToIntelHex(bytes) {
     return lines.join("\r\n");
 }
 
-/* === FINE BLOCCO 1 === */
-/* === INIZIO BLOCCO 2 === */
+/* === FINE BLOCCO 1 (CORRETTO) === */
+
+
+/* === INIZIO BLOCCO 2 (CORRETTO) === */
 
 // ------------------------------------------------------------
 // Carica Memoria C
@@ -221,9 +221,10 @@ function x2_popolaSottomenu(codMenu) {
     }
 }
 
-/* === FINE BLOCCO 2 === */
+/* === FINE BLOCCO 2 (CORRETTO) === */
 
-/* === INIZIO BLOCCO 3 === */
+
+/* === INIZIO BLOCCO 3 (CORRETTO) === */
 
 // ======================================================================
 // PULSANTI SOTTOMENU
@@ -345,9 +346,9 @@ function x2_calcolaHex(param) {
     return hex + "  (HTML)";
 }
 
-/* === FINE BLOCCO 3 === */
+/* === FINE BLOCCO 3 (CORRETTO) === */
 
-/* === INIZIO BLOCCO 4 === */
+/* === INIZIO BLOCCO 4 (CORRETTO) === */
 
 // ======================================================================
 // VALORI (val1…val8)
@@ -369,24 +370,19 @@ function x2_popolaValori(param) {
         btn.onclick = null;
     }
 
-    // ⭐⭐⭐ EVENTO NEL POSTO GIUSTO ⭐⭐⭐
     tendina.onchange = () => aggiornaColoreValore();
 
     // ------------------------------------------------------------
-    // 1) ELENCO PREDEFINITO (JSON)
+    // 1) ELENCO PREDEFINITO
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
         const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-        if (fonte === "parametro") {
-            nomeJSON = param.PARAMETRO.trim();
-        } else if (fonte && fonte !== "/") {
-            nomeJSON = fonte;
-        } else {
-            nomeJSON = param.PARAMETRO.trim();
-        }
+        if (fonte === "parametro") nomeJSON = param.PARAMETRO.trim();
+        else if (fonte && fonte !== "/") nomeJSON = fonte;
+        else nomeJSON = param.PARAMETRO.trim();
 
         x2_caricaJSON(nomeJSON, function (data) {
 
@@ -412,9 +408,6 @@ function x2_popolaValori(param) {
 
                 if (memC) {
                     p.VALORE = nuovoValore;
-                }
-
-                if (memC) {
                     modificheInCorso = true;
                     document.getElementById("btn_salva_parametro").disabled = false;
                 }
@@ -427,7 +420,7 @@ function x2_popolaValori(param) {
     }
 
     // ------------------------------------------------------------
-    // 2) MIN_MAX (versione PRO con input + spinner)
+    // 2) MIN_MAX  (VERSIONE CORRETTA)
     // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
@@ -486,25 +479,17 @@ function x2_popolaValori(param) {
         spinner.appendChild(btnUp);
         spinner.appendChild(btnDown);
 
-        // ------------------------------------------------------------
-        // INPUT: solo numeri (e segno - se min < 0)
-        // ------------------------------------------------------------
+        // INPUT
         input.addEventListener("input", function () {
-
             const min = parseInt(param.MIN);
-
             if (min < 0) {
-                this.value = this.value
-                    .replace(/(?!^-)[^0-9]/g, "")
-                    .replace(/(?!^)-/g, "");
+                this.value = this.value.replace(/(?!^-)[^0-9]/g, "").replace(/(?!^)-/g, "");
             } else {
                 this.value = this.value.replace(/[^0-9]/g, "");
             }
         });
 
-        // ------------------------------------------------------------
-        // BLUR: normalizzazione + aggiornamento ultimoParametro
-        // ------------------------------------------------------------
+        // BLUR
         input.addEventListener("blur", function () {
 
             let raw = this.value;
@@ -515,7 +500,6 @@ function x2_popolaValori(param) {
             }
 
             let v = parseInt(raw);
-
             if (isNaN(v)) {
                 this.value = ultimoParametro.VALORE;
                 return;
@@ -527,30 +511,17 @@ function x2_popolaValori(param) {
             if (v < min) v = min;
             if (v > max) v = max;
 
-            if (v < 0) {
-                this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-            } else {
-                this.value = v.toString().padStart(2, "0");
-            }
+            if (v < 0) this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+            else this.value = v.toString().padStart(2, "0");
 
             if (memC) {
                 ultimoParametro.VALORE = this.value;
-            }
-
-            if (memC) {
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
-
         });
 
-/* === FINE BLOCCO 4 === */
-
-/* === INIZIO BLOCCO 5 === */
-
-        // ------------------------------------------------------------
         // SPINNER UP
-        // ------------------------------------------------------------
         btnUp.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const max = parseInt(param.MAX);
@@ -562,17 +533,12 @@ function x2_popolaValori(param) {
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-            }
-
-            if (memC) {
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
         });
 
-        // ------------------------------------------------------------
         // SPINNER DOWN
-        // ------------------------------------------------------------
         btnDown.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const min = parseInt(param.MIN);
@@ -584,9 +550,6 @@ function x2_popolaValori(param) {
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-            }
-
-            if (memC) {
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
@@ -594,7 +557,6 @@ function x2_popolaValori(param) {
 
         wrapper.appendChild(input);
         wrapper.appendChild(spinner);
-
         tendina.parentNode.insertBefore(wrapper, tendina);
 
         return;
@@ -627,6 +589,11 @@ function x2_popolaValori(param) {
     // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
 }
+
+/* === FINE BLOCCO 4 (CORRETTO) === */
+
+
+/* === INIZIO BLOCCO 5 (CORRETTO) === */
 
 // ======================================================================
 // AGGIORNA PULSANTI FILE1…FILE8
@@ -684,9 +651,9 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
-/* === FINE BLOCCO 5 === */
+/* === FINE BLOCCO 5 (CORRETTO) === */
 
-/* === INIZIO BLOCCO 6 === */
+/* === INIZIO BLOCCO 6 (CORRETTO) === */
 
 // ======================================================================
 // EVENTI PRINCIPALI
@@ -837,5 +804,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-/* === FINE BLOCCO 6 === */
-            
+/* === FINE BLOCCO 6 (CORRETTO) === */
