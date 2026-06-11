@@ -2,33 +2,20 @@ function aggiornaColoreValore(indirizzo) {
 
     const campoProg = document.getElementById("tendina_valori");
 
-    // --- SE SIAMO NEL PROGRAMMATORE ---
-    if (campoProg && indirizzo !== undefined && indirizzo !== null) {
-
-        const valA = memoriaA?.[indirizzo];
-        const valB = memoriaB?.[indirizzo];
-        const valC = campoProg.value;
-
-        campoProg.style.backgroundColor = "";
-        campoProg.style.color = "white";
-
-        if (!valC || valC === "--") return;
-
-        if (valC === valA) {
-            campoProg.style.setProperty("background-color", "#006600", "important"); // verde
-            return;
-        }
-
-        if (valC === valB) {
-            campoProg.style.setProperty("background-color", "#999900", "important"); // giallo
-            return;
-        }
-
-        campoProg.style.setProperty("background-color", "#990000", "important"); // rosso
+    // ============================
+    // CASO 1: PROGRAMMATORE X2
+    // ============================
+    // Se NON c'è indirizzo → siamo nel programmatore
+    if (indirizzo === undefined || indirizzo === null) {
+        // NON fare confronto A/B/C
+        // NON toccare memoriaA/B/C
+        // NON bloccare la UI
         return;
     }
 
-    // --- SE SIAMO NELLA TABELLA ---
+    // ============================
+    // CASO 2: TABELLA CONFRONTO
+    // ============================
     const campoTab = document.getElementById("valoreC_" + indirizzo);
     if (campoTab && typeof memoriaC !== "undefined") {
 
