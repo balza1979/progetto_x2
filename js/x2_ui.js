@@ -418,6 +418,7 @@ function x2_popolaValori(param) {
     // ------------------------------------------------------------
     // 2) MIN_MAX (versione PRO con input + spinner)
     // ------------------------------------------------------------
+
 }
 if (param.TIPO_ELENCO === "MIN_MAX") {
 
