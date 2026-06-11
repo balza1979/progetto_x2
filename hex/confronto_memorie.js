@@ -1,13 +1,9 @@
 /* === INIZIO BLOCCO 1/4 ===================================== */
 
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – BLOCCO 1 COMPLETO
+//  CONFRONTO_MEMORIE.JS – BLOCCO 1 CORRETTO
 // ============================================================
 
-
-// ------------------------------------------------------------
-//  VARIABILI BASE
-// ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
 let memoriaC = null;
@@ -21,42 +17,16 @@ const indirizziRuntime = [
 
 
 // ------------------------------------------------------------
-//  UTILITY BASE
-// ------------------------------------------------------------
-function apriErrori() {
-    window.location.href = "errori_x2.html";
-}
-
-function formatVal(hexVal) {
-    if (hexVal === "--") return "--";
-    const num = parseInt(hexVal, 16);
-    return `${hexVal} <span style="color:#888;">(${num})</span>`;
-}
-
-function leggiFileHex(input, callback) {
-    const file = input.files[0];
-    if (!file) return callback(null);
-
-    const reader = new FileReader();
-    reader.onload = e => callback(e.target.result);
-    reader.readAsText(file);
-}
-
-
-// ------------------------------------------------------------
-//  FUNZIONE HEX → MAPPA MEMORIA (VERSIONE CORRETTA)
+//  HEX → MAPPA MEMORIA
 // ------------------------------------------------------------
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
 
     for (let line of lines) {
-
-        // pulizia riga (CRLF, BOM, spazi)
         line = line.trim();
         if (!line) continue;
         if (line.charCodeAt(0) === 0xFEFF) line = line.slice(1);
-
         if (!line.startsWith(":")) continue;
 
         const byteCount = parseInt(line.substr(1, 2), 16);
@@ -77,9 +47,6 @@ function hexToMemoryMap(hexText) {
 
 // ------------------------------------------------------------
 //  CARICAMENTO AUTOMATICO A/B/C
-//  PRIORITÀ:
-//  1) SE ESISTONO IN LOCALSTORAGE → USO QUELLI
-//  2) ALTRIMENTI → CARICO POLLI IN A
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -105,13 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("labelFileC").textContent = "FILE C: " + nomeC;
         }
 
-        console.log("Modalità CREAZIONE: uso A/B/C da localStorage");
-        return; // ⛔ STOP: NON CARICARE POLLI
+        console.log("Uso A/B/C da localStorage");
+        // ⭐ NON FERMARSI QUI — lascia che i pulsanti funzionino
+        return;
     }
 
-    // ⭐ SE NON ESISTONO A/B → FALLBACK POLLI
-    console.log("Modalità NORMALE: uso polli come A");
-
+    // ⭐ FALLBACK POLLI
     const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
     fetch(urlPolli)
@@ -123,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("Errore caricamento polli:", err));
 });
 
-
 /* === FINE BLOCCO 1/4 ======================================= */
+
 
 
 /* === INIZIO BLOCCO 2/4 ===================================== */
