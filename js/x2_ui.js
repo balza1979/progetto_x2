@@ -358,65 +358,67 @@ function x2_popolaValori(param) {
 
     // ⭐⭐⭐ EVENTO NEL POSTO GIUSTO ⭐⭐⭐
     tendina.onchange = () => aggiornaColoreValore();
-}
- // ------------------------------------------------------------
-// 1) ELENCO PREDEFINITO (JSON)
-// ------------------------------------------------------------
-if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-    let nomeJSON = null;
-    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+    // ------------------------------------------------------------
+    // 1) ELENCO PREDEFINITO (JSON)
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-    if (fonte === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (fonte && fonte !== "/") {
-        nomeJSON = fonte;
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
-    }
+        let nomeJSON = null;
+        const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-    x2_caricaJSON(nomeJSON, function (data) {
+        if (fonte === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (fonte && fonte !== "/") {
+            nomeJSON = fonte;
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
+        }
 
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = `"${voce.id}" ${voce.text}`;
-            tendina.appendChild(opt);
+        x2_caricaJSON(nomeJSON, function (data) {
+
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = `"${voce.id}" ${voce.text}`;
+                tendina.appendChild(opt);
+            });
+
+            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            // 🔥 chiamata iniziale corretta
+            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+
+            const codiceParam = param.PARAMETRO;
+
+            tendina.onchange = function () {
+                const nuovoValore = this.value.toString().trim().padStart(2, "0");
+
+                const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
+                if (!p) return;
+
+                // 🔥 CORRETTO: NON param, ma p
+                if (memC) {
+                    p.VALORE = nuovoValore;
+                }
+
+                if (memC) {
+                    modificheInCorso = true;
+                    document.getElementById("btn_salva_parametro").disabled = false;
+                }
+
+                x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
+            };
         });
 
-        const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-        tendina.value = valorePulito;
+        return;
+    }
 
-        // 🔥 chiamata iniziale corretta
-        x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-
-        const codiceParam = param.PARAMETRO;
-
-        tendina.onchange = function () {
-            const nuovoValore = this.value.toString().trim().padStart(2, "0");
-
-            const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
-            if (!p) return;
-
-            // 🔥 CORRETTO: NON param, ma p
-           if (memC) {
-    p.VALORE = nuovoValore;
+    // ------------------------------------------------------------
+    // 2) MIN_MAX (versione PRO con input + spinner)
+    // ------------------------------------------------------------
 }
-
-          if (memC) {
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-            }
-            x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
-        };
-    });
-
-    return;
-}
-
- // ------------------------------------------------------------
-// 2) MIN_MAX (versione PRO con input + spinner)
-// ------------------------------------------------------------
 if (param.TIPO_ELENCO === "MIN_MAX") {
 
     tendina.style.display = "none";
