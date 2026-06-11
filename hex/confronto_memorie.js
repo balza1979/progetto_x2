@@ -302,6 +302,7 @@ function renderResults(result) {
     `;
 
     document.getElementById("risultati").innerHTML = html;
+        document.querySelector(".col-valC").style.backgroundColor = "red";
 
             // COLORA TUTTE LE CELLE C
         for (let d of result.diff) {
