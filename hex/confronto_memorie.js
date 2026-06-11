@@ -1,218 +1,24 @@
+/* === INIZIO BLOCCO 1/4 ===================================== */
+
 // ============================================================
-//  CONFRONTO_MEMORIE.JS V  – VERSIONE FIX NASCONDE CAMPI NON NECESSARI E MEMORIA C FINO A SELEZ MEMORIAB  29/05/2026 1605
+//  CONFRONTO_MEMORIE.JS – VERSIONE PULITA SOLO CONFRONTO
+//  2026-06-11 – Luca + Copilot
 // ============================================================
-// =========================================
-// MODALITÀ CREAZIONE MEMORIA C (attivazione)
-// Versione 2026-05-29 12:25
-// =========================================
-
-function getQueryParam(name) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(name);
-}
-
-function isModalitaCreazione() {
-    return getQueryParam("mode") === "creazione";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    if (isModalitaCreazione()) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
-
-        // Carica A/B da localStorage (solo visualizzazione)
-
-		/* ===== INIZIO MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
-
-const hexA = localStorage.getItem("memA_hex");
-const nomeA = localStorage.getItem("memA_nome");
-
-const hexB = localStorage.getItem("memB_hex");
-const nomeB = localStorage.getItem("memB_nome");
-
-// Se esiste A → ricostruisci memoriaA + fake file + label
-if (hexA) {
-    memoriaA = hexToMemoryMap(hexA);
-
-    const fakeA = fakeFile(nomeA || "FILE_A.hex", hexA);
-    const inputA = document.getElementById("file1");
-    if (inputA) inputA.files = fakeA;
-
-    const lblA = document.getElementById("labelFileA");
-    if (lblA) lblA.textContent = `FILE A: ${nomeA}`;
-}
-
-// Se esiste B → ricostruisci memoriaB + fake file + label
-if (hexB) {
-    memoriaB = hexToMemoryMap(hexB);
-
-    const fakeB = fakeFile(nomeB || "FILE_B.hex", hexB);
-    const inputB = document.getElementById("file2");
-    if (inputB) inputB.files = fakeB;
-
-    const lblB = document.getElementById("labelFileB");
-    if (lblB) lblB.textContent = `FILE B: ${nomeB}`;
-}
-
-/* ===== FINE MODIFICA 2026-05-29 16:05 – Loader A/B da localStorage ===== */
-
-/* ===== INIZIO MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-const bloccoCreazione = document.getElementById("crea-memoria-container");
-
-if (bloccoCreazione) {
-    if (hexA && hexB) {
-        // A e B presenti → mostra blocco
-        bloccoCreazione.style.display = "block";
-    } else {
-        // Mancano A o B → nascondi blocco
-        bloccoCreazione.style.display = "none";
-    }
-}
-
-/* ===== FINE MODIFICA 2026-05-29 16:12 – Mostra blocco creazione solo se A e B presenti ===== */
-
-		
-        if (window.memorieABC) {
-            memorieABC.carica();
-            const A = memorieABC.getA();
-            const B = memorieABC.getB();
-
-            const infoA = document.getElementById("info-memoria-a");
-            const infoB = document.getElementById("info-memoria-b");
-
-            if (infoA) infoA.textContent = A ? "caricata" : "non caricata";
-            if (infoB) infoB.textContent = B ? "caricata" : "non caricata";
-        }
-    }
-});
-// =========================================
-// PASSO A.3 – Disabilita caricamento A/B/C in modalità creazione
-// Versione 2026-05-29 12:30
-// =========================================
-
-/* ===== INIZIO MODIFICA 2026-06-11 09:08 – Caricamento automatico A/B/C in modalità CONFRONTO ===== */
-
-
-
-
-
-
-function disabilitaCaricamentoABC() {
-    if (!isModalitaCreazione()) return;
-
-    // Disabilita SOLO FILE C
-    const fileC = document.getElementById("file3");
-    if (fileC) {
-        fileC.disabled = true;
-        fileC.style.opacity = "0.4";
-        fileC.style.pointerEvents = "none";
-    }
-
-    // Disabilita SOLO pulsanti Git di C
-    const btnGitC = document.querySelector('button[data-slot="C"]');
-    if (btnGitC) {
-        btnGitC.disabled = true;
-        btnGitC.style.opacity = "0.4";
-        btnGitC.style.pointerEvents = "none";
-    }
-
-    // NON toccare A e B
-}
-
-// =========================================
-// PASSO A.4.0 – Gestione UI Creazione Memoria
-// Versione 2026-05-29 13:50
-// =========================================
-
-function setupModalitaCreazione() {
-    if (!isModalitaCreazione()) return;
-
-    // 1) Nascondi completamente il blocco FILE C
-const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-if (bloccoC) bloccoC.style.display = "none";
-
-
-    // 2) Nascondi pulsanti confronto
-    ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = "none";
-    });
-
-    // 3) Nascondi filtri e opzioni
-    ["flagVisualizzaTutto", "columnFilters"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = "none";
-    });
-
- // 4) Nascondi SOLO il vecchio popup Git
-["gitPopup", "btnChiudiGit", "btnConfermaGit"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = "none";
-});
-
-// NON nascondere gitList → serve per la tendina moderna
-
-
-    // 5) Nascondi tabella risultati
-    document.querySelectorAll("table").forEach(t => {
-        t.style.display = "none";
-    });
-
-
-
-	// 8) Nascondi la label "Visualizza TUTTI i parametri"
-const lbl = document.getElementById("lblVisualizzaTutti");
-if (lbl) lbl.style.display = "none";
-
-
-	
-		// 5.1) Nascondi pulsanti extra: "Visualizza errori registrati" e "Visualizza tutti parametri"
-		document.querySelectorAll("button").forEach(btn => {
-		    const t = btn.textContent.toLowerCase();
-		
-		    if (t.includes("errori") || t.includes("visualizza") || t.includes("parametri")) {
-		        btn.style.display = "none";
-		    }
-		});
-
-
-	
-    // 6) Nascondi il blocco creazione finché B non è caricato
-    // const blocco = document.getElementById("crea-memoria-container");
-   //  if (blocco) blocco.style.display = "none";
-
-    // 7) Quando B viene caricato → mostra blocco creazione
-   /* ===== DISATTIVATO 2026-05-29 17:12 – rompe la modalità creazione =====
-const oldOnFileB = onFileB_Change;
-onFileB_Change = function (...args) {
-    oldOnFileB.apply(this, args);
-
-    const B = memorieABC.getB();
-    if (B) {
-        const blocco = document.getElementById("crea-memoria-container");
-        if (blocco) blocco.style.display = "block";
-    }
-};
-===== FINE DISATTIVATO ===== */
-
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // 🔥 Reset automatico all'apertura della pagina
-  //   resetCreazione();
-
-    // Poi attivi la modalità creazione (se serve)
-    setupModalitaCreazione();
-});
-
-
-
+//
+//  REGOLE DI FUNZIONAMENTO:
+//
+//  1) Se esistono A/B/C in localStorage → VINCONO LORO
+//  2) Se NON esiste A → carica automaticamente memoria POLLI
+//  3) I confronti AB / AC / BC / ABC usano memoriaA/B/C
+//     oppure i file selezionati manualmente
+//  4) Nessun controllo su fileX.files[0] se memoria esiste
+//  5) Nessuna logica creazione, nessun fakeFile, nessun memorieABC
+//
+// ============================================================
 
 
 // ------------------------------------------------------------
-//  VARIABILI BASE 
+//  VARIABILI BASE
 // ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
@@ -224,6 +30,7 @@ const indirizziRuntime = [
     0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
+
 
 // ------------------------------------------------------------
 //  UTILITY BASE
@@ -290,55 +97,67 @@ function ricostruisciValore(bytes) {
 }
 
 
-/* ===== INIZIO MODIFICA 2026-06-11 09:30 – Caricamento automatico A/B/C in modalità CONFRONTO ===== */
+// ------------------------------------------------------------
+//  CARICAMENTO AUTOMATICO A/B/C DA LOCALSTORAGE
+//  + FALLBACK POLLI PER A
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
 
-if (!isModalitaCreazione()) {
-
-    const hexA  = localStorage.getItem("memA_hex");
-    const hexB  = localStorage.getItem("memB_hex");
-    const hexC  = localStorage.getItem("memoriaC");
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+    const hexC = localStorage.getItem("memC_hex");
 
     const nomeA = localStorage.getItem("memA_nome");
     const nomeB = localStorage.getItem("memB_nome");
-    const nomeC = localStorage.getItem("nomeMemoriaC");
+    const nomeC = localStorage.getItem("memC_nome");
 
-    // Carica A
+    // --- CARICA A ---
     if (hexA && nomeA) {
         memoriaA = hexToMemoryMap(hexA);
-        const lblA = document.getElementById("labelFileA");
-        if (lblA) lblA.textContent = "FILE A: " + nomeA;
+        document.getElementById("labelFileA").textContent = "FILE A: " + nomeA;
     }
 
-    // Carica B
+    // --- CARICA B ---
     if (hexB && nomeB) {
         memoriaB = hexToMemoryMap(hexB);
-        const lblB = document.getElementById("labelFileB");
-        if (lblB) lblB.textContent = "FILE B: " + nomeB;
+        document.getElementById("labelFileB").textContent = "FILE B: " + nomeB;
     }
 
-    // Carica C
+    // --- CARICA C ---
     if (hexC && nomeC) {
         memoriaC = hexToMemoryMap(hexC);
-        const lblC = document.getElementById("labelFileC");
-        if (lblC) lblC.textContent = "FILE C: " + nomeC;
+        document.getElementById("labelFileC").textContent = "FILE C: " + nomeC;
     }
-}
 
-/* ===== FINE MODIFICA 2026-06-11 09:30 – Caricamento automatico A/B/C in modalità CONFRONTO ===== */
+    // --- FALLBACK POLLI SOLO SE A NON ESISTE ---
+    if (!memoriaA) {
+        const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
+        fetch(urlPolli)
+            .then(r => r.text())
+            .then(text => {
+                memoriaA = hexToMemoryMap(text);
+                document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
+                console.log("Memoria polli caricata automaticamente in A");
+            })
+            .catch(err => console.error("Errore caricamento polli:", err));
+    }
+});
+
+/* === FINE BLOCCO 1/4 ======================================= */
+/* === INIZIO BLOCCO 2/4 ===================================== */
 
 
 // ------------------------------------------------------------
-//  CONFRONTO A–B
+//  FUNZIONI DI CONFRONTO A DUE MEMORIE (A-B)
 // ------------------------------------------------------------
 function compareMemory(memA, memB) {
-
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-    // RUNTIME
+    // --- RUNTIME ---
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -348,7 +167,7 @@ function compareMemory(memA, memB) {
         });
     }
 
-    // PARAMETRI
+    // --- PARAMETRI ---
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -358,6 +177,7 @@ function compareMemory(memA, memB) {
 
         if (isNaN(base) || isNaN(len)) continue;
         if (giàGestiti.has(base)) continue;
+
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
         const bytesA = [];
@@ -397,18 +217,18 @@ function compareMemory(memA, memB) {
 }
 
 
+
 // ------------------------------------------------------------
-//  CONFRONTO A–B–C (PATCH COMPLETA DIFFERENZE)
+//  FUNZIONI DI CONFRONTO A TRE MEMORIE (A-B-C)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
-
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-    // RUNTIME
+    // --- RUNTIME ---
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -418,7 +238,7 @@ function compareMemory3(memA, memB, memC) {
         });
     }
 
-    // PARAMETRI
+    // --- PARAMETRI ---
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -428,6 +248,7 @@ function compareMemory3(memA, memB, memC) {
 
         if (isNaN(base) || isNaN(len)) continue;
         if (giàGestiti.has(base)) continue;
+
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
         const bytesA = [];
@@ -441,7 +262,6 @@ function compareMemory3(memA, memB, memC) {
             bytesC.push(memC[a] ?? "--");
         }
 
-        // PATCH DIFFERENZE CORRETTE
         let diversi = false;
 
         if (confrontoAttivo === "A-C") {
@@ -456,7 +276,7 @@ function compareMemory3(memA, memB, memC) {
                 bytesA.some((b, i) => b !== bytesC[i]) ||
                 bytesB.some((b, i) => b !== bytesC[i]);
         }
-        else { // A-B
+        else { // default A-B
             diversi = bytesA.some((b, i) => b !== bytesB[i]);
         }
 
@@ -487,8 +307,13 @@ function compareMemory3(memA, memB, memC) {
     return { diff, runtime };
 }
 
+
+/* === FINE BLOCCO 2/4 ======================================= */
+/* === INIZIO BLOCCO 3/4 ===================================== */
+
+
 // ------------------------------------------------------------
-//  RENDER RISULTATI
+//  RENDER RISULTATI (TABELLA DIFFERENZE + RUNTIME)
 // ------------------------------------------------------------
 function renderResults(result) {
 
@@ -497,6 +322,7 @@ function renderResults(result) {
 
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
+    // --- NESSUNA DIFFERENZA ---
     if (lista.length === 0) {
         html += `
             <div style="
@@ -512,7 +338,10 @@ function renderResults(result) {
                 Nessuna differenza da segnalare.
             </div>
         `;
-    } else {
+    } 
+
+    // --- CI SONO DIFFERENZE ---
+    else {
 
         html += `
             <table id="tabDiff">
@@ -534,30 +363,40 @@ function renderResults(result) {
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
-                        <td class="col-valC">${formatVal(d.bytesC[i])}</td>
+                        <td class="col-valC">${formatVal(d.bytesC ? d.bytesC[i] : "--")}</td>
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
+                // --- VALORE COMPLESSIVO (rowspan) ---
                 if (i === 0) {
+
                     if (confrontoAttivo === "A-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>A:</b> ${d.valA_str}<br><b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    } else if (confrontoAttivo === "B-C") {
+                    }
+
+                    else if (confrontoAttivo === "B-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    } else if (confrontoAttivo === "A-B-C") {
+                    }
+
+                    else if (confrontoAttivo === "A-B-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
-                                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
+                                <b>A:</b> ${d.valA_str}<br>
+                                <b>B:</b> ${d.valB_str}<br>
+                                <b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    } else {
+                    }
+
+                    else { // A-B
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}
@@ -573,7 +412,9 @@ function renderResults(result) {
         html += `</table>`;
     }
 
-    // RUNTIME
+    // --------------------------------------------------------
+    //  SEZIONE RUNTIME
+    // --------------------------------------------------------
     html += `
         <h3 style="margin-top:25px;">
             <button id="toggleRuntimeBtn"
@@ -613,7 +454,7 @@ function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
-    // Toggle runtime
+    // --- TOGGLE RUNTIME ---
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
@@ -629,8 +470,15 @@ function renderResults(result) {
 
     applyColumnFilters();
 }
+
+
+/* === FINE BLOCCO 3/4 ======================================= */
+/* === INIZIO BLOCCO 4/4 ===================================== */
+
+
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO (AB / AC / BC / ABC)
+//  USANO memoriaA/B/C SE ESISTONO, ALTRIMENTI I FILE
 // ------------------------------------------------------------
 function confrontaAB() {
     evidenziaPulsante("btnAB");
@@ -639,49 +487,25 @@ function confrontaAB() {
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    if (!f2.files[0]) {
-        alert("Seleziona File B");
-        return;
-    }
+    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
+    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
 
-    // Attendi memoriaA se non è pronta
-    if (!f1.files[0] && !memoriaA) {
-        console.log("A non pronta, riprovo tra 300ms...");
-        setTimeout(confrontaAB, 300);
-        return;
-    }
+    if (!sorgenteA) return alert("File A mancante");
+    if (!sorgenteB) return alert("File B mancante");
 
-    // Caso 1: A viene dal file
-    if (f1.files[0]) {
-        leggiFileHex(f1, hexA => {
-            leggiFileHex(f2, hexB => {
+    const promA = (sorgenteA === memoriaA)
+        ? Promise.resolve(memoriaA)
+        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
 
-                const mA = hexToMemoryMap(hexA);
-                const mB = hexToMemoryMap(hexB);
-                const mC = {}; // C mancante
+    const promB = (sorgenteB === memoriaB)
+        ? Promise.resolve(memoriaB)
+        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
 
-                const result = compareMemory3(mA, mB, mC);
-                renderResults(result);
-                aggiornaCheckboxColonne();
-            });
-        });
-        return;
-    }
-
-    // Caso 2: A = memoria default
-    const mA = (typeof memoriaA === "string")
-        ? hexToMemoryMap(memoriaA)
-        : memoriaA;
-
-    leggiFileHex(f2, hexB => {
-        const mB = hexToMemoryMap(hexB);
-        const mC = {}; // C mancante
-
-        const result = compareMemory3(mA, mB, mC);
-        renderResults(result);
-        aggiornaCheckboxColonne();
+    Promise.all([promA, promB]).then(([memA, memB]) => {
+        renderResults(compareMemory(memA, memB));
     });
 }
+
 
 function confrontaAC() {
     evidenziaPulsante("btnAC");
@@ -690,32 +514,25 @@ function confrontaAC() {
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
-    if (!f3.files[0]) return alert("Seleziona File C");
+    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
+    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
 
-    let sorgenteA;
+    if (!sorgenteA) return alert("File A mancante");
+    if (!sorgenteC) return alert("File C mancante");
 
-    if (f1.files[0]) {
-        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
-    } else if (memoriaA) {
-        sorgenteA = Promise.resolve(memoriaA);
-    } else {
-        return alert("Seleziona File A oppure usa la memoria DEFAULT");
-    }
+    const promA = (sorgenteA === memoriaA)
+        ? Promise.resolve(memoriaA)
+        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
 
-    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+    const promC = (sorgenteC === memoriaC)
+        ? Promise.resolve(memoriaC)
+        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
 
-    Promise.all([sorgenteA, sorgenteC]).then(([memA, memC]) => {
-
-        const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
-        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
-
-        const mB = {}; // B mancante
-
-        const result = compareMemory3(mA, mB, mC);
-        renderResults(result);
-        aggiornaCheckboxColonne();
+    Promise.all([promA, promC]).then(([memA, memC]) => {
+        renderResults(compareMemory3(memA, {}, memC));
     });
 }
+
 
 function confrontaBC() {
     evidenziaPulsante("btnBC");
@@ -724,27 +541,27 @@ function confrontaBC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    if (!f2.files[0] || !f3.files[0]) {
-        return alert("Seleziona File B e File C");
-    }
+    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
+    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
 
-    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
-    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+    if (!sorgenteB) return alert("File B mancante");
+    if (!sorgenteC) return alert("File C mancante");
 
-    Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
+    const promB = (sorgenteB === memoriaB)
+        ? Promise.resolve(memoriaB)
+        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
 
-        const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
-        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+    const promC = (sorgenteC === memoriaC)
+        ? Promise.resolve(memoriaC)
+        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
 
-        const mA = {}; // A mancante
-
-        const result = compareMemory3(mA, mB, mC);
-        renderResults(result);
-        aggiornaCheckboxColonne();
+    Promise.all([promB, promC]).then(([memB, memC]) => {
+        renderResults(compareMemory3({}, memB, memC));
     });
 }
 
-async function confrontaABC() {
+
+function confrontaABC() {
     evidenziaPulsante("btnABC");
     confrontoAttivo = "A-B-C";
 
@@ -752,319 +569,98 @@ async function confrontaABC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    if (!f2.files[0] || !f3.files[0]) return alert("Seleziona File B e File C");
+    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
+    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
+    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
 
-    let sorgenteA;
-    if (f1.files[0]) {
-        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
-    } else if (memoriaA) {
-        sorgenteA = Promise.resolve(memoriaA);
-    } else {
-        alert("Seleziona File A oppure usa la memoria DEFAULT");
-        return;
-    }
+    if (!sorgenteA) return alert("File A mancante");
+    if (!sorgenteB) return alert("File B mancante");
+    if (!sorgenteC) return alert("File C mancante");
 
-    const sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
-    const sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+    const promA = (sorgenteA === memoriaA)
+        ? Promise.resolve(memoriaA)
+        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
 
-    const [memA, memB, memC] = await Promise.all([sorgenteA, sorgenteB, sorgenteC]);
+    const promB = (sorgenteB === memoriaB)
+        ? Promise.resolve(memoriaB)
+        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
 
-    const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
-    const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
-    const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+    const promC = (sorgenteC === memoriaC)
+        ? Promise.resolve(memoriaC)
+        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
 
-    const result = compareMemory3(mA, mB, mC);
-    renderResults(result);
-    aggiornaCheckboxColonne();
-}
-
-// ------------------------------------------------------------
-//  EVIDENZIA PULSANTE
-// ------------------------------------------------------------
-function evidenziaPulsante(idAttivo) {
-    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
-
-    ids.forEach(id => {
-        const btn = document.getElementById(id);
-        if (!btn) return;
-
-        if (id === idAttivo) {
-            btn.classList.add("attivo");
-        } else {
-            btn.classList.remove("attivo");
-        }
+    Promise.all([promA, promB, promC]).then(([memA, memB, memC]) => {
+        renderResults(compareMemory3(memA, memB, memC));
     });
 }
+
+
+
+// ------------------------------------------------------------
+//  EVIDENZIA PULSANTE ATTIVO
+// ------------------------------------------------------------
+function evidenziaPulsante(id) {
+    ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(btn => {
+        document.getElementById(btn).classList.remove("attivo");
+    });
+    document.getElementById(id).classList.add("attivo");
+}
+
+
 
 // ------------------------------------------------------------
 //  FILTRI COLONNE
 // ------------------------------------------------------------
 function applyColumnFilters() {
-    document.querySelectorAll(".col-flag").forEach(flag => {
-        const colClass = flag.dataset.col;
-        const hide = !flag.checked;
+    const showA = document.getElementById("chkA")?.checked ?? true;
+    const showB = document.getElementById("chkB")?.checked ?? true;
+    const showC = document.getElementById("chkC")?.checked ?? true;
 
-        document.querySelectorAll("." + colClass).forEach(cell => {
-            cell.style.display = hide ? "none" : "";
-        });
-    });
+    document.querySelectorAll(".col-valA").forEach(c => c.style.display = showA ? "" : "none");
+    document.querySelectorAll(".col-valB").forEach(c => c.style.display = showB ? "" : "none");
+    document.querySelectorAll(".col-valC").forEach(c => c.style.display = showC ? "" : "none");
 }
 
-function aggiornaCheckboxColonne() {
-
-    const chkA = document.querySelector('input[data-col="col-valA"]');
-    const chkB = document.querySelector('input[data-col="col-valB"]');
-    const chkC = document.querySelector('input[data-col="col-valC"]');
-
-    if (!chkA || !chkB || !chkC) return;
-
-    if (confrontoAttivo === "A-B") {
-        chkA.checked = true;
-        chkB.checked = true;
-        chkC.checked = false;
-    }
-
-    if (confrontoAttivo === "A-C") {
-        chkA.checked = true;
-        chkB.checked = false;
-        chkC.checked = true;
-    }
-
-    if (confrontoAttivo === "B-C") {
-        chkA.checked = false;
-        chkB.checked = true;
-        chkC.checked = true;
-    }
-
-    if (confrontoAttivo === "A-B-C") {
-        chkA.checked = true;
-        chkB.checked = true;
-        chkC.checked = true;
-    }
-
-    applyColumnFilters();
-}
-
-
-
-
-/* ===== INIZIO PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
-function caricaDaGit(slot) {
-
-    // URL del file Git (puoi cambiarlo quando vuoi)
-    const url = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
-
-    fetch(url)
-        .then(r => r.arrayBuffer())
-        .then(buffer => {
-            const bytes = new Uint8Array(buffer);
-
-            const isHex = (bytes[0] === 58); // ':' = 58
-
-            let mem;
-            let hexText = null;
-
-            if (isHex) {
-                hexText = new TextDecoder().decode(bytes);
-                mem = hexToMemoryMap(hexText);
-                console.log(`Caricato HEX da Git in ${slot}`);
-            } else {
-                mem = binToMemoryMap(bytes);
-                console.log(`Caricato BIN da Git in ${slot}`);
-            }
-
-            // --- SLOT A ---
-         if (slot === "A") {
-    memoriaA = mem;
-    document.getElementById("file1").value = "";
-    if (hexText) {
-        localStorage.setItem("memA_hex", hexText);
-        localStorage.setItem("memA_nome", "Git_A.hex");
-    }
-
-    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
-
-    aggiornaBloccoCreazione();
-}
-			
-if (slot === "B") {
-    memoriaB = mem;
-    document.getElementById("file2").value = "";
-    if (hexText) {
-        localStorage.setItem("memB_hex", hexText);
-        localStorage.setItem("memB_nome", "Git_B.hex");
-    }
-
-    localStorage.setItem("creazione_attiva", "1");   // 🔥 QUESTA È LA CHIAVE
-
-    aggiornaBloccoCreazione();
-}
-
-
-            // --- SLOT C ---
-            if (slot === "C") {
-                memoriaC = mem;
-                document.getElementById("file3").value = ""; // reset input locale C
-            }
-
-            resetConfronto(); // reset dopo caricamento Git
-
-            document.getElementById("labelFile" + slot).innerText =
-                `FILE ${slot} (caricato da Git)`;
-
-            alert(`File Git caricato in ${slot}`);
-        })
-        .catch(err => {
-            console.error("Errore Git:", err);
-            alert("Errore nel caricamento del file da Git");
-        });
-}
-/* ===== FINE PATCH 2026-05-29 16:35 – Salvataggio Git in localStorage ===== */
-
-
-function binToMemoryMap(bytes) {
-    const mem = {};
-    for (let i = 0; i < bytes.length; i++) {
-        mem[i] = bytes[i].toString(16).padStart(2, "0").toUpperCase();
-    }
-    return mem;
-}
-
-// ------------------------------------------------------------
-//  CARICAMENTO AUTOMATICO MEMORIA POLLI IN A
-// ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-
-    fetch(urlPolli)
-        .then(r => r.text())
-        .then(text => {
-            memoriaA = hexToMemoryMap(text);
-            console.log("Memoria polli caricata automaticamente in A");
-        })
-        .catch(err => console.error("Errore caricamento polli:", err));
-});
 
 
 // ------------------------------------------------------------
-//  INIZIO MODIFICA 2026-05-27 12:30 - resetConfronto
+//  EVENTI CAMBIO FILE (A/B/C)
 // ------------------------------------------------------------
-function resetConfronto() {
-    // Azzeriamo il tipo di confronto attivo
-    confrontoAttivo = null;
-
-    // Rimettiamo tutti i pulsanti in stato "non attivo"
-    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
-    ids.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) btn.classList.remove("attivo");
-    });
-
-    // Svuotiamo la tabella risultati (adatta l'ID se è diverso)
-    const divRisultati = document.getElementById("risultati");
-    if (divRisultati) {
-        divRisultati.innerHTML = "";
-    }
-
-    // Se hai una funzione che gestisce le checkbox colonne, puoi resettarle qui
-    if (typeof resetCheckboxColonne === "function") {
-        resetCheckboxColonne();
-    }
-}
-// ------------------------------------------------------------
-//  FINE MODIFICA 2026-05-27 12:30 - resetConfronto
-// ------------------------------------------------------------
-function aggiornaBloccoCreazione() {
-    const blocco = document.getElementById("crea-memoria-container");
-    if (!blocco) return;
-
-    const hexA = localStorage.getItem("memA_hex");
-    const hexB = localStorage.getItem("memB_hex");
-
-    if (hexA && hexB) {
-        blocco.style.display = "block";
-
-        // 🔥 MOSTRA IL BLOCCO C QUANDO A E B SONO PRESENTI
-        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-        if (bloccoC) bloccoC.style.display = "block";
-
-    } else {
-        blocco.style.display = "none";
-
-        // 🔥 NASCONDI C QUANDO MANCANO A O B
-        const bloccoC = document.querySelector('#labelFileC')?.closest('.file-block');
-        if (bloccoC) bloccoC.style.display = "none";
-    }
-}
-
-/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 function onFileA_Change() {
-    resetConfronto();
-    document.getElementById("labelFileA").innerText = "FILE A (locale)";
-
     const inputA = document.getElementById("file1");
     if (!inputA.files[0]) return;
 
-    leggiFileHex(inputA, hexA => {
-        if (!hexA) return;
-
-        localStorage.setItem("memA_hex", hexA);
+    leggiFileHex(inputA, hex => {
+        memoriaA = hexToMemoryMap(hex);
+        localStorage.setItem("memA_hex", hex);
         localStorage.setItem("memA_nome", inputA.files[0].name);
-
-        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
+        document.getElementById("labelFileA").textContent = "FILE A: " + inputA.files[0].name;
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE A + refresh blocco ===== */
 
-
-
-/* ===== INIZIO PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
 function onFileB_Change() {
-    resetConfronto();
-    document.getElementById("labelFileB").innerText = "FILE B (locale)";
-
     const inputB = document.getElementById("file2");
     if (!inputB.files[0]) return;
 
-    leggiFileHex(inputB, hexB => {
-        if (!hexB) return;
-
-        localStorage.setItem("memB_hex", hexB);
+    leggiFileHex(inputB, hex => {
+        memoriaB = hexToMemoryMap(hex);
+        localStorage.setItem("memB_hex", hex);
         localStorage.setItem("memB_nome", inputB.files[0].name);
-
-        aggiornaBloccoCreazione();   // <── QUESTA È LA CHIAVE
+        document.getElementById("labelFileB").textContent = "FILE B: " + inputB.files[0].name;
     });
 }
-/* ===== FINE PATCH 2026-05-29 16:52 – Salvataggio FILE B + refresh blocco ===== */
 
-
-
-// FILE C cambiato
 function onFileC_Change() {
-    resetConfronto(); // reset confronto perché C è cambiato
-	document.getElementById("labelFileC").innerText = "FILE C (locale)";
+    const inputC = document.getElementById("file3");
+    if (!inputC.files[0]) return;
 
+    leggiFileHex(inputC, hex => {
+        memoriaC = hexToMemoryMap(hex);
+        localStorage.setItem("memC_hex", hex);
+        localStorage.setItem("memC_nome", inputC.files[0].name);
+        document.getElementById("labelFileC").textContent = "FILE C: " + inputC.files[0].name;
+    });
 }
-/* ===== INIZIO PATCH 2026-06-03 15:10 – Reset completo modalità creazione ===== */
-function resetCreazione() {
 
-    // Evita loop infinito
-    if (sessionStorage.getItem("creazione_resettata") === "1") {
-        return;
-    }
-    sessionStorage.setItem("creazione_resettata", "1");
 
-    // Rimuove tutti i dati relativi alla creazione
-    localStorage.removeItem("memA_hex");
-    localStorage.removeItem("memB_hex");
-    localStorage.removeItem("memC_hex");
-
-    localStorage.removeItem("memA_nome");
-    localStorage.removeItem("memB_nome");
-    localStorage.removeItem("memC_nome");
-
-    localStorage.removeItem("creazione_attiva");
-
-    // Ricarica la pagina completamente pulita
-    location.reload();
-}
+/* === FINE BLOCCO 4/4 ======================================= */
