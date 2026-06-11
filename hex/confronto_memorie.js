@@ -93,40 +93,6 @@ if (bloccoCreazione) {
 
 /* ===== INIZIO MODIFICA 2026-06-11 09:08 – Caricamento automatico A/B/C in modalità CONFRONTO ===== */
 
-// Carica A, B, C da localStorage solo se NON siamo in modalità creazione
-if (!isModalitaCreazione()) {
-
-    const hexA  = localStorage.getItem("memA_hex");
-    const hexB  = localStorage.getItem("memB_hex");
-    const hexC  = localStorage.getItem("memoriaC");
-
-    const nomeA = localStorage.getItem("memA_nome");
-    const nomeB = localStorage.getItem("memB_nome");
-    const nomeC = localStorage.getItem("nomeMemoriaC");
-
-    // Carica A
-    if (hexA && nomeA) {
-        caricaMemoria("A", hexA, nomeA);
-        const lblA = document.getElementById("labelFileA");
-        if (lblA) lblA.textContent = "FILE A: " + nomeA;
-    }
-
-    // Carica B
-    if (hexB && nomeB) {
-        caricaMemoria("B", hexB, nomeB);
-        const lblB = document.getElementById("labelFileB");
-        if (lblB) lblB.textContent = "FILE B: " + nomeB;
-    }
-
-    // Carica C
-    if (hexC && nomeC) {
-        caricaMemoria("C", hexC, nomeC);
-        const lblC = document.getElementById("labelFileC");
-        if (lblC) lblC.textContent = "FILE C: " + nomeC;
-    }
-}
-
-/* ===== FINE MODIFICA 2026-06-11 09:08 – Caricamento automatico A/B/C in modalità CONFRONTO ===== */
 
 
 
