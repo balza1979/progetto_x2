@@ -230,10 +230,11 @@
             Carica FILE A da Git
         </button>
 
-        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
-                onclick="salvaMemoriaComeHex(memoriaA, 'memoria_A.hex')">
-            Salva A (.HEX)
-        </button>
+       <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+        onclick="salvaMemoriaComeHex(memoriaA, localStorage.getItem('memA_nome') || 'memoria_A.hex')">
+    Salva A (.HEX)
+</button>
+
     </div>
 </div>
 
@@ -247,10 +248,11 @@
             Carica FILE B da Git
         </button>
 
-        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
-                onclick="salvaMemoriaComeHex(memoriaB, 'memoria_B.hex')">
-            Salva B (.HEX)
-        </button>
+      <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+        onclick="salvaMemoriaComeHex(memoriaB, localStorage.getItem('memB_nome') || 'memoria_B.hex')">
+    Salva B (.HEX)
+</button>
+
     </div>
 </div>
 
@@ -264,10 +266,11 @@
             Carica FILE C da Git
         </button>
 
-        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
-                onclick="salvaMemoriaComeHex(memoriaC, 'memoria_C.hex')">
-            Salva C (.HEX)
-        </button>
+       <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+        onclick="salvaMemoriaComeHex(memoriaC, localStorage.getItem('memC_nome') || 'memoria_C.hex')">
+    Salva C (.HEX)
+</button>
+
     </div>
 </div>
 
