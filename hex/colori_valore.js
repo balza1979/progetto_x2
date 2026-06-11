@@ -10,22 +10,19 @@ function aggiornaColoreValore(indirizzo) {
     function colora(el) {
         if (!el) return;
 
-        // C = A → VERDE
         if (valC === valA) {
-            el.style.backgroundColor = "#006600";
+            el.style.backgroundColor = "#006600"; // verde
             el.style.color = "white";
             return;
         }
 
-        // C = B → GIALLO
         if (valC === valB) {
-            el.style.backgroundColor = "#999900";
+            el.style.backgroundColor = "#999900"; // giallo
             el.style.color = "white";
             return;
         }
 
-        // C diverso da A e B → ROSSO
-        el.style.backgroundColor = "#990000";
+        el.style.backgroundColor = "#990000"; // rosso
         el.style.color = "white";
     }
 
