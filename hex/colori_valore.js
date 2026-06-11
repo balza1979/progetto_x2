@@ -1,6 +1,6 @@
 // ============================================================
 //  COLORAZIONE DINAMICA UNIVERSALE (TABELLA + PROGRAMMATORE)
-//  Versione 2026-06-11 17:55
+//  Versione 2026-06-11 17:55 
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
