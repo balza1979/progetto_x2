@@ -323,7 +323,7 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("unita_misura").value = param.UNITA || "";
 
    ultimoParametro = param;
-    aggiornaColoreValore(param.INDIRIZZO);
+    aggiornaColoreValore(parseInt(param.LIBERA1));;
 
 }
 
