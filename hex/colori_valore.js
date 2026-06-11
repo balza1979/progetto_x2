@@ -1,38 +1,55 @@
 // ============================================================
-//  COLORAZIONE DINAMICA VALORE C IN BASE A MEMORIA A/B
-//  Versione 2026-06-11 15:30
+//  COLORAZIONE DINAMICA UNIVERSALE (TABELLA + PROGRAMMATORE)
+//  Versione 2026-06-11 16:40
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
 
-    if (!memoriaC || !memoriaA || !memoriaB) return;
+    // --- CASO 1: PROGRAMMATORE X2 (usa memC) ---
+    if (typeof memC !== "undefined" && memC) {
 
-    const valA = memoriaA[indirizzo];
-    const valB = memoriaB[indirizzo];
-    const valC = memoriaC[indirizzo];
+        const byteC = memC[indirizzo];
+        const campoProg = document.getElementById("tendina_valori");
 
-    const campo = document.getElementById("valoreC_" + indirizzo);
-    if (!campo) return;
+        if (campoProg) {
+            campoProg.style.backgroundColor = "";
+            campoProg.style.color = "white";
 
-    // Reset colore
-    campo.style.backgroundColor = "";
-    campo.style.color = "white";
+            if (byteC === undefined) return;
 
-    // Se C non esiste → niente colore
-    if (!valC || valC === "--") return;
-
-    // ---- REGOLE COLORI ----
-
-    if (valC === valA) {
-        campo.style.backgroundColor = "#006600"; // verde
-        return;
+            // Programmatore: se non hai A/B → verde fisso
+            campoProg.style.backgroundColor = "#006600";
+            return;
+        }
     }
 
-    if (valC === valB) {
-        campo.style.backgroundColor = "#999900"; // giallo
-        return;
-    }
+    // --- CASO 2: TABELLA CONFRONTO (usa memoriaA/B/C) ---
+    if (typeof memoriaC !== "undefined" &&
+        typeof memoriaA !== "undefined" &&
+        typeof memoriaB !== "undefined") {
 
-    // Diverso da A e da B → rosso
-    campo.style.backgroundColor = "#990000"; // rosso
+        const valA = memoriaA[indirizzo];
+        const valB = memoriaB[indirizzo];
+        const valC = memoriaC[indirizzo];
+
+        const campoTab = document.getElementById("valoreC_" + indirizzo);
+        if (!campoTab) return;
+
+        campoTab.style.backgroundColor = "";
+        campoTab.style.color = "white";
+
+        if (!valC || valC === "--") return;
+
+        if (valC === valA) {
+            campoTab.style.backgroundColor = "#006600"; // verde
+            return;
+        }
+
+        if (valC === valB) {
+            campoTab.style.backgroundColor = "#999900"; // giallo
+            return;
+        }
+
+        campoTab.style.backgroundColor = "#990000"; // rosso
+    }
 }
