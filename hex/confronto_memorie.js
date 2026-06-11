@@ -1,19 +1,7 @@
 /* === INIZIO BLOCCO 1/4 ===================================== */
 
 // ============================================================
-//  CONFRONTO_MEMORIE.JS – VERSIONE PULITA SOLO CONFRONTO
-//  2026-06-11 – Luca + Copilot
-// ============================================================
-//
-//  REGOLE DI FUNZIONAMENTO:
-//
-//  1) Se esistono A/B/C in localStorage → VINCONO LORO
-//  2) Se NON esiste A → carica automaticamente memoria POLLI
-//  3) I confronti AB / AC / BC / ABC usano memoriaA/B/C
-//     oppure i file selezionati manualmente
-//  4) Nessun controllo su fileX.files[0] se memoria esiste
-//  5) Nessuna logica creazione, nessun fakeFile, nessun memorieABC
-//
+//  CONFRONTO_MEMORIE.JS – BLOCCO 1 COMPLETO
 // ============================================================
 
 
@@ -54,17 +42,20 @@ function leggiFileHex(input, callback) {
     reader.readAsText(file);
 }
 
+
+// ------------------------------------------------------------
+//  FUNZIONE HEX → MAPPA MEMORIA (VERSIONE CORRETTA)
+// ------------------------------------------------------------
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
 
     for (let line of lines) {
 
-        // RIMUOVE BOM, SPAZI, \r, MERDA VARIA
+        // pulizia riga (CRLF, BOM, spazi)
         line = line.trim();
-        if (line.charCodeAt(0) === 0xFEFF) {
-            line = line.slice(1);
-        }
+        if (!line) continue;
+        if (line.charCodeAt(0) === 0xFEFF) line = line.slice(1);
 
         if (!line.startsWith(":")) continue;
 
@@ -84,28 +75,12 @@ function hexToMemoryMap(hexText) {
 }
 
 
-function ricostruisciValore(bytes) {
-    if (bytes.includes("--")) return "--";
-
-    const b = bytes.map(x => parseInt(x, 16));
-    const len = b.length;
-
-    if (len === 4) {
-        const LSB = b[1];
-        const MSB = b[0];
-        const LSBH = b[3];
-        const MSBH = b[2];
-        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
-    }
-
-    if (len === 2) return b[0] * 256 + b[1];
-    if (len === 1) return b[0];
-
-    return "--";
-}
-
-
-// --- CARICAMENTO AUTOMATICO A/B/C DA LOCALSTORAGE ---
+// ------------------------------------------------------------
+//  CARICAMENTO AUTOMATICO A/B/C
+//  PRIORITÀ:
+//  1) SE ESISTONO IN LOCALSTORAGE → USO QUELLI
+//  2) ALTRIMENTI → CARICO POLLI IN A
+// ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
 
     const hexA = localStorage.getItem("memA_hex");
@@ -116,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeB = localStorage.getItem("memB_nome");
     const nomeC = localStorage.getItem("memC_nome");
 
-    // ⭐ SE A E B ESISTONO → USA SOLO QUELLI
+    // ⭐ SE A E B ESISTONO → USO SOLO QUELLI
     if (hexA && hexB) {
 
         memoriaA = hexToMemoryMap(hexA);
@@ -148,7 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(err => console.error("Errore caricamento polli:", err));
 });
 
+
 /* === FINE BLOCCO 1/4 ======================================= */
+
+
 /* === INIZIO BLOCCO 2/4 ===================================== */
 
 
