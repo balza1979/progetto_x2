@@ -1,9 +1,11 @@
-/* === INIZIO BLOCCO 1/4 ===================================== */
+/* ============================================================
+   BLOCCO 1 – CARICAMENTO MEMORIE + FUNZIONI BASE
+   Versione ripristinata e corretta – 11/06/2026 11:25
+   ============================================================ */
 
-// ============================================================
-//  CONFRONTO_MEMORIE.JS – BLOCCO 1 DEFINITIVO
-// ============================================================
-
+// ------------------------------------------------------------
+//  VARIABILI BASE 
+// ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
 let memoriaC = null;
@@ -15,23 +17,18 @@ const indirizziRuntime = [
     0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF
 ];
 
-
 // ------------------------------------------------------------
-//  FUNZIONE MANCANTE (CAUSE DI TUTTO)
+//  FUNZIONE NECESSARIA (MANCAVA!)
 // ------------------------------------------------------------
 function ricostruisciValore(indirizzo, valoreHex) {
     if (!valoreHex || valoreHex === "--") return "--";
-
     const val = parseInt(valoreHex, 16);
 
-    // runtime → non ricostruire
-    if (indirizziRuntime.includes(indirizzo)) {
-        return val;
-    }
+    // indirizzi runtime → non ricostruire
+    if (indirizziRuntime.includes(indirizzo)) return val;
 
     return val;
 }
-
 
 // ------------------------------------------------------------
 //  HEX → MAPPA MEMORIA
@@ -61,11 +58,15 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-
 // ------------------------------------------------------------
-//  CARICAMENTO AUTOMATICO A/B/C
+//  CARICAMENTO AUTOMATICO A/B/C PER CONFRONTO
 // ------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
+
+    // se sono in modalità creazione → NON tocco nulla
+    if (typeof isModalitaCreazione === "function" && isModalitaCreazione()) {
+        return;
+    }
 
     const hexA = localStorage.getItem("memA_hex");
     const hexB = localStorage.getItem("memB_hex");
@@ -75,37 +76,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeB = localStorage.getItem("memB_nome");
     const nomeC = localStorage.getItem("memC_nome");
 
-    // ⭐ SE A E B ESISTONO → USO SOLO QUELLI
+    // ⭐ SE A E B ESISTONO → uso SOLO quelli
     if (hexA && hexB) {
 
         memoriaA = hexToMemoryMap(hexA);
         memoriaB = hexToMemoryMap(hexB);
 
-        document.getElementById("labelFileA").textContent = "FILE A: " + nomeA;
-        document.getElementById("labelFileB").textContent = "FILE B: " + nomeB;
+        const lblA = document.getElementById("labelFileA");
+        const lblB = document.getElementById("labelFileB");
+        const lblC = document.getElementById("labelFileC");
 
-        if (hexC && nomeC) {
+        if (lblA) lblA.textContent = "FILE A: " + (nomeA || "memoria A");
+        if (lblB) lblB.textContent = "FILE B: " + (nomeB || "memoria B");
+
+        if (hexC && nomeC && lblC) {
             memoriaC = hexToMemoryMap(hexC);
-            document.getElementById("labelFileC").textContent = "FILE C: " + nomeC;
+            lblC.textContent = "FILE C: " + nomeC;
         }
 
-        console.log("Uso A/B/C da localStorage");
-        return; // ← QUI ORA È CORRETTO
+        console.log("CONFRONTO: uso A/B/C da localStorage");
+        return;
     }
 
-    // ⭐ FALLBACK POLLI
-    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+    // ⭐ ALTRIMENTI → fallback polli
+    const urlPolli =
+        "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
     fetch(urlPolli)
         .then(r => r.text())
         .then(text => {
             memoriaA = hexToMemoryMap(text);
-            document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
+            const lblA = document.getElementById("labelFileA");
+            if (lblA) lblA.textContent = "FILE A: memoria polli (default)";
+            console.log("CONFRONTO: uso polli come A");
         })
         .catch(err => console.error("Errore caricamento polli:", err));
 });
 
-/* === FINE BLOCCO 1/4 ======================================= */
+/* ============================================================
+   FINE BLOCCO 1
+   ============================================================ */
 
 
 
