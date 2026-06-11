@@ -59,6 +59,13 @@ function hexToMemoryMap(hexText) {
     const mem = {};
 
     for (let line of lines) {
+
+        // RIMUOVE BOM, SPAZI, \r, MERDA VARIA
+        line = line.trim();
+        if (line.charCodeAt(0) === 0xFEFF) {
+            line = line.slice(1);
+        }
+
         if (!line.startsWith(":")) continue;
 
         const byteCount = parseInt(line.substr(1, 2), 16);
@@ -75,6 +82,7 @@ function hexToMemoryMap(hexText) {
 
     return mem;
 }
+
 
 function ricostruisciValore(bytes) {
     if (bytes.includes("--")) return "--";
