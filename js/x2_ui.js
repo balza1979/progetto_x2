@@ -687,7 +687,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    selValore.classList.add("tendina_verde");
+    //selValore.classList.add("tendina_verde");
 
 selValore.addEventListener("change", function () {
 
