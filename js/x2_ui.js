@@ -354,6 +354,7 @@ function x2_popolaValori(param) {
         btn.textContent = "-";
         btn.disabled = true;
         btn.onclick = null;
+        tendina.onchange = () => aggiornaColoreValore();
     }
 
  // ------------------------------------------------------------
