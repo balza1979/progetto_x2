@@ -1,43 +1,41 @@
-
-/* === INIZIO colori_valore.js CORRETTO === */
-
 function aggiornaColoreValore(indirizzo) {
 
-    // --- PROGRAMMATORE X2: tendina valori ---
     const campoProg = document.getElementById("tendina_valori");
+    const campoTab  = document.getElementById("valoreC_" + indirizzo);
 
-    if (campoProg) {
-        campoProg.style.setProperty("background-color", "#006600", "important");
-        campoProg.style.color = "white";
+    // Se non ho memoria C → verde fisso
+    if (!memoriaC) {
+        if (campoProg) campoProg.style.backgroundColor = "#006600";
+        if (campoTab)  campoTab.style.backgroundColor  = "#006600";
         return;
     }
 
-    // --- TABELLA CONFRONTO ---
-    const campoTab = document.getElementById("valoreC_" + indirizzo);
-    if (campoTab && typeof memoriaC !== "undefined") {
+    const valA = memoriaA?.[indirizzo];
+    const valB = memoriaB?.[indirizzo];
+    const valC = memoriaC?.[indirizzo];
 
-        const valA = memoriaA?.[indirizzo];
-        const valB = memoriaB?.[indirizzo];
-        const valC = memoriaC?.[indirizzo];
+    // Funzione helper per colorare un elemento
+    function colora(el) {
+        if (!el) return;
 
-        campoTab.style.backgroundColor = "";
-        campoTab.style.color = "white";
-
-        if (!valC || valC === "--") return;
+        if (!valC || valC === "--") {
+            el.style.backgroundColor = "#006600"; // verde default
+            return;
+        }
 
         if (valC === valA) {
-            campoTab.style.backgroundColor = "#006600"; // verde
+            el.style.backgroundColor = "#006600"; // verde
             return;
         }
 
         if (valC === valB) {
-            campoTab.style.backgroundColor = "#999900"; // giallo
+            el.style.backgroundColor = "#999900"; // giallo
             return;
         }
 
-        campoTab.style.backgroundColor = "#990000"; // rosso
-        return;
+        el.style.backgroundColor = "#990000"; // rosso
     }
-}
 
-/* === FINE colori_valore.js CORRETTO === */
+    colora(campoProg);
+    colora(campoTab);
+}
