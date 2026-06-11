@@ -1,41 +1,36 @@
-function aggiornaColoreValore(indirizzo) {
+function aggiornaColoreValore() {
 
-    const campoProg = document.getElementById("tendina_valori");
-    const campoTab  = document.getElementById("valoreC_" + indirizzo);
+    if (!ultimoParametro) return;
 
-    // Se non ho memoria C → verde fisso
-    if (!memoriaC) {
-        if (campoProg) campoProg.style.backgroundColor = "#006600";
-        if (campoTab)  campoTab.style.backgroundColor  = "#006600";
+    const indirizzo = parseInt(ultimoParametro.LIBERA1);
+    if (isNaN(indirizzo)) return;
+
+    const campo = document.getElementById("tendina_valori");
+    if (!campo) return;
+
+    // --- VALORE A (default del parametro) ---
+    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE).padStart(2, "0");
+
+    // --- VALORE C (memoria C) ---
+    let valC = null;
+    if (memC) {
+        valC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+    }
+
+    // --- Se non ho memoria C → verde ---
+    if (!valC) {
+        campo.style.backgroundColor = "#006600";
+        campo.style.color = "white";
         return;
     }
 
-    const valA = memoriaA?.[indirizzo];
-    const valB = memoriaB?.[indirizzo];
-    const valC = memoriaC?.[indirizzo];
-
-    // Funzione helper per colorare un elemento
-    function colora(el) {
-        if (!el) return;
-
-        if (!valC || valC === "--") {
-            el.style.backgroundColor = "#006600"; // verde default
-            return;
-        }
-
-        if (valC === valA) {
-            el.style.backgroundColor = "#006600"; // verde
-            return;
-        }
-
-        if (valC === valB) {
-            el.style.backgroundColor = "#999900"; // giallo
-            return;
-        }
-
-        el.style.backgroundColor = "#990000"; // rosso
+    // --- CONFRONTO ---
+    if (valC === valA) {
+        campo.style.backgroundColor = "#006600"; // verde
+        campo.style.color = "white";
+        return;
     }
 
-    colora(campoProg);
-    colora(campoTab);
+    campo.style.backgroundColor = "#990000"; // rosso
+    campo.style.color = "white";
 }
