@@ -1,3 +1,5 @@
+/* === INIZIO BLOCCO 1 === */
+
 // ======================================================================
 // FILE: x2_ui (9RIPRISTINO 10 6 26 1516 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
 // DATA: 09/06/2026
@@ -91,6 +93,9 @@ function bytesToIntelHex(bytes) {
     lines.push(":00000001FF");
     return lines.join("\r\n");
 }
+
+/* === FINE BLOCCO 1 === */
+/* === INIZIO BLOCCO 2 === */
 
 // ------------------------------------------------------------
 // Carica Memoria C
@@ -188,6 +193,7 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
+
 // ======================================================================
 // SOTTOMENU
 // ======================================================================
@@ -214,6 +220,10 @@ function x2_popolaSottomenu(codMenu) {
         selSottomenu.selectedIndex = 0;
     }
 }
+
+/* === FINE BLOCCO 2 === */
+
+/* === INIZIO BLOCCO 3 === */
 
 // ======================================================================
 // PULSANTI SOTTOMENU
@@ -322,9 +332,8 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("val_max").value      = param.MAX   || "";
     document.getElementById("unita_misura").value = param.UNITA || "";
 
-   ultimoParametro = param;
-    aggiornaColoreValore(parseInt(param.LIBERA1));;
-
+    ultimoParametro = param;
+    aggiornaColoreValore(parseInt(param.LIBERA1));
 }
 
 // ======================================================================
@@ -335,6 +344,10 @@ function x2_calcolaHex(param) {
     let hex = parseInt(param.VALORE).toString(16).toUpperCase().padStart(2, "0");
     return hex + "  (HTML)";
 }
+
+/* === FINE BLOCCO 3 === */
+
+/* === INIZIO BLOCCO 4 === */
 
 // ======================================================================
 // VALORI (val1…val8)
@@ -387,7 +400,6 @@ function x2_popolaValori(param) {
             const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
             tendina.value = valorePulito;
 
-            // 🔥 chiamata iniziale corretta
             x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
             const codiceParam = param.PARAMETRO;
@@ -417,181 +429,176 @@ function x2_popolaValori(param) {
     // ------------------------------------------------------------
     // 2) MIN_MAX (versione PRO con input + spinner)
     // ------------------------------------------------------------
-}
-if (param.TIPO_ELENCO === "MIN_MAX") {
+    if (param.TIPO_ELENCO === "MIN_MAX") {
 
-    tendina.style.display = "none";
+        tendina.style.display = "none";
 
-    const oldInput2 = document.getElementById("input_minmax");
-    if (oldInput2) oldInput2.remove();
+        const oldInput2 = document.getElementById("input_minmax");
+        if (oldInput2) oldInput2.remove();
 
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
-    wrapper.style.display = "inline-block";
-    wrapper.style.width = tendina.style.width || "100%";
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.style.display = "inline-block";
+        wrapper.style.width = tendina.style.width || "100%";
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.id = "input_minmax";
-    input.className = "full";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "input_minmax";
+        input.className = "full";
 
-    const cs = getComputedStyle(tendina);
-    input.style.backgroundColor = cs.backgroundColor;
-    input.style.color = cs.color;
-    input.style.border = cs.border;
-    input.style.borderRadius = cs.borderRadius;
-    input.style.paddingRight = "28px";
-    input.style.height = cs.height;
-    input.style.fontSize = cs.fontSize;
-    input.style.fontFamily = cs.fontFamily;
-    input.style.boxSizing = "border-box";
-    input.style.width = "100%";
+        const cs = getComputedStyle(tendina);
+        input.style.backgroundColor = cs.backgroundColor;
+        input.style.color = cs.color;
+        input.style.border = cs.border;
+        input.style.borderRadius = cs.borderRadius;
+        input.style.paddingRight = "28px";
+        input.style.height = cs.height;
+        input.style.fontSize = cs.fontSize;
+        input.style.fontFamily = cs.fontFamily;
+        input.style.boxSizing = "border-box";
+        input.style.width = "100%";
 
-    input.value = param.VALORE;
+        input.value = param.VALORE;
 
-    const spinner = document.createElement("div");
-    spinner.style.position = "absolute";
-    spinner.style.right = "4px";
-    spinner.style.top = "0";
-    spinner.style.bottom = "0";
-    spinner.style.width = "20px";
-    spinner.style.display = "flex";
-    spinner.style.flexDirection = "column";
-    spinner.style.justifyContent = "center";
-    spinner.style.cursor = "pointer";
+        const spinner = document.createElement("div");
+        spinner.style.position = "absolute";
+        spinner.style.right = "4px";
+        spinner.style.top = "0";
+        spinner.style.bottom = "0";
+        spinner.style.width = "20px";
+        spinner.style.display = "flex";
+        spinner.style.flexDirection = "column";
+        spinner.style.justifyContent = "center";
+        spinner.style.cursor = "pointer";
 
-    const btnUp = document.createElement("div");
-    btnUp.textContent = "▲";
-    btnUp.style.fontSize = "10px";
-    btnUp.style.textAlign = "center";
-    btnUp.style.userSelect = "none";
+        const btnUp = document.createElement("div");
+        btnUp.textContent = "▲";
+        btnUp.style.fontSize = "10px";
+        btnUp.style.textAlign = "center";
+        btnUp.style.userSelect = "none";
 
-    const btnDown = document.createElement("div");
-    btnDown.textContent = "▼";
-    btnDown.style.fontSize = "10px";
-    btnDown.style.textAlign = "center";
-    btnDown.style.userSelect = "none";
+        const btnDown = document.createElement("div");
+        btnDown.textContent = "▼";
+        btnDown.style.fontSize = "10px";
+        btnDown.style.textAlign = "center";
+        btnDown.style.userSelect = "none";
 
-    spinner.appendChild(btnUp);
-    spinner.appendChild(btnDown);
+        spinner.appendChild(btnUp);
+        spinner.appendChild(btnDown);
 
-    // ------------------------------------------------------------
-    // INPUT: solo numeri (e segno - se min < 0)
-    // ------------------------------------------------------------
-    input.addEventListener("input", function () {
+        // ------------------------------------------------------------
+        // INPUT: solo numeri (e segno - se min < 0)
+        // ------------------------------------------------------------
+        input.addEventListener("input", function () {
 
-        const min = parseInt(param.MIN);
+            const min = parseInt(param.MIN);
 
-        if (min < 0) {
-            this.value = this.value
-                .replace(/(?!^-)[^0-9]/g, "")
-                .replace(/(?!^)-/g, "");
-        } else {
-            this.value = this.value.replace(/[^0-9]/g, "");
-        }
-    });
+            if (min < 0) {
+                this.value = this.value
+                    .replace(/(?!^-)[^0-9]/g, "")
+                    .replace(/(?!^)-/g, "");
+            } else {
+                this.value = this.value.replace(/[^0-9]/g, "");
+            }
+        });
 
-    // ------------------------------------------------------------
-    // BLUR: normalizzazione + aggiornamento ultimoParametro
-    // ------------------------------------------------------------
-    input.addEventListener("blur", function () {
+        // ------------------------------------------------------------
+        // BLUR: normalizzazione + aggiornamento ultimoParametro
+        // ------------------------------------------------------------
+        input.addEventListener("blur", function () {
 
-        let raw = this.value;
+            let raw = this.value;
 
-        if (raw === "" || raw === "-") {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
+            if (raw === "" || raw === "-") {
+                this.value = ultimoParametro.VALORE;
+                return;
+            }
 
-        let v = parseInt(raw);
+            let v = parseInt(raw);
 
-        if (isNaN(v)) {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
+            if (isNaN(v)) {
+                this.value = ultimoParametro.VALORE;
+                return;
+            }
 
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
+            const min = parseInt(param.MIN);
+            const max = parseInt(param.MAX);
 
-        if (v < min) v = min;
-        if (v > max) v = max;
+            if (v < min) v = min;
+            if (v > max) v = max;
 
-        if (v < 0) {
-            this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-        } else {
-            this.value = v.toString().padStart(2, "0");
-        }
+            if (v < 0) {
+                this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+            } else {
+                this.value = v.toString().padStart(2, "0");
+            }
 
-        // 🔥 CORRETTO: aggiorna il parametro attuale
-      if (memC) {
-    ultimoParametro.VALORE = this.value;
-}
+            if (memC) {
+                ultimoParametro.VALORE = this.value;
+            }
 
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+            if (memC) {
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
 
-    });
+        });
 
-    // ------------------------------------------------------------
-    // SPINNER UP
-    // ------------------------------------------------------------
-    btnUp.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const max = parseInt(param.MAX);
-        if (v < max) v++;
+/* === FINE BLOCCO 4 === */
 
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
+/* === INIZIO BLOCCO 5 === */
 
-        // 🔥 CORRETTO
-    if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
+        // ------------------------------------------------------------
+        // SPINNER UP
+        // ------------------------------------------------------------
+        btnUp.addEventListener("click", function () {
+            let v = parseInt(input.value) || 0;
+            const max = parseInt(param.MAX);
+            if (v < max) v++;
 
+            input.value = (v < 0)
+                ? "-" + Math.abs(v).toString().padStart(2, "0")
+                : v.toString().padStart(2, "0");
 
-      if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+            if (memC) {
+                ultimoParametro.VALORE = input.value;
+            }
 
-    });
+            if (memC) {
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
+        });
 
-    // ------------------------------------------------------------
-    // SPINNER DOWN
-    // ------------------------------------------------------------
-    btnDown.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const min = parseInt(param.MIN);
-        if (v > min) v--;
+        // ------------------------------------------------------------
+        // SPINNER DOWN
+        // ------------------------------------------------------------
+        btnDown.addEventListener("click", function () {
+            let v = parseInt(input.value) || 0;
+            const min = parseInt(param.MIN);
+            if (v > min) v--;
 
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
+            input.value = (v < 0)
+                ? "-" + Math.abs(v).toString().padStart(2, "0")
+                : v.toString().padStart(2, "0");
 
-        // 🔥 CORRETTO
-        if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
+            if (memC) {
+                ultimoParametro.VALORE = input.value;
+            }
 
+            if (memC) {
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
+        });
 
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+        wrapper.appendChild(input);
+        wrapper.appendChild(spinner);
 
-    });
+        tendina.parentNode.insertBefore(wrapper, tendina);
 
-    wrapper.appendChild(input);
-    wrapper.appendChild(spinner);
-
-    tendina.parentNode.insertBefore(wrapper, tendina);
-
-    return;
-}
-
+        return;
+    }
 
     // ------------------------------------------------------------
     // 3) DECIMALE
@@ -677,6 +684,10 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
+/* === FINE BLOCCO 5 === */
+
+/* === INIZIO BLOCCO 6 === */
+
 // ======================================================================
 // EVENTI PRINCIPALI
 // ======================================================================
@@ -691,19 +702,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    //selValore.classList.add("tendina_verde");
+    selValore.addEventListener("change", function () {
 
-selValore.addEventListener("change", function () {
+        if (memC) {
+            modificheInCorso = true;
+            document.getElementById("btn_salva_parametro").disabled = false;
+        }
 
-    if (memC) {
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
-    }
+        aggiornaColoreValore(ultimoParametro.INDIRIZZO);
 
-    aggiornaColoreValore(ultimoParametro.INDIRIZZO);
-
-});
-
+    });
 
     document.getElementById("btn_salva_parametro").addEventListener("click", function () {
 
@@ -814,7 +822,7 @@ selValore.addEventListener("change", function () {
         ultimoParametro = p;
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
-           x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+        x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
@@ -828,3 +836,6 @@ selValore.addEventListener("change", function () {
         e.returnValue = "";
     });
 });
+
+/* === FINE BLOCCO 6 === */
+            
