@@ -1,10 +1,8 @@
-/* ============================================================
-   BLOCCO 1 – CARICAMENTO MEMORIE + FUNZIONI BASE
-   Versione definitiva – 11/06/2026 11:40
-   ============================================================ */
+/* ===== CONFRONTO_MEMORIE.JS – SOLO CONFRONTO – PARTE 1/3 ===== */
+/* Versione 2026-06-11 13:05 */
 
 // ------------------------------------------------------------
-//  VARIABILI BASE 
+//  VARIABILI BASE
 // ------------------------------------------------------------
 let memoriaA = null;
 let memoriaB = null;
@@ -18,20 +16,27 @@ const indirizziRuntime = [
 ];
 
 // ------------------------------------------------------------
-//  FUNZIONE NECESSARIA (MANCAVA!)
+//  UTILITY BASE
 // ------------------------------------------------------------
-function ricostruisciValore(indirizzo, valoreHex) {
-    if (!valoreHex || valoreHex === "--") return "--";
-    const val = parseInt(valoreHex, 16);
-
-    if (indirizziRuntime.includes(indirizzo)) return val;
-
-    return val;
+function apriErrori() {
+    window.location.href = "errori_x2.html";
 }
 
-// ------------------------------------------------------------
-//  HEX → MAPPA MEMORIA
-// ------------------------------------------------------------
+function formatVal(hexVal) {
+    if (hexVal === "--") return "--";
+    const num = parseInt(hexVal, 16);
+    return `${hexVal} <span style="color:#888;">(${num})</span>`;
+}
+
+function leggiFileHex(input, callback) {
+    const file = input.files[0];
+    if (!file) return callback(null);
+
+    const reader = new FileReader();
+    reader.onload = e => callback(e.target.result);
+    reader.readAsText(file);
+}
+
 function hexToMemoryMap(hexText) {
     const lines = hexText.split(/\r?\n/);
     const mem = {};
@@ -57,149 +62,38 @@ function hexToMemoryMap(hexText) {
     return mem;
 }
 
-// ------------------------------------------------------------
-//  CARICAMENTO AUTOMATICO A/B/C PER CONFRONTO
-// ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
+function ricostruisciValore(bytes) {
+    if (bytes.includes("--")) return "--";
 
-    // se sono in modalità creazione → NON tocco nulla
-    if (typeof isModalitaCreazione === "function" && isModalitaCreazione()) {
-        return;
+    const b = bytes.map(x => parseInt(x, 16));
+    const len = b.length;
+
+    if (len === 4) {
+        const LSB = b[1];
+        const MSB = b[0];
+        const LSBH = b[3];
+        const MSBH = b[2];
+        return MSBH * 16777216 + LSBH * 65536 + MSB * 256 + LSB;
     }
 
-    const hexA = localStorage.getItem("memA_hex");
-    const hexB = localStorage.getItem("memB_hex");
-    const hexC = localStorage.getItem("memC_hex");
+    if (len === 2) return b[0] * 256 + b[1];
+    if (len === 1) return b[0];
 
-    const nomeA = localStorage.getItem("memA_nome");
-    const nomeB = localStorage.getItem("memB_nome");
-    const nomeC = localStorage.getItem("memC_nome");
-
-    // ⭐ SE A E B ESISTONO → uso SOLO quelli
-    if (hexA && hexB) {
-
-        memoriaA = hexToMemoryMap(hexA);
-        memoriaB = hexToMemoryMap(hexB);
-
-        const lblA = document.getElementById("labelFileA");
-        const lblB = document.getElementById("labelFileB");
-        const lblC = document.getElementById("labelFileC");
-
-        if (lblA) lblA.textContent = "FILE A: " + (nomeA || "memoria A");
-        if (lblB) lblB.textContent = "FILE B: " + (nomeB || "memoria B");
-
-        if (hexC && nomeC && lblC) {
-            memoriaC = hexToMemoryMap(hexC);
-            lblC.textContent = "FILE C: " + nomeC;
-        }
-
-        console.log("CONFRONTO: uso A/B/C da localStorage");
-        return;
-    }
-
-    // ⭐ ALTRIMENTI → fallback polli
-    const urlPolli =
-        "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
-
-    fetch(urlPolli)
-        .then(r => r.text())
-        .then(text => {
-            memoriaA = hexToMemoryMap(text);
-            const lblA = document.getElementById("labelFileA");
-            if (lblA) lblA.textContent = "FILE A: memoria polli (default)";
-            console.log("CONFRONTO: uso polli come A");
-        })
-        .catch(err => console.error("Errore caricamento polli:", err));
-});
-
-/* ============================================================
-   FINE BLOCCO 1
-   ============================================================ */
-
-/* === INIZIO BLOCCO 2/4 ===================================== */
-
-
-// ------------------------------------------------------------
-//  FUNZIONI DI CONFRONTO A DUE MEMORIE (A-B)
-// ------------------------------------------------------------
-function compareMemory(memA, memB) {
-    const diff = [];
-    const runtime = [];
-    const giàGestiti = new Set();
-    const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
-
-    // --- RUNTIME ---
-    for (let addr of indirizziRuntime) {
-        runtime.push({
-            addr,
-            vA: memA[addr] ?? "--",
-            vB: memB[addr] ?? "--",
-            vC: "--"
-        });
-    }
-
-    // --- PARAMETRI ---
-    for (const p of x2_parametri) {
-
-        const base = parseInt(p.LIBERA1, 16);
-        const len = parseInt(p.LIBERA4);
-        const unita = (p.UNITA === "/" ? "" : p.UNITA);
-        const nome = p.DESCRIZIONE || p.PARAMETRO;
-
-        if (isNaN(base) || isNaN(len)) continue;
-        if (giàGestiti.has(base)) continue;
-
-        for (let i = 0; i < len; i++) giàGestiti.add(base + i);
-
-        const bytesA = [];
-        const bytesB = [];
-
-        for (let i = 0; i < len; i++) {
-            const a = base + i;
-            bytesA.push(memA[a] ?? "--");
-            bytesB.push(memB[a] ?? "--");
-        }
-
-        const diversi = bytesA.some((b, i) => b !== bytesB[i]);
-
-        const valA = ricostruisciValore(bytesA);
-        const valB = ricostruisciValore(bytesB);
-
-        const valA_str = (valA === "--") ? "--" : (unita ? `${valA} ${unita}` : `${valA}`);
-        const valB_str = (valB === "--") ? "--" : (unita ? `${valB} ${unita}` : `${valB}`);
-
-        if (visualizzaTutto || diversi) {
-            diff.push({
-                base,
-                len,
-                nome,
-                codice: p.PARAMETRO,
-                bytesA,
-                bytesB,
-                bytesC: null,
-                valA_str,
-                valB_str,
-                valC_str: ""
-            });
-        }
-    }
-
-    return { diff, runtime };
+    return "--";
 }
 
-
-
 // ------------------------------------------------------------
-//  FUNZIONI DI CONFRONTO A TRE MEMORIE (A-B-C)
+//  CONFRONTO A–B–C (LOGICA COMPLETA DIFFERENZE)
 // ------------------------------------------------------------
 function compareMemory3(memA, memB, memC) {
 
     const diff = [];
     const runtime = [];
     const giàGestiti = new Set();
+
     const visualizzaTutto = document.getElementById("flagVisualizzaTutto")?.checked;
 
-    // --- RUNTIME ---
+    // RUNTIME
     for (let addr of indirizziRuntime) {
         runtime.push({
             addr,
@@ -209,7 +103,7 @@ function compareMemory3(memA, memB, memC) {
         });
     }
 
-    // --- PARAMETRI ---
+    // PARAMETRI
     for (const p of x2_parametri) {
 
         const base = parseInt(p.LIBERA1, 16);
@@ -219,7 +113,6 @@ function compareMemory3(memA, memB, memC) {
 
         if (isNaN(base) || isNaN(len)) continue;
         if (giàGestiti.has(base)) continue;
-
         for (let i = 0; i < len; i++) giàGestiti.add(base + i);
 
         const bytesA = [];
@@ -247,7 +140,7 @@ function compareMemory3(memA, memB, memC) {
                 bytesA.some((b, i) => b !== bytesC[i]) ||
                 bytesB.some((b, i) => b !== bytesC[i]);
         }
-        else { // default A-B
+        else { // A-B
             diversi = bytesA.some((b, i) => b !== bytesB[i]);
         }
 
@@ -278,13 +171,8 @@ function compareMemory3(memA, memB, memC) {
     return { diff, runtime };
 }
 
-
-/* === FINE BLOCCO 2/4 ======================================= */
-/* === INIZIO BLOCCO 3/4 ===================================== */
-
-
 // ------------------------------------------------------------
-//  RENDER RISULTATI (TABELLA DIFFERENZE + RUNTIME)
+//  RENDER RISULTATI
 // ------------------------------------------------------------
 function renderResults(result) {
 
@@ -293,7 +181,6 @@ function renderResults(result) {
 
     let html = `<h3>DIFFERENZE PARAMETRI</h3>`;
 
-    // --- NESSUNA DIFFERENZA ---
     if (lista.length === 0) {
         html += `
             <div style="
@@ -309,10 +196,7 @@ function renderResults(result) {
                 Nessuna differenza da segnalare.
             </div>
         `;
-    } 
-
-    // --- CI SONO DIFFERENZE ---
-    else {
+    } else {
 
         html += `
             <table id="tabDiff">
@@ -334,40 +218,30 @@ function renderResults(result) {
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
-                        <td class="col-valC">${formatVal(d.bytesC ? d.bytesC[i] : "--")}</td>
+                        <td class="col-valC">${formatVal(d.bytesC[i])}</td>
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
-                // --- VALORE COMPLESSIVO (rowspan) ---
                 if (i === 0) {
-
                     if (confrontoAttivo === "A-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>A:</b> ${d.valA_str}<br><b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    }
-
-                    else if (confrontoAttivo === "B-C") {
+                    } else if (confrontoAttivo === "B-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    }
-
-                    else if (confrontoAttivo === "A-B-C") {
+                    } else if (confrontoAttivo === "A-B-C") {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
-                                <b>A:</b> ${d.valA_str}<br>
-                                <b>B:</b> ${d.valB_str}<br>
-                                <b>C:</b> ${d.valC_str}
+                                <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}<br><b>C:</b> ${d.valC_str}
                             </td>
                         `;
-                    }
-
-                    else { // A-B
+                    } else {
                         html += `
                             <td class="col-valore" rowspan="${d.len}">
                                 <b>A:</b> ${d.valA_str}<br><b>B:</b> ${d.valB_str}
@@ -383,9 +257,7 @@ function renderResults(result) {
         html += `</table>`;
     }
 
-    // --------------------------------------------------------
-    //  SEZIONE RUNTIME
-    // --------------------------------------------------------
+    // RUNTIME
     html += `
         <h3 style="margin-top:25px;">
             <button id="toggleRuntimeBtn"
@@ -425,7 +297,6 @@ function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
-    // --- TOGGLE RUNTIME ---
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
@@ -442,14 +313,12 @@ function renderResults(result) {
     applyColumnFilters();
 }
 
-
-/* === FINE BLOCCO 3/4 ======================================= */
-/* === INIZIO BLOCCO 4/4 ===================================== */
-
+/* ===== FINE PARTE 1/3 ===== */
+/* ===== CONFRONTO_MEMORIE.JS – SOLO CONFRONTO – PARTE 2/3 ===== */
+/* Versione 2026-06-11 13:10 */
 
 // ------------------------------------------------------------
 //  FUNZIONI DI CONFRONTO (AB / AC / BC / ABC)
-//  USANO memoriaA/B/C SE ESISTONO, ALTRIMENTI I FILE
 // ------------------------------------------------------------
 function confrontaAB() {
     evidenziaPulsante("btnAB");
@@ -458,25 +327,43 @@ function confrontaAB() {
     const f1 = document.getElementById("file1");
     const f2 = document.getElementById("file2");
 
-    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
-    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
+    if (!f2.files[0] && !memoriaB) {
+        alert("Seleziona File B");
+        return;
+    }
 
-    if (!sorgenteA) return alert("File A mancante");
-    if (!sorgenteB) return alert("File B mancante");
+    // A: file o memoria salvata
+    let sorgenteA;
+    if (f1.files[0]) {
+        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
+    } else if (memoriaA) {
+        sorgenteA = Promise.resolve(memoriaA);
+    } else {
+        alert("Seleziona File A oppure usa la memoria DEFAULT");
+        return;
+    }
 
-    const promA = (sorgenteA === memoriaA)
-        ? Promise.resolve(memoriaA)
-        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
+    // B: file o memoria salvata
+    let sorgenteB;
+    if (f2.files[0]) {
+        sorgenteB = new Promise(res => leggiFileHex(f2, hexB => res(hexB)));
+    } else if (memoriaB) {
+        sorgenteB = Promise.resolve(memoriaB);
+    } else {
+        alert("Seleziona File B");
+        return;
+    }
 
-    const promB = (sorgenteB === memoriaB)
-        ? Promise.resolve(memoriaB)
-        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
+    Promise.all([sorgenteA, sorgenteB]).then(([memA, memB]) => {
+        const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+        const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+        const mC = {}; // C non usata
 
-    Promise.all([promA, promB]).then(([memA, memB]) => {
-        renderResults(compareMemory(memA, memB));
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
+        aggiornaCheckboxColonne();
     });
 }
-
 
 function confrontaAC() {
     evidenziaPulsante("btnAC");
@@ -485,25 +372,38 @@ function confrontaAC() {
     const f1 = document.getElementById("file1");
     const f3 = document.getElementById("file3");
 
-    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
-    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
+    if (!f3.files[0] && !memoriaC) {
+        alert("Seleziona File C");
+        return;
+    }
 
-    if (!sorgenteA) return alert("File A mancante");
-    if (!sorgenteC) return alert("File C mancante");
+    let sorgenteA;
+    if (f1.files[0]) {
+        sorgenteA = new Promise(res => leggiFileHex(f1, hexA => res(hexA)));
+    } else if (memoriaA) {
+        sorgenteA = Promise.resolve(memoriaA);
+    } else {
+        alert("Seleziona File A oppure usa la memoria DEFAULT");
+        return;
+    }
 
-    const promA = (sorgenteA === memoriaA)
-        ? Promise.resolve(memoriaA)
-        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
+    let sorgenteC;
+    if (f3.files[0]) {
+        sorgenteC = new Promise(res => leggiFileHex(f3, hexC => res(hexC)));
+    } else {
+        sorgenteC = Promise.resolve(memoriaC);
+    }
 
-    const promC = (sorgenteC === memoriaC)
-        ? Promise.resolve(memoriaC)
-        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
+    Promise.all([sorgenteA, sorgenteC]).then(([memA, memC]) => {
+        const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+        const mB = {}; // B non usata
 
-    Promise.all([promA, promC]).then(([memA, memC]) => {
-        renderResults(compareMemory3(memA, {}, memC));
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
+        aggiornaCheckboxColonne();
     });
 }
-
 
 function confrontaBC() {
     evidenziaPulsante("btnBC");
@@ -512,27 +412,29 @@ function confrontaBC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
-    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
+    if (!f2.files[0] && !memoriaB) return alert("Seleziona File B");
+    if (!f3.files[0] && !memoriaC) return alert("Seleziona File C");
 
-    if (!sorgenteB) return alert("File B mancante");
-    if (!sorgenteC) return alert("File C mancante");
+    let sorgenteB = f2.files[0]
+        ? new Promise(res => leggiFileHex(f2, hexB => res(hexB)))
+        : Promise.resolve(memoriaB);
 
-    const promB = (sorgenteB === memoriaB)
-        ? Promise.resolve(memoriaB)
-        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
+    let sorgenteC = f3.files[0]
+        ? new Promise(res => leggiFileHex(f3, hexC => res(hexC)))
+        : Promise.resolve(memoriaC);
 
-    const promC = (sorgenteC === memoriaC)
-        ? Promise.resolve(memoriaC)
-        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
+    Promise.all([sorgenteB, sorgenteC]).then(([memB, memC]) => {
+        const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+        const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+        const mA = {}; // A non usata
 
-    Promise.all([promB, promC]).then(([memB, memC]) => {
-        renderResults(compareMemory3({}, memB, memC));
+        const result = compareMemory3(mA, mB, mC);
+        renderResults(result);
+        aggiornaCheckboxColonne();
     });
 }
 
-
-function confrontaABC() {
+async function confrontaABC() {
     evidenziaPulsante("btnABC");
     confrontoAttivo = "A-B-C";
 
@@ -540,98 +442,303 @@ function confrontaABC() {
     const f2 = document.getElementById("file2");
     const f3 = document.getElementById("file3");
 
-    let sorgenteA = memoriaA || (f1.files[0] ? f1 : null);
-    let sorgenteB = memoriaB || (f2.files[0] ? f2 : null);
-    let sorgenteC = memoriaC || (f3.files[0] ? f3 : null);
+    if (!f2.files[0] && !memoriaB) return alert("Seleziona File B");
+    if (!f3.files[0] && !memoriaC) return alert("Seleziona File C");
 
-    if (!sorgenteA) return alert("File A mancante");
-    if (!sorgenteB) return alert("File B mancante");
-    if (!sorgenteC) return alert("File C mancante");
+    let sorgenteA = f1.files[0]
+        ? new Promise(res => leggiFileHex(f1, hexA => res(hexA)))
+        : Promise.resolve(memoriaA);
 
-    const promA = (sorgenteA === memoriaA)
-        ? Promise.resolve(memoriaA)
-        : new Promise(res => leggiFileHex(f1, hex => res(hexToMemoryMap(hex))));
+    let sorgenteB = f2.files[0]
+        ? new Promise(res => leggiFileHex(f2, hexB => res(hexB)))
+        : Promise.resolve(memoriaB);
 
-    const promB = (sorgenteB === memoriaB)
-        ? Promise.resolve(memoriaB)
-        : new Promise(res => leggiFileHex(f2, hex => res(hexToMemoryMap(hex))));
+    let sorgenteC = f3.files[0]
+        ? new Promise(res => leggiFileHex(f3, hexC => res(hexC)))
+        : Promise.resolve(memoriaC);
 
-    const promC = (sorgenteC === memoriaC)
-        ? Promise.resolve(memoriaC)
-        : new Promise(res => leggiFileHex(f3, hex => res(hexToMemoryMap(hex))));
+    const [memA, memB, memC] = await Promise.all([sorgenteA, sorgenteB, sorgenteC]);
 
-    Promise.all([promA, promB, promC]).then(([memA, memB, memC]) => {
-        renderResults(compareMemory3(memA, memB, memC));
-    });
+    const mA = typeof memA === "string" ? hexToMemoryMap(memA) : memA;
+    const mB = typeof memB === "string" ? hexToMemoryMap(memB) : memB;
+    const mC = typeof memC === "string" ? hexToMemoryMap(memC) : memC;
+
+    const result = compareMemory3(mA, mB, mC);
+    renderResults(result);
+    aggiornaCheckboxColonne();
 }
 
-
-
 // ------------------------------------------------------------
-//  EVIDENZIA PULSANTE ATTIVO
+//  EVIDENZIA PULSANTE
 // ------------------------------------------------------------
-function evidenziaPulsante(id) {
-    ["btnAB", "btnAC", "btnBC", "btnABC"].forEach(btn => {
-        document.getElementById(btn).classList.remove("attivo");
+function evidenziaPulsante(idAttivo) {
+    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
+
+    ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        if (id === idAttivo) btn.classList.add("attivo");
+        else btn.classList.remove("attivo");
     });
-    document.getElementById(id).classList.add("attivo");
 }
-
-
 
 // ------------------------------------------------------------
 //  FILTRI COLONNE
 // ------------------------------------------------------------
 function applyColumnFilters() {
-    const showA = document.getElementById("chkA")?.checked ?? true;
-    const showB = document.getElementById("chkB")?.checked ?? true;
-    const showC = document.getElementById("chkC")?.checked ?? true;
+    document.querySelectorAll(".col-flag").forEach(flag => {
+        const colClass = flag.dataset.col;
+        const hide = !flag.checked;
 
-    document.querySelectorAll(".col-valA").forEach(c => c.style.display = showA ? "" : "none");
-    document.querySelectorAll(".col-valB").forEach(c => c.style.display = showB ? "" : "none");
-    document.querySelectorAll(".col-valC").forEach(c => c.style.display = showC ? "" : "none");
+        document.querySelectorAll("." + colClass).forEach(cell => {
+            cell.style.display = hide ? "none" : "";
+        });
+    });
 }
 
+function aggiornaCheckboxColonne() {
 
+    const chkA = document.querySelector('input[data-col="col-valA"]');
+    const chkB = document.querySelector('input[data-col="col-valB"]');
+    const chkC = document.querySelector('input[data-col="col-valC"]');
+
+    if (!chkA || !chkB || !chkC) return;
+
+    const lblA = chkA.closest("label");
+    const lblB = chkB.closest("label");
+    const lblC = chkC.closest("label");
+
+    // Default: mostro tutte le label
+    if (lblA) lblA.style.display = "";
+    if (lblB) lblB.style.display = "";
+    if (lblC) lblC.style.display = "";
+
+    if (confrontoAttivo === "A-B") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = false;
+        if (lblC) lblC.style.display = "none";   // nascondi filtro C
+    }
+
+    if (confrontoAttivo === "A-C") {
+        chkA.checked = true;
+        chkB.checked = false;
+        chkC.checked = true;
+        if (lblB) lblB.style.display = "none";   // nascondi filtro B
+    }
+
+    if (confrontoAttivo === "B-C") {
+        chkA.checked = false;
+        chkB.checked = true;
+        chkC.checked = true;
+        if (lblA) lblA.style.display = "none";   // nascondi filtro A
+    }
+
+    if (confrontoAttivo === "A-B-C") {
+        chkA.checked = true;
+        chkB.checked = true;
+        chkC.checked = true;
+        // tutti i filtri visibili
+    }
+
+    applyColumnFilters();
+}
+
+/* ===== FINE PARTE 2/3 ===== */
+/* ===== CONFRONTO_MEMORIE.JS – SOLO CONFRONTO – PARTE 3/3 ===== */
+/* Versione 2026-06-11 13:15 */
 
 // ------------------------------------------------------------
-//  EVENTI CAMBIO FILE (A/B/C)
+//  CARICAMENTO AUTOMATICO: LOCALSTORAGE → POLLI FALLBACK
+// ------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+    const hexC = localStorage.getItem("memC_hex");
+
+    const nomeA = localStorage.getItem("memA_nome");
+    const nomeB = localStorage.getItem("memB_nome");
+    const nomeC = localStorage.getItem("memC_nome");
+
+    let haLocal = false;
+
+    if (hexA) {
+        memoriaA = hexToMemoryMap(hexA);
+        haLocal = true;
+        const lblA = document.getElementById("labelFileA");
+        if (lblA) lblA.textContent = `FILE A (salvato: ${nomeA})`;
+    }
+
+    if (hexB) {
+        memoriaB = hexToMemoryMap(hexB);
+        haLocal = true;
+        const lblB = document.getElementById("labelFileB");
+        if (lblB) lblB.textContent = `FILE B (salvato: ${nomeB})`;
+    }
+
+    if (hexC) {
+        memoriaC = hexToMemoryMap(hexC);
+        haLocal = true;
+        const lblC = document.getElementById("labelFileC");
+        if (lblC) lblC.textContent = `FILE C (salvato: ${nomeC})`;
+    }
+
+    if (haLocal) {
+        console.log("Uso memorie da localStorage, nessun fallback polli.");
+        return;
+    }
+
+    // FALLBACK POLLI → SOLO SE NON ESISTE NULLA
+    const urlPolli =
+        "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            memoriaA = hexToMemoryMap(text);
+            console.log("Caricata memoria POLLI come default A");
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
+});
+
+// ------------------------------------------------------------
+//  GIT LOADER (A / B / C)
+// ------------------------------------------------------------
+function caricaDaGit(slot) {
+
+    const url =
+        "https://raw.githubusercontent.com/balza1979/progetto_x2/main/hex/polli.hex";
+
+    fetch(url)
+        .then(r => r.arrayBuffer())
+        .then(buffer => {
+            const bytes = new Uint8Array(buffer);
+            const isHex = (bytes[0] === 58);
+
+            let mem;
+            let hexText = null;
+
+            if (isHex) {
+                hexText = new TextDecoder().decode(bytes);
+                mem = hexToMemoryMap(hexText);
+            } else {
+                mem = binToMemoryMap(bytes);
+            }
+
+            if (slot === "A") {
+                memoriaA = mem;
+                if (hexText) {
+                    localStorage.setItem("memA_hex", hexText);
+                    localStorage.setItem("memA_nome", "Git_A.hex");
+                }
+                document.getElementById("labelFileA").innerText = "FILE A (Git)";
+            }
+
+            if (slot === "B") {
+                memoriaB = mem;
+                if (hexText) {
+                    localStorage.setItem("memB_hex", hexText);
+                    localStorage.setItem("memB_nome", "Git_B.hex");
+                }
+                document.getElementById("labelFileB").innerText = "FILE B (Git)";
+            }
+
+            if (slot === "C") {
+                memoriaC = mem;
+                if (hexText) {
+                    localStorage.setItem("memC_hex", hexText);
+                    localStorage.setItem("memC_nome", "Git_C.hex");
+                }
+                document.getElementById("labelFileC").innerText = "FILE C (Git)";
+            }
+
+            resetConfronto();
+            alert(`File Git caricato in ${slot}`);
+        })
+        .catch(err => {
+            console.error("Errore Git:", err);
+            alert("Errore nel caricamento del file da Git");
+        });
+}
+
+function binToMemoryMap(bytes) {
+    const mem = {};
+    for (let i = 0; i < bytes.length; i++) {
+        mem[i] = bytes[i].toString(16).padStart(2, "0").toUpperCase();
+    }
+    return mem;
+}
+
+// ------------------------------------------------------------
+//  RESET CONFRONTO
+// ------------------------------------------------------------
+function resetConfronto() {
+    confrontoAttivo = null;
+
+    const ids = ["btnAB", "btnAC", "btnBC", "btnABC"];
+    ids.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove("attivo");
+    });
+
+    const div = document.getElementById("risultati");
+    if (div) div.innerHTML = "";
+}
+
+// ------------------------------------------------------------
+//  FILE CHANGE (A / B / C)
 // ------------------------------------------------------------
 function onFileA_Change() {
+    resetConfronto();
+
     const inputA = document.getElementById("file1");
     if (!inputA.files[0]) return;
 
-    leggiFileHex(inputA, hex => {
-        memoriaA = hexToMemoryMap(hex);
-        localStorage.setItem("memA_hex", hex);
+    leggiFileHex(inputA, hexA => {
+        if (!hexA) return;
+
+        localStorage.setItem("memA_hex", hexA);
         localStorage.setItem("memA_nome", inputA.files[0].name);
-        document.getElementById("labelFileA").textContent = "FILE A: " + inputA.files[0].name;
+
+        memoriaA = hexToMemoryMap(hexA);
+        document.getElementById("labelFileA").innerText = "FILE A (locale)";
     });
 }
 
 function onFileB_Change() {
+    resetConfronto();
+
     const inputB = document.getElementById("file2");
     if (!inputB.files[0]) return;
 
-    leggiFileHex(inputB, hex => {
-        memoriaB = hexToMemoryMap(hex);
-        localStorage.setItem("memB_hex", hex);
+    leggiFileHex(inputB, hexB => {
+        if (!hexB) return;
+
+        localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
-        document.getElementById("labelFileB").textContent = "FILE B: " + inputB.files[0].name;
+
+        memoriaB = hexToMemoryMap(hexB);
+        document.getElementById("labelFileB").innerText = "FILE B (locale)";
     });
 }
 
 function onFileC_Change() {
+    resetConfronto();
+
     const inputC = document.getElementById("file3");
     if (!inputC.files[0]) return;
 
-    leggiFileHex(inputC, hex => {
-        memoriaC = hexToMemoryMap(hex);
-        localStorage.setItem("memC_hex", hex);
+    leggiFileHex(inputC, hexC => {
+        if (!hexC) return;
+
+        localStorage.setItem("memC_hex", hexC);
         localStorage.setItem("memC_nome", inputC.files[0].name);
-        document.getElementById("labelFileC").textContent = "FILE C: " + inputC.files[0].name;
+
+        memoriaC = hexToMemoryMap(hexC);
+        document.getElementById("labelFileC").innerText = "FILE C (locale)";
     });
 }
 
-
-/* === FINE BLOCCO 4/4 ======================================= */
+/* ===== FINE PARTE 3/3 ===== */
