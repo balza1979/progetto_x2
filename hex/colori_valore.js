@@ -4,7 +4,7 @@
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
-
+alert("AGGIORNA COLORE PROGRAMMATORE");
     // --- PROGRAMMATORE X2: tendina valori ---
     const campoProg = document.getElementById("tendina_valori");
     if (campoProg) {
