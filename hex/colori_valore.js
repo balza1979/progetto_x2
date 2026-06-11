@@ -11,18 +11,18 @@ function aggiornaColoreValore(indirizzo) {
         if (!el) return;
 
         if (valC === valA) {
-            el.style.backgroundColor = "#006600"; // verde
+            el.style.backgroundColor = "#006600";
             el.style.color = "white";
             return;
         }
 
         if (valC === valB) {
-            el.style.backgroundColor = "#999900"; // giallo
+            el.style.backgroundColor = "#999900";
             el.style.color = "white";
             return;
         }
 
-        el.style.backgroundColor = "#990000"; // rosso
+        el.style.backgroundColor = "#990000";
         el.style.color = "white";
     }
 
