@@ -398,7 +398,6 @@ function x2_popolaValori(param) {
                 const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
                 if (!p) return;
 
-                // 🔥 CORRETTO: NON param, ma p
                 if (memC) {
                     p.VALORE = nuovoValore;
                 }
@@ -418,7 +417,6 @@ function x2_popolaValori(param) {
     // ------------------------------------------------------------
     // 2) MIN_MAX (versione PRO con input + spinner)
     // ------------------------------------------------------------
-
 }
 if (param.TIPO_ELENCO === "MIN_MAX") {
 
