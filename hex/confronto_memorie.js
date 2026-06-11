@@ -759,7 +759,7 @@ function salvaMemoriaComeHex(memoria, nomeFile = "memoria.hex") {
 
     hex += ":00000001FF\n"; // EOF
 
-    const blob = new Blob([hex], { type: "text/plain" });
+    const blob = new Blob([hex], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
