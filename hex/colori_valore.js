@@ -39,4 +39,4 @@ function aggiornaColoreValore(indirizzo) {
         campoTab.style.backgroundColor = "#990000"; // rosso
         return;
     }
-}
+} 
