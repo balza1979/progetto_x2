@@ -703,57 +703,71 @@ function resetConfronto() {
 }
 
 // ------------------------------------------------------------
-//  FILE CHANGE (A / B / C)
+//  SALVA MEMORIA (A/B/C) COME FILE .HEX VALIDO
 // ------------------------------------------------------------
-function onFileA_Change() {
-    resetConfronto();
+function salvaMemoriaComeHex(memoria, nomeFile = "memoria.hex") {
 
-    const inputA = document.getElementById("file1");
-    if (!inputA.files[0]) return;
+    if (!memoria) {
+        alert("Memoria vuota, impossibile salvare.");
+        return;
+    }
 
-    leggiFileHex(inputA, hexA => {
-        if (!hexA) return;
+    let hex = "";
+    const indirizzi = Object.keys(memoria)
+        .map(x => parseInt(x))
+        .sort((a, b) => a - b);
 
-        localStorage.setItem("memA_hex", hexA);
-        localStorage.setItem("memA_nome", inputA.files[0].name);
+    let block = [];
+    let blockStart = indirizzi[0];
 
-        memoriaA = hexToMemoryMap(hexA);
-        document.getElementById("labelFileA").innerText = "FILE A (locale)";
-    });
-}
+    function scriviRecord(start, bytes) {
+        const LL = bytes.length.toString(16).padStart(2, "0").toUpperCase();
+        const AAAA = start.toString(16).padStart(4, "0").toUpperCase();
+        const TT = "00";
 
-function onFileB_Change() {
-    resetConfronto();
+        let data = "";
+        let sum = parseInt(LL, 16) + (start >> 8) + (start & 0xFF);
 
-    const inputB = document.getElementById("file2");
-    if (!inputB.files[0]) return;
+        for (let b of bytes) {
+            const val = parseInt(b, 16);
+            data += b;
+            sum += val;
+        }
 
-    leggiFileHex(inputB, hexB => {
-        if (!hexB) return;
+        sum = ((~sum + 1) & 0xFF).toString(16).padStart(2, "0").toUpperCase();
 
-        localStorage.setItem("memB_hex", hexB);
-        localStorage.setItem("memB_nome", inputB.files[0].name);
+        return `:${LL}${AAAA}${TT}${data}${sum}`;
+    }
 
-        memoriaB = hexToMemoryMap(hexB);
-        document.getElementById("labelFileB").innerText = "FILE B (locale)";
-    });
-}
+    for (let addr of indirizzi) {
+        const byte = memoria[addr];
+        if (!byte || byte === "--") continue;
 
-function onFileC_Change() {
-    resetConfronto();
+        if (block.length === 0) blockStart = addr;
 
-    const inputC = document.getElementById("file3");
-    if (!inputC.files[0]) return;
+        block.push(byte);
 
-    leggiFileHex(inputC, hexC => {
-        if (!hexC) return;
+        if (block.length === 16) {
+            hex += scriviRecord(blockStart, block) + "\n";
+            block = [];
+        }
+    }
 
-        localStorage.setItem("memC_hex", hexC);
-        localStorage.setItem("memC_nome", inputC.files[0].name);
+    if (block.length > 0) {
+        hex += scriviRecord(blockStart, block) + "\n";
+    }
 
-        memoriaC = hexToMemoryMap(hexC);
-        document.getElementById("labelFileC").innerText = "FILE C (locale)";
-    });
+    hex += ":00000001FF\n"; // EOF
+
+    const blob = new Blob([hex], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nomeFile;
+    a.click();
+
+    URL.revokeObjectURL(url);
 }
 
 /* ===== FINE PARTE 3/3 ===== */
