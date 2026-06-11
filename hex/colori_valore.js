@@ -1,8 +1,9 @@
 function aggiornaColoreValore(indirizzo) {
 
-    // --- PROGRAMMATORE X2: tendina valori ---
     const campoProg = document.getElementById("tendina_valori");
-    if (campoProg && indirizzo !== undefined) {
+
+    // --- SE SIAMO NEL PROGRAMMATORE ---
+    if (campoProg && indirizzo !== undefined && indirizzo !== null) {
 
         const valA = memoriaA?.[indirizzo];
         const valB = memoriaB?.[indirizzo];
@@ -27,7 +28,7 @@ function aggiornaColoreValore(indirizzo) {
         return;
     }
 
-    // --- TABELLA CONFRONTO ---
+    // --- SE SIAMO NELLA TABELLA ---
     const campoTab = document.getElementById("valoreC_" + indirizzo);
     if (campoTab && typeof memoriaC !== "undefined") {
 
