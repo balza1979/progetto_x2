@@ -105,10 +105,7 @@ function ricostruisciValore(bytes) {
 }
 
 
-// ------------------------------------------------------------
-//  CARICAMENTO AUTOMATICO A/B/C DA LOCALSTORAGE
-//  + FALLBACK POLLI PER A
-// ------------------------------------------------------------
+// --- CARICAMENTO AUTOMATICO A/B/C DA LOCALSTORAGE ---
 document.addEventListener("DOMContentLoaded", () => {
 
     const hexA = localStorage.getItem("memA_hex");
@@ -119,37 +116,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeB = localStorage.getItem("memB_nome");
     const nomeC = localStorage.getItem("memC_nome");
 
-    // --- CARICA A ---
-    if (hexA && nomeA) {
+    // ⭐ SE A E B ESISTONO → USA SOLO QUELLI
+    if (hexA && hexB) {
+
         memoriaA = hexToMemoryMap(hexA);
-        document.getElementById("labelFileA").textContent = "FILE A: " + nomeA;
-    }
-
-    // --- CARICA B ---
-    if (hexB && nomeB) {
         memoriaB = hexToMemoryMap(hexB);
+
+        document.getElementById("labelFileA").textContent = "FILE A: " + nomeA;
         document.getElementById("labelFileB").textContent = "FILE B: " + nomeB;
+
+        if (hexC && nomeC) {
+            memoriaC = hexToMemoryMap(hexC);
+            document.getElementById("labelFileC").textContent = "FILE C: " + nomeC;
+        }
+
+        console.log("Modalità CREAZIONE: uso A/B/C da localStorage");
+        return; // ⛔ STOP: NON CARICARE POLLI
     }
 
-    // --- CARICA C ---
-    if (hexC && nomeC) {
-        memoriaC = hexToMemoryMap(hexC);
-        document.getElementById("labelFileC").textContent = "FILE C: " + nomeC;
-    }
+    // ⭐ SE NON ESISTONO A/B → FALLBACK POLLI
+    console.log("Modalità NORMALE: uso polli come A");
 
-    // --- FALLBACK POLLI SOLO SE A NON ESISTE ---
-    if (!memoriaA) {
-        const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+    const urlPolli = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
 
-        fetch(urlPolli)
-            .then(r => r.text())
-            .then(text => {
-                memoriaA = hexToMemoryMap(text);
-                document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
-                console.log("Memoria polli caricata automaticamente in A");
-            })
-            .catch(err => console.error("Errore caricamento polli:", err));
-    }
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            memoriaA = hexToMemoryMap(text);
+            document.getElementById("labelFileA").textContent = "FILE A: memoria polli (default)";
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
 });
 
 /* === FINE BLOCCO 1/4 ======================================= */
