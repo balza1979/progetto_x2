@@ -687,13 +687,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     selValore.classList.add("tendina_verde");
 
-    selValore.addEventListener("change", function () {
+selValore.addEventListener("change", function () {
 
-        if (memC) {
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-        }
-    });
+    if (memC) {
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+    }
+
+    aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+
+});
+
 
     document.getElementById("btn_salva_parametro").addEventListener("click", function () {
 
