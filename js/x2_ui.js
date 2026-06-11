@@ -354,9 +354,11 @@ function x2_popolaValori(param) {
         btn.textContent = "-";
         btn.disabled = true;
         btn.onclick = null;
-        tendina.onchange = () => aggiornaColoreValore();
     }
 
+    // ⭐⭐⭐ EVENTO NEL POSTO GIUSTO ⭐⭐⭐
+    tendina.onchange = () => aggiornaColoreValore();
+}
  // ------------------------------------------------------------
 // 1) ELENCO PREDEFINITO (JSON)
 // ------------------------------------------------------------
