@@ -221,34 +221,55 @@
     <h3>File HEX da confrontare</h3>
 
     <!-- FILE A -->
-    <div class="file-block">
-        <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
-        <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
+   <div class="file-block">
+    <label for="file1" id="labelFileA" style="color:#cc0000;">FILE A</label>
+    <input type="file" id="file1" accept=".hex,.bin" onchange="onFileA_Change()">
 
+    <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="btn-git" style="width:50%;" onclick="selezionaSlot('A')">
+            Carica FILE A da Git
+        </button>
 
-        <!-- Pulsante Git sotto FILE A -->
-        <button class="btn-git" onclick="selezionaSlot('A')">Carica FILE A da Git</button>
+        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+                onclick="salvaMemoriaComeHex(memoriaA, 'memoria_A.hex')">
+            Salva A (.HEX)
+        </button>
     </div>
+</div>
 
     <!-- FILE B -->
-    <div class="file-block">
-        <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
-      <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
+<div class="file-block">
+    <label for="file2" id="labelFileB" style="color:#0066cc;">FILE B</label>
+    <input type="file" id="file2" accept=".hex,.bin" onchange="onFileB_Change()">
 
+    <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="btn-git" style="width:50%;" onclick="selezionaSlot('B')">
+            Carica FILE B da Git
+        </button>
 
-        <!-- Pulsante Git sotto FILE B -->
-        <button class="btn-git" onclick="selezionaSlot('B')">Carica FILE B da Git</button>
+        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+                onclick="salvaMemoriaComeHex(memoriaB, 'memoria_B.hex')">
+            Salva B (.HEX)
+        </button>
     </div>
+</div>
 
     <!-- FILE C -->
-    <div class="file-block">
-        <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
-        <input type="file" id="file3" accept=".hex,.bin" onchange="onFileC_Change()">
+   <div class="file-block">
+    <label for="file3" id="labelFileC" style="color:#009933;">FILE C</label>
+    <input type="file" id="file3" accept=".hex,.bin" onchange="onFileC_Change()">
 
+    <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="btn-git" style="width:50%;" onclick="selezionaSlot('C')">
+            Carica FILE C da Git
+        </button>
 
-        <!-- Pulsante Git sotto FILE C -->
-       <button class="btn-git" onclick="selezionaSlot('C')">Carica FILE C da Git</button>
+        <button class="btn-git" style="width:50%; background:#006600; border-color:#00aa00;"
+                onclick="salvaMemoriaComeHex(memoriaC, 'memoria_C.hex')">
+            Salva C (.HEX)
+        </button>
     </div>
+</div>
 
 <!-- ⭐⭐ TENDINA + CONFERMA (NASCOSTI) ⭐⭐ -->
 <div id="selettoreGit" style="display:none; margin-top:20px;">
