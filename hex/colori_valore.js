@@ -1,6 +1,6 @@
 // ============================================================
 //  COLORAZIONE DINAMICA UNIVERSALE (TABELLA + PROGRAMMATORE)
-//  Versione 2026-06-11 16:45
+//  Versione 2026-06-11 17:55
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
@@ -8,7 +8,7 @@ function aggiornaColoreValore(indirizzo) {
     // --- PROGRAMMATORE X2: tendina valori ---
     const campoProg = document.getElementById("tendina_valori");
     if (campoProg) {
-        campoProg.style.backgroundColor = "#006600";
+        campoProg.style.setProperty("background-color", "#006600", "important");
         campoProg.style.color = "white";
         return;
     }
