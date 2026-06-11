@@ -322,7 +322,9 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("val_max").value      = param.MAX   || "";
     document.getElementById("unita_misura").value = param.UNITA || "";
 
-    ultimoParametro = param;
+   ultimoParametro = param;
+    aggiornaColoreValore(param.INDIRIZZO);
+
 }
 
 // ======================================================================
