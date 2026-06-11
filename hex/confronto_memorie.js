@@ -1,6 +1,6 @@
 /* ============================================================
    BLOCCO 1 – CARICAMENTO MEMORIE + FUNZIONI BASE
-   Versione ripristinata e corretta – 11/06/2026 11:25
+   Versione definitiva – 11/06/2026 11:40
    ============================================================ */
 
 // ------------------------------------------------------------
@@ -24,7 +24,6 @@ function ricostruisciValore(indirizzo, valoreHex) {
     if (!valoreHex || valoreHex === "--") return "--";
     const val = parseInt(valoreHex, 16);
 
-    // indirizzi runtime → non ricostruire
     if (indirizziRuntime.includes(indirizzo)) return val;
 
     return val;
@@ -116,9 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ============================================================
    FINE BLOCCO 1
    ============================================================ */
-
-
-
 
 /* === INIZIO BLOCCO 2/4 ===================================== */
 
