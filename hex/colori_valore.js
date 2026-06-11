@@ -4,6 +4,9 @@
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
+    setTimeout(() => {
+    document.getElementById("tendina_valori").style.backgroundColor = "blue";
+}, 200);
 alert("AGGIORNA COLORE PROGRAMMATORE");
     
     // --- PROGRAMMATORE X2: tendina valori ---
