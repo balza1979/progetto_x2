@@ -218,7 +218,13 @@ function renderResults(result) {
                         <td class="col-indirizzo">0x${(d.base + i).toString(16).padStart(4,"0").toUpperCase()}</td>
                         <td class="col-valA">${formatVal(d.bytesA[i])}</td>
                         <td class="col-valB">${formatVal(d.bytesB[i])}</td>
-                        <td class="col-valC">${formatVal(d.bytesC[i])}</td>
+
+                        
+                        <td class="col-valC" id="valoreC_${d.base + i}">
+                        ${formatVal(d.bytesC[i])}
+                        </td>
+
+  
                         <td class="col-parametro">${d.codice} – ${d.nome}</td>
                 `;
 
@@ -297,6 +303,16 @@ function renderResults(result) {
 
     document.getElementById("risultati").innerHTML = html;
 
+            // COLORA TUTTE LE CELLE C
+        for (let d of result.diff) {
+            for (let i = 0; i < d.len; i++) {
+                aggiornaColoreValore(d.base + i);
+                }
+            }
+
+
+
+    
     const btn = document.getElementById("toggleRuntimeBtn");
     const section = document.getElementById("runtimeSection");
 
