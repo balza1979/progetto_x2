@@ -1,6 +1,6 @@
 // ============================================================
 //  COLORAZIONE DINAMICA UNIVERSALE (TABELLA + PROGRAMMATORE)
-//  Versione 2026-06-11 16:40
+//  Versione 2026-06-11 16:45
 // ============================================================
 
 function aggiornaColoreValore(indirizzo) {
@@ -17,7 +17,7 @@ function aggiornaColoreValore(indirizzo) {
 
             if (byteC === undefined) return;
 
-            // Programmatore: se non hai A/B → verde fisso
+            // Programmatore: verde fisso (non hai A/B)
             campoProg.style.backgroundColor = "#006600";
             return;
         }
@@ -51,5 +51,9 @@ function aggiornaColoreValore(indirizzo) {
         }
 
         campoTab.style.backgroundColor = "#990000"; // rosso
+        return;
     }
+
+    // --- SE NON ESISTE NESSUNA MEMORIA ---
+    return;
 }
