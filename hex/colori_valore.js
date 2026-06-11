@@ -5,9 +5,11 @@
 
 function aggiornaColoreValore(indirizzo) {
 alert("AGGIORNA COLORE PROGRAMMATORE");
-    alert("TROVATO: " + campoProg.tagName + " / " + campoProg.id);
+    
     // --- PROGRAMMATORE X2: tendina valori ---
     const campoProg = document.getElementById("tendina_valori");
+
+    alert("TROVATO: " + campoProg.tagName + " / " + campoProg.id);
     if (campoProg) {
         campoProg.style.setProperty("background-color", "#006600", "important");
         campoProg.style.color = "white";
