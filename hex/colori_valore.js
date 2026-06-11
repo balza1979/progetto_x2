@@ -1,20 +1,11 @@
-/* === colori_valore.js — VERSIONE CORRETTA === */
-
 function aggiornaColoreValore(indirizzo) {
 
     const campoProg = document.getElementById("tendina_valori");
     const campoTab  = document.getElementById("valoreC_" + indirizzo);
 
-    // Se non ho memorie → verde
-    if (!memoriaA || !memoriaB || !memoriaC) {
-        if (campoProg) campoProg.style.backgroundColor = "#006600";
-        if (campoTab)  campoTab.style.backgroundColor  = "#006600";
-        return;
-    }
-
-    const valA = memoriaA[indirizzo];
-    const valB = memoriaB[indirizzo];
-    const valC = memoriaC[indirizzo];
+    const valA = memoriaA[indirizzo]?.toString().toUpperCase().padStart(2, "0");
+    const valB = memoriaB[indirizzo]?.toString().toUpperCase().padStart(2, "0");
+    const valC = memoriaC[indirizzo]?.toString().toUpperCase().padStart(2, "0");
 
     function colora(el) {
         if (!el) return;
@@ -33,7 +24,7 @@ function aggiornaColoreValore(indirizzo) {
             return;
         }
 
-        // C ≠ A e C ≠ B → ROSSO
+        // C diverso da A e B → ROSSO
         el.style.backgroundColor = "#990000";
         el.style.color = "white";
     }
@@ -41,5 +32,3 @@ function aggiornaColoreValore(indirizzo) {
     colora(campoProg);
     colora(campoTab);
 }
-
-/* === FINE === */
