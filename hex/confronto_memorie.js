@@ -585,10 +585,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (lblC) lblC.textContent = `FILE C (salvato: ${nomeC})`;
     }
 
-    if (haLocal) {
-        console.log("Uso memorie da localStorage, nessun fallback polli.");
-        return;
-    }
+ // Se esiste A in localStorage → ok
+if (hexA) {
+    console.log("Uso memoria A da localStorage");
+}
+// Se NON esiste A → carico polli come fallback
+else {
+    console.log("A mancante → uso fallback POLLI");
+    const urlPolli =
+        "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/def_polli_b335f_ver1.HEX";
+
+    fetch(urlPolli)
+        .then(r => r.text())
+        .then(text => {
+            memoriaA = hexToMemoryMap(text);
+            console.log("Caricata memoria POLLI come default A");
+        })
+        .catch(err => console.error("Errore caricamento polli:", err));
+}
+
 
     // FALLBACK POLLI → SOLO SE NON ESISTE NULLA
     const urlPolli =
