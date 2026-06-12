@@ -5,16 +5,24 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    const campo = document.getElementById("tendina_valori");
+    // ⭐ PRENDI IL CAMPO GIUSTO
+    const campo =
+        document.getElementById("tendina_valori") ||
+        document.getElementById("input_minmax");
+
     if (!campo) return;
 
     // --- VALORE A (default del parametro) ---
-    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE).padStart(2, "0");
+    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
+        .padStart(2, "0");
 
     // --- VALORE C (memoria C) ---
     let valC = null;
     if (memC) {
-        valC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+        valC = memC[indirizzo]
+            .toString(16)
+            .toUpperCase()
+            .padStart(2, "0");
     }
 
     // --- Se non ho memoria C → verde ---
