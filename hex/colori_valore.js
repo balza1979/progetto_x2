@@ -5,36 +5,32 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    // 1) TENDINA
-    let campo = document.getElementById("tendina_valori");
-
-    // 2) MIN_MAX → wrapper
-    if (!campo) {
-        const input = document.getElementById("input_minmax");
-        if (input) campo = input.parentNode;
-    }
-
-    // 3) DECIMALE → stessa tendina
-    // 4) FALLBACK → stessa tendina
-
+    const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
-    const valA = toHex2(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE);
-    const valB = ultimoParametro.VALORE_B ? toHex2(ultimoParametro.VALORE_B) : null;
-    const valC = memC ? toHex2(memC[indirizzo]) : null;
+    // --- VALORE A (default del parametro) ---
+    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE).padStart(2, "0");
 
-    if (!valC || valC === valA) {
+    // --- VALORE C (memoria C) ---
+    let valC = null;
+    if (memC) {
+        valC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+    }
+
+    // --- Se non ho memoria C → verde ---
+    if (!valC) {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
     }
 
-    if (valB && valC === valB) {
-        campo.style.backgroundColor = "#999900";
+    // --- CONFRONTO ---
+    if (valC === valA) {
+        campo.style.backgroundColor = "#006600"; // verde
         campo.style.color = "white";
         return;
     }
 
-    campo.style.backgroundColor = "#990000";
+    campo.style.backgroundColor = "#990000"; // rosso
     campo.style.color = "white";
 }
