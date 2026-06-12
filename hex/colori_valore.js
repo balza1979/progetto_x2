@@ -1,8 +1,3 @@
-function toHex2(v) {
-    if (typeof v === "number") return v.toString(16).toUpperCase().padStart(2, "0");
-    return String(v).toUpperCase().padStart(2, "0");
-}
-
 function aggiornaColoreValore() {
 
     if (!ultimoParametro) return;
@@ -10,13 +5,9 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    // *** CAMPO CORRETTO ***
     const campo =
         document.getElementById("tendina_valori") ||
-        document.getElementById("input_minmax") ||
-        document.getElementById("valore_corrente") ||
-        document.getElementById("campo_valore") ||
-        document.getElementById("valore_selezionato");
+        document.getElementById("input_minmax");
 
     if (!campo) return;
 
@@ -25,17 +16,17 @@ function aggiornaColoreValore() {
     const valC = memC ? toHex2(memC[indirizzo]) : null;
 
     if (!valC || valC === valA) {
-        campo.style.backgroundColor = "#006600";
-        campo.style.color = "white";
+        campo.style.setProperty("background-color", "#006600", "important");
+        campo.style.setProperty("color", "white", "important");
         return;
     }
 
     if (valB && valC === valB) {
-        campo.style.backgroundColor = "#999900";
-        campo.style.color = "white";
+        campo.style.setProperty("background-color", "#999900", "important");
+        campo.style.setProperty("color", "white", "important");
         return;
     }
 
-    campo.style.backgroundColor = "#990000";
-    campo.style.color = "white";
+    campo.style.setProperty("background-color", "#990000", "important");
+    campo.style.setProperty("color", "white", "important");
 }
