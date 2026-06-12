@@ -10,7 +10,11 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    const campo = document.getElementById("tendina_valori");
+    // *** CAMPO CORRETTO ***
+    const campo =
+        document.getElementById("tendina_valori") ||
+        document.getElementById("input_minmax");
+
     if (!campo) return;
 
     // --- NORMALIZZAZIONE ---
@@ -18,7 +22,7 @@ function aggiornaColoreValore() {
     const valB = ultimoParametro.VALORE_B ? toHex2(ultimoParametro.VALORE_B) : null;
     const valC = memC ? toHex2(memC[indirizzo]) : null;
 
-    // --- Se non ho C → verde ---
+    // --- Se non ho C → VERDE ---
     if (!valC) {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
