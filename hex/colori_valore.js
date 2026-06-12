@@ -1,31 +1,36 @@
-function aggiornaColoreValore(indirizzo) {
+function aggiornaColoreValore() {
 
-    const campoProg = document.getElementById("tendina_valori");
-    const campoTab  = document.getElementById("valoreC_" + indirizzo);
+    if (!ultimoParametro) return;
 
-    const valA = memoriaA[indirizzo]?.toString().toUpperCase().padStart(2, "0");
-    const valB = memoriaB[indirizzo]?.toString().toUpperCase().padStart(2, "0");
-    const valC = memoriaC[indirizzo]?.toString().toUpperCase().padStart(2, "0");
+    const indirizzo = parseInt(ultimoParametro.LIBERA1);
+    if (isNaN(indirizzo)) return;
 
-    function colora(el) {
-        if (!el) return;
+    const campo = document.getElementById("tendina_valori");
+    if (!campo) return;
 
-        if (valC === valA) {
-            el.style.backgroundColor = "#006600";
-            el.style.color = "white";
-            return;
-        }
+    // --- VALORE A (default del parametro) ---
+    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE).padStart(2, "0");
 
-        if (valC === valB) {
-            el.style.backgroundColor = "#999900";
-            el.style.color = "white";
-            return;
-        }
-
-        el.style.backgroundColor = "#990000";
-        el.style.color = "white";
+    // --- VALORE C (memoria C) ---
+    let valC = null;
+    if (memC) {
+        valC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
     }
 
-    colora(campoProg);
-    colora(campoTab);
+    // --- Se non ho memoria C → verde ---
+    if (!valC) {
+        campo.style.backgroundColor = "#006600";
+        campo.style.color = "white";
+        return;
+    }
+
+    // --- CONFRONTO ---
+    if (valC === valA) {
+        campo.style.backgroundColor = "#006600"; // verde
+        campo.style.color = "white";
+        return;
+    }
+
+    campo.style.backgroundColor = "#990000"; // rosso
+    campo.style.color = "white";
 }
