@@ -590,7 +590,6 @@ function x2_popolaValori(param) {
     tendina.innerHTML = "<option>— nessun valore —</option>";
     
 }
-aggiornaColoreValore();
 /* === FINE BLOCCO 4 (CORRETTO) === */
 
 
@@ -791,6 +790,7 @@ document.addEventListener("DOMContentLoaded", function () {
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
         x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+        aggiornaColoreValore();
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
