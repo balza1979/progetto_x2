@@ -5,10 +5,17 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    // CAMPO CORRETTO: tendina oppure wrapper del MIN_MAX
-    const campo =
-        document.getElementById("tendina_valori") ||
-        document.getElementById("input_minmax")?.parentNode;
+    // 1) TENDINA
+    let campo = document.getElementById("tendina_valori");
+
+    // 2) MIN_MAX → wrapper
+    if (!campo) {
+        const input = document.getElementById("input_minmax");
+        if (input) campo = input.parentNode;
+    }
+
+    // 3) DECIMALE → stessa tendina
+    // 4) FALLBACK → stessa tendina
 
     if (!campo) return;
 
