@@ -588,9 +588,9 @@ function x2_popolaValori(param) {
     // 4) FALLBACK
     // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
-    aggiornaColoreValore();
+    
 }
-
+aggiornaColoreValore();
 /* === FINE BLOCCO 4 (CORRETTO) === */
 
 
