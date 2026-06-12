@@ -8,36 +8,51 @@ function aggiornaColoreValore() {
     const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
+    // --- VALORE A ---
     const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
+                    .toUpperCase()
                     .padStart(2, "0");
 
+    // --- VALORE B (se esiste) ---
     const valB = ultimoParametro.VALORE_B
-        ? String(ultimoParametro.VALORE_B).padStart(2, "0")
+        ? String(ultimoParametro.VALORE_B).toUpperCase().padStart(2, "0")
         : null;
 
+    // --- VALORE C ---
     let valC = null;
     if (memC) {
-        valC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+        const raw = memC[indirizzo];
+
+        // CONVERSIONE SICURA
+        if (typeof raw === "number") {
+            valC = raw.toString(16).toUpperCase().padStart(2, "0");
+        } else {
+            valC = String(raw).toUpperCase().padStart(2, "0");
+        }
     }
 
+    // --- Se non ho C → verde ---
     if (!valC) {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
     }
 
+    // --- C = A → VERDE ---
     if (valC === valA) {
-        campo.style.backgroundColor = "#006600"; // verde
+        campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
     }
 
+    // --- C = B → GIALLO ---
     if (valB && valC === valB) {
-        campo.style.backgroundColor = "#999900"; // giallo
+        campo.style.backgroundColor = "#999900";
         campo.style.color = "white";
         return;
     }
 
-    campo.style.backgroundColor = "#990000"; // rosso
+    // --- C diverso da A e B → ROSSO ---
+    campo.style.backgroundColor = "#990000";
     campo.style.color = "white";
 }
