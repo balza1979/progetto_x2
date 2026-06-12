@@ -334,7 +334,7 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("unita_misura").value = param.UNITA || "";
 
     ultimoParametro = param;
-    aggiornaColoreValore(parseInt(param.LIBERA1));
+    
 }
 
 // ======================================================================
@@ -588,6 +588,7 @@ function x2_popolaValori(param) {
     // 4) FALLBACK
     // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
+    aggiornaColoreValore();
 }
 
 /* === FINE BLOCCO 4 (CORRETTO) === */
