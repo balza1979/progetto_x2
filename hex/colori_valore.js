@@ -13,37 +13,29 @@ function aggiornaColoreValore() {
     // *** CAMPO CORRETTO ***
     const campo =
         document.getElementById("tendina_valori") ||
-        document.getElementById("input_minmax");
+        document.getElementById("input_minmax") ||
+        document.getElementById("valore_corrente") ||
+        document.getElementById("campo_valore") ||
+        document.getElementById("valore_selezionato");
 
     if (!campo) return;
 
-    // --- NORMALIZZAZIONE ---
     const valA = toHex2(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE);
     const valB = ultimoParametro.VALORE_B ? toHex2(ultimoParametro.VALORE_B) : null;
     const valC = memC ? toHex2(memC[indirizzo]) : null;
 
-    // --- Se non ho C → VERDE ---
-    if (!valC) {
+    if (!valC || valC === valA) {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
     }
 
-    // --- C = A → VERDE ---
-    if (valC === valA) {
-        campo.style.backgroundColor = "#006600";
-        campo.style.color = "white";
-        return;
-    }
-
-    // --- C = B → GIALLO ---
     if (valB && valC === valB) {
         campo.style.backgroundColor = "#999900";
         campo.style.color = "white";
         return;
     }
 
-    // --- C diverso da A e B → ROSSO ---
     campo.style.backgroundColor = "#990000";
     campo.style.color = "white";
 }
