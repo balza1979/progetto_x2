@@ -13,17 +13,32 @@ function aggiornaColoreValore() {
     if (!campo) return;
 
     // --- VALORE A (default del parametro) ---
-    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
-        .padStart(2, "0");
+    const valA = String(
+        ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE
+    ).padStart(2, "0");
 
     // --- VALORE C (memoria C) ---
     let valC = null;
     if (memC) {
         valC = memC[indirizzo]
-            .toString(16)
+            ?.toString(16)
             .toUpperCase()
             .padStart(2, "0");
     }
+
+    // ⭐⭐⭐ ALERT DIAGNOSTICO — COME HAI CHIESTO ⭐⭐⭐
+    alert(
+        "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
+        "INDIRIZZO: " + indirizzo + "\n\n" +
+        "A (default): " + valA + "\n" +
+        "B (memB): " + (memB ? memB[indirizzo]?.toString(16).toUpperCase().padStart(2, "0") : "null") + "\n" +
+        "C (memC): " + (valC ?? "null") + "\n\n" +
+        "VALORE CAMPO: " + campo.value + "\n\n" +
+        "COLORE ATTESO: " + (
+            !valC ? "VERDE (C mancante)" :
+            (valC === valA ? "VERDE (A = C)" : "ROSSO (A ≠ C)")
+        )
+    );
 
     // --- Se non ho memoria C → verde ---
     if (!valC) {
