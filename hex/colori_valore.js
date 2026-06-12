@@ -1,3 +1,8 @@
+function toHex2(v) {
+    if (typeof v === "number") return v.toString(16).toUpperCase().padStart(2, "0");
+    return String(v).toUpperCase().padStart(2, "0");
+}
+
 function aggiornaColoreValore() {
 
     if (!ultimoParametro) return;
@@ -8,28 +13,10 @@ function aggiornaColoreValore() {
     const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
-    // --- VALORE A ---
-    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
-                    .toUpperCase()
-                    .padStart(2, "0");
-
-    // --- VALORE B (se esiste) ---
-    const valB = ultimoParametro.VALORE_B
-        ? String(ultimoParametro.VALORE_B).toUpperCase().padStart(2, "0")
-        : null;
-
-    // --- VALORE C ---
-    let valC = null;
-    if (memC) {
-        const raw = memC[indirizzo];
-
-        // CONVERSIONE SICURA
-        if (typeof raw === "number") {
-            valC = raw.toString(16).toUpperCase().padStart(2, "0");
-        } else {
-            valC = String(raw).toUpperCase().padStart(2, "0");
-        }
-    }
+    // --- NORMALIZZAZIONE ---
+    const valA = toHex2(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE);
+    const valB = ultimoParametro.VALORE_B ? toHex2(ultimoParametro.VALORE_B) : null;
+    const valC = memC ? toHex2(memC[indirizzo]) : null;
 
     // --- Se non ho C → verde ---
     if (!valC) {
