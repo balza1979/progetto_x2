@@ -20,10 +20,22 @@ function aggiornaColoreValore() {
     let valC = null;
     if (memC) {
         valC = memC[indirizzo]
-            .toString(16)
+            ?.toString(16)
             .toUpperCase()
             .padStart(2, "0");
     }
+
+    // ⭐⭐⭐ ALERT — SENZA TOCCARE LA TUA LOGICA ⭐⭐⭐
+    alert(
+        "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
+        "INDIRIZZO: " + indirizzo + "\n\n" +
+        "A (default): " + valA + "\n" +
+        "C (memC): " + (valC ?? "null") + "\n\n" +
+        "VALORE CAMPO: " + campo.value + "\n\n" +
+        "COLORE ATTESO: " +
+        (!valC ? "VERDE (C mancante)" :
+        (valC === valA ? "VERDE (A = C)" : "ROSSO (A ≠ C)"))
+    );
 
     // --- Se non ho memoria C → verde ---
     if (!valC) {
