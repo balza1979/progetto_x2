@@ -5,6 +5,7 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
+    // ⭐ PRENDI IL CAMPO GIUSTO
     const campo =
         document.getElementById("tendina_valori") ||
         document.getElementById("input_minmax");
@@ -12,7 +13,7 @@ function aggiornaColoreValore() {
     if (!campo) return;
 
     // ------------------------------------------------------------
-    // 1) A (DEFAULT) → convertito in HEX usando la funzione centrale
+    // 1) A (DEFAULT) → convertito in HEX
     // ------------------------------------------------------------
     const valoreA_UMANO = ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE;
 
@@ -22,18 +23,7 @@ function aggiornaColoreValore() {
         .padStart(2, "0");
 
     // ------------------------------------------------------------
-    // 2) B (MEMORIA B) → se esiste
-    // ------------------------------------------------------------
-    let byteB = null;
-    if (typeof memB !== "undefined" && memB[indirizzo] != null) {
-        byteB = memB[indirizzo]
-            .toString(16)
-            .toUpperCase()
-            .padStart(2, "0");
-    }
-
-    // ------------------------------------------------------------
-    // 3) C (MEMORIA C MODIFICATA)
+    // 2) C (MEMORIA C MODIFICATA)
     // ------------------------------------------------------------
     let byteC = null;
     if (memC_modificata && memC_modificata[indirizzo] != null) {
@@ -44,7 +34,7 @@ function aggiornaColoreValore() {
     }
 
     // ------------------------------------------------------------
-    // 4) CAMPO (valore umano) → convertito in HEX
+    // 3) CAMPO (valore umano) → convertito in HEX
     // ------------------------------------------------------------
     const byteCampo = convertValueToByte(ultimoParametro, campo.value)
         .toString(16)
@@ -52,36 +42,23 @@ function aggiornaColoreValore() {
         .padStart(2, "0");
 
     // ------------------------------------------------------------
-    // 5) DETERMINAZIONE COLORE ATTESO
-    // ------------------------------------------------------------
-    let coloreAtteso = "";
-
-    if (!byteC) {
-        coloreAtteso = "VERDE (C mancante)";
-    } else if (byteCampo !== byteC) {
-        coloreAtteso = "ROSSO (CAMPO ≠ C)";
-    } else if (byteC === byteA) {
-        coloreAtteso = "VERDE (A = C)";
-    } else {
-        coloreAtteso = "GIALLO (C ≠ A ma CAMPO = C)";
-    }
-
-    // ------------------------------------------------------------
-    // 6) POPUP DI DEBUG COMPLETO
+    // 4) POPUP DI DEBUG COMPLETO
     // ------------------------------------------------------------
     alert(
         "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
         "INDIRIZZO: " + indirizzo + "\n\n" +
         "A (default → HEX): " + byteA + "\n" +
-        "B (memB → HEX): " + (byteB ?? "null") + "\n" +
-        "C (memC → HEX): " + (byteC ?? "null") + "\n\n" +
+        "C (memC_modificata → HEX): " + (byteC ?? "null") + "\n\n" +
         "CAMPO (umano): " + campo.value + "\n" +
         "CAMPO → HEX: " + byteCampo + "\n\n" +
-        "COLORE ATTESO: " + coloreAtteso
+        "COLORE ATTESO: " +
+        (!byteC ? "VERDE (C mancante)" :
+        (byteCampo !== byteC ? "ROSSO (CAMPO ≠ C)" :
+        (byteC === byteA ? "VERDE (A = C)" : "GIALLO (C ≠ A ma CAMPO = C)")))
     );
 
     // ------------------------------------------------------------
-    // 7) APPLICA COLORE REALE
+    // 5) APPLICA COLORE
     // ------------------------------------------------------------
     if (!byteC) {
         campo.style.backgroundColor = "#006600"; // verde
