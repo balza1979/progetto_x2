@@ -11,50 +11,96 @@ function aggiornaColoreValore() {
 
     if (!campo) return;
 
-    // --- VALORE A (default del parametro) ---
+    // ------------------------------------------------------------
+    // 1) A (DEFAULT) → convertito in HEX usando la funzione centrale
+    // ------------------------------------------------------------
     const valoreA_UMANO = ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE;
 
-    // ⭐ CONVERSIONE CORRETTA (USIAMO LA FUNZIONE CENTRALE)
     const byteA = convertValueToByte(ultimoParametro, valoreA_UMANO)
         .toString(16)
         .toUpperCase()
         .padStart(2, "0");
 
-    // --- VALORE C (memoria C modificata) ---
-    let valC = null;
-    if (memC_modificata) {
-        valC = memC_modificata[indirizzo]
-            ?.toString(16)
+    // ------------------------------------------------------------
+    // 2) B (MEMORIA B) → se esiste
+    // ------------------------------------------------------------
+    let byteB = null;
+    if (typeof memB !== "undefined" && memB[indirizzo] != null) {
+        byteB = memB[indirizzo]
+            .toString(16)
             .toUpperCase()
             .padStart(2, "0");
     }
 
-    // ⭐⭐⭐ RIPRISTINO IL TUO POP-UP ⭐⭐⭐
+    // ------------------------------------------------------------
+    // 3) C (MEMORIA C MODIFICATA)
+    // ------------------------------------------------------------
+    let byteC = null;
+    if (memC_modificata && memC_modificata[indirizzo] != null) {
+        byteC = memC_modificata[indirizzo]
+            .toString(16)
+            .toUpperCase()
+            .padStart(2, "0");
+    }
+
+    // ------------------------------------------------------------
+    // 4) CAMPO (valore umano) → convertito in HEX
+    // ------------------------------------------------------------
+    const byteCampo = convertValueToByte(ultimoParametro, campo.value)
+        .toString(16)
+        .toUpperCase()
+        .padStart(2, "0");
+
+    // ------------------------------------------------------------
+    // 5) DETERMINAZIONE COLORE ATTESO
+    // ------------------------------------------------------------
+    let coloreAtteso = "";
+
+    if (!byteC) {
+        coloreAtteso = "VERDE (C mancante)";
+    } else if (byteCampo !== byteC) {
+        coloreAtteso = "ROSSO (CAMPO ≠ C)";
+    } else if (byteC === byteA) {
+        coloreAtteso = "VERDE (A = C)";
+    } else {
+        coloreAtteso = "GIALLO (C ≠ A ma CAMPO = C)";
+    }
+
+    // ------------------------------------------------------------
+    // 6) POPUP DI DEBUG COMPLETO
+    // ------------------------------------------------------------
     alert(
         "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
         "INDIRIZZO: " + indirizzo + "\n\n" +
-        "A (default → convertito): " + byteA + "\n" +
-        "C (memC_modificata): " + (valC ?? "null") + "\n\n" +
-        "VALORE CAMPO (umano): " + campo.value + "\n\n" +
-        "COLORE ATTESO: " +
-        (!valC ? "VERDE (C mancante)" :
-        (valC === byteA ? "VERDE (A = C)" : "ROSSO (A ≠ C)"))
+        "A (default → HEX): " + byteA + "\n" +
+        "B (memB → HEX): " + (byteB ?? "null") + "\n" +
+        "C (memC → HEX): " + (byteC ?? "null") + "\n\n" +
+        "CAMPO (umano): " + campo.value + "\n" +
+        "CAMPO → HEX: " + byteCampo + "\n\n" +
+        "COLORE ATTESO: " + coloreAtteso
     );
 
-    // --- Se non ho memoria C → verde ---
-    if (!valC) {
-        campo.style.backgroundColor = "#006600";
-        campo.style.color = "white";
-        return;
-    }
-
-    // --- CONFRONTO CORRETTO ---
-    if (valC === byteA) {
+    // ------------------------------------------------------------
+    // 7) APPLICA COLORE REALE
+    // ------------------------------------------------------------
+    if (!byteC) {
         campo.style.backgroundColor = "#006600"; // verde
         campo.style.color = "white";
         return;
     }
 
-    campo.style.backgroundColor = "#990000"; // rosso
-    campo.style.color = "white";
+    if (byteCampo !== byteC) {
+        campo.style.backgroundColor = "#990000"; // rosso
+        campo.style.color = "white";
+        return;
+    }
+
+    if (byteC === byteA) {
+        campo.style.backgroundColor = "#006600"; // verde
+        campo.style.color = "white";
+        return;
+    }
+
+    campo.style.backgroundColor = "#CCAA00"; // giallo
+    campo.style.color = "black";
 }
