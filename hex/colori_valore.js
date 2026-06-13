@@ -5,7 +5,6 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    // ⭐ PRENDI IL CAMPO GIUSTO
     const campo =
         document.getElementById("tendina_valori") ||
         document.getElementById("input_minmax");
@@ -13,7 +12,12 @@ function aggiornaColoreValore() {
     if (!campo) return;
 
     // --- VALORE A (default del parametro) ---
-    const valA = String(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
+    const valoreA_UMANO = ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE;
+
+    // ⭐ CONVERSIONE CORRETTA (USIAMO LA FUNZIONE CENTRALE)
+    const byteA = convertValueToByte(ultimoParametro, valoreA_UMANO)
+        .toString(16)
+        .toUpperCase()
         .padStart(2, "0");
 
     // --- VALORE C (memoria C) ---
@@ -25,18 +29,6 @@ function aggiornaColoreValore() {
             .padStart(2, "0");
     }
 
-    // ⭐⭐⭐ ALERT — SENZA TOCCARE LA TUA LOGICA ⭐⭐⭐
-    alert(
-        "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
-        "INDIRIZZO: " + indirizzo + "\n\n" +
-        "A (default): " + valA + "\n" +
-        "C (memC): " + (valC ?? "null") + "\n\n" +
-        "VALORE CAMPO: " + campo.value + "\n\n" +
-        "COLORE ATTESO: " +
-        (!valC ? "VERDE (C mancante)" :
-        (valC === valA ? "VERDE (A = C)" : "ROSSO (A ≠ C)"))
-    );
-
     // --- Se non ho memoria C → verde ---
     if (!valC) {
         campo.style.backgroundColor = "#006600";
@@ -44,8 +36,8 @@ function aggiornaColoreValore() {
         return;
     }
 
-    // --- CONFRONTO ---
-    if (valC === valA) {
+    // --- CONFRONTO CORRETTO ---
+    if (valC === byteA) {
         campo.style.backgroundColor = "#006600"; // verde
         campo.style.color = "white";
         return;
