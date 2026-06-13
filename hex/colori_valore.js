@@ -20,14 +20,26 @@ function aggiornaColoreValore() {
         .toUpperCase()
         .padStart(2, "0");
 
-    // --- VALORE C (memoria C) ---
+    // --- VALORE C (memoria C modificata) ---
     let valC = null;
-    if (memC) {
-        valC = memC[indirizzo]
+    if (memC_modificata) {
+        valC = memC_modificata[indirizzo]
             ?.toString(16)
             .toUpperCase()
             .padStart(2, "0");
     }
+
+    // ⭐⭐⭐ RIPRISTINO IL TUO POP-UP ⭐⭐⭐
+    alert(
+        "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
+        "INDIRIZZO: " + indirizzo + "\n\n" +
+        "A (default → convertito): " + byteA + "\n" +
+        "C (memC_modificata): " + (valC ?? "null") + "\n\n" +
+        "VALORE CAMPO (umano): " + campo.value + "\n\n" +
+        "COLORE ATTESO: " +
+        (!valC ? "VERDE (C mancante)" :
+        (valC === byteA ? "VERDE (A = C)" : "ROSSO (A ≠ C)"))
+    );
 
     // --- Se non ho memoria C → verde ---
     if (!valC) {
