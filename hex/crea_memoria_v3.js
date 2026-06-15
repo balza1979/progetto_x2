@@ -45,7 +45,8 @@ window.hexToMemoryMap = hexToMemoryMap;
    Caricamento automatico Memoria A default
    ============================================================ */
 async function caricaDefaultMemoriaA() {
-    const nomeFile = "memoria_polli.hex";
+    const nomeFile = "def_polli_b335f_ver1.HEX";
+
 
     const urlRaw = "https://raw.githubusercontent.com/balza1979/progetto_x2/main/Memorie/" + nomeFile;
 
