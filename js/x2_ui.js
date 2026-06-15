@@ -308,7 +308,8 @@ function x2_mostraInfoParametro(param) {
         const valoreC = convertValueFromByte(param, byte);
 
         if (!modificheInCorso) {
-            param.VALORE = valoreC;
+            // NON sovrascrivere il valore A !!!
+           // param.VALORE = valoreC;
         }
     }
 
