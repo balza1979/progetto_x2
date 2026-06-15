@@ -3,7 +3,15 @@
 // ======================================================================
 // FILE: x2_ui 11.01 modificato const indirizzo = parseInt(param.LIBERA1); righe 135 e 308— VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
-
+if (!window.memA) {
+    x2_caricaHexDefault().then(() => {
+        caricaMemorieGlobali();   // PRIMA
+        x2_inizializzaUI();       // DOPO
+    });
+} else {
+    caricaMemorieGlobali();       // PRIMA
+    x2_inizializzaUI();           // DOPO
+}
 async function x2_caricaHexDefault() {
     try {
         const response = await fetch("Memorie/def_polli_b335f_ver1.HEX");
@@ -32,15 +40,7 @@ async function x2_caricaHexDefault() {
     }
 }
 
-if (!window.memA) {
-    x2_caricaHexDefault().then(() => {
-        caricaMemorieGlobali();   // PRIMA
-        x2_inizializzaUI();       // DOPO
-    });
-} else {
-    caricaMemorieGlobali();       // PRIMA
-    x2_inizializzaUI();           // DOPO
-}
+
 
 
 // ------------------------------------------------------------
