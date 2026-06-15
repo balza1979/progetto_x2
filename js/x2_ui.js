@@ -133,17 +133,35 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-   // const indirizzo = parseInt(param.LIBERA1);
     const indirizzo = parseInt(param.LIBERA1, 16);
-
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
-    const byte = parseInt(nuovoValore) & 0xFF;
-    memC[indirizzo] = byte;
+    const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
+    const scala = parseFloat(param.LIBERA4 || "1");
 
+    let v = parseFloat(nuovoValore);
+    if (isNaN(v)) return;
+
+    // tolgo la scala per tornare al byte grezzo
+    let raw = scala !== 0 ? v / scala : v;
+
+    // signed
+    if (tipo === "SIGNED" || tipo === "S") {
+        raw = Math.round(raw);
+        if (raw < -128) raw = -128;
+        if (raw > 127)  raw = 127;
+        if (raw < 0) raw = 256 + raw; // converto in unsigned
+    } else {
+        raw = Math.round(raw);
+        if (raw < 0)   raw = 0;
+        if (raw > 255) raw = 255;
+    }
+
+    memC[indirizzo] = raw & 0xFF;
     memC_modificata = true;
     salvaMemoriaC();
 }
+
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
@@ -417,11 +435,11 @@ function x2_popolaValori(param) {
             //tendina.value = valorePulito;
 let valoreDaMostrare = String(param.VALORE ?? "").trim().padStart(2, "0");
 
-if (memC) {
-    const indirizzo = parseInt(param.LIBERA1, 16);
-    const byte = memC[indirizzo];
-    valoreDaMostrare = convertValueFromByte(param, byte);
-}
+//if (memC) {
+//   const indirizzo = parseInt(param.LIBERA1, 16);
+   // const byte = memC[indirizzo];
+  //  valoreDaMostrare = convertValueFromByte(param, byte);
+//}
 
 tendina.value = String(valoreDaMostrare).padStart(2, "0");
 
@@ -550,6 +568,8 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             if (memC) {
                 ultimoParametro.VALORE = this.value;
+                updateMemoriaC(ultimoParametro, this.value);
+
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
@@ -567,6 +587,8 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
+                updateMemoriaC(ultimoParametro, this.value);
+
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
@@ -584,6 +606,8 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
+                updateMemoriaC(ultimoParametro, this.value);
+
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
@@ -617,11 +641,11 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
         //tendina.value = String(param.VALORE).padStart(2, "0");
         let valoreDaMostrare = String(param.VALORE).padStart(2, "0");
 
-if (memC) {
-    const indirizzo = parseInt(param.LIBERA1, 16);
-    const byte = memC[indirizzo];
-    valoreDaMostrare = convertValueFromByte(param, byte);
-}
+//if (memC) {
+ //   const indirizzo = parseInt(param.LIBERA1, 16);
+  //  const byte = memC[indirizzo];
+  //  valoreDaMostrare = convertValueFromByte(param, byte);
+//}
 
 tendina.value = String(valoreDaMostrare).padStart(2, "0");
 
