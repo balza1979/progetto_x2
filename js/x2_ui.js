@@ -13,10 +13,11 @@ let ultimoParametro = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
+
 // === CARICAMENTO MEMORIE A/B/C ===
 caricaMemorieGlobali();
 // === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
-
+let memC = window.memC;
 // OBSOLETO — ora usiamo memorie_loader.js
 function caricaMemoriaA() {
     return window.memA;
