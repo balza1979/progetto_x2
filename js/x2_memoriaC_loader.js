@@ -46,6 +46,8 @@ function loadMemoriaC() {
     if (!hexText) return null;
 
     memC_modificata = intelHexToMemoryMap(hexText);
+   memC = memC_modificata;
+
     return memC_modificata;
 }
 
