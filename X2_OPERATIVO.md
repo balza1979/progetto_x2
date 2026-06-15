@@ -296,3 +296,12 @@ pdf/<cartella>/
 loading.html  
 Google Docs Viewer  
 libreria XLSX  
+memorie_loader.js
+x.js
+x2_compare.js
+x2_core.js
+x2_debug.js
+x2_loader.js
+x2_menu_struttura_data.js
+x2_parametri_data.js
+x2_ui.js
