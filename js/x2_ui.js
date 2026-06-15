@@ -302,15 +302,16 @@ function convertValueFromByte(param, byte) {
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
+    let valoreC = "—";
+
     if (memC) {
         const indirizzo = parseInt(param.LIBERA1);
         const byte = memC[indirizzo];
-        const valoreC = convertValueFromByte(param, byte);
-
-        if (!modificheInCorso) {
-            // NON sovrascrivere il valore A !!!
-           // param.VALORE = valoreC;
-        }
+        valoreC = convertValueFromByte(param, byte);
+        // NON toccare più param.VALORE qui
+        // if (!modificheInCorso) {
+        //     param.VALORE = valoreC;
+        // }
     }
 
     const box = document.getElementById("info_parametro");
@@ -318,7 +319,8 @@ function x2_mostraInfoParametro(param) {
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore:</b> ${param.VALORE}<br><br>
+        <b>Valore A (default):</b> ${param.VALORE}<br>
+        <b>Valore C (memoria):</b> ${valoreC}<br><br>
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
@@ -335,8 +337,8 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("unita_misura").value = param.UNITA || "";
 
     ultimoParametro = param;
-    
 }
+
 
 // ======================================================================
 // CALCOLO HEX
