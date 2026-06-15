@@ -1,5 +1,6 @@
 function aggiornaColoreValore() {
-alert("C RAW = " + memC_modificata?.[parseInt(ultimoParametro.LIBERA1)]);
+alert("memC_modificata = " + JSON.stringify(memC_modificata));
+
 
     if (!ultimoParametro) return;
 
