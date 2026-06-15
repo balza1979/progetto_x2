@@ -238,6 +238,17 @@ function updateMemoriaC(param, nuovoValore) {
 }
 // === MODIFICA 2026-06-15 16:10 FINE - updateMemoriaC ===
 
+// ============================================================
+// INIZIALIZZAZIONE UI
+// ============================================================
+function x2_inizializzaUI() {
+    // Popola menu e setup iniziale
+    x2_popolaMenu();
+
+    // Se serve, richiama altre funzioni di setup
+    // x2_popolaValori(ultimoParametro);
+    // x2_mostraInfoParametro(ultimoParametro);
+}
 
 
 // ------------------------------------------------------------
