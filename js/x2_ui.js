@@ -971,7 +971,7 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
         e.preventDefault();
         e.returnValue = "";
     });
-});
+
 
 /* === FINE BLOCCO 6 (CORRETTO) === */
 // ============================================================
@@ -1015,3 +1015,4 @@ if (!window.memA) {
     x2_inizializzaUI();
 }
 
+});
