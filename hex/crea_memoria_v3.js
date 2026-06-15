@@ -90,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (hexB) {
         memoriaB = hexToMemoryMap(hexB);
+        window.memoriaB = memoriaB;
+
         document.getElementById("file2").files = fakeFile(nomeB, hexB);
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
@@ -146,6 +148,7 @@ function onFileB_Change() {
 
     leggiFileHex(inputB, hexB => {
         memoriaB = hexToMemoryMap(hexB);
+        
         localStorage.setItem("memB_hex", hexB);
         localStorage.setItem("memB_nome", inputB.files[0].name);
         aggiornaBloccoCreazione();
