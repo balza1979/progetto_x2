@@ -410,7 +410,8 @@ if (memC) {
     valoreDaMostrare = convertValueFromByte(param, byte);
 }
 
-tendina.value = valoreDaMostrare;
+tendina.value = String(valoreDaMostrare).padStart(2, "0");
+
 
             
                 aggiornaColoreValore();
@@ -600,7 +601,17 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
             tendina.appendChild(opt);
         }
 
-        tendina.value = String(param.VALORE).padStart(2, "0");
+        //tendina.value = String(param.VALORE).padStart(2, "0");
+        let valoreDaMostrare = String(param.VALORE).padStart(2, "0");
+
+if (memC) {
+    const indirizzo = parseInt(param.LIBERA1, 16);
+    const byte = memC[indirizzo];
+    valoreDaMostrare = convertValueFromByte(param, byte);
+}
+
+tendina.value = String(valoreDaMostrare).padStart(2, "0");
+
         return;
     }
 
