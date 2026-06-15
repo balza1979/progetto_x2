@@ -1,14 +1,12 @@
 function aggiornaColoreValore() {
-        if (!ultimoParametro) return;
-
-alert("memC ore 9.40  = " + JSON.stringify(memC_modificata));
-alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
-
 
     if (!ultimoParametro) return;
 
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
+
+    alert("memC ore 9.40 = " + JSON.stringify(memC));
+    alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
 
     const campo =
         document.getElementById("tendina_valori") ||
@@ -21,14 +19,13 @@ alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
         .toString(16).toUpperCase().padStart(2, "0");
 
     // C (memoria C) → HEX
-let byteC = null;
-if (memC && memC[indirizzo] != null) {
-    byteC = memC[indirizzo]
-        .toString(16)
-        .toUpperCase()
-        .padStart(2, "0");
-}
-
+    let byteC = null;
+    if (memC && memC[indirizzo] != null) {
+        byteC = memC[indirizzo]
+            .toString(16)
+            .toUpperCase()
+            .padStart(2, "0");
+    }
 
     // CAMPO → DEC → HEX
     const byteCampo = Number(campo.value)
