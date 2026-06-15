@@ -1,7 +1,7 @@
 /* === INIZIO BLOCCO 1 (CORRETTO) === */
 
 // ======================================================================
-// FILE: x2_ui 10.44 — VERSIONE PRO (HEX VERSION) — CORRETTO
+// FILE: x2_ui 10.50 NUOVA VERSIONE IN x2_mostraInfoParametro(param) — VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
 // ------------------------------------------------------------
