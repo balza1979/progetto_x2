@@ -844,24 +844,22 @@ window.addEventListener("load", checkScreenSize);
 	
 
 
-<script src="js/x2_loader.js"></script>      <!-- deve stare PRIMA di core -->
+<script src="js/x2_loader.js"></script>
 <script src="js/x2_core.js"></script>
-<!--<script src="js/crea_memoria.js"></script> -->
-	<script src="js/x2_memB_loader.js"></script>
 
+<!-- niente crea_memoria qui -->
 
-	<script>
+<script src="hex/colori_valore.js"></script>   <!-- QUI c’è hexToMemoryMap -->
+
+<script src="js/x2_memB_loader.js"></script>   <!-- DEVE VENIRE DOPO -->
+
+<script>
     memB = window.memoriaB || window.memB || null;
 </script>
 
-
-<script src="hex/colori_valore.js"></script>
 <script src="js/x2_ui.js"></script>
-
-
 <script src="js/x2_memoriaC_loader.js"></script>
-
-<script src="js/x2_debug.js"></script>       <!-- debug sempre per ultimo -->
+<script src="js/x2_debug.js"></script>
 <script src="js/x2_compare.js"></script>
 
 
