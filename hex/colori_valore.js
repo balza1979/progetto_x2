@@ -5,7 +5,7 @@ function aggiornaColoreValore() {
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    alert("memC ore 9.40 = " + JSON.stringify(memC));
+    alert("memC ore 9.44 = " + JSON.stringify(memC));
     alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
 
     const campo =
