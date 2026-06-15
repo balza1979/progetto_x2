@@ -18,11 +18,14 @@ alert("memC_modificata = " + JSON.stringify(memC_modificata));
         .toString(16).toUpperCase().padStart(2, "0");
 
     // C (memoria C) → HEX
-    let byteC = null;
-    if (memC_modificata && memC_modificata[indirizzo] != null) {
-        byteC = Number(memC_modificata[indirizzo])
-            .toString(16).toUpperCase().padStart(2, "0");
-    }
+let byteC = null;
+if (memC && memC[indirizzo] != null) {
+    byteC = memC[indirizzo]
+        .toString(16)
+        .toUpperCase()
+        .padStart(2, "0");
+}
+
 
     // CAMPO → DEC → HEX
     const byteCampo = Number(campo.value)
