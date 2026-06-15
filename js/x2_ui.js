@@ -17,7 +17,8 @@ let modificheInCorso = false;
 // === CARICAMENTO MEMORIE A/B/C ===
 caricaMemorieGlobali();
 // === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
-let memC = window.memC;
+memC = window.memC;
+
 const soloA = (!window.memB && !window.memC);
 
 
