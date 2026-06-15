@@ -1,5 +1,6 @@
 function aggiornaColoreValore() {
-alert("memC = " + JSON.stringify(memC_modificata));
+alert("memC ore 9.07  = " + JSON.stringify(memC_modificata));
+alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
 
 
     if (!ultimoParametro) return;
