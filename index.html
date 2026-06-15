@@ -839,24 +839,18 @@ function checkScreenSize() {
 window.addEventListener("resize", checkScreenSize);
 window.addEventListener("load", checkScreenSize);
 	</script>
-<script src="js/x2_menu_struttura_data.js"></script>
-<script src="js/x2_parametri_data.js"></script>
-	
-
 
 <script src="js/x2_loader.js"></script>
 <script src="js/x2_core.js"></script>
 
-<!-- niente crea_memoria qui -->
-
-<script src="hex/colori_valore.js"></script>   <!-- QUI c’è hexToMemoryMap -->
-
-<script src="js/x2_memB_loader.js"></script>   <!-- DEVE VENIRE DOPO -->
+<script src="hex/crea_memoria_v3.js"></script>   <!-- QUI c’è hexToMemoryMap -->
+<script src="js/x2_memB_loader.js"></script>     <!-- DEVE VENIRE DOPO -->
 
 <script>
     memB = window.memoriaB || window.memB || null;
 </script>
 
+<script src="hex/colori_valore.js"></script>
 <script src="js/x2_ui.js"></script>
 <script src="js/x2_memoriaC_loader.js"></script>
 <script src="js/x2_debug.js"></script>
