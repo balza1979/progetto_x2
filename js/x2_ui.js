@@ -133,7 +133,7 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1, 16);
+    const indirizzo = parseInt(param.LIBERA1);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
@@ -324,7 +324,7 @@ function convertValueFromByte(param, byte) {
 function x2_mostraInfoParametro(param) {
 
     // Indirizzo in HEX → numero
-    const indirizzo = parseInt(param.LIBERA1, 16);
+    const indirizzo = parseInt(param.LIBERA1);
 
     // --- A (default) ---
     let valoreA = "—";
