@@ -4,7 +4,7 @@
    STEP 1 FIX: Memoria C modificata resta in RAM
    ============================================================ */
 
-let memC_modificata = null;
+
 
 /* ------------------------------------------------------------
    1) Controllo esistenza Memoria C
