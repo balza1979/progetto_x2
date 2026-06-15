@@ -4,6 +4,42 @@
 // FILE: x2_ui 11.01 modificato const indirizzo = parseInt(param.LIBERA1); righe 135 e 308— VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
+async function x2_caricaHexDefault() {
+    try {
+        const response = await fetch("Memorie/def_polli_b335f_ver1.HEX");
+        const text = await response.text();
+
+        const righe = text.split(/\r?\n/);
+        const memoria = {};
+
+        for (let i = 0; i < righe.length; i++) {
+            const r = righe[i].trim();
+            if (!r || r.startsWith("#")) continue;
+
+            const parti = r.split(" ");
+            if (parti.length >= 2) {
+                const addr = parti[0].trim();
+                const val  = parti[1].trim();
+                memoria[addr] = val;
+            }
+        }
+
+        window.memA = memoria;
+        console.log("DEF POLLI caricata in memA");
+    } catch (err) {
+        console.error("Errore caricamento HEX default:", err);
+        window.memA = null;
+    }
+}
+
+if (!window.memA) {
+    x2_caricaHexDefault().then(() => {
+        x2_inizializzaUI();
+    });
+} else {
+    x2_inizializzaUI();
+}
+
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
