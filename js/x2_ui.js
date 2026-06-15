@@ -242,13 +242,31 @@ function updateMemoriaC(param, nuovoValore) {
 // INIZIALIZZAZIONE UI
 // ============================================================
 function x2_inizializzaUI() {
-    // Popola menu e setup iniziale
+    // Popola menu
     x2_popolaMenu();
 
-    // Se serve, richiama altre funzioni di setup
-    // x2_popolaValori(ultimoParametro);
-    // x2_mostraInfoParametro(ultimoParametro);
+    // Forza il primo menu a scatenare il cambio
+    const selMenu = document.getElementById("menu");
+    if (selMenu && selMenu.options.length > 0) {
+        selMenu.selectedIndex = 0;
+        selMenu.dispatchEvent(new Event("change"));
+    }
+
+    // Forza anche il primo sottomenu
+    const selSottomenu = document.getElementById("sottomenu");
+    if (selSottomenu && selSottomenu.options.length > 0) {
+        selSottomenu.selectedIndex = 0;
+        selSottomenu.dispatchEvent(new Event("change"));
+    }
+
+    // Forza il primo parametro
+    const selParametro = document.getElementById("parametro");
+    if (selParametro && selParametro.options.length > 0) {
+        selParametro.selectedIndex = 0;
+        selParametro.dispatchEvent(new Event("change"));
+    }
 }
+
 
 
 // ------------------------------------------------------------
