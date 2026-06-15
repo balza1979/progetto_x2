@@ -661,6 +661,7 @@ function x2_aggiornaParamButtons(codiceParametro) {
 document.addEventListener("DOMContentLoaded", function () {
 
     memC = caricaMemoriaC();
+console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     const selMenu      = document.getElementById("menu");
     const selSottomenu = document.getElementById("sottomenu");
