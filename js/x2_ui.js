@@ -34,11 +34,14 @@ async function x2_caricaHexDefault() {
 
 if (!window.memA) {
     x2_caricaHexDefault().then(() => {
-        x2_inizializzaUI();
+        caricaMemorieGlobali();   // PRIMA
+        x2_inizializzaUI();       // DOPO
     });
 } else {
-    x2_inizializzaUI();
+    caricaMemorieGlobali();       // PRIMA
+    x2_inizializzaUI();           // DOPO
 }
+
 
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
