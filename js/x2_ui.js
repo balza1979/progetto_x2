@@ -395,6 +395,7 @@ function x2_popolaValori(param) {
 
             const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
             tendina.value = valorePulito;
+                aggiornaColoreValore();
 
             x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
@@ -791,7 +792,7 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
         x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
-        aggiornaColoreValore();
+       // aggiornaColoreValore();
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
