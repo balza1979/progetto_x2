@@ -9,6 +9,7 @@
 // ------------------------------------------------------------
 let ultimoParametro = null;
 let memC = null;
+let memB = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
