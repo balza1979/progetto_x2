@@ -2,77 +2,71 @@ function aggiornaColoreValore() {
 
     if (!ultimoParametro) return;
 
-    // 1) Indirizzo HEX corretto
     const indirizzo = parseInt(ultimoParametro.LIBERA1, 16);
     if (isNaN(indirizzo)) return;
 
     const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
-    // ============================
     // A (default)
-    // ============================
     const byteA = Number(ultimoParametro.VALORE_DEFAULT ?? ultimoParametro.VALORE)
-        .toString(16)
-        .toUpperCase()
-        .padStart(2, "0");
+        .toString(16).toUpperCase().padStart(2, "0");
 
-    // ============================
     // B (memoria B)
-    // ============================
     let byteB = null;
     if (memB && memB[indirizzo] != null) {
-        byteB = memB[indirizzo]
-            .toString(16)
-            .toUpperCase()
-            .padStart(2, "0");
+        byteB = memB[indirizzo].toString(16).toUpperCase().padStart(2, "0");
     }
 
-    // ============================
     // C (memoria C)
-    // ============================
     let byteC = null;
     if (memC && memC[indirizzo] != null) {
-        byteC = memC[indirizzo]
-            .toString(16)
-            .toUpperCase()
-            .padStart(2, "0");
+        byteC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
     }
 
-    // ============================
-    // CAMPO (valore selezionato)
-    // ============================
+    // CAMPO
     const byteCampo = Number(campo.value)
-        .toString(16)
-        .toUpperCase()
-        .padStart(2, "0");
+        .toString(16).toUpperCase().padStart(2, "0");
 
     // ============================
-    // LOGICA COLORI
+    // POPUP DEBUG
+    // ============================
+    alert(
+        "PARAMETRO: " + ultimoParametro.PARAMETRO + "\n" +
+        "INDIRIZZO: " + indirizzo + "\n\n" +
+        "A (default → HEX): " + byteA + "\n" +
+        "B (memB → HEX): " + (byteB ?? "null") + "\n" +
+        "C (memC → HEX): " + (byteC ?? "null") + "\n\n" +
+        "CAMPO (umano): " + campo.value + "\n" +
+        "CAMPO → HEX: " + byteCampo + "\n\n" +
+        "COLORE ATTESO: " +
+        (!byteC ? "VERDE (C mancante)" :
+        (byteCampo !== byteC ? "ROSSO (CAMPO ≠ C)" :
+        (byteC === byteA ? "VERDE (A = C)" : "GIALLO (C ≠ A ma CAMPO = C)")))
+    );
+
+    // ============================
+    // COLORI
     // ============================
 
-    // Se NON c’è C → verde (nessuna memoria caricata)
     if (!byteC) {
-        campo.style.backgroundColor = "#006600"; // verde
+        campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
     }
 
-    // Se CAMPO ≠ C → rosso (modificato)
     if (byteCampo !== byteC) {
-        campo.style.backgroundColor = "#990000"; // rosso
+        campo.style.backgroundColor = "#990000";
         campo.style.color = "white";
         return;
     }
 
-    // Se CAMPO = C ma C ≠ A → giallo (diverso dal default)
     if (byteC !== byteA) {
-        campo.style.backgroundColor = "#CCAA00"; // giallo
+        campo.style.backgroundColor = "#CCAA00";
         campo.style.color = "black";
         return;
     }
 
-    // Se CAMPO = C = A → verde (tutto ok)
-    campo.style.backgroundColor = "#006600"; // verde
+    campo.style.backgroundColor = "#006600";
     campo.style.color = "white";
 }
