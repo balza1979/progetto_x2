@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("file2").files = fakeFile(nomeB, hexB);
         document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
     }
+window.memB = memoriaB;
 
     if (!localStorage.getItem("memA_hex")) {
         caricaDefaultMemoriaA();
