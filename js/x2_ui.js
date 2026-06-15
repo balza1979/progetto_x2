@@ -13,6 +13,37 @@ let ultimoParametro = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
+
+// === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
+
+// Carica Memoria A da localStorage
+function caricaMemoriaA() {
+    const raw = localStorage.getItem("memA_hex");
+    if (!raw) return null;
+
+    try {
+        return parseIntelHexToBytes(raw);
+    } catch (e) {
+        console.error("Errore parsing Memoria A:", e);
+        return null;
+    }
+}
+
+// Carica Memoria B da localStorage
+function caricaMemoriaB() {
+    const raw = localStorage.getItem("memB_hex");
+    if (!raw) return null;
+
+    try {
+        return parseIntelHexToBytes(raw);
+    } catch (e) {
+        console.error("Errore parsing Memoria B:", e);
+        return null;
+    }
+}
+
+// === MODIFICA 2026-06-15 16:30 FINE - caricaMemoriaA/B ===
+
 // ------------------------------------------------------------
 // PARSING HEX INTEL → ARRAY BYTE (8192)
 // ------------------------------------------------------------
