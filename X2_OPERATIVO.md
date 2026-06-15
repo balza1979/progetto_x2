@@ -305,3 +305,152 @@ x2_loader.js
 x2_menu_struttura_data.js
 x2_parametri_data.js
 x2_ui.js
+
+============================================================
+MODALITÀ E FLUSSI X2 — DEFINIZIONE COMPLETA
+============================================================
+
+------------------------------------------------------------
+MODALITÀ 1 — LETTURA / MANUALE TECNICO
+------------------------------------------------------------
+SCOPO:
+Navigazione pura dei menu, sottomenu, parametri e valori.
+Nessuna memoria, nessun salvataggio, nessuna modifica.
+
+USA:
+- x2_menu_struttura_data.js
+- x2_parametri_data.js
+- JSON tendine
+- File associati (8 per menu / 8 per sottomenu / 8 per parametro / 8 per valore)
+
+NON USA:
+- localStorage
+- memA / memB / memC
+- colori
+- confronti
+- salvataggi
+
+FLUSSO:
+index.html → x2_ui.js → struttura menu → struttura sottomenu → parametri → JSON valori → file associati
+
+REGOLE:
+- Tutti i filtri attivi (min/max, decimali, HEX, JSON)
+- Nessun colore
+- Nessun alert
+- Nessuna scrittura
+- Solo visualizzazione
+
+------------------------------------------------------------
+MODALITÀ 2 — CREA MEMORIA
+------------------------------------------------------------
+SCOPO:
+Creare memA, memB, memC nel localStorage.
+
+SLOT:
+- A → DEF di default (selezionabile)
+- B → selezionabile (Git / locale)
+- C → richiede nome
+
+SALVATAGGIO:
+Premendo SALVA vengono create:
+- memA_hex + memA_nome
+- memB_hex + memB_nome
+- memC_hex + memC_nome (copia IDENTICA di B)
+
+FLUSSO:
+confronto_memorie.html?mode=creazione → selezione A/B → nome C → SALVA → localStorage
+
+------------------------------------------------------------
+MODALITÀ 3 — PROGRAMMATORE X2 (memC)
+------------------------------------------------------------
+SCOPO:
+Modificare memC con filtri, controlli, colori e salvataggi.
+
+VALORI:
+- Valore mostrato = memC
+- Valore grezzo = memA
+
+COLORI:
+- VERDE → C == A
+- GIALLO → C == A && A != B
+- ROSSO → C != A && C != B
+
+IN TEMPO REALE:
+Il colore cambia immediatamente quando modifichi il valore.
+
+SNAPSHOT:
+All’ingresso del parametro → salva valore originale di C.
+Se cambi → parametro “modificato”.
+
+ALERT USCITA:
+Se esci senza salvare:
+- “Prosegui senza salvare” → ripristina snapshot
+- “Salva in memC” → aggiorna localStorage
+
+SALVATAGGIO:
+Aggiorna memC_hex in localStorage.
+
+NAVIGAZIONE:
+- frecce
+- menu
+- sottomenu
+- ricerca
+- tendine
+
+------------------------------------------------------------
+MODALITÀ 4 — CONFRONTO MEMORIE (POST-PROGRAMMAZIONE)
+------------------------------------------------------------
+SCOPO:
+Confrontare memA, memB, memC del localStorage o file selezionati.
+
+DEFAULT:
+- Slot A = memA_local
+- Slot B = memB_local
+- Slot C = memC_local
+
+Tutti e tre selezionabili (Git / locale).
+
+TASTI CONFRONTO:
+- AB
+- AC
+- BC
+- ABC
+
+COLORI:
+Stessa logica del Programmatore:
+- verde / rosso / giallo
+
+COLONNE AUTOMATICHE:
+- AB → nascondi C
+- AC → nascondi B
+- BC → nascondi A
+- ABC → mostra tutto
+
+I flag vengono aggiornati automaticamente.
+
+FLUSSO:
+localStorage (o file selezionati) → confronto → tabella → colori → filtri colonne
+
+NESSUNA SCRITTURA:
+Modalità solo lettura.
+
+------------------------------------------------------------
+REGOLE DI CONVERSIONE (VALIDA PER TUTTE LE MODALITÀ)
+------------------------------------------------------------
+TIPO DECIMALE:
+- min/max → dec → hex → padding 2 cifre
+
+TIPO HEX:
+- min/max → hex → padding 2 cifre
+
+TIPO DEC + DECIMALI:
+- rimuovi punto → min/max → dec → hex → padding
+
+TIPO JSON / SPECIFICO:
+- valore diretto dal JSON → padding
+
+SEMPRE:
+- 2 cifre
+- filtri attivi
+- range attivo
+- nessuna eccezione
