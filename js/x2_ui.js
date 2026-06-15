@@ -242,41 +242,33 @@ function updateMemoriaC(param, nuovoValore) {
 // INIZIALIZZAZIONE UI COMPLETA
 // ============================================================
 function x2_inizializzaUI() {
-    // Se memC è vuota, inizializzala da memA
+
+    // === 1) SE memC È NULL → COPIA DA memA ===
     if (!memC && window.memA) {
         memC = window.memA;
         console.log("memC inizializzata da memA, lunghezza =", memC.length);
     }
 
-    // Popola menu principale
+    // === 2) POPOLA MENU ===
     x2_popolaMenu();
 
-    // Forza selezione primo menu
+    // === 3) FORZA EVENTI ===
     const selMenu = document.getElementById("menu");
-    if (selMenu && selMenu.options.length > 0) {
+    if (selMenu.options.length > 0) {
         selMenu.selectedIndex = 0;
         selMenu.dispatchEvent(new Event("change"));
     }
 
-    // Forza selezione primo sottomenu
     const selSottomenu = document.getElementById("sottomenu");
-    if (selSottomenu && selSottomenu.options.length > 0) {
+    if (selSottomenu.options.length > 0) {
         selSottomenu.selectedIndex = 0;
         selSottomenu.dispatchEvent(new Event("change"));
     }
 
-    // Forza selezione primo parametro
     const selParametro = document.getElementById("parametro");
-    if (selParametro && selParametro.options.length > 0) {
+    if (selParametro.options.length > 0) {
         selParametro.selectedIndex = 0;
         selParametro.dispatchEvent(new Event("change"));
-    }
-
-    // Mostra info e valori del parametro selezionato
-    if (ultimoParametro) {
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
-        x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
     }
 }
 
