@@ -1,7 +1,7 @@
 /* === INIZIO BLOCCO 1 (CORRETTO) === */
 
 // ======================================================================
-// FILE: x2_ui — VERSIONE PRO (HEX VERSION) — CORRETTO
+// FILE: x2_ui 10.22 — VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
 // ------------------------------------------------------------
@@ -408,7 +408,7 @@ function x2_popolaValori(param) {
                 if (!p) return;
 
                 if (memC) {
-                    p.VALORE = nuovoValore;
+                   // p.VALORE = nuovoValore;
                     modificheInCorso = true;
                     document.getElementById("btn_salva_parametro").disabled = false;
                 }
