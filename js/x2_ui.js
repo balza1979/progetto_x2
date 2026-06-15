@@ -731,8 +731,8 @@ function x2_aggiornaParamButtons(codiceParametro) {
 document.addEventListener("DOMContentLoaded", function () {
 
     memC = caricaMemoriaC();
-memA = caricaMemoriaA();
-memB = caricaMemoriaB();
+    memA = caricaMemoriaA();
+    memB = caricaMemoriaB();
 
 console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
