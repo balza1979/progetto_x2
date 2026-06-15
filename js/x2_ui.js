@@ -791,32 +791,35 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    selValore.addEventListener("change", function () {
+selValore.addEventListener("change", function () {
 
-        if (memC) {
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-        }
+    if (!soloA && memC) {
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+    }
 
-        aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+    aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+});
 
-    });
 
-    document.getElementById("btn_salva_parametro").addEventListener("click", function () {
+document.getElementById("btn_salva_parametro").addEventListener("click", function () {
 
-        if (!ultimoParametro) return;
+    if (soloA) return;   // <--- BLOCCO TOTALE
 
-        const val = document.getElementById("tendina_valori").value;
+    if (!ultimoParametro) return;
 
-        updateMemoriaC(ultimoParametro, val);
-        ultimoParametro.VALORE = val;
+    const val = document.getElementById("tendina_valori").value;
 
-        modificheInCorso = false;
+    updateMemoriaC(ultimoParametro, val);
+    ultimoParametro.VALORE = val;
 
-        document.getElementById("btn_salva_parametro").disabled = true;
+    modificheInCorso = false;
 
-        alert("Valore salvato.");
-    });
+    document.getElementById("btn_salva_parametro").disabled = true;
+
+    alert("Valore salvato.");
+});
+
 
     x2_popolaMenu();
 
@@ -832,6 +835,8 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
             } else {
+                if (soloA) return;
+
                 const val = document.getElementById("tendina_valori").value;
                 updateMemoriaC(ultimoParametro, val);
                 modificheInCorso = false;
@@ -897,7 +902,7 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
                 document.getElementById("btn_salva_parametro").disabled = true;
                 return;
             }
-
+                if (soloA) return;   // <--- QUESTO MANCA
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
 
