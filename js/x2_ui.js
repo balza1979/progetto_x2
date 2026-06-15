@@ -130,6 +130,7 @@ function salvaMemoriaC() {
 // ------------------------------------------------------------
 // Aggiorna un byte in Memoria C
 // ------------------------------------------------------------
+// === MODIFICA 2026-06-15 16:10 INIZIO - updateMemoriaC ===
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
@@ -142,13 +143,14 @@ function updateMemoriaC(param, nuovoValore) {
     let v = parseFloat(nuovoValore);
     if (isNaN(v)) return;
 
-    let raw = scala !== 0 ? v / scala : v;
+    // tolgo la scala per tornare al byte grezzo
+    let raw = (scala !== 0) ? (v / scala) : v;
 
     if (tipo === "SIGNED" || tipo === "S") {
         raw = Math.round(raw);
         if (raw < -128) raw = -128;
         if (raw > 127)  raw = 127;
-        if (raw < 0) raw = 256 + raw;
+        if (raw < 0) raw = 256 + raw; // signed → unsigned
     } else {
         raw = Math.round(raw);
         if (raw < 0)   raw = 0;
@@ -159,6 +161,7 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
+// === MODIFICA 2026-06-15 16:10 FINE - updateMemoriaC ===
 
 
 
@@ -728,8 +731,8 @@ function x2_aggiornaParamButtons(codiceParametro) {
 document.addEventListener("DOMContentLoaded", function () {
 
     memC = caricaMemoriaC();
-    function caricaMemoriaA() { ... }
-function caricaMemoriaB() { ... }
+memA = caricaMemoriaA();
+memB = caricaMemoriaB();
 
 console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
