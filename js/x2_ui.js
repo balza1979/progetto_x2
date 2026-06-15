@@ -305,18 +305,28 @@ function convertValueFromByte(param, byte) {
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
+    // Indirizzo in HEX → numero
+    const indirizzo = parseInt(param.LIBERA1, 16);
+
+    // --- A (default) ---
+    let valoreA = "—";
+    if (memA) {
+        const byteA = memA[indirizzo];
+        valoreA = convertValueFromByte(param, byteA);
+    }
+
+    // --- B ---
+    let valoreB = "—";
+    if (memB) {
+        const byteB = memB[indirizzo];
+        valoreB = convertValueFromByte(param, byteB);
+    }
+
+    // --- C ---
     let valoreC = "—";
-
     if (memC) {
-        //const indirizzo = parseInt(param.LIBERA1);
-        const indirizzo = parseInt(param.LIBERA1, 16);
-
-        const byte = memC[indirizzo];
-        valoreC = convertValueFromByte(param, byte);
-        // NON toccare più param.VALORE qui
-        // if (!modificheInCorso) {
-        //     param.VALORE = valoreC;
-        // }
+        const byteC = memC[indirizzo];
+        valoreC = convertValueFromByte(param, byteC);
     }
 
     const box = document.getElementById("info_parametro");
@@ -324,8 +334,10 @@ function x2_mostraInfoParametro(param) {
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore A (default):</b> ${param.VALORE}<br>
-        <b>Valore C (memoria):</b> ${valoreC}<br><br>
+
+        <b>Valore A (default):</b> ${valoreA}<br>
+        <b>Valore B (memoria B):</b> ${valoreB}<br>
+        <b>Valore C (memoria C):</b> ${valoreC}<br><br>
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
