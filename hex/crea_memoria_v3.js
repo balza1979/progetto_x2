@@ -88,13 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("labelFileA").textContent = `FILE A: ${nomeA}`;
     }
 
-    if (hexB) {
-        memoriaB = hexToMemoryMap(hexB);
-        window.memoriaB = memoriaB;
+   if (hexB) {
+    memoriaB = hexToMemoryMap(hexB);
+    window.memoriaB = memoriaB;
+    window.memB = memoriaB;   // 🔥 QUESTA È LA RIGA CHE MANCA
+    document.getElementById("file2").files = fakeFile(nomeB, hexB);
+    document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
+}
 
-        document.getElementById("file2").files = fakeFile(nomeB, hexB);
-        document.getElementById("labelFileB").textContent = `FILE B: ${nomeB}`;
-    }
 window.memB = memoriaB;
 
     if (!localStorage.getItem("memA_hex")) {
