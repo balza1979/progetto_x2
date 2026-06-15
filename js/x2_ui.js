@@ -142,15 +142,13 @@ function updateMemoriaC(param, nuovoValore) {
     let v = parseFloat(nuovoValore);
     if (isNaN(v)) return;
 
-    // tolgo la scala per tornare al byte grezzo
     let raw = scala !== 0 ? v / scala : v;
 
-    // signed
     if (tipo === "SIGNED" || tipo === "S") {
         raw = Math.round(raw);
         if (raw < -128) raw = -128;
         if (raw > 127)  raw = 127;
-        if (raw < 0) raw = 256 + raw; // converto in unsigned
+        if (raw < 0) raw = 256 + raw;
     } else {
         raw = Math.round(raw);
         if (raw < 0)   raw = 0;
@@ -161,6 +159,7 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
+
 
 
 // ------------------------------------------------------------
@@ -759,6 +758,7 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
         const val = document.getElementById("tendina_valori").value;
 
         updateMemoriaC(ultimoParametro, val);
+        ultimoParametro.VALORE = val;
 
         modificheInCorso = false;
 
