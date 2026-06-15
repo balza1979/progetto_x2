@@ -241,37 +241,57 @@ function updateMemoriaC(param, nuovoValore) {
 // ============================================================
 // INIZIALIZZAZIONE UI COMPLETA
 // ============================================================
-function x2_inizializzaUI() {
+fufunction x2_inizializzaUI() {
 
-    // === 1) SE memC È NULL → COPIA DA memA ===
+    // ============================================================
+    // 1) SE memC È NULL → INIZIALIZZA DA memA (convertendo formato)
+    // ============================================================
     if (!memC && window.memA) {
-        memC = window.memA;
-        console.log("memC inizializzata da memA, lunghezza =", memC.length);
+
+        const arr = new Uint8Array(65536);
+
+        for (let i = 0; i < 65536; i++) {
+            const addr = i.toString(16).toUpperCase().padStart(4, "0");
+            const val = window.memA[addr] || "FF";
+            arr[i] = parseInt(val, 16);
+        }
+
+        memC = arr;
+        console.log("memC inizializzata da memA (convertita), lunghezza =", memC.length);
     }
 
-    // === 2) POPOLA MENU ===
+    // ============================================================
+    // 2) POPOLA MENU PRINCIPALE
+    // ============================================================
     x2_popolaMenu();
 
-    // === 3) FORZA EVENTI ===
+    // ============================================================
+    // 3) FORZA SELEZIONE MENU
+    // ============================================================
     const selMenu = document.getElementById("menu");
-    if (selMenu.options.length > 0) {
+    if (selMenu && selMenu.options.length > 0) {
         selMenu.selectedIndex = 0;
         selMenu.dispatchEvent(new Event("change"));
     }
 
+    // ============================================================
+    // 4) FORZA SELEZIONE SOTTOMENU
+    // ============================================================
     const selSottomenu = document.getElementById("sottomenu");
-    if (selSottomenu.options.length > 0) {
+    if (selSottomenu && selSottomenu.options.length > 0) {
         selSottomenu.selectedIndex = 0;
         selSottomenu.dispatchEvent(new Event("change"));
     }
 
+    // ============================================================
+    // 5) FORZA SELEZIONE PARAMETRO
+    // ============================================================
     const selParametro = document.getElementById("parametro");
-    if (selParametro.options.length > 0) {
+    if (selParametro && selParametro.options.length > 0) {
         selParametro.selectedIndex = 0;
         selParametro.dispatchEvent(new Event("change"));
     }
 }
-
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
