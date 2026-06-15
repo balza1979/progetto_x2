@@ -839,23 +839,20 @@ function checkScreenSize() {
 window.addEventListener("resize", checkScreenSize);
 window.addEventListener("load", checkScreenSize);
 	</script>
-
 <script src="js/x2_menu_struttura_data.js"></script>
 <script src="js/x2_parametri_data.js"></script>
 
 <script src="js/x2_loader.js"></script>
 <script src="js/x2_core.js"></script>
 
-<script src="js/x2_memB_loader.js"></script>
-
-<script>
-    memB = window.memoriaB || window.memB || null;
-</script>
+<!-- ❌ RIMOSSO: x2_memB_loader.js -->
+<!-- ❌ RIMOSSO: x2_memoriaC_loader.js -->
 
 <script src="hex/colori_valore.js"></script>
 
+<script src="js/memorie_loader.js"></script>   <!-- ✅ QUESTO È L’UNICO GIUSTO -->
 <script src="js/x2_ui.js"></script>
-<script src="js/x2_memoriaC_loader.js"></script>
+
 <script src="js/x2_debug.js"></script>
 <script src="js/x2_compare.js"></script>
 
