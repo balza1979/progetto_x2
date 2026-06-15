@@ -2,16 +2,16 @@ function aggiornaColoreValore() {
 
     if (!ultimoParametro) return;
 
+    // 1) PRIMA COSA: calcolo l’indirizzo
     const indirizzo = parseInt(ultimoParametro.LIBERA1);
     if (isNaN(indirizzo)) return;
 
-    alert("memC ore 9.55 = " + JSON.stringify(memC));
+    // 2) DEBUG
+    alert("memC ore 9.57 = " + JSON.stringify(memC));
     alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
 
-    const campo =
-      const campo = document.getElementById("tendina_valori");
-
-
+    // 3) PRENDO SOLO LA TENDINA (MAI input_minmax)
+    const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
     // A (default) → DEC → HEX
@@ -44,6 +44,7 @@ function aggiornaColoreValore() {
         (byteC === byteA ? "VERDE (A = C)" : "GIALLO (C ≠ A ma CAMPO = C)")))
     );
 
+    // COLORI
     if (!byteC) {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
