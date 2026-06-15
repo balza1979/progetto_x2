@@ -18,6 +18,24 @@ let modificheInCorso = false;
 caricaMemorieGlobali();
 // === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
 let memC = window.memC;
+const soloA = (!window.memB && !window.memC);
+
+
+if (soloA) {
+    const daBloccare = [
+        "btn_salva_parametro",
+        "btn_salva_tutto",
+        "btn_ripristina_A",
+        "btn_ripristina_B",
+        "btn_generazione_hex"
+    ];
+
+    daBloccare.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = true;
+    });
+}
+
 // OBSOLETO — ora usiamo memorie_loader.js
 function caricaMemoriaA() {
     return window.memA;
@@ -147,6 +165,8 @@ function salvaMemoriaC() {
 // ------------------------------------------------------------
 // === MODIFICA 2026-06-15 16:10 INIZIO - updateMemoriaC ===
 function updateMemoriaC(param, nuovoValore) {
+    if (soloA) return;
+
     if (!memC) return;
 
     const indirizzo = parseInt(param.LIBERA1);
@@ -409,6 +429,19 @@ function x2_calcolaHex(param) {
 // VALORI (val1…val8)
 // ======================================================================
 function x2_popolaValori(param) {
+if (soloA) {
+    // Modalità SOLO LETTURA: nessuna modifica permessa
+    // Disabilito tendina e input
+    const tendina = document.getElementById("tendina_valori");
+    tendina.disabled = true;
+
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.getElementById("val" + i);
+        if (btn) btn.disabled = true;
+    }
+
+    return; // <--- BLOCCO TOTALE
+}
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
