@@ -822,7 +822,7 @@ document.addEventListener("DOMContentLoaded", function () {
     memA = caricaMemoriaA();
     memB = caricaMemoriaB();
 
-console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
+    console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     const selMenu      = document.getElementById("menu");
     const selSottomenu = document.getElementById("sottomenu");
@@ -831,52 +831,40 @@ console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-selValore.addEventListener("change", function () {
+    selValore.addEventListener("change", function () {
+        if (!soloA && memC) {
+            modificheInCorso = true;
+            document.getElementById("btn_salva_parametro").disabled = false;
+        }
+        aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+    });
 
-    if (!soloA && memC) {
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
-    }
+    document.getElementById("btn_salva_parametro").addEventListener("click", function () {
+        if (soloA) return;   // BLOCCO TOTALE
+        if (!ultimoParametro) return;
 
-    aggiornaColoreValore(ultimoParametro.INDIRIZZO);
-});
+        const val = document.getElementById("tendina_valori").value;
+        updateMemoriaC(ultimoParametro, val);
+        ultimoParametro.VALORE = val;
 
+        modificheInCorso = false;
+        document.getElementById("btn_salva_parametro").disabled = true;
 
-document.getElementById("btn_salva_parametro").addEventListener("click", function () {
-
-    if (soloA) return;   // <--- BLOCCO TOTALE
-
-    if (!ultimoParametro) return;
-
-    const val = document.getElementById("tendina_valori").value;
-
-    updateMemoriaC(ultimoParametro, val);
-    ultimoParametro.VALORE = val;
-
-    modificheInCorso = false;
-
-    document.getElementById("btn_salva_parametro").disabled = true;
-
-    alert("Valore salvato.");
-});
-
+        alert("Valore salvato.");
+    });
 
     x2_popolaMenu();
 
     function x2_cambiaParametro(delta) {
-
         if (modificheInCorso) {
-
             const valoreOriginale = ultimoParametro.VALORE;
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-
             if (!conferma) {
                 document.getElementById("tendina_valori").value = valoreOriginale;
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
             } else {
                 if (soloA) return;
-
                 const val = document.getElementById("tendina_valori").value;
                 updateMemoriaC(ultimoParametro, val);
                 modificheInCorso = false;
@@ -886,15 +874,12 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
 
         const sel = document.getElementById("parametro");
         let nuovo = sel.selectedIndex + delta;
-
         if (nuovo < 0) nuovo = 0;
         if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
 
         sel.selectedIndex = nuovo;
-
         const codice = sel.options[nuovo].value;
         ultimoParametro = x2_parametri.find(p => p.PARAMETRO === codice);
-
         sel.dispatchEvent(new Event("change"));
     }
 
@@ -902,50 +887,40 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
 
     selMenu.addEventListener("change", function () {
-
         modificheInCorso = false;
         document.getElementById("btn_salva_parametro").disabled = true;
-
         x2_popolaSottomenu(this.value);
         selSottomenu.dispatchEvent(new Event("change"));
         x2_aggiornaMenuButtons(this.value);
     });
 
     selSottomenu.addEventListener("change", function () {
-
         modificheInCorso = false;
         document.getElementById("btn_salva_parametro").disabled = true;
-
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
     selParametro.addEventListener("change", function () {
-
         if (modificheInCorso) {
-
             const parametroOriginale = ultimoParametro.PARAMETRO;
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
-
             if (!conferma) {
                 this.value = parametroOriginale;
-
                 const p = x2_parametri.find(x => x.PARAMETRO === parametroOriginale);
                 if (p) {
                     ultimoParametro = p;
                     x2_mostraInfoParametro(ultimoParametro);
                     x2_popolaValori(ultimoParametro);
                 }
-
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
                 return;
             }
-                if (soloA) return;   // <--- QUESTO MANCA
+            if (soloA) return;   // QUESTO MANCA
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
-
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
         }
@@ -958,7 +933,6 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
         x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
-       // aggiornaColoreValore();
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
@@ -967,52 +941,21 @@ document.getElementById("btn_salva_parametro").addEventListener("click", functio
 
     window.addEventListener("beforeunload", function (e) {
         if (!modificheInCorso) return;
-
         e.preventDefault();
         e.returnValue = "";
     });
 
-
-/* === FINE BLOCCO 6 (CORRETTO) === */
-// ============================================================
-// CARICAMENTO HEX DI DEFAULT + AVVIO X2
-// ============================================================
-async function x2_caricaHexDefault() {
-    try {
-        const response = await fetch("Memorie/def_polli_b335f_ver1.HEX");
-        const text = await response.text();
-
-        const righe = text.split(/\r?\n/);
-        const memoria = {};
-
-        for (let i = 0; i < righe.length; i++) {
-            const r = righe[i].trim();
-            if (!r || r.startsWith("#")) continue;
-
-            const parti = r.split(" ");
-            if (parti.length >= 2) {
-                const addr = parti[0].trim();
-                const val  = parti[1].trim();
-                memoria[addr] = val;
-            }
-        }
-
-        window.memA = memoria;
-        console.log("DEF POLLI caricata in memA");
-    } catch (err) {
-        console.error("Errore caricamento HEX default:", err);
-        window.memA = null;
-    }
-}
-
-if (!window.memA) {
-    x2_caricaHexDefault().then(() => {
+    // === AVVIO X2 ===
+    if (!window.memA) {
+        x2_caricaHexDefault().then(() => {
+            caricaMemorieGlobali();
+            x2_inizializzaUI();
+        });
+    } else {
         caricaMemorieGlobali();
         x2_inizializzaUI();
-    });
-} else {
-    caricaMemorieGlobali();
-    x2_inizializzaUI();
-}
+    }
 
-}); 
+});
+
+/* === FINE BLOCCO 6 (CORRETTO) === */
