@@ -859,7 +859,7 @@ function x2_aggiornaParamButtons(codiceParametro) {
 // ======================================================================
 document.addEventListener("DOMContentLoaded", function () {
 
-    memC = caricaMemoriaC();
+   // memC = caricaMemoriaC();
     memA = caricaMemoriaA();
     memB = caricaMemoriaB();
 
