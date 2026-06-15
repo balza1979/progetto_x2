@@ -1015,4 +1015,4 @@ if (!window.memA) {
     x2_inizializzaUI();
 }
 
-});
+}); 
