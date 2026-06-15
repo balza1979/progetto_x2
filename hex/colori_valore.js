@@ -9,8 +9,8 @@ function aggiornaColoreValore() {
     alert("memC[indirizzo] = " + (memC ? memC[indirizzo] : "NO_MEMC"));
 
     const campo =
-        document.getElementById("tendina_valori") ||
-        document.getElementById("input_minmax");
+      const campo = document.getElementById("tendina_valori");
+
 
     if (!campo) return;
 
