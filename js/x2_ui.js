@@ -729,6 +729,9 @@ function x2_aggiornaParamButtons(codiceParametro) {
 document.addEventListener("DOMContentLoaded", function () {
 
     memC = caricaMemoriaC();
+    function caricaMemoriaA() { ... }
+function caricaMemoriaB() { ... }
+
 console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     const selMenu      = document.getElementById("menu");
