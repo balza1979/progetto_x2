@@ -242,6 +242,12 @@ function updateMemoriaC(param, nuovoValore) {
 // INIZIALIZZAZIONE UI COMPLETA
 // ============================================================
 function x2_inizializzaUI() {
+    // Se memC è vuota, inizializzala da memA
+    if (!memC && window.memA) {
+        memC = window.memA;
+        console.log("memC inizializzata da memA, lunghezza =", memC.length);
+    }
+
     // Popola menu principale
     x2_popolaMenu();
 
