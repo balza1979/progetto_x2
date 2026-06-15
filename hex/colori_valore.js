@@ -1,4 +1,5 @@
 function aggiornaColoreValore() {
+alert("C RAW = " + memC_modificata?.[parseInt(ultimoParametro.LIBERA1)]);
 
     if (!ultimoParametro) return;
 
