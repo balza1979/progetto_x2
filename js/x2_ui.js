@@ -1,7 +1,7 @@
 /* === INIZIO BLOCCO 1 (CORRETTO) === */
 
 // ======================================================================
-// FILE: x2_ui 10.50 NUOVA VERSIONE IN x2_mostraInfoParametro(param) — VERSIONE PRO (HEX VERSION) — CORRETTO
+// FILE: x2_ui 11.01 modificato const indirizzo = parseInt(param.LIBERA1); righe 135 e 308— VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
 // ------------------------------------------------------------
@@ -132,7 +132,9 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1);
+   // const indirizzo = parseInt(param.LIBERA1);
+    const indirizzo = parseInt(param.LIBERA1, 16);
+
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const byte = parseInt(nuovoValore) & 0xFF;
@@ -305,7 +307,9 @@ function x2_mostraInfoParametro(param) {
     let valoreC = "—";
 
     if (memC) {
-        const indirizzo = parseInt(param.LIBERA1);
+        //const indirizzo = parseInt(param.LIBERA1);
+        const indirizzo = parseInt(param.LIBERA1, 16);
+
         const byte = memC[indirizzo];
         valoreC = convertValueFromByte(param, byte);
         // NON toccare più param.VALORE qui
