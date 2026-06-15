@@ -400,11 +400,23 @@ function x2_popolaValori(param) {
                 tendina.appendChild(opt);
             });
 
-            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-            tendina.value = valorePulito;
+           // const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+            //tendina.value = valorePulito;
+let valoreDaMostrare = String(param.VALORE ?? "").trim().padStart(2, "0");
+
+if (memC) {
+    const indirizzo = parseInt(param.LIBERA1, 16);
+    const byte = memC[indirizzo];
+    valoreDaMostrare = convertValueFromByte(param, byte);
+}
+
+tendina.value = valoreDaMostrare;
+
+            
                 aggiornaColoreValore();
 
-            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+        //    x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             const codiceParam = param.PARAMETRO;
 
