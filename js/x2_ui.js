@@ -13,7 +13,8 @@ let ultimoParametro = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
-
+// === CARICAMENTO MEMORIE A/B/C ===
+caricaMemorieGlobali();
 // === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
 
 // Carica Memoria A da localStorage
