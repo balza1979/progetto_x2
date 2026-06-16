@@ -454,3 +454,297 @@ SEMPRE:
 - filtri attivi
 - range attivo
 - nessuna eccezione
+# MAPPA16.6.26.MD
+Mappa tecnica completa sistema X2 – Memorie / HEX / Confronto / Errori / Generazione  
+Versione: 2026‑06‑16 – Luca/Copilot
+
+============================================================
+========================= PARTE 1 ==========================
+============================================================
+
+## STRUTTURA DEL PROGETTO
+
+/html  
+- crea_memoria.html  
+- confronto_memorie.html  
+- errori_x2.html  
+- hex_generator.html  
+
+/js  
+- x2_parametri_data.js  
+- crea_memoria_v3.js  
+- confronto_memorie.js  
+- memorie_tipo.js  
+- colori_valore.js  
+
+============================================================
+========================= PARTE 2 ==========================
+============================================================
+
+## x2_parametri_data.js (FONTE PARAMETRI)
+
+Contiene per ogni parametro:
+- LIBERA1 → indirizzo base  
+- LIBERA2 → size  
+- LIBERA3 → tipo  
+- LIBERA4 → scala  
+- LIBERA6 → offset  
+- VALORE  
+- VALORE_DEFAULT  
+- PARAMETRO / DESCRIZIONE  
+
+Usato da:
+- hex_generator.html  
+- confronto_memorie.js  
+- colori_valore.js  
+
+------------------------------------------------------------
+
+## crea_memoria_v3.js (GESTIONE MEMORIE A/B/C)
+
+### Lettura file
+- leggiFileHex()  
+- hexToMemoryMap()  
+
+### Caricamento automatico
+- se manca A → fallback POLLI  
+- se esiste A/B/C → ricostruisce da localStorage  
+
+### Salvataggio
+Scrive:
+- memA_hex / memA_nome  
+- memB_hex / memB_nome  
+- memC_hex / memC_nome  
+- memoriaC / nomeMemoriaC  
+
+### Creazione C
+C = copia perfetta di B (HEX)
+
+### Reset totale
+Cancella:
+- memA_hex / memA_nome  
+- memB_hex / memB_nome  
+- memC_hex / memC_nome  
+- memoriaC / nomeMemoriaC  
+
+------------------------------------------------------------
+
+## crea_memoria.html (UI CREAZIONE MEMORIA)
+
+- File A/B con input file + Git loader  
+- Reset memoria  
+- Blocco creazione C (visibile solo se A e B esistono)  
+- Popup Git  
+- Script: x2_parametri_data.js, memorie_tipo.js, crea_memoria_v3.js  
+
+============================================================
+========================= PARTE 3 ==========================
+============================================================
+
+## confronto_memorie.js (CONFRONTO A/B/C)
+
+### Variabili
+- memoriaA  
+- memoriaB  
+- memoriaC  
+- confrontoAttivo  
+
+### Indirizzi runtime
+0x04F4, 0x0810, 0x0811, 0x081A, 0x081B, 0x081C,  
+0x09E3, 0x09FA, 0x09FB, 0x09FE, 0x09FF  
+
+### Funzioni principali
+- leggiFileHex()  
+- hexToMemoryMap()  
+- ricostruisciValore()  
+- compareMemory3()  
+- renderResults()  
+- confrontaAB / AC / BC / ABC  
+- evidenziaPulsante()  
+- applyColumnFilters()  
+- aggiornaCheckboxColonne()  
+- resetConfronto()  
+- salvaMemoriaComeHex()  
+
+### compareMemory3()
+Per ogni parametro:
+- legge LIBERA1 (indirizzo)  
+- legge LIBERA4 (len)  
+- legge bytes A/B/C  
+- ricostruisce valore  
+- confronta secondo modalità:  
+  - A‑B  
+  - A‑C  
+  - B‑C  
+  - A‑B‑C  
+- esclude runtime  
+- esclude parametri non validi  
+- genera diff[] e runtime[]  
+
+### renderResults()
+- genera tabella differenze  
+- genera tabella runtime  
+- applica colori C tramite colori_valore.js  
+- applica filtri colonne  
+
+------------------------------------------------------------
+
+## confronto_memorie.html (UI CONFRONTO)
+
+- File A/B/C con input + Git loader  
+- Pulsanti confronto: AB, AC, BC, ABC  
+- Flag “Visualizza tutti i parametri”  
+- Filtri colonne  
+- Tabella risultati  
+- Script: x2_parametri_data.js, memorie_tipo.js, confronto_memorie.js, colori_valore.js  
+
+============================================================
+========================= PARTE 4 ==========================
+============================================================
+
+## colori_valore.js (COLORI CAMPO VALORE)
+
+Input:
+- ultimoParametro  
+- memB[indirizzo]  
+- memC[indirizzo]  
+- VALORE_DEFAULT  
+- valore campo utente  
+
+Logica colore:
+- C mancante → verde  
+- campo ≠ C → rosso  
+- campo = C ma C ≠ A → giallo  
+- campo = C = A → verde  
+
+Richiede:
+- window.memB  
+- window.memC  
+
+============================================================
+========================= PARTE 5 ==========================
+============================================================
+
+## hex_generator.html (GENERATORE 8192 BYTE)
+
+Buffer:
+- Uint8Array(8192)
+
+Blocchi FF:
+- 0x0000–0x01FF  
+- 0x0520–0x05FF  
+- 0x0A00–0x1FFF  
+
+Scrittura parametri:
+- usa x2_parametri_data.js  
+- applica scala/offset  
+- scrive NUM/ENUM/BIT/INT16/INT32  
+- esclude runtime e zone protette  
+
+Output:
+- file Intel HEX  
+- record 16 byte  
+- checksum  
+- EOF  
+
+============================================================
+========================= PARTE 6 ==========================
+============================================================
+
+## errori_x2.html (ERRORI 0x800–0x8FF)
+
+Memorie simulate:
+- memA, memB, memC = Uint8Array(0x1000)
+
+Struttura errore (16 byte):
+- [0] codice  
+- [1] piano  
+- [2] giorno  
+- [3] mese  
+- [4] anno  
+- [5] ora  
+- [6] minuti  
+- [7] secondi  
+
+UI:
+- lista errori  
+- dettagli errore  
+- gemme IN/OUT/FLAG  
+
+============================================================
+========================= PARTE 7 ==========================
+============================================================
+
+## memorie_tipo.js (GIT + FAKE FILE)
+
+Contiene:
+- fakeFile()  
+- loader Git  
+- binToMemoryMap()  
+
+Usato da:
+- crea_memoria.html  
+- confronto_memorie.html  
+
+============================================================
+========================= PARTE 8 ==========================
+============================================================
+
+## FLUSSI COMPLETI
+
+### Flusso A/B/C
+1. Caricamento A (localStorage o POLLI)  
+2. Caricamento B  
+3. Creazione C (copia di B)  
+4. Confronto AB/AC/BC/ABC  
+5. Colorazione valori  
+
+### Flusso generazione HEX
+1. Carica parametri  
+2. Inizializza buffer  
+3. Scrive parametri  
+4. Esporta HEX  
+
+### Flusso errori
+1. Legge 0x800–0x8FF  
+2. Mostra lista  
+3. Mostra dettagli  
+
+============================================================
+========================= PARTE 9 ==========================
+============================================================
+
+## DOVE PRENDI I DATI
+
+- hex_generator.html → x2_parametri_data.js  
+- crea_memoria_v3.js → file, localStorage, Git  
+- confronto_memorie.js → file, localStorage, x2_parametri_data.js  
+- colori_valore.js → ultimoParametro, memB, memC  
+- errori_x2.html → memA/B/C  
+- memorie_tipo.js → GitHub RAW  
+
+## DOVE SCRIVI I DATI
+
+- crea_memoria_v3.js → localStorage  
+- confronto_memorie.js → DOM  
+- colori_valore.js → DOM  
+- hex_generator.html → file .hex  
+- errori_x2.html → DOM  
+- memorie_tipo.js → DOM  
+
+============================================================
+========================= PARTE 10 =========================
+============================================================
+
+## PUNTI CRITICI
+
+- window.hexToMemoryMap deve essere globale  
+- window.memB / window.memC necessari per colori_valore.js  
+- compareMemory3() è il cuore del confronto  
+- fallback POLLI per A  
+- salvaMemoriaComeHex() esporta mappe in HEX  
+- flagVisualizzaTutto forza visualizzazione completa  
+
+============================================================
+========================= FINE FILE ========================
+============================================================
