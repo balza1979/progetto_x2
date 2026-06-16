@@ -1,53 +1,19 @@
+/* === INIZIO BLOCCO 1 (CORRETTO) === */
+
 // ======================================================================
-// FILE: x2_ui.js — VERSIONE PULITA (HEX VERSION)
+// FILE: x2_ui 10.44 — VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
 
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
 let ultimoParametro = null;
-let memA = null;
-let memB = null;
 let memC = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
-// soloA: modalità sola lettura (solo memA)
-let soloA = false;
-
 // ------------------------------------------------------------
-// CARICAMENTO HEX DI DEFAULT (memA come MAPPA HEX)
-// ------------------------------------------------------------
-async function x2_caricaHexDefault() {
-    try {
-        const response = await fetch("Memorie/def_polli_b335f_ver1.HEX");
-        const text = await response.text();
-
-        const righe = text.split(/\r?\n/);
-        const memoria = {};
-
-        for (let i = 0; i < righe.length; i++) {
-            const r = righe[i].trim();
-            if (!r || r.startsWith("#")) continue;
-
-            const parti = r.split(" ");
-            if (parti.length >= 2) {
-                const addr = parti[0].trim().toUpperCase(); // "0000"
-                const val  = parti[1].trim().toUpperCase(); // "FF"
-                memoria[addr] = val;
-            }
-        }
-
-        window.memA = memoria;
-        console.log("DEF POLLI caricata in memA");
-    } catch (err) {
-        console.error("Errore caricamento HEX default:", err);
-        window.memA = null;
-    }
-}
-
-// ------------------------------------------------------------
-// PARSING HEX INTEL → ARRAY BYTE (per memC)
+// PARSING HEX INTEL → ARRAY BYTE (8192)
 // ------------------------------------------------------------
 function parseIntelHexToBytes(hexText) {
     const lines = hexText.split(/\r?\n/).filter(l => l.trim().startsWith(":"));
@@ -86,7 +52,7 @@ function parseIntelHexToBytes(hexText) {
 }
 
 // ------------------------------------------------------------
-// ARRAY BYTE → HEX INTEL (per salvare memC)
+// ARRAY BYTE → HEX INTEL
 // ------------------------------------------------------------
 function bytesToIntelHex(bytes) {
     const lines = [];
@@ -126,8 +92,13 @@ function bytesToIntelHex(bytes) {
     return lines.join("\r\n");
 }
 
+/* === FINE BLOCCO 1 (CORRETTO) === */
+
+
+/* === INIZIO BLOCCO 2 (CORRETTO) === */
+
 // ------------------------------------------------------------
-// Carica Memoria C da localStorage (HEX INTEL → array byte)
+// Carica Memoria C
 // ------------------------------------------------------------
 function caricaMemoriaC() {
     const raw = localStorage.getItem("memC_hex");
@@ -142,7 +113,7 @@ function caricaMemoriaC() {
 }
 
 // ------------------------------------------------------------
-// Salva Memoria C in localStorage (array byte → HEX INTEL)
+// Salva Memoria C
 // ------------------------------------------------------------
 function salvaMemoriaC() {
     if (!memC) return;
@@ -156,61 +127,24 @@ function salvaMemoriaC() {
 }
 
 // ------------------------------------------------------------
-// Aggiorna un byte in Memoria C (SCALA + SIGNED)
+// Aggiorna un byte in Memoria C
 // ------------------------------------------------------------
 function updateMemoriaC(param, nuovoValore) {
-    if (soloA) return;
     if (!memC) return;
 
-    const addrHex = (param.LIBERA1 || "").trim().toUpperCase();
-    const indirizzo = parseInt(addrHex, 16);
+    const indirizzo = parseInt(param.LIBERA1);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
-    const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
-    const scala = parseFloat(param.LIBERA4 || "1");
+    const byte = parseInt(nuovoValore) & 0xFF;
+    memC[indirizzo] = byte;
 
-    let v = parseFloat(nuovoValore);
-    if (isNaN(v)) return;
-
-    let raw = (scala !== 0) ? (v / scala) : v;
-
-    if (tipo === "SIGNED" || tipo === "S") {
-        raw = Math.round(raw);
-        if (raw < -128) raw = -128;
-        if (raw > 127)  raw = 127;
-        if (raw < 0) raw = 256 + raw;
-    } else {
-        raw = Math.round(raw);
-        if (raw < 0)   raw = 0;
-        if (raw > 255) raw = 255;
-    }
-
-    memC[indirizzo] = raw & 0xFF;
     memC_modificata = true;
     salvaMemoriaC();
 }
 
 // ------------------------------------------------------------
-// CONVERSIONE BYTE → VALORE (SCALA + SIGNED)
-// ------------------------------------------------------------
-function convertValueFromByte(param, byte) {
-    const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
-    const scala = parseFloat(param.LIBERA4 || "1");
-
-    let valore = byte;
-
-    if (tipo === "SIGNED" || tipo === "S") {
-        if (byte > 127) valore = byte - 256;
-    }
-
-    valore = valore * scala;
-
-    return valore.toString();
-}
-
-// ======================================================================
 // MENU PRINCIPALE
-// ======================================================================
+// ------------------------------------------------------------
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -287,10 +221,16 @@ function x2_popolaSottomenu(codMenu) {
     }
 }
 
+/* === FINE BLOCCO 2 (CORRETTO) === */
+
+
+/* === INIZIO BLOCCO 3 (CORRETTO) === */
+
 // ======================================================================
 // PULSANTI SOTTOMENU
 // ======================================================================
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
+
     const record = x2_menu_struttura_data.find(r =>
         r.cod__menu === codSottomenu
     );
@@ -341,40 +281,35 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
+function convertValueFromByte(param, byte) {
+
+    const tipo = (param.LIBERA3 || "").trim().toUpperCase();
+    const scala = parseFloat(param.LIBERA4 || "1");
+
+    let valore = byte;
+
+    if (tipo === "SIGNED" || tipo === "S") {
+        if (byte > 127) valore = byte - 256;
+    }
+
+    valore = valore * scala;
+
+    return valore.toString();
+}
+
 // ======================================================================
-// INFO PARAMETRO (A/B/C da memA/memB/memC)
+// INFO PARAMETRO
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
-    const addrHex = (param.LIBERA1 || "").trim().toUpperCase();
-    const indirizzo = parseInt(addrHex, 16);
+    if (memC) {
+        const indirizzo = parseInt(param.LIBERA1);
+        const byte = memC[indirizzo];
+        const valoreC = convertValueFromByte(param, byte);
 
-    // --- A (default) ---
-    let valoreA = "—";
-    if (memA && addrHex) {
-        const hexA = memA[addrHex];
-        if (hexA != null) {
-            const byteA = parseInt(hexA, 16);
-            valoreA = convertValueFromByte(param, byteA);
-        }
-    }
-
-    // --- B ---
-    let valoreB = "—";
-    if (memB && addrHex) {
-        const hexB = memB[addrHex];
-        if (hexB != null) {
-            const byteB = parseInt(hexB, 16);
-            valoreB = convertValueFromByte(param, byteB);
-        }
-    }
-
-    // --- C ---
-    let valoreC = "—";
-    if (memC && !isNaN(indirizzo)) {
-        const byteC = memC[indirizzo];
-        if (byteC != null) {
-            valoreC = convertValueFromByte(param, byteC);
+        if (!modificheInCorso) {
+            // NON sovrascrivere il valore A !!!
+           // param.VALORE = valoreC;
         }
     }
 
@@ -383,10 +318,7 @@ function x2_mostraInfoParametro(param) {
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-
-        <b>Valore A (default):</b> ${valoreA}<br>
-        <b>Valore B (memoria B):</b> ${valoreB}<br>
-        <b>Valore C (memoria C):</b> ${valoreC}<br><br>
+        <b>Valore:</b> ${param.VALORE}<br><br>
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
@@ -403,10 +335,11 @@ function x2_mostraInfoParametro(param) {
     document.getElementById("unita_misura").value = param.UNITA || "";
 
     ultimoParametro = param;
+    
 }
 
 // ======================================================================
-// CALCOLO HEX (solo visualizzazione)
+// CALCOLO HEX
 // ======================================================================
 function x2_calcolaHex(param) {
     if (!param.VALORE) return "—";
@@ -414,30 +347,18 @@ function x2_calcolaHex(param) {
     return hex + "  (HTML)";
 }
 
+/* === FINE BLOCCO 3 (CORRETTO) === */
+
+/* === INIZIO BLOCCO 4 (CORRETTO) === */
+
 // ======================================================================
 // VALORI (val1…val8)
 // ======================================================================
 function x2_popolaValori(param) {
+
     const tendina = document.getElementById("tendina_valori");
-
-    if (soloA) {
-        tendina.disabled = true;
-
-        for (let i = 1; i <= 8; i++) {
-            const btn = document.getElementById("val" + i);
-            if (btn) {
-                btn.textContent = "-";
-                btn.disabled = true;
-                btn.onclick = null;
-            }
-        }
-
-        return;
-    }
-
     tendina.innerHTML = "";
     tendina.style.display = "block";
-    tendina.disabled = false;
 
     const oldInput = document.getElementById("input_minmax");
     if (oldInput) oldInput.remove();
@@ -452,7 +373,9 @@ function x2_popolaValori(param) {
 
     tendina.onchange = () => aggiornaColoreValore();
 
+    // ------------------------------------------------------------
     // 1) ELENCO PREDEFINITO
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
@@ -471,13 +394,11 @@ function x2_popolaValori(param) {
                 tendina.appendChild(opt);
             });
 
-            let valoreDaMostrare = String(param.VALORE ?? "").trim().padStart(2, "0");
+            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+            tendina.value = valorePulito;
+                aggiornaColoreValore();
 
-            tendina.value = String(valoreDaMostrare).padStart(2, "0");
-
-            aggiornaColoreValore();
-
-            x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
+            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
 
             const codiceParam = param.PARAMETRO;
 
@@ -488,6 +409,7 @@ function x2_popolaValori(param) {
                 if (!p) return;
 
                 if (memC) {
+                   // p.VALORE = nuovoValore;
                     modificheInCorso = true;
                     document.getElementById("btn_salva_parametro").disabled = false;
                 }
@@ -499,7 +421,9 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // 2) MIN_MAX
+    // ------------------------------------------------------------
+    // 2) MIN_MAX  (VERSIONE CORRETTA)
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
         tendina.style.display = "none";
@@ -557,6 +481,7 @@ function x2_popolaValori(param) {
         spinner.appendChild(btnUp);
         spinner.appendChild(btnDown);
 
+        // INPUT
         input.addEventListener("input", function () {
             const min = parseInt(param.MIN);
             if (min < 0) {
@@ -566,6 +491,7 @@ function x2_popolaValori(param) {
             }
         });
 
+        // BLUR
         input.addEventListener("blur", function () {
 
             let raw = this.value;
@@ -592,13 +518,12 @@ function x2_popolaValori(param) {
 
             if (memC) {
                 ultimoParametro.VALORE = this.value;
-                updateMemoriaC(ultimoParametro, this.value);
-
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
         });
 
+        // SPINNER UP
         btnUp.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const max = parseInt(param.MAX);
@@ -610,13 +535,12 @@ function x2_popolaValori(param) {
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-                updateMemoriaC(ultimoParametro, input.value);
-
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
         });
 
+        // SPINNER DOWN
         btnDown.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const min = parseInt(param.MIN);
@@ -628,8 +552,6 @@ function x2_popolaValori(param) {
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-                updateMemoriaC(ultimoParametro, input.value);
-
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
             }
@@ -642,7 +564,9 @@ function x2_popolaValori(param) {
         return;
     }
 
+    // ------------------------------------------------------------
     // 3) DECIMALE
+    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "DECIMALE") {
 
         const min = parseFloat(param.MIN);
@@ -658,16 +582,20 @@ function x2_popolaValori(param) {
             tendina.appendChild(opt);
         }
 
-        let valoreDaMostrare = String(param.VALORE).padStart(2, "0");
-
-        tendina.value = String(valoreDaMostrare).padStart(2, "0");
-
+        tendina.value = String(param.VALORE).padStart(2, "0");
         return;
     }
 
+    // ------------------------------------------------------------
     // 4) FALLBACK
+    // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
+    
 }
+/* === FINE BLOCCO 4 (CORRETTO) === */
+
+
+/* === INIZIO BLOCCO 5 (CORRETTO) === */
 
 // ======================================================================
 // AGGIORNA PULSANTI FILE1…FILE8
@@ -725,51 +653,17 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
-// ======================================================================
-// INIZIALIZZAZIONE UI COMPLETA
-// ======================================================================
-function x2_inizializzaUI() {
+/* === FINE BLOCCO 5 (CORRETTO) === */
 
-    x2_popolaMenu();
-
-    const selMenu      = document.getElementById("menu");
-    const selSottomenu = document.getElementById("sottomenu");
-    const selParametro = document.getElementById("parametro");
-
-    if (selMenu && selMenu.options.length > 0) {
-        selMenu.selectedIndex = 0;
-        selMenu.dispatchEvent(new Event("change"));
-    }
-
-    if (selSottomenu && selSottomenu.options.length > 0) {
-        selSottomenu.selectedIndex = 0;
-        selSottomenu.dispatchEvent(new Event("change"));
-    }
-
-    if (selParametro && selParametro.options.length > 0) {
-        selParametro.selectedIndex = 0;
-        selParametro.dispatchEvent(new Event("change"));
-    }
-}
+/* === INIZIO BLOCCO 6 (CORRETTO) === */
 
 // ======================================================================
 // EVENTI PRINCIPALI
 // ======================================================================
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-    if (!window.memA) {
-        await x2_caricaHexDefault();
-    } else {
-        console.log("memA già presente");
-    }
-
-    memA = window.memA || null;
-    memB = window.memB || null;
     memC = caricaMemoriaC();
-
-    soloA = (!memB && !memC);
-
-    console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
+console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
     const selMenu      = document.getElementById("menu");
     const selSottomenu = document.getElementById("sottomenu");
@@ -779,37 +673,45 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("btn_salva_parametro").disabled = true;
 
     selValore.addEventListener("change", function () {
-        if (!soloA && memC) {
+
+        if (memC) {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
         }
-        aggiornaColoreValore();
+
+        aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+
     });
 
     document.getElementById("btn_salva_parametro").addEventListener("click", function () {
-        if (soloA) return;
+
         if (!ultimoParametro) return;
 
         const val = document.getElementById("tendina_valori").value;
+
         updateMemoriaC(ultimoParametro, val);
-        ultimoParametro.VALORE = val;
 
         modificheInCorso = false;
+
         document.getElementById("btn_salva_parametro").disabled = true;
 
         alert("Valore salvato.");
     });
 
+    x2_popolaMenu();
+
     function x2_cambiaParametro(delta) {
+
         if (modificheInCorso) {
+
             const valoreOriginale = ultimoParametro.VALORE;
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+
             if (!conferma) {
                 document.getElementById("tendina_valori").value = valoreOriginale;
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
             } else {
-                if (soloA) return;
                 const val = document.getElementById("tendina_valori").value;
                 updateMemoriaC(ultimoParametro, val);
                 modificheInCorso = false;
@@ -819,12 +721,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const sel = document.getElementById("parametro");
         let nuovo = sel.selectedIndex + delta;
+
         if (nuovo < 0) nuovo = 0;
         if (nuovo >= sel.options.length) nuovo = sel.options.length - 1;
 
         sel.selectedIndex = nuovo;
+
         const codice = sel.options[nuovo].value;
         ultimoParametro = x2_parametri.find(p => p.PARAMETRO === codice);
+
         sel.dispatchEvent(new Event("change"));
     }
 
@@ -832,40 +737,50 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("parametro_down").onclick = () => x2_cambiaParametro(+1);
 
     selMenu.addEventListener("change", function () {
+
         modificheInCorso = false;
         document.getElementById("btn_salva_parametro").disabled = true;
+
         x2_popolaSottomenu(this.value);
         selSottomenu.dispatchEvent(new Event("change"));
         x2_aggiornaMenuButtons(this.value);
     });
 
     selSottomenu.addEventListener("change", function () {
+
         modificheInCorso = false;
         document.getElementById("btn_salva_parametro").disabled = true;
+
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
         x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
     selParametro.addEventListener("change", function () {
+
         if (modificheInCorso) {
+
             const parametroOriginale = ultimoParametro.PARAMETRO;
             const conferma = confirm("Hai modifiche non salvate. Vuoi salvare prima di cambiare parametro?");
+
             if (!conferma) {
                 this.value = parametroOriginale;
+
                 const p = x2_parametri.find(x => x.PARAMETRO === parametroOriginale);
                 if (p) {
                     ultimoParametro = p;
                     x2_mostraInfoParametro(ultimoParametro);
                     x2_popolaValori(ultimoParametro);
                 }
+
                 modificheInCorso = false;
                 document.getElementById("btn_salva_parametro").disabled = true;
                 return;
             }
-            if (soloA) return;
+
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
+
             modificheInCorso = false;
             document.getElementById("btn_salva_parametro").disabled = true;
         }
@@ -878,6 +793,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
         x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+       // aggiornaColoreValore();
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
@@ -886,9 +802,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     window.addEventListener("beforeunload", function (e) {
         if (!modificheInCorso) return;
+
         e.preventDefault();
         e.returnValue = "";
     });
-
-    x2_inizializzaUI();
 });
+
+/* === FINE BLOCCO 6 (CORRETTO) === */
