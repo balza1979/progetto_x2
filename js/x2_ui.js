@@ -199,7 +199,6 @@ function salvaMemoriaC() {
 // === MODIFICA 2026-06-15 16:10 INIZIO - updateMemoriaC ===
 function updateMemoriaC(param, nuovoValore) {
     if (soloA) return;
-
     if (!memC) return;
 
     const indirizzo = parseInt(param.LIBERA1, 16);
@@ -230,7 +229,6 @@ function updateMemoriaC(param, nuovoValore) {
     salvaMemoriaC();
 }
 // === MODIFICA 2026-06-15 16:10 FINE - updateMemoriaC ===
-
 // ============================================================
 // INIZIALIZZAZIONE UI COMPLETA
 // ============================================================
