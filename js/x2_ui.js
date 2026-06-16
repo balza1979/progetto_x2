@@ -237,19 +237,8 @@ function x2_inizializzaUI() {
     // ============================================================
     // 1) SE memC È NULL → INIZIALIZZA DA memA (convertendo formato)
     // ============================================================
-    if (!memC && window.memA) {
-
-        const arr = new Uint8Array(65536);
-
-        for (let i = 0; i < 65536; i++) {
-            const addr = i.toString(16).toUpperCase().padStart(4, "0");
-            const val = window.memA[addr] || "FF";
-            arr[i] = parseInt(val, 16);
-        }
-
-        memC = arr;
-        console.log("memC inizializzata da memA (convertita), lunghezza =", memC.length);
-    }
+// NON INIZIALIZZARE MAI memC QUI
+// memC deve esistere SOLO se caricata da memorie_loader.js
 
     // ============================================================
     // 2) POPOLA MENU PRINCIPALE
