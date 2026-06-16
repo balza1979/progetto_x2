@@ -7,8 +7,8 @@
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
-let ultimoParametro = null;
-let memC = null;
+//let ultimoParametro = null;
+//let memC = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
