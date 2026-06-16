@@ -677,7 +677,8 @@ function x2_popolaValori(param) {
             if (v > max) v = max;
 
             if (v < 0) this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-            else this.value = v.toString(2, "0");
+            else this.value = v.toString().padStart(2, "0");
+
 
             if (memC) {
                 ultimoParametro.VALORE = this.value;
