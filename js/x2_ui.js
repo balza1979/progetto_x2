@@ -1,15 +1,23 @@
 // ======================================================================
-// FILE: x2_ui 11.01 modificato const indirizzo = parseInt(param.LIBERA1); righe 135 e 308— VERSIONE PRO (HEX VERSION) — CORRETTO
+// FILE: x2_ui.js — VERSIONE PULITA (HEX VERSION)
 // ======================================================================
-if (!window.memA) {
-    x2_caricaHexDefault().then(() => {
-        caricaMemorieGlobali();   // PRIMA
-        x2_inizializzaUI();       // DOPO
-    });
-} else {
-    caricaMemorieGlobali();       // PRIMA
-    x2_inizializzaUI();           // DOPO
-}
+
+// ------------------------------------------------------------
+// VARIABILI GLOBALI
+// ------------------------------------------------------------
+let ultimoParametro = null;
+let memA = null;
+let memB = null;
+let memC = null;
+let memC_modificata = false;
+let modificheInCorso = false;
+
+// soloA: modalità sola lettura (solo memA)
+let soloA = false;
+
+// ------------------------------------------------------------
+// CARICAMENTO HEX DI DEFAULT (memA come MAPPA HEX)
+// ------------------------------------------------------------
 async function x2_caricaHexDefault() {
     try {
         const response = await fetch("Memorie/def_polli_b335f_ver1.HEX");
@@ -24,8 +32,8 @@ async function x2_caricaHexDefault() {
 
             const parti = r.split(" ");
             if (parti.length >= 2) {
-                const addr = parti[0].trim();
-                const val  = parti[1].trim();
+                const addr = parti[0].trim().toUpperCase(); // "0000"
+                const val  = parti[1].trim().toUpperCase(); // "FF"
                 memoria[addr] = val;
             }
         }
@@ -38,54 +46,8 @@ async function x2_caricaHexDefault() {
     }
 }
 
-
-
-
 // ------------------------------------------------------------
-// VARIABILI GLOBALI
-// ------------------------------------------------------------
-let ultimoParametro = null;
-//let memC = null;
-//let memB = null;
-let memC_modificata = false;
-let modificheInCorso = false;
-
-
-// === CARICAMENTO MEMORIE A/B/C ===
-caricaMemorieGlobali();
-// === MODIFICA 2026-06-15 16:30 INIZIO - caricaMemoriaA/B ===
-memC = window.memC;
-
-const soloA = (!window.memB && !window.memC);
-
-
-if (soloA) {
-    const daBloccare = [
-        "btn_salva_parametro",
-        "btn_salva_tutto",
-        "btn_ripristina_A",
-        "btn_ripristina_B",
-        "btn_generazione_hex"
-    ];
-
-    daBloccare.forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) btn.disabled = true;
-    });
-}
-
-// OBSOLETO — ora usiamo memorie_loader.js
-function caricaMemoriaA() {
-    return window.memA;
-}
-
-function caricaMemoriaB() {
-    return window.memB;
-}
-
-
-// ------------------------------------------------------------
-// PARSING HEX INTEL → ARRAY BYTE (8192)
+// PARSING HEX INTEL → ARRAY BYTE (per memC)
 // ------------------------------------------------------------
 function parseIntelHexToBytes(hexText) {
     const lines = hexText.split(/\r?\n/).filter(l => l.trim().startsWith(":"));
@@ -124,7 +86,7 @@ function parseIntelHexToBytes(hexText) {
 }
 
 // ------------------------------------------------------------
-// ARRAY BYTE → HEX INTEL
+// ARRAY BYTE → HEX INTEL (per salvare memC)
 // ------------------------------------------------------------
 function bytesToIntelHex(bytes) {
     const lines = [];
@@ -165,7 +127,7 @@ function bytesToIntelHex(bytes) {
 }
 
 // ------------------------------------------------------------
-// Carica Memoria C
+// Carica Memoria C da localStorage (HEX INTEL → array byte)
 // ------------------------------------------------------------
 function caricaMemoriaC() {
     const raw = localStorage.getItem("memC_hex");
@@ -180,7 +142,7 @@ function caricaMemoriaC() {
 }
 
 // ------------------------------------------------------------
-// Salva Memoria C
+// Salva Memoria C in localStorage (array byte → HEX INTEL)
 // ------------------------------------------------------------
 function salvaMemoriaC() {
     if (!memC) return;
@@ -194,14 +156,14 @@ function salvaMemoriaC() {
 }
 
 // ------------------------------------------------------------
-// Aggiorna un byte in Memoria C
+// Aggiorna un byte in Memoria C (SCALA + SIGNED)
 // ------------------------------------------------------------
-// === MODIFICA 2026-06-15 16:10 INIZIO - updateMemoriaC ===
 function updateMemoriaC(param, nuovoValore) {
     if (soloA) return;
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1, 16);
+    const addrHex = (param.LIBERA1 || "").trim().toUpperCase();
+    const indirizzo = parseInt(addrHex, 16);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
@@ -210,14 +172,13 @@ function updateMemoriaC(param, nuovoValore) {
     let v = parseFloat(nuovoValore);
     if (isNaN(v)) return;
 
-    // tolgo la scala per tornare al byte grezzo
     let raw = (scala !== 0) ? (v / scala) : v;
 
     if (tipo === "SIGNED" || tipo === "S") {
         raw = Math.round(raw);
         if (raw < -128) raw = -128;
         if (raw > 127)  raw = 127;
-        if (raw < 0) raw = 256 + raw; // signed → unsigned
+        if (raw < 0) raw = 256 + raw;
     } else {
         raw = Math.round(raw);
         if (raw < 0)   raw = 0;
@@ -228,54 +189,28 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
-// === MODIFICA 2026-06-15 16:10 FINE - updateMemoriaC ===
-// ============================================================
-// INIZIALIZZAZIONE UI COMPLETA
-// ============================================================
-function x2_inizializzaUI() {
 
-    // ============================================================
-    // 1) SE memC È NULL → INIZIALIZZA DA memA (convertendo formato)
-    // ============================================================
-// NON INIZIALIZZARE MAI memC QUI
-// memC deve esistere SOLO se caricata da memorie_loader.js
+// ------------------------------------------------------------
+// CONVERSIONE BYTE → VALORE (SCALA + SIGNED)
+// ------------------------------------------------------------
+function convertValueFromByte(param, byte) {
+    const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
+    const scala = parseFloat(param.LIBERA4 || "1");
 
-    // ============================================================
-    // 2) POPOLA MENU PRINCIPALE
-    // ============================================================
-    x2_popolaMenu();
+    let valore = byte;
 
-    // ============================================================
-    // 3) FORZA SELEZIONE MENU
-    // ============================================================
-    const selMenu = document.getElementById("menu");
-    if (selMenu && selMenu.options.length > 0) {
-        selMenu.selectedIndex = 0;
-        selMenu.dispatchEvent(new Event("change"));
+    if (tipo === "SIGNED" || tipo === "S") {
+        if (byte > 127) valore = byte - 256;
     }
 
-    // ============================================================
-    // 4) FORZA SELEZIONE SOTTOMENU
-    // ============================================================
-    const selSottomenu = document.getElementById("sottomenu");
-    if (selSottomenu && selSottomenu.options.length > 0) {
-        selSottomenu.selectedIndex = 0;
-        selSottomenu.dispatchEvent(new Event("change"));
-    }
+    valore = valore * scala;
 
-    // ============================================================
-    // 5) FORZA SELEZIONE PARAMETRO
-    // ============================================================
-    const selParametro = document.getElementById("parametro");
-    if (selParametro && selParametro.options.length > 0) {
-        selParametro.selectedIndex = 0;
-        selParametro.dispatchEvent(new Event("change"));
-    }
+    return valore.toString();
 }
 
-// ------------------------------------------------------------
+// ======================================================================
 // MENU PRINCIPALE
-// ------------------------------------------------------------
+// ======================================================================
 function x2_popolaMenu() {
     const selMenu = document.getElementById("menu");
     selMenu.innerHTML = "";
@@ -356,7 +291,6 @@ function x2_popolaSottomenu(codMenu) {
 // PULSANTI SOTTOMENU
 // ======================================================================
 function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
-
     const record = x2_menu_struttura_data.find(r =>
         r.cod__menu === codSottomenu
     );
@@ -407,49 +341,41 @@ function x2_popolaParametri(codMenuCompleto) {
     if (lista.length > 0) selParametro.selectedIndex = 0;
 }
 
-function convertValueFromByte(param, byte) {
-
-    const tipo = (param.LIBERA3 || "").trim().toUpperCase();
-    const scala = parseFloat(param.LIBERA4 || "1");
-
-    let valore = byte;
-
-    if (tipo === "SIGNED" || tipo === "S") {
-        if (byte > 127) valore = byte - 256;
-    }
-
-    valore = valore * scala;
-
-    return valore.toString();
-}
-
 // ======================================================================
-// INFO PARAMETRO
+// INFO PARAMETRO (A/B/C da memA/memB/memC)
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
-    // Indirizzo in HEX → numero
-    const indirizzo = parseInt(param.LIBERA1, 16);
+    const addrHex = (param.LIBERA1 || "").trim().toUpperCase();
+    const indirizzo = parseInt(addrHex, 16);
 
     // --- A (default) ---
     let valoreA = "—";
-    if (memA) {
-        const byteA = memA[indirizzo];
-        valoreA = convertValueFromByte(param, byteA);
+    if (memA && addrHex) {
+        const hexA = memA[addrHex];
+        if (hexA != null) {
+            const byteA = parseInt(hexA, 16);
+            valoreA = convertValueFromByte(param, byteA);
+        }
     }
 
     // --- B ---
     let valoreB = "—";
-    if (memB) {
-        const byteB = memB[indirizzo];
-        valoreB = convertValueFromByte(param, byteB);
+    if (memB && addrHex) {
+        const hexB = memB[addrHex];
+        if (hexB != null) {
+            const byteB = parseInt(hexB, 16);
+            valoreB = convertValueFromByte(param, byteB);
+        }
     }
 
     // --- C ---
     let valoreC = "—";
-    if (memC) {
+    if (memC && !isNaN(indirizzo)) {
         const byteC = memC[indirizzo];
-        valoreC = convertValueFromByte(param, byteC);
+        if (byteC != null) {
+            valoreC = convertValueFromByte(param, byteC);
+        }
     }
 
     const box = document.getElementById("info_parametro");
@@ -479,9 +405,8 @@ function x2_mostraInfoParametro(param) {
     ultimoParametro = param;
 }
 
-
 // ======================================================================
-// CALCOLO HEX
+// CALCOLO HEX (solo visualizzazione)
 // ======================================================================
 function x2_calcolaHex(param) {
     if (!param.VALORE) return "—";
@@ -493,23 +418,26 @@ function x2_calcolaHex(param) {
 // VALORI (val1…val8)
 // ======================================================================
 function x2_popolaValori(param) {
+    const tendina = document.getElementById("tendina_valori");
+
     if (soloA) {
-        // Modalità SOLO LETTURA: nessuna modifica permessa
-        // Disabilito tendina e input
-        const tendina = document.getElementById("tendina_valori");
         tendina.disabled = true;
 
         for (let i = 1; i <= 8; i++) {
             const btn = document.getElementById("val" + i);
-            if (btn) btn.disabled = true;
+            if (btn) {
+                btn.textContent = "-";
+                btn.disabled = true;
+                btn.onclick = null;
+            }
         }
 
-        return; // <--- BLOCCO TOTALE
+        return;
     }
 
-    const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
     tendina.style.display = "block";
+    tendina.disabled = false;
 
     const oldInput = document.getElementById("input_minmax");
     if (oldInput) oldInput.remove();
@@ -524,9 +452,7 @@ function x2_popolaValori(param) {
 
     tendina.onchange = () => aggiornaColoreValore();
 
-    // ------------------------------------------------------------
     // 1) ELENCO PREDEFINITO
-    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
@@ -573,9 +499,7 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // ------------------------------------------------------------
-    // 2) MIN_MAX  (VERSIONE CORRETTA)
-    // ------------------------------------------------------------
+    // 2) MIN_MAX
     if (param.TIPO_ELENCO === "MIN_MAX") {
 
         tendina.style.display = "none";
@@ -633,7 +557,6 @@ function x2_popolaValori(param) {
         spinner.appendChild(btnUp);
         spinner.appendChild(btnDown);
 
-        // INPUT
         input.addEventListener("input", function () {
             const min = parseInt(param.MIN);
             if (min < 0) {
@@ -643,7 +566,6 @@ function x2_popolaValori(param) {
             }
         });
 
-        // BLUR
         input.addEventListener("blur", function () {
 
             let raw = this.value;
@@ -668,7 +590,6 @@ function x2_popolaValori(param) {
             if (v < 0) this.value = "-" + Math.abs(v).toString().padStart(2, "0");
             else this.value = v.toString().padStart(2, "0");
 
-
             if (memC) {
                 ultimoParametro.VALORE = this.value;
                 updateMemoriaC(ultimoParametro, this.value);
@@ -678,7 +599,6 @@ function x2_popolaValori(param) {
             }
         });
 
-        // SPINNER UP
         btnUp.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const max = parseInt(param.MAX);
@@ -697,7 +617,6 @@ function x2_popolaValori(param) {
             }
         });
 
-        // SPINNER DOWN
         btnDown.addEventListener("click", function () {
             let v = parseInt(input.value) || 0;
             const min = parseInt(param.MIN);
@@ -723,9 +642,7 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // ------------------------------------------------------------
     // 3) DECIMALE
-    // ------------------------------------------------------------
     if (param.TIPO_ELENCO === "DECIMALE") {
 
         const min = parseFloat(param.MIN);
@@ -748,11 +665,8 @@ function x2_popolaValori(param) {
         return;
     }
 
-    // ------------------------------------------------------------
     // 4) FALLBACK
-    // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
-    
 }
 
 // ======================================================================
@@ -812,13 +726,48 @@ function x2_aggiornaParamButtons(codiceParametro) {
 }
 
 // ======================================================================
+// INIZIALIZZAZIONE UI COMPLETA
+// ======================================================================
+function x2_inizializzaUI() {
+
+    x2_popolaMenu();
+
+    const selMenu      = document.getElementById("menu");
+    const selSottomenu = document.getElementById("sottomenu");
+    const selParametro = document.getElementById("parametro");
+
+    if (selMenu && selMenu.options.length > 0) {
+        selMenu.selectedIndex = 0;
+        selMenu.dispatchEvent(new Event("change"));
+    }
+
+    if (selSottomenu && selSottomenu.options.length > 0) {
+        selSottomenu.selectedIndex = 0;
+        selSottomenu.dispatchEvent(new Event("change"));
+    }
+
+    if (selParametro && selParametro.options.length > 0) {
+        selParametro.selectedIndex = 0;
+        selParametro.dispatchEvent(new Event("change"));
+    }
+}
+
+// ======================================================================
 // EVENTI PRINCIPALI
 // ======================================================================
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
-   // memC = caricaMemoriaC();
-    memA = caricaMemoriaA();
-    memB = caricaMemoriaB();
+    if (!window.memA) {
+        await x2_caricaHexDefault();
+    } else {
+        console.log("memA già presente");
+    }
+
+    memA = window.memA || null;
+    memB = window.memB || null;
+    memC = caricaMemoriaC();
+
+    soloA = (!memB && !memC);
 
     console.log("LUNGHEZZA memC =", memC ? memC.length : "NULL");
 
@@ -838,7 +787,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("btn_salva_parametro").addEventListener("click", function () {
-        if (soloA) return;   // BLOCCO TOTALE
+        if (soloA) return;
         if (!ultimoParametro) return;
 
         const val = document.getElementById("tendina_valori").value;
@@ -850,8 +799,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         alert("Valore salvato.");
     });
-
-    x2_popolaMenu();
 
     function x2_cambiaParametro(delta) {
         if (modificheInCorso) {
@@ -943,15 +890,5 @@ document.addEventListener("DOMContentLoaded", function () {
         e.returnValue = "";
     });
 
-    // === AVVIO X2 ===
-    if (!window.memA) {
-        x2_caricaHexDefault().then(() => {
-            caricaMemorieGlobali();
-            x2_inizializzaUI();
-        });
-    } else {
-        caricaMemorieGlobali();
-        x2_inizializzaUI();
-    }
-
+    x2_inizializzaUI();
 });
