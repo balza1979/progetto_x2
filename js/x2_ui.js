@@ -1,5 +1,3 @@
-/* === INIZIO BLOCCO 1 (CORRETTO) === */
-
 // ======================================================================
 // FILE: x2_ui 11.01 modificato const indirizzo = parseInt(param.LIBERA1); righe 135 e 308— VERSIONE PRO (HEX VERSION) — CORRETTO
 // ======================================================================
@@ -166,11 +164,6 @@ function bytesToIntelHex(bytes) {
     return lines.join("\r\n");
 }
 
-/* === FINE BLOCCO 1 (CORRETTO) === */
-
-
-/* === INIZIO BLOCCO 2 (CORRETTO) === */
-
 // ------------------------------------------------------------
 // Carica Memoria C
 // ------------------------------------------------------------
@@ -209,7 +202,7 @@ function updateMemoriaC(param, nuovoValore) {
 
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1);
+    const indirizzo = parseInt(param.LIBERA1, 16);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const tipo  = (param.LIBERA3 || "").trim().toUpperCase();
@@ -241,7 +234,7 @@ function updateMemoriaC(param, nuovoValore) {
 // ============================================================
 // INIZIALIZZAZIONE UI COMPLETA
 // ============================================================
-fufunction x2_inizializzaUI() {
+function x2_inizializzaUI() {
 
     // ============================================================
     // 1) SE memC È NULL → INIZIALIZZA DA memA (convertendo formato)
@@ -372,11 +365,6 @@ function x2_popolaSottomenu(codMenu) {
     }
 }
 
-/* === FINE BLOCCO 2 (CORRETTO) === */
-
-
-/* === INIZIO BLOCCO 3 (CORRETTO) === */
-
 // ======================================================================
 // PULSANTI SOTTOMENU
 // ======================================================================
@@ -454,7 +442,7 @@ function convertValueFromByte(param, byte) {
 function x2_mostraInfoParametro(param) {
 
     // Indirizzo in HEX → numero
-    const indirizzo = parseInt(param.LIBERA1);
+    const indirizzo = parseInt(param.LIBERA1, 16);
 
     // --- A (default) ---
     let valoreA = "—";
@@ -514,27 +502,23 @@ function x2_calcolaHex(param) {
     return hex + "  (HTML)";
 }
 
-/* === FINE BLOCCO 3 (CORRETTO) === */
-
-/* === INIZIO BLOCCO 4 (CORRETTO) === */
-
 // ======================================================================
 // VALORI (val1…val8)
 // ======================================================================
 function x2_popolaValori(param) {
-if (soloA) {
-    // Modalità SOLO LETTURA: nessuna modifica permessa
-    // Disabilito tendina e input
-    const tendina = document.getElementById("tendina_valori");
-    tendina.disabled = true;
+    if (soloA) {
+        // Modalità SOLO LETTURA: nessuna modifica permessa
+        // Disabilito tendina e input
+        const tendina = document.getElementById("tendina_valori");
+        tendina.disabled = true;
 
-    for (let i = 1; i <= 8; i++) {
-        const btn = document.getElementById("val" + i);
-        if (btn) btn.disabled = true;
+        for (let i = 1; i <= 8; i++) {
+            const btn = document.getElementById("val" + i);
+            if (btn) btn.disabled = true;
+        }
+
+        return; // <--- BLOCCO TOTALE
     }
-
-    return; // <--- BLOCCO TOTALE
-}
 
     const tendina = document.getElementById("tendina_valori");
     tendina.innerHTML = "";
@@ -574,24 +558,13 @@ if (soloA) {
                 tendina.appendChild(opt);
             });
 
-           // const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-            //tendina.value = valorePulito;
-let valoreDaMostrare = String(param.VALORE ?? "").trim().padStart(2, "0");
+            let valoreDaMostrare = String(param.VALORE ?? "").trim().padStart(2, "0");
 
-//if (memC) {
-//   const indirizzo = parseInt(param.LIBERA1, 16);
-   // const byte = memC[indirizzo];
-  //  valoreDaMostrare = convertValueFromByte(param, byte);
-//}
+            tendina.value = String(valoreDaMostrare).padStart(2, "0");
 
-tendina.value = String(valoreDaMostrare).padStart(2, "0");
+            aggiornaColoreValore();
 
-
-            
-                aggiornaColoreValore();
-
-        //    x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
+            x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             const codiceParam = param.PARAMETRO;
 
@@ -602,7 +575,6 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
                 if (!p) return;
 
                 if (memC) {
-                   // p.VALORE = nuovoValore;
                     modificheInCorso = true;
                     document.getElementById("btn_salva_parametro").disabled = false;
                 }
@@ -707,7 +679,7 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
             if (v > max) v = max;
 
             if (v < 0) this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-            else this.value = v.toString().padStart(2, "0");
+            else this.value = v.toString(2, "0");
 
             if (memC) {
                 ultimoParametro.VALORE = this.value;
@@ -730,7 +702,7 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-                updateMemoriaC(ultimoParametro, this.value);
+                updateMemoriaC(ultimoParametro, input.value);
 
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
@@ -749,7 +721,7 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
 
             if (memC) {
                 ultimoParametro.VALORE = input.value;
-                updateMemoriaC(ultimoParametro, this.value);
+                updateMemoriaC(ultimoParametro, input.value);
 
                 modificheInCorso = true;
                 document.getElementById("btn_salva_parametro").disabled = false;
@@ -781,16 +753,9 @@ x2_aggiornaValoriDaSelezione(param, data, valoreDaMostrare);
             tendina.appendChild(opt);
         }
 
-        //tendina.value = String(param.VALORE).padStart(2, "0");
         let valoreDaMostrare = String(param.VALORE).padStart(2, "0");
 
-//if (memC) {
- //   const indirizzo = parseInt(param.LIBERA1, 16);
-  //  const byte = memC[indirizzo];
-  //  valoreDaMostrare = convertValueFromByte(param, byte);
-//}
-
-tendina.value = String(valoreDaMostrare).padStart(2, "0");
+        tendina.value = String(valoreDaMostrare).padStart(2, "0");
 
         return;
     }
@@ -801,10 +766,6 @@ tendina.value = String(valoreDaMostrare).padStart(2, "0");
     tendina.innerHTML = "<option>— nessun valore —</option>";
     
 }
-/* === FINE BLOCCO 4 (CORRETTO) === */
-
-
-/* === INIZIO BLOCCO 5 (CORRETTO) === */
 
 // ======================================================================
 // AGGIORNA PULSANTI FILE1…FILE8
@@ -862,10 +823,6 @@ function x2_aggiornaParamButtons(codiceParametro) {
     }
 }
 
-/* === FINE BLOCCO 5 (CORRETTO) === */
-
-/* === INIZIO BLOCCO 6 (CORRETTO) === */
-
 // ======================================================================
 // EVENTI PRINCIPALI
 // ======================================================================
@@ -889,7 +846,7 @@ document.addEventListener("DOMContentLoaded", function () {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
         }
-        aggiornaColoreValore(ultimoParametro.INDIRIZZO);
+        aggiornaColoreValore();
     });
 
     document.getElementById("btn_salva_parametro").addEventListener("click", function () {
@@ -971,7 +928,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("btn_salva_parametro").disabled = true;
                 return;
             }
-            if (soloA) return;   // QUESTO MANCA
+            if (soloA) return;
             const val = document.getElementById("tendina_valori").value;
             updateMemoriaC(ultimoParametro, val);
             modificheInCorso = false;
@@ -1010,5 +967,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
-
-/* === FINE BLOCCO 6 (CORRETTO) === */
