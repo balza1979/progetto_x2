@@ -713,12 +713,16 @@ function x2_aggiornaParamButtons(codiceParametro) {
 // ======================================================================
 document.addEventListener("DOMContentLoaded", function () {
 
-    memC = caricaMemoriaC();
 // ============================================================
-// >>> INIZIO BLOCCO NUOVO: CARICO MEMORIA A E B <<<
+// >>> CARICO MEMORIE A, B, C DAL LOCALSTORAGE (VERSIONE CORRETTA) <<<
 // ============================================================
-memA = JSON.parse(localStorage.getItem("memA")) || null;
-memB = JSON.parse(localStorage.getItem("memB")) || null;
+const hexA = localStorage.getItem("memA_hex");
+const hexB = localStorage.getItem("memB_hex");
+const hexC = localStorage.getItem("memC_hex");
+
+memA = hexA ? hexToMemoryMap(hexA) : null;
+memB = hexB ? hexToMemoryMap(hexB) : null;
+memC = hexC ? hexToMemoryMap(hexC) : null;
 // ============================================================
 // >>> FINE BLOCCO NUOVO <<<
 // ============================================================
