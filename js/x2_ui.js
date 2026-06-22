@@ -304,32 +304,30 @@ function x2_mostraInfoParametro(param) {
     // ============================================================
     // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
     // ============================================================
-    let valoreA = "—";
-    let valoreB = "—";
-    let valoreC = "—";
+// ============================================================
+// >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
+// ============================================================
+let valoreA = "—";
+let valoreB = "—";
+let valoreC = "—";
 
-    const indirizzo = parseInt(param.LIBERA1);
+const indirizzo = parseInt(param.LIBERA1, 16);
 
-    if (!isNaN(indirizzo)) {
+if (!isNaN(indirizzo)) {
 
-        // Valore A (default)
-       if (window.memA && memA[indirizzo] !== undefined) {
-    const byteA = memA[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    valoreA = convertValueFromByte(param, byteA);
-}
-
-
-    if (window.memB && memB[indirizzo] !== undefined) {
-    const byteB = memB[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    valoreB = convertValueFromByte(param, byteB);
-}
-
-if (window.memC && memC[indirizzo] !== undefined) {
-    const byteC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    valoreC = convertValueFromByte(param, byteC);
-}
-
+    if (memA && memA[indirizzo] !== undefined) {
+        valoreA = convertValueFromByte(param, memA[indirizzo]);
     }
+
+    if (memB && memB[indirizzo] !== undefined) {
+        valoreB = convertValueFromByte(param, memB[indirizzo]);
+    }
+
+    if (memC && memC[indirizzo] !== undefined) {
+        valoreC = convertValueFromByte(param, memC[indirizzo]);
+    }
+}
+
     // ============================================================
     // >>> FINE BLOCCO NUOVO <<<
     // ============================================================
