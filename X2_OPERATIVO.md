@@ -748,3 +748,264 @@ Usato da:
 ============================================================
 ========================= FINE FILE ========================
 ============================================================
+# ====================================================
+# =                 1. MODALITÀ UI X2                =
+# ====================================================
+
+## 1.1 Modalità SENZA Memoria C
+- Nessun colore.
+- Nessun confronto.
+- Nessun salvataggio.
+- Nessun pulsante SALVA.
+- Nessun pulsante RIPRISTINA.
+- Nessun pannello confronto.
+- La tendina valori funziona SOLO per navigare.
+- I valori sono visualizzabili ma NON modificabili.
+- La UI è in sola lettura.
+
+## 1.2 Modalità CON Memoria C
+- La tendina valori è attiva.
+- I valori sono modificabili.
+- Il colore cambia in tempo reale.
+- Il confronto con A/B/C è attivo.
+- Il pulsante SALVA è visibile e attivo.
+- Il pulsante RIPRISTINA è visibile e attivo.
+- Il pannello confronto è disponibile.
+- Tutte le funzioni di editing sono abilitate.
+
+
+# ====================================================
+# =               2. FUNZIONAMENTO UI                =
+# ====================================================
+
+## 2.1 Tendina valori
+- Sempre attiva.
+- In modalità senza Memoria C → solo navigazione.
+- In modalità con Memoria C → navigazione + confronto + colori + salvataggio.
+
+## 2.2 Campo valore
+- Modificabile SOLO se esiste Memoria C.
+- Ogni modifica aggiorna il colore in tempo reale.
+- Nessun salvataggio automatico.
+- Nessun ritardo: ogni digitazione = ricalcolo immediato.
+
+## 2.3 Pulsanti
+### Pulsante SALVA
+- Visibile SOLO se esiste Memoria C.
+- Salva il valore attuale nella Memoria C.
+- Dopo il salvataggio, il colore viene ricalcolato.
+
+### Pulsante RIPRISTINA
+- Visibile SOLO se esiste Memoria C.
+- Riporta il valore attuale al valore di Memoria C.
+- Aggiorna immediatamente il colore.
+
+### Pulsante RESET (se presente)
+- Riporta A, B, C ai valori di default.
+- UI aggiornata di conseguenza.
+
+## 2.4 Pannello confronto
+- Mostra A, B, C e il valore attuale.
+- Serve SOLO per visualizzare differenze.
+- NON influenza i colori della UI.
+- NON influenza il salvataggio.
+
+
+# ====================================================
+# =               3. REGOLE COLORI UI                =
+# ====================================================
+
+## 3.1 Principio base
+Il colore rappresenta la relazione del valore attuale (C) rispetto alle memorie A e B.
+
+## 3.2 Regole colore (VALORE ATTUALE = “C”)
+- VERDE → C = A = B
+- GIALLO → C = A e C ≠ B
+- BLU   → C = B e C ≠ A
+- ROSSO → C ≠ A e C ≠ B
+- NESSUN COLORE → solo quando NON esiste Memoria C
+
+## 3.3 Aggiornamento colore
+- Il colore cambia in tempo reale.
+- Ogni digitazione nel campo valore = ricalcolo immediato.
+- Nessun salvataggio richiesto.
+- Nessun evento blur richiesto.
+- Nessun debounce: immediato.
+
+
+# ====================================================
+# =               4. LOGICA MEMORIE                  =
+# ====================================================
+
+## 4.1 Memoria A
+- Valori di default.
+- Non modificabile dall’utente.
+- Usata per confronto.
+
+## 4.2 Memoria B
+- Valori di riferimento.
+- Non modificabile dall’utente.
+- Usata per confronto.
+
+## 4.3 Memoria C
+- Valori salvati dall’utente.
+- Esiste SOLO se l’utente ha salvato almeno una volta.
+- Se non esiste → modalità sola navigazione.
+
+## 4.4 Creazione Memoria C
+- Avviene SOLO tramite pulsante SALVA.
+- Dopo il primo salvataggio → UI passa in modalità completa.
+
+## 4.5 Persistenza Memoria C
+- Rimane in localStorage.
+- Contiene SOLO i valori salvati.
+- Le modifiche non salvate NON finiscono in localStorage.
+
+## 4.6 Eliminazione Memoria C
+- Se cancellata → UI torna in modalità sola navigazione.
+
+
+# ====================================================
+# =               5. EVENTI E COMPORTAMENTI          =
+# ====================================================
+
+## 5.1 Cambio parametro
+- Aggiorna il valore attuale.
+- Aggiorna il colore.
+- Aggiorna il pannello confronto.
+- Nessun ritardo.
+
+### 5.1.1 Cambio parametro con modifiche non salvate
+- Se valore attuale ≠ valore originale → ALERT.
+- SALVA → salva, aggiorna, poi cambia parametro.
+- SCARTA → ripristina, aggiorna, poi cambia parametro.
+- ANNULLA → resta sul parametro attuale.
+
+## 5.2 Cambio menu / sottomenu
+- Nessun reset dei valori.
+- Nessun reset dei colori.
+- Nessun salvataggio automatico.
+
+### 5.2.1 Cambio menu con modifiche non salvate
+- Se valore attuale ≠ valore originale → ALERT.
+- SALVA → salva e cambia menu.
+- SCARTA → ripristina e cambia menu.
+- ANNULLA → resta nel menu attuale.
+
+## 5.3 Uscita dalla UI con modifiche non salvate
+- Se valore attuale ≠ valore originale → ALERT.
+- SALVA → salva e poi esci.
+- SCARTA → ripristina e poi esci.
+- ANNULLA → resta nella UI.
+
+## 5.4 Cambio valore manuale
+- Aggiorna colore in tempo reale.
+- Aggiorna pannello confronto.
+- NON salva automaticamente.
+
+## 5.5 Salvataggio
+- Aggiorna Memoria C.
+- Ricalcola colore.
+- Aggiorna pannello confronto.
+
+## 5.6 Ripristino
+- Riporta C al valore salvato.
+- Aggiorna colore.
+- Aggiorna pannello confronto.
+
+
+# ====================================================
+# =               6. REGOLE DI SICUREZZA             =
+# ====================================================
+
+## 6.1 Nessun salvataggio automatico
+- Mai.
+- In nessuna condizione.
+
+## 6.2 Nessun colore senza Memoria C
+- Mai.
+- In nessuna condizione.
+
+## 6.3 Nessuna modifica a A e B
+- Mai.
+- Sono fisse.
+
+## 6.4 Nessun comportamento nascosto
+- Nessun auto-reset.
+- Nessun auto-restore.
+- Nessun auto-save.
+
+
+# ====================================================
+# =        7. LOGICA PAGINA “CONFRONTO MEMORIA”      =
+# ====================================================
+
+## 7.1 Contenuto mostrato
+Per il parametro selezionato, la pagina mostra SOLO:
+- Valore A
+- Valore B
+- Valore C
+- Valore Attuale
+
+TUTTI in sola lettura.  
+Nessuna modifica possibile.
+
+## 7.2 Nessun colore
+La pagina Confronto NON usa colori.
+
+## 7.3 Nessuna interazione sui valori
+- Non si può modificare nulla.
+- Non si può salvare nulla.
+- Non si può ripristinare nulla.
+
+## 7.4 Click sul parametro
+Cliccando su un parametro:
+- si torna alla pagina X2
+- si apre il menu corretto
+- si apre il sottomenu corretto
+- si seleziona il parametro corretto
+- nessun alert
+- nessun salvataggio
+- nessun controllo modifiche
+
+È solo navigazione intelligente.
+
+
+# ====================================================
+# =     8. PULSANTI “SALVA HEX” NELLA PAGINA CONFRONTO =
+# ====================================================
+
+## 8.1 Pulsanti presenti
+Accanto a:
+- Carica da locale
+- Carica da Git
+
+sono presenti tre pulsanti:
+
+- **SALVA A (HEX)**
+- **SALVA B (HEX)**
+- **SALVA C (HEX)**
+
+## 8.2 Funzione
+Ogni pulsante:
+- genera un file HEX della memoria corrispondente
+- lo salva nella cartella Download
+- nessun effetto sulla UI
+- nessun ricalcolo
+- nessun alert
+
+## 8.3 Nome file
+Formato:
+
+```
+MEMORIA_[A/B/C]__YYYY-MM-DD__HH-mm-ss.hex
+```
+
+## 8.4 Regole
+- SALVA A → sempre attivo
+- SALVA B → sempre attivo
+- SALVA C → attivo solo se esiste Memoria C
+- Nessun salvataggio automatico
+- Nessuna modifica ai valori
+- Nessuna interazione con la UI X2
+
