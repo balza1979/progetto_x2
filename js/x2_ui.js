@@ -313,19 +313,22 @@ function x2_mostraInfoParametro(param) {
     if (!isNaN(indirizzo)) {
 
         // Valore A (default)
-        if (window.memA && memA[indirizzo] !== undefined) {
-            valoreA = convertValueFromByte(param, memA[indirizzo]);
-        }
+       if (window.memA && memA[indirizzo] !== undefined) {
+    const byteA = memA[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+    valoreA = convertValueFromByte(param, byteA);
+}
 
-        // Valore B (riferimento)
-        if (window.memB && memB[indirizzo] !== undefined) {
-            valoreB = convertValueFromByte(param, memB[indirizzo]);
-        }
 
-        // Valore C (memoria salvata)
-        if (window.memC && memC[indirizzo] !== undefined) {
-            valoreC = convertValueFromByte(param, memC[indirizzo]);
-        }
+    if (window.memB && memB[indirizzo] !== undefined) {
+    const byteB = memB[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+    valoreB = convertValueFromByte(param, byteB);
+}
+
+if (window.memC && memC[indirizzo] !== undefined) {
+    const byteC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
+    valoreC = convertValueFromByte(param, byteC);
+}
+
     }
     // ============================================================
     // >>> FINE BLOCCO NUOVO <<<
