@@ -714,7 +714,17 @@ function x2_aggiornaParamButtons(codiceParametro) {
 document.addEventListener("DOMContentLoaded", function () {
 
     memC = caricaMemoriaC();
+// ============================================================
+// >>> INIZIO BLOCCO NUOVO: CARICO MEMORIA A E B <<<
+// ============================================================
+memA = JSON.parse(localStorage.getItem("memA")) || null;
+memB = JSON.parse(localStorage.getItem("memB")) || null;
+// ============================================================
+// >>> FINE BLOCCO NUOVO <<<
+// ============================================================
 
+
+    
     const selMenu      = document.getElementById("menu");
     const selSottomenu = document.getElementById("sottomenu");
     const selParametro = document.getElementById("parametro");
