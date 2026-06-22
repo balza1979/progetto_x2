@@ -301,12 +301,49 @@ function x2_mostraInfoParametro(param) {
         }
     }
 
+    // ============================================================
+    // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
+    // ============================================================
+    let valoreA = "—";
+    let valoreB = "—";
+    let valoreC = "—";
+
+    const indirizzo = parseInt(param.LIBERA1);
+
+    if (!isNaN(indirizzo)) {
+
+        // Valore A (default)
+        if (window.memA && memA[indirizzo] !== undefined) {
+            valoreA = convertValueFromByte(param, memA[indirizzo]);
+        }
+
+        // Valore B (riferimento)
+        if (window.memB && memB[indirizzo] !== undefined) {
+            valoreB = convertValueFromByte(param, memB[indirizzo]);
+        }
+
+        // Valore C (memoria salvata)
+        if (window.memC && memC[indirizzo] !== undefined) {
+            valoreC = convertValueFromByte(param, memC[indirizzo]);
+        }
+    }
+    // ============================================================
+    // >>> FINE BLOCCO NUOVO <<<
+    // ============================================================
+
+
     const box = document.getElementById("info_parametro");
 
     box.innerHTML = `
         <b>Codice:</b> ${param.PARAMETRO}<br>
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
         <b>Valore:</b> ${param.VALORE}<br><br>
+
+        <!-- >>> INIZIO INSERIMENTO NUOVI VALORI A/B/C <<< -->
+        <b>Valore A:</b> ${valoreA}<br>
+        <b>Valore B:</b> ${valoreB}<br>
+        <b>Valore C:</b> ${valoreC}<br><br>
+        <!-- >>> FINE INSERIMENTO NUOVI VALORI A/B/C <<< -->
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
