@@ -672,7 +672,19 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
         if (lista && lista[i - 1]) {
             btn.textContent = lista[i - 1];
             btn.disabled = false;
-            btn.onclick = () => window.open("img/" + lista[i - 1], "_blank");
+            //btn.onclick = () => window.open("img/" + lista[i - 1], "_blank");
+            btn.onclick = () => {
+
+    // 1) salva il valore scelto
+    const indirizzo = parseInt(param.LIBERA1, 16);
+    const byte = memC[indirizzo] = parseInt(lista[i - 1], 16);
+    param.VALORE = convertValueFromByte(param, byte);
+    memC_modificata = true;
+
+    // 2) aggiorna subito la UI
+    x2_mostraInfoParametro(param);
+};
+
         } else {
             btn.textContent = "-";
             btn.disabled = true;
