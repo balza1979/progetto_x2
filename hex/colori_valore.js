@@ -1,68 +1,58 @@
 function aggiornaColoreValore(indirizzo) {
 
-    if (indirizzo == null || isNaN(indirizzo)) return;
-
     const campo = document.getElementById("tendina_valori");
     if (!campo) return;
 
-    // A, B, C presi dalle memorie, NON da VALORE_DEFAULT
-    let byteA = null;
-    if (memA && memA[indirizzo] != null) {
-        byteA = memA[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    }
+    const param = ultimoParametro;
+    if (!param) return;
 
-    let byteB = null;
-    if (memB && memB[indirizzo] != null) {
-        byteB = memB[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    }
+    // 1) Valore logico selezionato nella tendina
+    const valoreLogicoCampo = campo.value;
 
-    let byteC = null;
-    if (memC && memC[indirizzo] != null) {
-        byteC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
-    }
+    // 2) Converti in byte come fai quando salvi
+    const byteCampo = convertValueToByte(param, valoreLogicoCampo);
 
-    const rawCampo = campo.value;
-    const campoNum = parseInt(rawCampo, 16);
-    const campoHex = isNaN(campoNum)
-        ? "NaN"
-        : campoNum.toString(16).toUpperCase().padStart(2, "0");
+    // 3) Leggi A/B/C come VALORI LOGICI
+    let valoreA = null, valoreB = null, valoreC = null;
 
-    let colorePrevisto = "";
-    let motivo = "";
+    if (memA && memA[indirizzo] !== undefined)
+        valoreA = convertValueFromByte(param, memA[indirizzo]);
 
-    if (!byteC) {
-        colorePrevisto = "VERDE";
-        motivo = "C mancante → mai salvato";
-    } else if (campoHex !== byteC) {
-        colorePrevisto = "ROSSO";
-        motivo = "CAMPO (" + campoHex + ") ≠ C (" + byteC + ")";
-    } else if (byteA && byteC !== byteA) {
-        colorePrevisto = "GIALLO";
-        motivo = "CAMPO = C ma C (" + byteC + ") ≠ A (" + byteA + ")";
-    } else {
-        colorePrevisto = "VERDE";
-        motivo = "CAMPO = C = A";
-    }
+    if (memB && memB[indirizzo] !== undefined)
+        valoreB = convertValueFromByte(param, memB[indirizzo]);
 
+    if (memC && memC[indirizzo] !== undefined)
+        valoreC = convertValueFromByte(param, memC[indirizzo]);
+
+    // 4) DEBUG
     alert(
         "DEBUG COLORE\n\n" +
-        "RAW CAMPO: " + rawCampo + "\n" +
-        "CAMPO HEX: " + campoHex + "\n\n" +
-        "A (memA): " + byteA + "\n" +
-        "B (memB): " + byteB + "\n" +
-        "C (memC): " + byteC + "\n\n" +
-        "COLORE PREVISTO: " + colorePrevisto + "\n" +
-        "MOTIVO: " + motivo + "\n"
+        "VALORE LOGICO CAMPO: " + valoreLogicoCampo + "\n" +
+        "BYTE CAMPO: " + byteCampo + "\n\n" +
+        "A (logico): " + valoreA + "\n" +
+        "B (logico): " + valoreB + "\n" +
+        "C (logico): " + valoreC + "\n\n"
     );
 
-    if (colorePrevisto === "VERDE") {
-        campo.style.backgroundColor = "#006600";
+    // 5) LOGICA COLORI (sui valori logici)
+    if (valoreC == null) {
+        campo.style.backgroundColor = "#006600"; // verde
         campo.style.color = "white";
-    } else if (colorePrevisto === "GIALLO") {
-        campo.style.backgroundColor = "#CCAA00";
-        campo.style.color = "black";
-    } else {
-        campo.style.backgroundColor = "#990000";
-        campo.style.color = "white";
+        return;
     }
+
+    if (valoreLogicoCampo !== valoreC) {
+        campo.style.backgroundColor = "#990000"; // rosso
+        campo.style.color = "white";
+        return;
+    }
+
+    if (valoreA != null && valoreC !== valoreA) {
+        campo.style.backgroundColor = "#CCAA00"; // giallo
+        campo.style.color = "black";
+        return;
+    }
+
+    campo.style.backgroundColor = "#006600"; // verde
+    campo.style.color = "white";
 }
