@@ -294,9 +294,9 @@ function x2_mostraInfoParametro(param) {
     // ============================================================
     // >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
     // ============================================================
-    let valoreA = "—";
-    let valoreB = "—";
-    let valoreC = "—";
+    valoreA = "—";
+    valoreB = "—";
+    valoreC = "—";
 
     const indirizzo = parseInt(param.LIBERA1, 16);
 
@@ -321,9 +321,9 @@ function x2_mostraInfoParametro(param) {
 // ============================================================
 // >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
 // ============================================================
-let valoreA = "—";
-let valoreB = "—";
-let valoreC = "—";
+valoreA = "—";
+valoreB = "—";
+valoreC = "—";
 
 const indirizzo = parseInt(param.LIBERA1, 16);
 
