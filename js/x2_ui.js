@@ -780,13 +780,14 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
 
     // 🔥 AGGIORNA SUBITO LA UI DOPO IL SALVATAGGIO
     x2_mostraInfoParametro(ultimoParametro);
+            const indirizzo = parseInt(ultimoParametro.LIBERA1, 16);
+aggiornaColoreValore(indirizzo);
     x2_popolaValori(ultimoParametro);
     x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
 
     modificheInCorso = false;
 
     document.getElementById("btn_salva_parametro").disabled = true;
-        aggiornaColoreValore();
 
     alert("Valore salvato. VERS UI 25 6 26 14 23");
 });
@@ -864,7 +865,8 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
                 if (p) {
                     ultimoParametro = p;
                     x2_mostraInfoParametro(ultimoParametro);
-                    x2_popolaValori(ultimoParametro);
+                    const indirizzo = parseInt(ultimoParametro.LIBERA1, 16);
+                    aggiornaColoreValore(indirizzo);
                 }
 
                 modificheInCorso = false;
