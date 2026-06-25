@@ -766,20 +766,26 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         }
     });
 
-    document.getElementById("btn_salva_parametro").addEventListener("click", function () {
+   document.getElementById("btn_salva_parametro").addEventListener("click", function () {
 
-        if (!ultimoParametro) return;
+    if (!ultimoParametro) return;
 
-        const val = document.getElementById("tendina_valori").value;
+    const val = document.getElementById("tendina_valori").value;
 
-        updateMemoriaC(ultimoParametro, val);
+    updateMemoriaC(ultimoParametro, val);
 
-        modificheInCorso = false;
+    // 🔥 AGGIORNA SUBITO LA UI DOPO IL SALVATAGGIO
+    x2_mostraInfoParametro(ultimoParametro);
+    x2_popolaValori(ultimoParametro);
+    x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
 
-        document.getElementById("btn_salva_parametro").disabled = true;
+    modificheInCorso = false;
 
-        alert("Valore salvato.");
-    });
+    document.getElementById("btn_salva_parametro").disabled = true;
+
+    alert("Valore salvato.");
+});
+
 
     x2_popolaMenu();
 
