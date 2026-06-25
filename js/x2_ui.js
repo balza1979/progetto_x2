@@ -315,36 +315,7 @@ function x2_mostraInfoParametro(param) {
         }
     }
 
-    // ============================================================
-    // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
-    // ============================================================
-// ============================================================
-// >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
-// ============================================================
-valoreA = "—";
-valoreB = "—";
-valoreC = "—";
-
-const indirizzo = parseInt(param.LIBERA1, 16);
-
-if (!isNaN(indirizzo)) {
-
-    if (memA && memA[indirizzo] !== undefined) {
-        valoreA = convertValueFromByte(param, memA[indirizzo]);
-    }
-
-    if (memB && memB[indirizzo] !== undefined) {
-        valoreB = convertValueFromByte(param, memB[indirizzo]);
-    }
-
-    if (memC && memC[indirizzo] !== undefined) {
-        valoreC = convertValueFromByte(param, memC[indirizzo]);
-    }
-}
-
-    // ============================================================
-    // >>> FINE BLOCCO NUOVO <<<
-    // ============================================================
+    
 
 
     const box = document.getElementById("info_parametro");
