@@ -28,11 +28,34 @@ function aggiornaColoreValore(indirizzo) {
 
     // CAMPO (attenzione: potrebbe NON essere hex!)
     let rawCampo = campo.value;
-    let byteCampo = parseInt(rawCampo, 16);
-
-    let campoHex = isNaN(byteCampo)
+    let campoNum = parseInt(rawCampo, 16);
+    let campoHex = isNaN(campoNum)
         ? "NaN"
-        : byteCampo.toString(16).toUpperCase().padStart(2, "0");
+        : campoNum.toString(16).toUpperCase().padStart(2, "0");
+
+    let colorePrevisto = "";
+    let motivo = "";
+
+    // ============================
+    // LOGICA COLORI
+    // ============================
+
+    if (!byteC) {
+        colorePrevisto = "VERDE";
+        motivo = "C mancante → parametro mai salvato";
+    }
+    else if (campoHex !== byteC) {
+        colorePrevisto = "ROSSO";
+        motivo = "CAMPO (" + campoHex + ") diverso da C (" + byteC + ")";
+    }
+    else if (byteA && byteC !== byteA) {
+        colorePrevisto = "GIALLO";
+        motivo = "CAMPO = C ma C (" + byteC + ") diverso da A (" + byteA + ")";
+    }
+    else {
+        colorePrevisto = "VERDE";
+        motivo = "CAMPO = C = A";
+    }
 
     // ============================
     // DEBUG POPUP
@@ -45,35 +68,24 @@ function aggiornaColoreValore(indirizzo) {
         "A: " + byteA + "\n" +
         "B: " + byteB + "\n" +
         "C: " + byteC + "\n\n" +
-        "NOTE:\n" +
-        "- Se CAMPO HEX = NaN → il valore NON è hex.\n" +
-        "- Se CAMPO HEX ≠ C → ROSSO.\n" +
-        "- Se CAMPO HEX = C ma C ≠ A → GIALLO.\n" +
-        "- Se CAMPO HEX = A → VERDE.\n"
+        "COLORE PREVISTO: " + colorePrevisto + "\n" +
+        "MOTIVO: " + motivo + "\n"
     );
 
     // ============================
-    // COLORI
+    // APPLICA COLORE
     // ============================
 
-    if (!byteC) {
+    if (colorePrevisto === "VERDE") {
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
-        return;
     }
-
-    if (campoHex !== byteC) {
-        campo.style.backgroundColor = "#990000";
-        campo.style.color = "white";
-        return;
-    }
-
-    if (byteA && byteC !== byteA) {
+    else if (colorePrevisto === "GIALLO") {
         campo.style.backgroundColor = "#CCAA00";
         campo.style.color = "black";
-        return;
     }
-
-    campo.style.backgroundColor = "#006600";
-    campo.style.color = "white";
+    else if (colorePrevisto === "ROSSO") {
+        campo.style.backgroundColor = "#990000";
+        campo.style.color = "white";
+    }
 }
