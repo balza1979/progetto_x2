@@ -26,9 +26,15 @@ function aggiornaColoreValore(indirizzo) {
         byteC = memC[indirizzo].toString(16).toUpperCase().padStart(2, "0");
     }
 
-    // CAMPO (valore selezionato nella tendina)
+    // CAMPO
     const byteCampo = parseInt(campo.value, 16)
         .toString(16).toUpperCase().padStart(2, "0");
+
+    // ============================
+    // DEBUG POPUP
+    // ============================
+
+    let colorePrevisto = "";
 
     // ============================
     // COLORI
@@ -36,6 +42,15 @@ function aggiornaColoreValore(indirizzo) {
 
     // C mancante → VERDE
     if (!byteC) {
+        colorePrevisto = "VERDE (C mancante)";
+        alert(
+            "DEBUG COLORE\n\n" +
+            "CAMPO: " + byteCampo + "\n" +
+            "A: " + byteA + "\n" +
+            "B: " + byteB + "\n" +
+            "C: " + byteC + "\n\n" +
+            "COLORE PREVISTO: " + colorePrevisto
+        );
         campo.style.backgroundColor = "#006600";
         campo.style.color = "white";
         return;
@@ -43,6 +58,15 @@ function aggiornaColoreValore(indirizzo) {
 
     // CAMPO ≠ C → ROSSO
     if (byteCampo !== byteC) {
+        colorePrevisto = "ROSSO (CAMPO ≠ C)";
+        alert(
+            "DEBUG COLORE\n\n" +
+            "CAMPO: " + byteCampo + "\n" +
+            "A: " + byteA + "\n" +
+            "B: " + byteB + "\n" +
+            "C: " + byteC + "\n\n" +
+            "COLORE PREVISTO: " + colorePrevisto
+        );
         campo.style.backgroundColor = "#990000";
         campo.style.color = "white";
         return;
@@ -50,12 +74,19 @@ function aggiornaColoreValore(indirizzo) {
 
     // CAMPO = C ma C ≠ A → GIALLO
     if (byteA && byteC !== byteA) {
+        colorePrevisto = "GIALLO (C ≠ A)";
+        alert(
+            "DEBUG COLORE\n\n" +
+            "CAMPO: " + byteCampo + "\n" +
+            "A: " + byteA + "\n" +
+            "B: " + byteB + "\n" +
+            "C: " + byteC + "\n\n" +
+            "COLORE PREVISTO: " + colorePrevisto
+        );
         campo.style.backgroundColor = "#CCAA00";
         campo.style.color = "black";
         return;
     }
 
     // Tutto uguale → VERDE
-    campo.style.backgroundColor = "#006600";
-    campo.style.color = "white";
-}
+    colorePrevisto = "VERDE (A = C = CAMPO)";
