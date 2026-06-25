@@ -291,15 +291,30 @@ function convertValueFromByte(param, byte) {
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
-    if (memC) {
-        const indirizzo = parseInt(param.LIBERA1);
-        const byte = memC[indirizzo];
-        const valoreC = convertValueFromByte(param, byte);
+    // ============================================================
+    // >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
+    // ============================================================
+    let valoreA = "—";
+    let valoreB = "—";
+    let valoreC = "—";
 
-        if (!modificheInCorso) {
-            param.VALORE = valoreC;
+    const indirizzo = parseInt(param.LIBERA1, 16);
+
+    if (!isNaN(indirizzo)) {
+
+        if (memA && memA[indirizzo] !== undefined) {
+            valoreA = convertValueFromByte(param, memA[indirizzo]);
+        }
+
+        if (memB && memB[indirizzo] !== undefined) {
+            valoreB = convertValueFromByte(param, memB[indirizzo]);
+        }
+
+        if (memC && memC[indirizzo] !== undefined) {
+            valoreC = convertValueFromByte(param, memC[indirizzo]);
         }
     }
+
 
     // ============================================================
     // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
