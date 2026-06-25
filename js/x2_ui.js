@@ -789,7 +789,7 @@ aggiornaColoreValore(indirizzo);
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    alert("Valore salvato. VERS UI 25 6 26 14 23");
+    alert("Valore salvato. VERS UI 25 6 26 14 57");
 });
 
 
