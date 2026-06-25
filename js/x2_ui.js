@@ -298,7 +298,6 @@ function x2_mostraInfoParametro(param) {
     valoreB = "—";
     valoreC = "—";
 
-
     const indirizzo = parseInt(param.LIBERA1, 16);
 
     if (!isNaN(indirizzo)) {
@@ -316,37 +315,38 @@ function x2_mostraInfoParametro(param) {
         }
     }
 
-
-    // ============================================================
-    // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
-    // ============================================================
-// ============================================================
-// >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
-// ============================================================
-let valoreA = "—";
-let valoreB = "—";
-let valoreC = "—";
-
-const indirizzo = parseInt(param.LIBERA1, 16);
-
-if (!isNaN(indirizzo)) {
-
-    if (memA && memA[indirizzo] !== undefined) {
-        valoreA = convertValueFromByte(param, memA[indirizzo]);
-    }
-
-    if (memB && memB[indirizzo] !== undefined) {
-        valoreB = convertValueFromByte(param, memB[indirizzo]);
-    }
-
-    if (memC && memC[indirizzo] !== undefined) {
-        valoreC = convertValueFromByte(param, memC[indirizzo]);
-    }
-}
-
     // ============================================================
     // >>> FINE BLOCCO NUOVO <<<
     // ============================================================
+
+    const box = document.getElementById("info_parametro");
+
+    box.innerHTML = `
+        <b>Codice:</b> ${param.PARAMETRO}<br>
+        <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
+        <b>Valore:</b> ${param.VALORE}<br><br>
+
+        <b>Valore A:</b> ${valoreA}<br>
+        <b>Valore B:</b> ${valoreB}<br>
+        <b>Valore C:</b> ${valoreC}<br><br>
+
+        <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
+        <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
+        <b>Tipo valore:</b> ${param.LIBERA3 || "—"}<br>
+        <b>Scala:</b> ${param.LIBERA4 || "—"}<br>
+        <b>HEX:</b> ${x2_calcolaHex(param)}<br>
+    `;
+
+    document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
+    document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
+
+    document.getElementById("val_min").value      = param.MIN   || "";
+    document.getElementById("val_max").value      = param.MAX   || "";
+    document.getElementById("unita_misura").value = param.UNITA || "";
+
+    ultimoParametro = param;
+}
+
 
 
     const box = document.getElementById("info_parametro");
