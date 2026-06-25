@@ -291,62 +291,46 @@ function convertValueFromByte(param, byte) {
 // ======================================================================
 function x2_mostraInfoParametro(param) {
 
-    // ============================================================
-    // >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
-    // ============================================================
-    valoreA = "—";
-    valoreB = "—";
-    valoreC = "—";
+    if (memC) {
+        const indirizzo = parseInt(param.LIBERA1);
+        const byte = memC[indirizzo];
+        const valoreC = convertValueFromByte(param, byte);
 
-    const indirizzo = parseInt(param.LIBERA1, 16);
-
-    if (!isNaN(indirizzo)) {
-
-        if (memA && memA[indirizzo] !== undefined) {
-            valoreA = convertValueFromByte(param, memA[indirizzo]);
-        }
-
-        if (memB && memB[indirizzo] !== undefined) {
-            valoreB = convertValueFromByte(param, memB[indirizzo]);
-        }
-
-        if (memC && memC[indirizzo] !== undefined) {
-            valoreC = convertValueFromByte(param, memC[indirizzo]);
+        if (!modificheInCorso) {
+            param.VALORE = valoreC;
         }
     }
 
     // ============================================================
-    // >>> FINE BLOCCO NUOVO <<<
+    // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
     // ============================================================
+// ============================================================
+// >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
+// ============================================================
+let valoreA = "—";
+let valoreB = "—";
+let valoreC = "—";
 
-    const box = document.getElementById("info_parametro");
+const indirizzo = parseInt(param.LIBERA1, 16);
 
-    box.innerHTML = `
-        <b>Codice:</b> ${param.PARAMETRO}<br>
-        <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore:</b> ${param.VALORE}<br><br>
+if (!isNaN(indirizzo)) {
 
-        <b>Valore A:</b> ${valoreA}<br>
-        <b>Valore B:</b> ${valoreB}<br>
-        <b>Valore C:</b> ${valoreC}<br><br>
+    if (memA && memA[indirizzo] !== undefined) {
+        valoreA = convertValueFromByte(param, memA[indirizzo]);
+    }
 
-        <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
-        <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
-        <b>Tipo valore:</b> ${param.LIBERA3 || "—"}<br>
-        <b>Scala:</b> ${param.LIBERA4 || "—"}<br>
-        <b>HEX:</b> ${x2_calcolaHex(param)}<br>
-    `;
+    if (memB && memB[indirizzo] !== undefined) {
+        valoreB = convertValueFromByte(param, memB[indirizzo]);
+    }
 
-    document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
-    document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
-
-    document.getElementById("val_min").value      = param.MIN   || "";
-    document.getElementById("val_max").value      = param.MAX   || "";
-    document.getElementById("unita_misura").value = param.UNITA || "";
-
-    ultimoParametro = param;
+    if (memC && memC[indirizzo] !== undefined) {
+        valoreC = convertValueFromByte(param, memC[indirizzo]);
+    }
 }
 
+    // ============================================================
+    // >>> FINE BLOCCO NUOVO <<<
+    // ============================================================
 
 
     const box = document.getElementById("info_parametro");
@@ -705,8 +689,6 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
 
     // 4) aggiorna subito la UI
     x2_mostraInfoParametro(param);
-      aggiornaColoreValore();
-
 };
 
 
@@ -781,8 +763,6 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         if (memC) {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
-            aggiornaColoreValore();
-
         }
     });
 
@@ -796,8 +776,6 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
 
     // 🔥 AGGIORNA SUBITO LA UI DOPO IL SALVATAGGIO
     x2_mostraInfoParametro(ultimoParametro);
-            const indirizzo = parseInt(ultimoParametro.LIBERA1, 16);
-aggiornaColoreValore(indirizzo);
     x2_popolaValori(ultimoParametro);
     x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
 
@@ -805,7 +783,7 @@ aggiornaColoreValore(indirizzo);
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    alert("Valore salvato. VERS UI 25 6 26 14 57");
+    alert("Valore salvato. VERS UI 25 6 26");
 });
 
 
@@ -881,8 +859,7 @@ aggiornaColoreValore(indirizzo);
                 if (p) {
                     ultimoParametro = p;
                     x2_mostraInfoParametro(ultimoParametro);
-                    const indirizzo = parseInt(ultimoParametro.LIBERA1, 16);
-                    aggiornaColoreValore(indirizzo);
+                    x2_popolaValori(ultimoParametro);
                 }
 
                 modificheInCorso = false;
@@ -905,8 +882,6 @@ aggiornaColoreValore(indirizzo);
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
            x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
-        aggiornaColoreValore();
-
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
