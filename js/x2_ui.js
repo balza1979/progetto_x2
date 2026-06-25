@@ -673,21 +673,24 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
             btn.textContent = lista[i - 1];
             btn.disabled = false;
             //btn.onclick = () => window.open("img/" + lista[i - 1], "_blank");
-        btn.onclick = () => {
+  btn.onclick = () => {
 
-    // 1) APRI L’IMMAGINE (COMPORTAMENTO ORIGINALE)
+    // 1) apri immagine
     window.open("img/" + lista[i - 1], "_blank");
 
-    // 2) SALVA IL VALORE VERO (NON IL NOME FILE)
+    // 2) salva valore vero
     const indirizzo = parseInt(param.LIBERA1, 16);
     const byte = memC[indirizzo] = parseInt(valore, 16);
-
     param.VALORE = convertValueFromByte(param, byte);
     memC_modificata = true;
 
-    // 3) AGGIORNA SUBITO LA UI
+    // 3) imposta il parametro attivo nella UI
+    x2_parametroSelezionato = param.PARAMETRO;
+
+    // 4) aggiorna subito la UI
     x2_mostraInfoParametro(param);
 };
+
 
         } else {
             btn.textContent = "-";
