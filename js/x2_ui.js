@@ -783,7 +783,7 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
 
     document.getElementById("btn_salva_parametro").disabled = true;
 
-    alert("Valore salvato.");
+    alert("Valore salvato. VERS UI 25 6 26");
 });
 
 
