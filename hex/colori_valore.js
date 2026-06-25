@@ -25,7 +25,8 @@ function aggiornaColoreValore(indirizzo) {
     }
 
     // CAMPO
-    const byteCampo = Number(campo.value)
+    const byteCampo = parseInt(campo.value, 16)
+
         .toString(16).toUpperCase().padStart(2, "0");
 
     // ============================
