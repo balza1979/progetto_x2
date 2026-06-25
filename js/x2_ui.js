@@ -689,6 +689,8 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
 
     // 4) aggiorna subito la UI
     x2_mostraInfoParametro(param);
+      aggiornaColoreValore();
+
 };
 
 
@@ -763,6 +765,8 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         if (memC) {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
+            aggiornaColoreValore();
+
         }
     });
 
@@ -782,6 +786,7 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
     modificheInCorso = false;
 
     document.getElementById("btn_salva_parametro").disabled = true;
+        aggiornaColoreValore();
 
     alert("Valore salvato. VERS UI 25 6 26");
 });
@@ -882,6 +887,8 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
            x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+        aggiornaColoreValore();
+
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
