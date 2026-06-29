@@ -438,11 +438,34 @@ tendina.onchange = function () {
 // fine blocco 4 29 6 26 
 
 // ------------------------------------------------------------
-// 2) MIN_MAX (versione PRO con input + spinner)
+// 2) MIN_MAX (versione PRO con tendina + spinner)
 // ------------------------------------------------------------
 if (param.TIPO_ELENCO === "MIN_MAX") {
 
-    tendina.style.display = "none";
+    // 🔥 PULIZIA TENDINA
+    tendina.innerHTML = "";
+    tendina.style.display = "block";
+    tendina.disabled = false;
+
+    const min = parseInt(param.MIN);
+    const max = parseInt(param.MAX);
+
+    // 🔥 RIEMPI LA TENDINA CON TUTTI I VALORI POSSIBILI
+    for (let v = min; v <= max; v++) {
+        const opt = document.createElement("option");
+        opt.value = v.toString().padStart(2, "0");
+        opt.textContent = v.toString().padStart(2, "0");
+        tendina.appendChild(opt);
+    }
+
+    // 🔥 MOSTRA IL VALORE C (VERO)
+    const indirizzo = parseInt(param.LIBERA1, 16);
+    const valoreC = memC[indirizzo];
+    tendina.value = valoreC.toString().padStart(2, "0");
+
+    // ------------------------------------------------------------
+    // SPINNER (▲ ▼)
+    // ------------------------------------------------------------
 
     const oldInput2 = document.getElementById("input_minmax");
     if (oldInput2) oldInput2.remove();
@@ -450,28 +473,13 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     const wrapper = document.createElement("div");
     wrapper.style.position = "relative";
     wrapper.style.display = "inline-block";
-    wrapper.style.width = tendina.style.width || "100%";
+    wrapper.style.width = "100%";
 
     const input = document.createElement("input");
     input.type = "text";
     input.id = "input_minmax";
     input.className = "full";
-
-    const cs = getComputedStyle(tendina);
-    input.style.backgroundColor = cs.backgroundColor;
-    input.style.color = cs.color;
-    input.style.border = cs.border;
-    input.style.borderRadius = cs.borderRadius;
-    input.style.paddingRight = "28px";
-    input.style.height = cs.height;
-    input.style.fontSize = cs.fontSize;
-    input.style.fontFamily = cs.fontFamily;
-    input.style.boxSizing = "border-box";
-    input.style.width = "100%";
-
-    // 🔥 MOSTRA SEMPRE IL VALORE DI memC
-    const indirizzo = parseInt(param.LIBERA1, 16);
-    input.value = memC[indirizzo].toString().padStart(2, "0");
+    input.value = tendina.value;   // 🔥 input sincronizzato con tendina
 
     const spinner = document.createElement("div");
     spinner.style.position = "absolute";
@@ -488,13 +496,11 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     btnUp.textContent = "▲";
     btnUp.style.fontSize = "10px";
     btnUp.style.textAlign = "center";
-    btnUp.style.userSelect = "none";
 
     const btnDown = document.createElement("div");
     btnDown.textContent = "▼";
     btnDown.style.fontSize = "10px";
     btnDown.style.textAlign = "center";
-    btnDown.style.userSelect = "none";
 
     spinner.appendChild(btnUp);
     spinner.appendChild(btnDown);
@@ -503,33 +509,32 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     // INPUT: solo numeri
     // ------------------------------------------------------------
     input.addEventListener("input", function () {
-        this.value = this.value.replace(/[^0-9-]/g, "");
+        this.value = this.value.replace(/[^0-9]/g, "");
     });
 
     // ------------------------------------------------------------
-    // BLUR: SCRIVE SEMPRE IN memC
+    // BLUR: aggiorna tendina + memC
     // ------------------------------------------------------------
     input.addEventListener("blur", function () {
 
         let v = parseInt(this.value);
         if (isNaN(v)) return;
 
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
-
         if (v < min) v = min;
         if (v > max) v = max;
 
         const nuovo = v.toString().padStart(2, "0");
-        this.value = nuovo;
 
-        // 🔥 SCRIVE IN MEMC
+        // 🔥 sincronizza input → tendina
+        input.value = nuovo;
+        tendina.value = nuovo;
+
+        // 🔥 scrivi in memC
         updateMemoriaC(param, nuovo);
 
         modificheInCorso = true;
         document.getElementById("btn_salva_parametro").disabled = false;
 
-        // 🔥 RICALCOLA TUTTO
         x2_mostraInfoParametro(param);
         aggiornaColoreValore();
     });
@@ -540,11 +545,13 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     btnUp.addEventListener("click", function () {
 
         let v = parseInt(input.value) || 0;
-        const max = parseInt(param.MAX);
         if (v < max) v++;
 
         const nuovo = v.toString().padStart(2, "0");
+
+        // 🔥 sincronizza input → tendina
         input.value = nuovo;
+        tendina.value = nuovo;
 
         updateMemoriaC(param, nuovo);
 
@@ -561,11 +568,13 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     btnDown.addEventListener("click", function () {
 
         let v = parseInt(input.value) || 0;
-        const min = parseInt(param.MIN);
         if (v > min) v--;
 
         const nuovo = v.toString().padStart(2, "0");
+
+        // 🔥 sincronizza input → tendina
         input.value = nuovo;
+        tendina.value = nuovo;
 
         updateMemoriaC(param, nuovo);
 
@@ -583,7 +592,6 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
 
     return;
 }
-
 
 
     // ------------------------------------------------------------
