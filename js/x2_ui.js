@@ -665,12 +665,24 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
     // 1) apri immagine
     window.open("img/" + lista[i - 1], "_blank");
 
-    // 2) salva valore vero
-    const indirizzo = parseInt(param.LIBERA1, 16);
-    const byte = memC[indirizzo] = parseInt(valore, 16);
-    param.VALORE = convertValueFromByte(param, byte);
-    memC_modificata = true;
+   // // 2) salva valore vero sbagliato c in info par c sempre = 0 dopo modifica 
+   // const indirizzo = parseInt(param.LIBERA1, 16);
+   // const byte = memC[indirizzo] = parseInt(valore, 16);
+   // param.VALORE = convertValueFromByte(param, byte);
+   // memC_modificata = true;
 
+// versione 29 6 26
+        const indirizzo = parseInt(param.LIBERA1, 16);
+
+// valore è DECIMALE, NON HEX
+const byte = parseInt(valore);
+
+memC[indirizzo] = byte;
+param.VALORE = byte.toString().padStart(2, "0");
+
+memC_modificata = true;
+
+      
     // 3) imposta il parametro attivo nella UI
     x2_parametroSelezionato = param.PARAMETRO;
 
