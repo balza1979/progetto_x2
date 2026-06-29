@@ -47,15 +47,15 @@ function aggiornaColoreValore() {
     }
 
     // 🔥 SOLO DEBUG, SE LO VUOI
-    /*
+    
     alert(
         "DEBUG COLORE\n\n" +
-        "A: " + valoreA + "\n" +
+        "26 6 26 1350 A: " + valoreA + "\n" +
         "B: " + valoreB + "\n" +
         "C: " + valoreC + "\n\n" +
         "COLORE PREVISTO: " + colorePrevisto + "\n"
     );
-    */
+    
 
     // 🔥 APPLICA COLORE ALLA TENDINA (SELECT) — NIENTE !important
     if (colorePrevisto === "VERDE") {
