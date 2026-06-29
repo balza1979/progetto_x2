@@ -409,7 +409,7 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         // 🔥 chiamata iniziale corretta
         x2_aggiornaValoriDaSelezione(param, data, valorePulito);
- aggiornaColoreValore();
+// aggiornaColoreValore();
         const codiceParam = param.PARAMETRO;
 
 tendina.onchange = function () {
@@ -426,7 +426,7 @@ tendina.onchange = function () {
 
         x2_mostraInfoParametro(p);
         x2_popolaValori(p);
-        aggiornaColoreValore();
+     //   aggiornaColoreValore();
     }
 
     x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
@@ -537,7 +537,7 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         document.getElementById("btn_salva_parametro").disabled = false;
 
         x2_mostraInfoParametro(param);
-        aggiornaColoreValore();
+       // aggiornaColoreValore();
     });
 
     // ------------------------------------------------------------
@@ -557,7 +557,7 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         document.getElementById("btn_salva_parametro").disabled = false;
 
         x2_mostraInfoParametro(param);
-        aggiornaColoreValore();
+        //aggiornaColoreValore();
     });
 
     // ------------------------------------------------------------
@@ -577,7 +577,7 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
         document.getElementById("btn_salva_parametro").disabled = false;
 
         x2_mostraInfoParametro(param);
-        aggiornaColoreValore();
+       // aggiornaColoreValore();
     });
 
     wrapper.appendChild(input);
@@ -664,7 +664,7 @@ memC_modificata = true;
 
     // 4) aggiorna subito la UI
     x2_mostraInfoParametro(param);
-      aggiornaColoreValore();
+    //  aggiornaColoreValore();
 
 };
 
@@ -740,7 +740,7 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         if (memC) {
             modificheInCorso = true;
             document.getElementById("btn_salva_parametro").disabled = false;
-            aggiornaColoreValore();
+           // aggiornaColoreValore();
 
         }
     });
@@ -864,7 +864,7 @@ aggiornaColoreValore(indirizzo);
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
            x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
-        aggiornaColoreValore();
+     //   aggiornaColoreValore();
 
     });
 
