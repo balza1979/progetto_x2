@@ -47,19 +47,20 @@ function aggiornaColoreValore() {
     // -------------------------------------------------------------
     // APPLICAZIONE COLORE
     // -------------------------------------------------------------
-    if (colorePrevisto === "VERDE") {
-        campo.style.backgroundColor = "#006600";
-        campo.style.color = "white";
-    } else if (colorePrevisto === "GIALLO") {
-        campo.style.backgroundColor = "#CCAA00";
-        campo.style.color = "black";
-    } else if (colorePrevisto === "ROSSO") {
-        campo.style.backgroundColor = "#990000";
-        campo.style.color = "white";
-    } else if (colorePrevisto === "BLU") {
-        campo.style.backgroundColor = "#0000CC";
-        campo.style.color = "white";
-    }
+   if (colorePrevisto === "VERDE") {
+    campo.style.setProperty("background-color", "#006600", "important");
+    campo.style.setProperty("color", "white", "important");
+} else if (colorePrevisto === "GIALLO") {
+    campo.style.setProperty("background-color", "#CCAA00", "important");
+    campo.style.setProperty("color", "black", "important");
+} else if (colorePrevisto === "ROSSO") {
+    campo.style.setProperty("background-color", "#990000", "important");
+    campo.style.setProperty("color", "white", "important");
+} else if (colorePrevisto === "BLU") {
+    campo.style.setProperty("background-color", "#0000CC", "important");
+    campo.style.setProperty("color", "white", "important");
+}
+
 
 // DOPO AVER MESSO IL COLORE
 alert(
