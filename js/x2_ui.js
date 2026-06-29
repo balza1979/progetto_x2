@@ -275,17 +275,16 @@ function x2_popolaValori(param) {
 // 1) ELENCO PREDEFINITO (JSON)
 if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 let nomeJSON = null;
-const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+const fonte = param.JS_FONTE_ELENCO_VALORI?.trim().toLowerCase();
 
-// ⭐ NON USARE "parametro" COME NOME FILE
 if (fonte && fonte !== "/" && fonte !== "parametro") {
     nomeJSON = "json_tendine/" + fonte + ".json";
 } else {
-    // ⭐ fallback: usa il parametro vero (es. 1.0.00)
     nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
 }
 
 console.log("CARICO JSON:", nomeJSON);
+
 
 
     x2_caricaJSON(nomeJSON, function (data) {
