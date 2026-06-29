@@ -274,14 +274,17 @@ function x2_popolaValori(param) {
     }
 // 1) ELENCO PREDEFINITO (JSON)
 if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
-    let nomeJSON = null;
-    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
-    if (fonte && fonte !== "/") {
-        nomeJSON = "json_tendine/" + fonte + ".json";
-    } else {
-        nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
-    }
-    console.log("CARICO JSON:", nomeJSON);
+  let nomeJSON = null;
+const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+
+if (fonte && fonte !== "/" && fonte !== "parametro") {
+    nomeJSON = "json_tendine/" + fonte + ".json";
+} else {
+    nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
+}
+
+console.log("CARICO JSON:", nomeJSON);
+
     x2_caricaJSON(nomeJSON, function (data) {
         console.log("VALORI CARICATI:", data.valori);
         data.valori.forEach(voce => {
