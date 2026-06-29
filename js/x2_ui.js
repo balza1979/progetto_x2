@@ -309,7 +309,9 @@ function x2_mostraInfoParametro(param) {
         }
 
         if (memC && memC[indirizzo] !== undefined) {
-            valoreC = convertValueFromByte(param, memC[indirizzo]);
+            //valoreC = convertValueFromByte(param, memC[indirizzo]);
+            valoreC = memC[indirizzo];
+
         }
     }
 
