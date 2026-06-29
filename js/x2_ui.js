@@ -1,16 +1,14 @@
 // ======================================================================
-// FILE: x2_ui (9RIPRISTINO 10 6 26 1516 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
-// DATA: 09/06/2026
-// DESCRIZIONE: UI Programmatore X2 — Usa SOLO HEX Intel in Memoria C
+// FILE: x2_ui.js — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
 // ======================================================================
 
-// ------------------------------------------------------------
-// VARIABILI GLOBALI
-// ------------------------------------------------------------
 let ultimoParametro = null;
-//let memC = null;
 let memC_modificata = false;
 let modificheInCorso = false;
+let memA = null;
+let memB = null;
+let memC = null;
+let x2_parametroSelezionato = null;
 
 // ------------------------------------------------------------
 // PARSING HEX INTEL → ARRAY BYTE (8192)
@@ -50,7 +48,6 @@ function parseIntelHexToBytes(hexText) {
 
     return Array.from(bytes);
 }
-
 // ------------------------------------------------------------
 // ARRAY BYTE → HEX INTEL
 // ------------------------------------------------------------
@@ -120,7 +117,6 @@ function salvaMemoriaC() {
         console.error("Errore salvataggio Memoria C:", e);
     }
 }
-
 // ------------------------------------------------------------
 // Aggiorna un byte in Memoria C
 // ------------------------------------------------------------
@@ -161,10 +157,6 @@ function x2_popolaMenu() {
         selMenu.dispatchEvent(new Event("change"));
     }
 }
-
-// ======================================================================
-// PULSANTI MENU
-// ======================================================================
 function x2_aggiornaMenuButtons(codMenu) {
     const record = x2_menu_struttura_data.find(r => r.cod__menu.startsWith(codMenu + "."));
     const pulsanti = [];
@@ -188,9 +180,10 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
-// ======================================================================
+
+// ------------------------------------------------------------
 // SOTTOMENU
-// ======================================================================
+// ------------------------------------------------------------
 function x2_popolaSottomenu(codMenu) {
     const selSottomenu = document.getElementById("sottomenu");
     selSottomenu.innerHTML = "";
@@ -214,40 +207,6 @@ function x2_popolaSottomenu(codMenu) {
         selSottomenu.selectedIndex = 0;
     }
 }
-
-// ======================================================================
-// PULSANTI SOTTOMENU
-// ======================================================================
-function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
-
-    const record = x2_menu_struttura_data.find(r =>
-        r.cod__menu === codSottomenu
-    );
-
-    const pulsanti = [];
-    for (let i = 1; i <= 8; i++) {
-        pulsanti.push(document.getElementById("sottomenu_btn" + i));
-    }
-
-    for (let i = 0; i < 8; i++) {
-        const nomeCampo = "file" + (i + 1) + "_sottomenu";
-        const file = record ? record[nomeCampo] : "/";
-
-        if (file && file !== "/" && file.trim() !== "") {
-            pulsanti[i].textContent = file;
-            pulsanti[i].disabled = false;
-            pulsanti[i].onclick = () => window.open("img/" + file, "_blank");
-        } else {
-            pulsanti[i].textContent = "-";
-            pulsanti[i].disabled = true;
-            pulsanti[i].onclick = null;
-        }
-    }
-}
-
-// ======================================================================
-// PARAMETRI
-// ======================================================================
 function x2_popolaParametri(codMenuCompleto) {
     const selParametro = document.getElementById("parametro");
     selParametro.innerHTML = "";
@@ -285,15 +244,11 @@ function convertValueFromByte(param, byte) {
 
     return valore.toString();
 }
-
-// ======================================================================
-// INFO PARAMETRO
-// ======================================================================
 function x2_mostraInfoParametro(param) {
 
     if (memC) {
-        const indirizzo = parseInt(param.LIBERA1);
-        const byte = memC[indirizzo];
+        const indirizzoDec = parseInt(param.LIBERA1);
+        const byte = memC[indirizzoDec];
         const valoreC = convertValueFromByte(param, byte);
 
         if (!modificheInCorso) {
@@ -301,37 +256,26 @@ function x2_mostraInfoParametro(param) {
         }
     }
 
-    // ============================================================
-    // >>> INIZIO BLOCCO NUOVO: CALCOLO VALORI A / B / C <<<
-    // ============================================================
-// ============================================================
-// >>> CALCOLO VALORI A / B / C (VERSIONE DEFINITIVA) <<<
-// ============================================================
-let valoreA = "—";
-let valoreB = "—";
-let valoreC = "—";
+    let valoreA = "—";
+    let valoreB = "—";
+    let valoreC = "—";
 
-const indirizzo = parseInt(param.LIBERA1, 16);
+    const indirizzo = parseInt(param.LIBERA1, 16);
 
-if (!isNaN(indirizzo)) {
+    if (!isNaN(indirizzo)) {
 
-    if (memA && memA[indirizzo] !== undefined) {
-        valoreA = convertValueFromByte(param, memA[indirizzo]);
+        if (memA && memA[indirizzo] !== undefined) {
+            valoreA = convertValueFromByte(param, memA[indirizzo]);
+        }
+
+        if (memB && memB[indirizzo] !== undefined) {
+            valoreB = convertValueFromByte(param, memB[indirizzo]);
+        }
+
+        if (memC && memC[indirizzo] !== undefined) {
+            valoreC = convertValueFromByte(param, memC[indirizzo]);
+        }
     }
-
-    if (memB && memB[indirizzo] !== undefined) {
-        valoreB = convertValueFromByte(param, memB[indirizzo]);
-    }
-
-    if (memC && memC[indirizzo] !== undefined) {
-        valoreC = convertValueFromByte(param, memC[indirizzo]);
-    }
-}
-
-    // ============================================================
-    // >>> FINE BLOCCO NUOVO <<<
-    // ============================================================
-
 
     const box = document.getElementById("info_parametro");
 
@@ -340,11 +284,9 @@ if (!isNaN(indirizzo)) {
         <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
         <b>Valore:</b> ${param.VALORE}<br><br>
 
-        <!-- >>> INIZIO INSERIMENTO NUOVI VALORI A/B/C <<< -->
         <b>Valore A:</b> ${valoreA}<br>
         <b>Valore B:</b> ${valoreB}<br>
         <b>Valore C:</b> ${valoreC}<br><br>
-        <!-- >>> FINE INSERIMENTO NUOVI VALORI A/B/C <<< -->
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
@@ -362,19 +304,11 @@ if (!isNaN(indirizzo)) {
 
     ultimoParametro = param;
 }
-
-// ======================================================================
-// CALCOLO HEX
-// ======================================================================
 function x2_calcolaHex(param) {
     if (!param.VALORE) return "—";
     let hex = parseInt(param.VALORE).toString(16).toUpperCase().padStart(2, "0");
     return hex + "  (HTML)";
 }
-
-// ======================================================================
-// VALORI (val1…val8)
-// ======================================================================
 function x2_popolaValori(param) {
 
     const tendina = document.getElementById("tendina_valori");
@@ -392,238 +326,212 @@ function x2_popolaValori(param) {
         btn.onclick = null;
     }
 
- // ------------------------------------------------------------
-// 1) ELENCO PREDEFINITO (JSON)
-// ------------------------------------------------------------
-if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
+    // ------------------------------------------------------------
+    // 1) ELENCO PREDEFINITO (JSON)
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
-    let nomeJSON = null;
-    const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
+        let nomeJSON = null;
+        let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim().toLowerCase();
 
-    if (fonte === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (fonte && fonte !== "/") {
-        nomeJSON = fonte;
-    } else {
-        nomeJSON = param.PARAMETRO.trim();
-    }
+        if (fonte.startsWith("json_tendine/")) {
+            fonte = fonte.replace("json_tendine/", "");
+        }
+        if (fonte.endsWith(".json")) {
+            fonte = fonte.replace(".json", "");
+        }
 
-    x2_caricaJSON(nomeJSON, function (data) {
+        if (fonte === "parametro") {
+            nomeJSON = param.PARAMETRO.trim();
+        } else if (fonte && fonte !== "/") {
+            nomeJSON = fonte;
+        } else {
+            nomeJSON = param.PARAMETRO.trim();
+        }
 
-        data.valori.forEach(voce => {
-            const opt = document.createElement("option");
-            opt.value = voce.id;
-            opt.textContent = `"${voce.id}" ${voce.text}`;
-            tendina.appendChild(opt);
+        console.log("CARICO JSON (nome puro):", nomeJSON);
+
+        x2_caricaJSON(nomeJSON, function (data) {
+
+            data.valori.forEach(voce => {
+                const opt = document.createElement("option");
+                opt.value = voce.id;
+                opt.textContent = `"${voce.id}" ${voce.text}`;
+                tendina.appendChild(opt);
+            });
+
+            const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
+            tendina.value = valorePulito;
+
+            x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+
+            const codiceParam = param.PARAMETRO;
+
+            tendina.onchange = function () {
+                const nuovoValore = this.value.toString().trim().padStart(2, "0");
+
+                const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
+                if (!p) return;
+
+                if (memC) {
+                    p.VALORE = nuovoValore;
+                    modificheInCorso = true;
+                    document.getElementById("btn_salva_parametro").disabled = false;
+                }
+
+                x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
+            };
         });
 
-        const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-        tendina.value = valorePulito;
+        return;
+    }
+    // ------------------------------------------------------------
+    // 2) MIN_MAX
+    // ------------------------------------------------------------
+    if (param.TIPO_ELENCO === "MIN_MAX") {
 
-        // 🔥 chiamata iniziale corretta
-        x2_aggiornaValoriDaSelezione(param, data, valorePulito);
+        tendina.style.display = "none";
 
-        const codiceParam = param.PARAMETRO;
+        const oldInput2 = document.getElementById("input_minmax");
+        if (oldInput2) oldInput2.remove();
 
-        tendina.onchange = function () {
-            const nuovoValore = this.value.toString().trim().padStart(2, "0");
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.style.display = "inline-block";
+        wrapper.style.width = tendina.style.width || "100%";
 
-            const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
-            if (!p) return;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "input_minmax";
+        input.className = "full";
 
-            // 🔥 CORRETTO: NON param, ma p
-           if (memC) {
-    p.VALORE = nuovoValore;
-}
+        const cs = getComputedStyle(tendina);
+        input.style.backgroundColor = cs.backgroundColor;
+        input.style.color = cs.color;
+        input.style.border = cs.border;
+        input.style.borderRadius = cs.borderRadius;
+        input.style.paddingRight = "28px";
+        input.style.height = cs.height;
+        input.style.fontSize = cs.fontSize;
+        input.style.fontFamily = cs.fontFamily;
+        input.style.boxSizing = "border-box";
+        input.style.width = "100%";
 
-          if (memC) {
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
+        input.value = param.VALORE;
+
+        const spinner = document.createElement("div");
+        spinner.style.position = "absolute";
+        spinner.style.right = "4px";
+        spinner.style.top = "0";
+        spinner.style.bottom = "0";
+        spinner.style.width = "20px";
+        spinner.style.display = "flex";
+        spinner.style.flexDirection = "column";
+        spinner.style.justifyContent = "center";
+        spinner.style.cursor = "pointer";
+
+        const btnUp = document.createElement("div");
+        btnUp.textContent = "▲";
+        btnUp.style.fontSize = "10px";
+        btnUp.style.textAlign = "center";
+        btnUp.style.userSelect = "none";
+
+        const btnDown = document.createElement("div");
+        btnDown.textContent = "▼";
+        btnDown.style.fontSize = "10px";
+        btnDown.style.textAlign = "center";
+        btnDown.style.userSelect = "none";
+
+        spinner.appendChild(btnUp);
+        spinner.appendChild(btnDown);
+
+        input.addEventListener("input", function () {
+
+            const min = parseInt(param.MIN);
+
+            if (min < 0) {
+                this.value = this.value
+                    .replace(/(?!^-)[^0-9]/g, "")
+                    .replace(/(?!^)-/g, "");
+            } else {
+                this.value = this.value.replace(/[^0-9]/g, "");
             }
-            x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
-        };
-    });
+        });
 
-    return;
-}
+        input.addEventListener("blur", function () {
 
- // ------------------------------------------------------------
-// 2) MIN_MAX (versione PRO con input + spinner)
-// ------------------------------------------------------------
-if (param.TIPO_ELENCO === "MIN_MAX") {
+            let raw = this.value;
 
-    tendina.style.display = "none";
+            if (raw === "" || raw === "-") {
+                this.value = ultimoParametro.VALORE;
+                return;
+            }
 
-    const oldInput2 = document.getElementById("input_minmax");
-    if (oldInput2) oldInput2.remove();
+            let v = parseInt(raw);
 
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
-    wrapper.style.display = "inline-block";
-    wrapper.style.width = tendina.style.width || "100%";
+            if (isNaN(v)) {
+                this.value = ultimoParametro.VALORE;
+                return;
+            }
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.id = "input_minmax";
-    input.className = "full";
+            const min = parseInt(param.MIN);
+            const max = parseInt(param.MAX);
 
-    const cs = getComputedStyle(tendina);
-    input.style.backgroundColor = cs.backgroundColor;
-    input.style.color = cs.color;
-    input.style.border = cs.border;
-    input.style.borderRadius = cs.borderRadius;
-    input.style.paddingRight = "28px";
-    input.style.height = cs.height;
-    input.style.fontSize = cs.fontSize;
-    input.style.fontFamily = cs.fontFamily;
-    input.style.boxSizing = "border-box";
-    input.style.width = "100%";
+            if (v < min) v = min;
+            if (v > max) v = max;
 
-    input.value = param.VALORE;
+            if (v < 0) {
+                this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+            } else {
+                this.value = v.toString().padStart(2, "0");
+            }
 
-    const spinner = document.createElement("div");
-    spinner.style.position = "absolute";
-    spinner.style.right = "4px";
-    spinner.style.top = "0";
-    spinner.style.bottom = "0";
-    spinner.style.width = "20px";
-    spinner.style.display = "flex";
-    spinner.style.flexDirection = "column";
-    spinner.style.justifyContent = "center";
-    spinner.style.cursor = "pointer";
+            if (memC) {
+                ultimoParametro.VALORE = this.value;
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
+        });
 
-    const btnUp = document.createElement("div");
-    btnUp.textContent = "▲";
-    btnUp.style.fontSize = "10px";
-    btnUp.style.textAlign = "center";
-    btnUp.style.userSelect = "none";
+        btnUp.addEventListener("click", function () {
+            let v = parseInt(input.value) || 0;
+            const max = parseInt(param.MAX);
+            if (v < max) v++;
 
-    const btnDown = document.createElement("div");
-    btnDown.textContent = "▼";
-    btnDown.style.fontSize = "10px";
-    btnDown.style.textAlign = "center";
-    btnDown.style.userSelect = "none";
+            input.value = (v < 0)
+                ? "-" + Math.abs(v).toString().padStart(2, "0")
+                : v.toString().padStart(2, "0");
 
-    spinner.appendChild(btnUp);
-    spinner.appendChild(btnDown);
+            if (memC) {
+                ultimoParametro.VALORE = input.value;
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
+        });
 
-    // ------------------------------------------------------------
-    // INPUT: solo numeri (e segno - se min < 0)
-    // ------------------------------------------------------------
-    input.addEventListener("input", function () {
+        btnDown.addEventListener("click", function () {
+            let v = parseInt(input.value) || 0;
+            const min = parseInt(param.MIN);
+            if (v > min) v--;
 
-        const min = parseInt(param.MIN);
+            input.value = (v < 0)
+                ? "-" + Math.abs(v).toString().padStart(2, "0")
+                : v.toString().padStart(2, "0");
 
-        if (min < 0) {
-            this.value = this.value
-                .replace(/(?!^-)[^0-9]/g, "")
-                .replace(/(?!^)-/g, "");
-        } else {
-            this.value = this.value.replace(/[^0-9]/g, "");
-        }
-    });
+            if (memC) {
+                ultimoParametro.VALORE = input.value;
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
+            }
+        });
 
-    // ------------------------------------------------------------
-    // BLUR: normalizzazione + aggiornamento ultimoParametro
-    // ------------------------------------------------------------
-    input.addEventListener("blur", function () {
+        wrapper.appendChild(input);
+        wrapper.appendChild(spinner);
 
-        let raw = this.value;
+        tendina.parentNode.insertBefore(wrapper, tendina);
 
-        if (raw === "" || raw === "-") {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
-
-        let v = parseInt(raw);
-
-        if (isNaN(v)) {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
-
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
-
-        if (v < min) v = min;
-        if (v > max) v = max;
-
-        if (v < 0) {
-            this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-        } else {
-            this.value = v.toString().padStart(2, "0");
-        }
-
-        // 🔥 CORRETTO: aggiorna il parametro attuale
-      if (memC) {
-    ultimoParametro.VALORE = this.value;
-}
-
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
-
-    });
-
-    // ------------------------------------------------------------
-    // SPINNER UP
-    // ------------------------------------------------------------
-    btnUp.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const max = parseInt(param.MAX);
-        if (v < max) v++;
-
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
-
-        // 🔥 CORRETTO
-    if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
-
-
-      if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
-
-    });
-
-    // ------------------------------------------------------------
-    // SPINNER DOWN
-    // ------------------------------------------------------------
-    btnDown.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const min = parseInt(param.MIN);
-        if (v > min) v--;
-
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
-
-        // 🔥 CORRETTO
-        if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
-
-
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
-
-    });
-
-    wrapper.appendChild(input);
-    wrapper.appendChild(spinner);
-
-    tendina.parentNode.insertBefore(wrapper, tendina);
-
-    return;
-}
-
+        return;
+    }
 
     // ------------------------------------------------------------
     // 3) DECIMALE
@@ -652,10 +560,6 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     // ------------------------------------------------------------
     tendina.innerHTML = "<option>— nessun valore —</option>";
 }
-
-// ======================================================================
-// AGGIORNA PULSANTI FILE1…FILE8
-// ======================================================================
 function x2_aggiornaValoriDaSelezione(param, data, valore) {
 
     const key = String(parseInt(valore));
@@ -672,25 +576,19 @@ function x2_aggiornaValoriDaSelezione(param, data, valore) {
         if (lista && lista[i - 1]) {
             btn.textContent = lista[i - 1];
             btn.disabled = false;
-            //btn.onclick = () => window.open("img/" + lista[i - 1], "_blank");
-  btn.onclick = () => {
+            btn.onclick = () => {
 
-    // 1) apri immagine
-    window.open("img/" + lista[i - 1], "_blank");
+                window.open("img/" + lista[i - 1], "_blank");
 
-    // 2) salva valore vero
-    const indirizzo = parseInt(param.LIBERA1, 16);
-    const byte = memC[indirizzo] = parseInt(valore, 16);
-    param.VALORE = convertValueFromByte(param, byte);
-    memC_modificata = true;
+                const indirizzo = parseInt(param.LIBERA1, 16);
+                const byte = memC[indirizzo] = parseInt(valore, 16);
+                param.VALORE = convertValueFromByte(param, byte);
+                memC_modificata = true;
 
-    // 3) imposta il parametro attivo nella UI
-    x2_parametroSelezionato = param.PARAMETRO;
+                x2_parametroSelezionato = param.PARAMETRO;
 
-    // 4) aggiorna subito la UI
-    x2_mostraInfoParametro(param);
-};
-
+                x2_mostraInfoParametro(param);
+            };
 
         } else {
             btn.textContent = "-";
@@ -727,28 +625,16 @@ function x2_aggiornaParamButtons(codiceParametro) {
         }
     }
 }
-
-// ======================================================================
-// EVENTI PRINCIPALI
-// ======================================================================
 document.addEventListener("DOMContentLoaded", function () {
 
-// ============================================================
-// >>> CARICO MEMORIE A, B, C DAL LOCALSTORAGE (VERSIONE CORRETTA) <<<
-// ============================================================
-const hexA = localStorage.getItem("memA_hex");
-const hexB = localStorage.getItem("memB_hex");
-const hexC = localStorage.getItem("memC_hex");
+    const hexA = localStorage.getItem("memA_hex");
+    const hexB = localStorage.getItem("memB_hex");
+    const hexC = localStorage.getItem("memC_hex");
 
-memA = hexA ? hexToMemoryMap(hexA) : null;
-memB = hexB ? hexToMemoryMap(hexB) : null;
-memC = hexC ? hexToMemoryMap(hexC) : null;
-// ============================================================
-// >>> FINE BLOCCO NUOVO <<<
-// ============================================================
+    memA = hexA ? hexToMemoryMap(hexA) : null;
+    memB = hexB ? hexToMemoryMap(hexB) : null;
+    memC = hexC ? hexToMemoryMap(hexC) : null;
 
-
-    
     const selMenu      = document.getElementById("menu");
     const selSottomenu = document.getElementById("sottomenu");
     const selParametro = document.getElementById("parametro");
@@ -766,26 +652,24 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         }
     });
 
-   document.getElementById("btn_salva_parametro").addEventListener("click", function () {
+    document.getElementById("btn_salva_parametro").addEventListener("click", function () {
 
-    if (!ultimoParametro) return;
+        if (!ultimoParametro) return;
 
-    const val = document.getElementById("tendina_valori").value;
+        const val = document.getElementById("tendina_valori").value;
 
-    updateMemoriaC(ultimoParametro, val);
+        updateMemoriaC(ultimoParametro, val);
 
-    // 🔥 AGGIORNA SUBITO LA UI DOPO IL SALVATAGGIO
-    x2_mostraInfoParametro(ultimoParametro);
-    x2_popolaValori(ultimoParametro);
-    x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+        x2_mostraInfoParametro(ultimoParametro);
+        x2_popolaValori(ultimoParametro);
+        x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
 
-    modificheInCorso = false;
+        modificheInCorso = false;
 
-    document.getElementById("btn_salva_parametro").disabled = true;
+        document.getElementById("btn_salva_parametro").disabled = true;
 
-    alert("Valore salvato. VERS UI 25 6 26");
-});
-
+        alert("Valore salvato. VERS UI 25 6 26");
+    });
 
     x2_popolaMenu();
 
@@ -881,7 +765,7 @@ memC = hexC ? hexToMemoryMap(hexC) : null;
         ultimoParametro = p;
         x2_mostraInfoParametro(ultimoParametro);
         x2_popolaValori(ultimoParametro);
-           x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
+        x2_aggiornaParamButtons(ultimoParametro.PARAMETRO);
     });
 
     document.getElementById("crea_hex_btn").onclick = function () {
