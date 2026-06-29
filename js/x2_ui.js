@@ -127,7 +127,7 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1);
+    const indirizzo = parseInt(param.LIBERA1, 16);
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const byte = parseInt(nuovoValore) & 0xFF;
@@ -136,6 +136,7 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
+
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
