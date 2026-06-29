@@ -409,7 +409,7 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         // 🔥 chiamata iniziale corretta
         x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-
+ aggiornaColoreValore();
         const codiceParam = param.PARAMETRO;
 
 tendina.onchange = function () {
@@ -430,7 +430,7 @@ tendina.onchange = function () {
     }
 
     x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
-    aggiornaColoreValore();
+   
 };
 
     });
