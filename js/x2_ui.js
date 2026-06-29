@@ -1,14 +1,11 @@
 // ======================================================================
-// FILE: x2_ui (9RIPRISTINO 10 6 26 1516 — VERSIONE PRO (HEX VERSION) — RICOSTRUITO COMPLETO
-// DATA: 09/06/2026
-// DESCRIZIONE: UI Programmatore X2 — Usa SOLO HEX Intel in Memoria C
+// FILE: x2_ui (RIPRISTINO 10 6 26 1516 — VERSIONE PRO (HEX VERSION))
 // ======================================================================
 
 // ------------------------------------------------------------
 // VARIABILI GLOBALI
 // ------------------------------------------------------------
 let ultimoParametro = null;
-//let memC = null;
 let memC_modificata = false;
 let modificheInCorso = false;
 
@@ -127,7 +124,7 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1, 16);
+    const indirizzo = parseInt(param.LIBERA1, 16);   // *** CORRETTO ***
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const byte = parseInt(nuovoValore) & 0xFF;
@@ -136,7 +133,6 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
-
 
 // ------------------------------------------------------------
 // MENU PRINCIPALE
