@@ -124,7 +124,7 @@ function salvaMemoriaC() {
 function updateMemoriaC(param, nuovoValore) {
     if (!memC) return;
 
-    const indirizzo = parseInt(param.LIBERA1, 16);   // *** CORRETTO ***
+    const indirizzo = parseInt(param.LIBERA1, 16);   // CORRETTO
     if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memC.length) return;
 
     const byte = parseInt(nuovoValore) & 0xFF;
@@ -133,7 +133,7 @@ function updateMemoriaC(param, nuovoValore) {
     memC_modificata = true;
     salvaMemoriaC();
 }
-
+// fine blocco 1 29 6 26
 // ------------------------------------------------------------
 // MENU PRINCIPALE
 // ------------------------------------------------------------
@@ -185,6 +185,7 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
+
 // ======================================================================
 // SOTTOMENU
 // ======================================================================
@@ -241,7 +242,7 @@ function x2_aggiornaSottomenuButtons(codMenu, codSottomenu) {
         }
     }
 }
-
+// fine blocco 2 29 6 26
 // ======================================================================
 // PARAMETRI
 // ======================================================================
@@ -282,7 +283,7 @@ function convertValueFromByte(param, byte) {
 
     return valore.toString();
 }
-
+// fine blocco 3 29 6 26
 // ======================================================================
 // INFO PARAMETRO
 // ======================================================================
@@ -313,9 +314,8 @@ function x2_mostraInfoParametro(param) {
     }
 
     // ============================================================
-    // >>> FINE BLOCCO NUOVO <<<
+    // >>> AGGIORNAMENTO UI <<< 
     // ============================================================
-
     const box = document.getElementById("info_parametro");
 
     box.innerHTML = `
@@ -326,38 +326,6 @@ function x2_mostraInfoParametro(param) {
         <b>Valore A:</b> ${valoreA}<br>
         <b>Valore B:</b> ${valoreB}<br>
         <b>Valore C:</b> ${valoreC}<br><br>
-
-        <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
-        <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
-        <b>Tipo valore:</b> ${param.LIBERA3 || "—"}<br>
-        <b>Scala:</b> ${param.LIBERA4 || "—"}<br>
-        <b>HEX:</b> ${x2_calcolaHex(param)}<br>
-    `;
-
-    document.getElementById("codice_parametro").value      = param.PARAMETRO || "";
-    document.getElementById("descrizione_parametro").value = param.DESCRIZIONE || "";
-
-    document.getElementById("val_min").value      = param.MIN   || "";
-    document.getElementById("val_max").value      = param.MAX   || "";
-    document.getElementById("unita_misura").value = param.UNITA || "";
-
-    ultimoParametro = param;
-}
-
-
-
-    const box = document.getElementById("info_parametro");
-
-    box.innerHTML = `
-        <b>Codice:</b> ${param.PARAMETRO}<br>
-        <b>Descrizione:</b> ${param.DESCRIZIONE}<br>
-        <b>Valore:</b> ${param.VALORE}<br><br>
-
-        <!-- >>> INIZIO INSERIMENTO NUOVI VALORI A/B/C <<< -->
-        <b>Valore A:</b> ${valoreA}<br>
-        <b>Valore B:</b> ${valoreB}<br>
-        <b>Valore C:</b> ${valoreC}<br><br>
-        <!-- >>> FINE INSERIMENTO NUOVI VALORI A/B/C <<< -->
 
         <b>Indirizzo HC64:</b> ${param.LIBERA1 || "—"}<br>
         <b>Numero byte:</b> ${param.LIBERA2 || "—"}<br>
@@ -459,6 +427,9 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
     return;
 }
+} // aggiunta 
+
+// fine blocco 4 29 6 26 
 
  // ------------------------------------------------------------
 // 2) MIN_MAX (versione PRO con input + spinner)
