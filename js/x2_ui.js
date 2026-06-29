@@ -280,7 +280,8 @@ const fonte = param.JS_FONTE_ELENCO_VALORI?.trim().toLowerCase();
 if (fonte && fonte !== "/" && fonte !== "parametro") {
    nomeJSON = fonte + ".json";
 } else {
-    nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
+    nomeJSON = param.PARAMETRO.trim() + ".json";
+
 }
 
 console.log("CARICO JSON:", nomeJSON);
