@@ -60,4 +60,13 @@ function aggiornaColoreValore() {
         campo.style.backgroundColor = "#0000CC";
         campo.style.color = "white";
     }
+
+// DOPO AVER MESSO IL COLORE
+alert(
+    "DOPO APPLICAZIONE COLORE\n" +
+    "backgroundColor: " + campo.style.backgroundColor + "\n" +
+    "color: " + campo.style.color
+);
+
+    
 }
