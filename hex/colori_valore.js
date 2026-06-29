@@ -1,10 +1,5 @@
 function aggiornaColoreValore() {
 
-    const campo = document.getElementById("tendina_valori");
-
-    // 🔥 SE NON È UNA SELECT → NON CAMBIO COLORE
-    if (!campo || campo.tagName !== "SELECT") return;
-
     const param = ultimoParametro;
     if (!param) return;
 
@@ -29,6 +24,18 @@ function aggiornaColoreValore() {
         colorePrevisto = "BLU";
     }
 
+    // 🔥 TROVA IL CAMPO GIUSTO
+    let campo =
+        document.getElementById("tendina_valori") ||
+        document.getElementById("input_valore") ||
+        document.getElementById("input_valore_num");
+
+    if (!campo) {
+        console.log("NESSUN CAMPO TROVATO PER COLORE");
+        return;
+    }
+
+    // 🔥 APPLICA IL COLORE
     if (colorePrevisto === "VERDE") {
         campo.style.setProperty("background-color", "#006600", "important");
         campo.style.setProperty("color", "white", "important");
