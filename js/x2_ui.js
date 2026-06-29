@@ -398,8 +398,9 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
             tendina.appendChild(opt);
         });
 
-        const valorePulito = String(param.VALORE ?? "").trim().padStart(2, "0");
-        tendina.value = valorePulito;
+          const valorePulito = valoreC.toString().padStart(2, "0");
+          tendina.value = valorePulito;
+
 
         // 🔥 chiamata iniziale corretta
         x2_aggiornaValoriDaSelezione(param, data, valorePulito);
