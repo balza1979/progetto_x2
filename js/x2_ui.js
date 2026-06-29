@@ -386,15 +386,17 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
     let nomeJSON = null;
     const fonte = param.JS_FONTE_ELENCO_VALORI?.trim();
 
-    if (fonte === "parametro") {
-        nomeJSON = param.PARAMETRO.trim();
-    } else if (fonte && fonte !== "/") {
-        nomeJSON = fonte;
+    if (fonte && fonte !== "/") {
+        nomeJSON = "json_tendine/" + fonte + ".json";
     } else {
-        nomeJSON = param.PARAMETRO.trim();
+        nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
     }
 
+    console.log("CARICO JSON:", nomeJSON);
+
     x2_caricaJSON(nomeJSON, function (data) {
+
+        console.log("VALORI CARICATI:", data.valori);
 
         data.valori.forEach(voce => {
             const opt = document.createElement("option");
@@ -403,40 +405,38 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
             tendina.appendChild(opt);
         });
 
-          const valorePulito = valoreC.toString().padStart(2, "0");
-          tendina.value = valorePulito;
+        const valorePulito = valoreC.toString().padStart(2, "0");
+        tendina.value = valorePulito;
 
-
-        // 🔥 chiamata iniziale corretta
         x2_aggiornaValoriDaSelezione(param, data, valorePulito);
-// aggiornaColoreValore();
+        aggiornaColoreValore();
+
         const codiceParam = param.PARAMETRO;
 
-tendina.onchange = function () {
-    const nuovoValore = this.value.toString().trim().padStart(2, "0");
+        tendina.onchange = function () {
+            const nuovoValore = this.value.toString().trim().padStart(2, "0");
 
-    const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
-    if (!p) return;
+            const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
+            if (!p) return;
 
-    if (memC) {
-        updateMemoriaC(p, nuovoValore);
+            if (memC) {
+                updateMemoriaC(p, nuovoValore);
 
-        modificheInCorso = true;
-        document.getElementById("btn_salva_parametro").disabled = false;
+                modificheInCorso = true;
+                document.getElementById("btn_salva_parametro").disabled = false;
 
-        x2_mostraInfoParametro(p);
-        x2_popolaValori(p);
-     //   aggiornaColoreValore();
-    }
+                x2_mostraInfoParametro(p);
+                x2_popolaValori(p);
+                aggiornaColoreValore();
+            }
 
-    x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
-   
-};
-
+            x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
+        };
     });
 
     return;
 }
+
 //} // aggiunta 
 
 // fine blocco 4 29 6 26 
