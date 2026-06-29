@@ -1,9 +1,31 @@
+// FILE: hex/colori_valore.js
+// VERSIONE: 29/06/2026 14:10
+
 function aggiornaColoreValore() {
 
+    // 🔥 SE LE MEMORIE NON SONO ANCORA PRONTE → ESCO
+    if (!memA || !memB || !memC) {
+        // console.log("aggiornaColoreValore: memorie non pronte");
+        return;
+    }
+
+    const campo = document.getElementById("tendina_valori");
+    if (!campo) {
+        // console.log("aggiornaColoreValore: nessuna tendina_valori trovata");
+        return;
+    }
+
     const param = ultimoParametro;
-    if (!param) return;
+    if (!param) {
+        // console.log("aggiornaColoreValore: nessun ultimoParametro");
+        return;
+    }
 
     const indirizzo = parseInt(param.LIBERA1, 16);
+    if (isNaN(indirizzo) || indirizzo < 0 || indirizzo >= memA.length || indirizzo >= memB.length || indirizzo >= memC.length) {
+        // console.log("aggiornaColoreValore: indirizzo fuori range", indirizzo);
+        return;
+    }
 
     let valoreA = memA[indirizzo];
     let valoreB = memB[indirizzo];
@@ -24,29 +46,33 @@ function aggiornaColoreValore() {
         colorePrevisto = "BLU";
     }
 
-    // 🔥 TROVA IL CAMPO GIUSTO
-    let campo =
-        document.getElementById("tendina_valori") ||
-        document.getElementById("input_valore") ||
-        document.getElementById("input_valore_num");
+    // 🔥 SOLO DEBUG, SE LO VUOI
+    /*
+    alert(
+        "DEBUG COLORE\n\n" +
+        "A: " + valoreA + "\n" +
+        "B: " + valoreB + "\n" +
+        "C: " + valoreC + "\n\n" +
+        "COLORE PREVISTO: " + colorePrevisto + "\n"
+    );
+    */
 
-    if (!campo) {
-        console.log("NESSUN CAMPO TROVATO PER COLORE");
-        return;
-    }
-
-    // 🔥 APPLICA IL COLORE
+    // 🔥 APPLICA COLORE ALLA TENDINA (SELECT) — NIENTE !important
     if (colorePrevisto === "VERDE") {
-        campo.style.setProperty("background-color", "#006600", "important");
-        campo.style.setProperty("color", "white", "important");
+        campo.style.backgroundColor = "#006600";
+        campo.style.color = "white";
     } else if (colorePrevisto === "GIALLO") {
-        campo.style.setProperty("background-color", "#CCAA00", "important");
-        campo.style.setProperty("color", "black", "important");
+        campo.style.backgroundColor = "#CCAA00";
+        campo.style.color = "black";
     } else if (colorePrevisto === "ROSSO") {
-        campo.style.setProperty("background-color", "#990000", "important");
-        campo.style.setProperty("color", "white", "important");
+        campo.style.backgroundColor = "#990000";
+        campo.style.color = "white";
     } else if (colorePrevisto === "BLU") {
-        campo.style.setProperty("background-color", "#0000CC", "important");
-        campo.style.setProperty("color", "white", "important");
+        campo.style.backgroundColor = "#0000CC";
+        campo.style.color = "white";
+    } else {
+        // nessuna condizione → stile base
+        campo.style.backgroundColor = "#0d0d0d";
+        campo.style.color = "#ffcccc";
     }
 }
