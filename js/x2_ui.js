@@ -437,7 +437,7 @@ tendina.onchange = function () {
 
 // fine blocco 4 29 6 26 
 
- // ------------------------------------------------------------
+// ------------------------------------------------------------
 // 2) MIN_MAX (versione PRO con input + spinner)
 // ------------------------------------------------------------
 if (param.TIPO_ELENCO === "MIN_MAX") {
@@ -469,7 +469,9 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     input.style.boxSizing = "border-box";
     input.style.width = "100%";
 
-    input.value = param.VALORE;
+    // 🔥 MOSTRA SEMPRE IL VALORE DI memC
+    const indirizzo = parseInt(param.LIBERA1, 16);
+    input.value = memC[indirizzo].toString().padStart(2, "0");
 
     const spinner = document.createElement("div");
     spinner.style.position = "absolute";
@@ -498,117 +500,81 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     spinner.appendChild(btnDown);
 
     // ------------------------------------------------------------
-    // INPUT: solo numeri (e segno - se min < 0)
+    // INPUT: solo numeri
     // ------------------------------------------------------------
     input.addEventListener("input", function () {
-
-        const min = parseInt(param.MIN);
-
-        if (min < 0) {
-            this.value = this.value
-                .replace(/(?!^-)[^0-9]/g, "")
-                .replace(/(?!^)-/g, "");
-        } else {
-            this.value = this.value.replace(/[^0-9]/g, "");
-        }
+        this.value = this.value.replace(/[^0-9-]/g, "");
     });
 
     // ------------------------------------------------------------
-    // BLUR: normalizzazione + aggiornamento ultimoParametro
+    // BLUR: SCRIVE SEMPRE IN memC
     // ------------------------------------------------------------
-// BLUR
-input.addEventListener("blur", function () {
+    input.addEventListener("blur", function () {
 
-    let raw = this.value;
+        let v = parseInt(this.value);
+        if (isNaN(v)) return;
 
-    if (raw === "" || raw === "-") {
-        this.value = ultimoParametro.VALORE;
-        return;
-    }
+        const min = parseInt(param.MIN);
+        const max = parseInt(param.MAX);
 
-    let v = parseInt(raw);
+        if (v < min) v = min;
+        if (v > max) v = max;
 
-    if (isNaN(v)) {
-        this.value = ultimoParametro.VALORE;
-        return;
-    }
+        const nuovo = v.toString().padStart(2, "0");
+        this.value = nuovo;
 
-    const min = parseInt(param.MIN);
-    const max = parseInt(param.MAX);
-
-    if (v < min) v = min;
-    if (v > max) v = max;
-
-    if (v < 0) {
-        this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-    } else {
-        this.value = v.toString().padStart(2, "0");
-    }
-
-    if (memC) {
-        // 🔥 SCRIVI SEMPRE IN MEMC CON LA STESSA FUNZIONE
-        updateMemoriaC(ultimoParametro, this.value);
+        // 🔥 SCRIVE IN MEMC
+        updateMemoriaC(param, nuovo);
 
         modificheInCorso = true;
         document.getElementById("btn_salva_parametro").disabled = false;
 
-        // 🔥 RICALCOLA SUBITO TUTTO DA MEMC
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
+        // 🔥 RICALCOLA TUTTO
+        x2_mostraInfoParametro(param);
         aggiornaColoreValore();
-    }
-});
-
+    });
 
     // ------------------------------------------------------------
     // SPINNER UP
     // ------------------------------------------------------------
-btnUp.addEventListener("click", function () {
-    let v = parseInt(input.value) || 0;
-    const max = parseInt(param.MAX);
-    if (v < max) v++;
+    btnUp.addEventListener("click", function () {
 
-    input.value = (v < 0)
-        ? "-" + Math.abs(v).toString().padStart(2, "0")
-        : v.toString().padStart(2, "0");
+        let v = parseInt(input.value) || 0;
+        const max = parseInt(param.MAX);
+        if (v < max) v++;
 
-    if (memC) {
-        updateMemoriaC(ultimoParametro, input.value);
+        const nuovo = v.toString().padStart(2, "0");
+        input.value = nuovo;
+
+        updateMemoriaC(param, nuovo);
 
         modificheInCorso = true;
         document.getElementById("btn_salva_parametro").disabled = false;
 
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
+        x2_mostraInfoParametro(param);
         aggiornaColoreValore();
-    }
-});
-
+    });
 
     // ------------------------------------------------------------
     // SPINNER DOWN
     // ------------------------------------------------------------
- btnDown.addEventListener("click", function () {
-    let v = parseInt(input.value) || 0;
-    const min = parseInt(param.MIN);
-    if (v > min) v--;
+    btnDown.addEventListener("click", function () {
 
-    input.value = (v < 0)
-        ? "-" + Math.abs(v).toString().padStart(2, "0")
-        : v.toString().padStart(2, "0");
+        let v = parseInt(input.value) || 0;
+        const min = parseInt(param.MIN);
+        if (v > min) v--;
 
-    if (memC) {
-        updateMemoriaC(ultimoParametro, input.value);
+        const nuovo = v.toString().padStart(2, "0");
+        input.value = nuovo;
+
+        updateMemoriaC(param, nuovo);
 
         modificheInCorso = true;
         document.getElementById("btn_salva_parametro").disabled = false;
 
-        x2_mostraInfoParametro(ultimoParametro);
-        x2_popolaValori(ultimoParametro);
+        x2_mostraInfoParametro(param);
         aggiornaColoreValore();
-    }
-});
-
+    });
 
     wrapper.appendChild(input);
     wrapper.appendChild(spinner);
@@ -617,6 +583,7 @@ btnUp.addEventListener("click", function () {
 
     return;
 }
+
 
 
     // ------------------------------------------------------------
