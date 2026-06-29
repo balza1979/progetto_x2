@@ -369,6 +369,7 @@ function x2_popolaValori(param) {
     const oldInput = document.getElementById("input_minmax");
     if (oldInput) oldInput.remove();
 
+
     for (let i = 1; i <= 8; i++) {
         const btn = document.getElementById("val" + i);
         if (!btn) continue;
@@ -429,6 +430,7 @@ tendina.onchange = function () {
     }
 
     x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
+    aggiornaColoreValore();
 };
 
     });
