@@ -278,7 +278,7 @@ let nomeJSON = null;
 const fonte = param.JS_FONTE_ELENCO_VALORI?.trim().toLowerCase();
 
 if (fonte && fonte !== "/" && fonte !== "parametro") {
-    nomeJSON = "json_tendine/" + fonte + ".json";
+   nomeJSON = fonte + ".json";
 } else {
     nomeJSON = "json_tendine/" + param.PARAMETRO.trim() + ".json";
 }
