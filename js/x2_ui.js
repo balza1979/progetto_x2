@@ -409,23 +409,26 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         const codiceParam = param.PARAMETRO;
 
-        tendina.onchange = function () {
-            const nuovoValore = this.value.toString().trim().padStart(2, "0");
+tendina.onchange = function () {
+    const nuovoValore = this.value.toString().trim().padStart(2, "0");
 
-            const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
-            if (!p) return;
+    const p = x2_parametri.find(x => x.PARAMETRO === codiceParam);
+    if (!p) return;
 
-            // 🔥 CORRETTO: NON param, ma p
-           if (memC) {
-    p.VALORE = nuovoValore;
-}
+    if (memC) {
+        updateMemoriaC(p, nuovoValore);
 
-          if (memC) {
-            modificheInCorso = true;
-            document.getElementById("btn_salva_parametro").disabled = false;
-            }
-            x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
-        };
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
+
+        x2_mostraInfoParametro(p);
+        x2_popolaValori(p);
+        aggiornaColoreValore();
+    }
+
+    x2_aggiornaValoriDaSelezione(p, data, nuovoValore);
+};
+
     });
 
     return;
@@ -513,95 +516,99 @@ if (param.TIPO_ELENCO === "MIN_MAX") {
     // ------------------------------------------------------------
     // BLUR: normalizzazione + aggiornamento ultimoParametro
     // ------------------------------------------------------------
-    input.addEventListener("blur", function () {
+// BLUR
+input.addEventListener("blur", function () {
 
-        let raw = this.value;
+    let raw = this.value;
 
-        if (raw === "" || raw === "-") {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
+    if (raw === "" || raw === "-") {
+        this.value = ultimoParametro.VALORE;
+        return;
+    }
 
-        let v = parseInt(raw);
+    let v = parseInt(raw);
 
-        if (isNaN(v)) {
-            this.value = ultimoParametro.VALORE;
-            return;
-        }
+    if (isNaN(v)) {
+        this.value = ultimoParametro.VALORE;
+        return;
+    }
 
-        const min = parseInt(param.MIN);
-        const max = parseInt(param.MAX);
+    const min = parseInt(param.MIN);
+    const max = parseInt(param.MAX);
 
-        if (v < min) v = min;
-        if (v > max) v = max;
+    if (v < min) v = min;
+    if (v > max) v = max;
 
-        if (v < 0) {
-            this.value = "-" + Math.abs(v).toString().padStart(2, "0");
-        } else {
-            this.value = v.toString().padStart(2, "0");
-        }
+    if (v < 0) {
+        this.value = "-" + Math.abs(v).toString().padStart(2, "0");
+    } else {
+        this.value = v.toString().padStart(2, "0");
+    }
 
-        // 🔥 CORRETTO: aggiorna il parametro attuale
-      if (memC) {
-    ultimoParametro.VALORE = this.value;
-}
+    if (memC) {
+        // 🔥 SCRIVI SEMPRE IN MEMC CON LA STESSA FUNZIONE
+        updateMemoriaC(ultimoParametro, this.value);
 
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
 
-    });
+        // 🔥 RICALCOLA SUBITO TUTTO DA MEMC
+        x2_mostraInfoParametro(ultimoParametro);
+        x2_popolaValori(ultimoParametro);
+        aggiornaColoreValore();
+    }
+});
+
 
     // ------------------------------------------------------------
     // SPINNER UP
     // ------------------------------------------------------------
-    btnUp.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const max = parseInt(param.MAX);
-        if (v < max) v++;
+btnUp.addEventListener("click", function () {
+    let v = parseInt(input.value) || 0;
+    const max = parseInt(param.MAX);
+    if (v < max) v++;
 
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
+    input.value = (v < 0)
+        ? "-" + Math.abs(v).toString().padStart(2, "0")
+        : v.toString().padStart(2, "0");
 
-        // 🔥 CORRETTO
     if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
+        updateMemoriaC(ultimoParametro, input.value);
 
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
 
-      if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+        x2_mostraInfoParametro(ultimoParametro);
+        x2_popolaValori(ultimoParametro);
+        aggiornaColoreValore();
+    }
+});
 
-    });
 
     // ------------------------------------------------------------
     // SPINNER DOWN
     // ------------------------------------------------------------
-    btnDown.addEventListener("click", function () {
-        let v = parseInt(input.value) || 0;
-        const min = parseInt(param.MIN);
-        if (v > min) v--;
+ btnDown.addEventListener("click", function () {
+    let v = parseInt(input.value) || 0;
+    const min = parseInt(param.MIN);
+    if (v > min) v--;
 
-        input.value = (v < 0)
-            ? "-" + Math.abs(v).toString().padStart(2, "0")
-            : v.toString().padStart(2, "0");
+    input.value = (v < 0)
+        ? "-" + Math.abs(v).toString().padStart(2, "0")
+        : v.toString().padStart(2, "0");
 
-        // 🔥 CORRETTO
-        if (memC) {
-    ultimoParametro.VALORE = input.value;
-}
+    if (memC) {
+        updateMemoriaC(ultimoParametro, input.value);
 
+        modificheInCorso = true;
+        document.getElementById("btn_salva_parametro").disabled = false;
 
-        if (memC) {
-    modificheInCorso = true;
-    document.getElementById("btn_salva_parametro").disabled = false;
-}
+        x2_mostraInfoParametro(ultimoParametro);
+        x2_popolaValori(ultimoParametro);
+        aggiornaColoreValore();
+    }
+});
 
-    });
 
     wrapper.appendChild(input);
     wrapper.appendChild(spinner);
