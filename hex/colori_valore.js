@@ -7,11 +7,16 @@ function aggiornaColoreValore() {
     if (!param) return;
 
     const indirizzo = parseInt(param.LIBERA1, 16);
+//MODIFICA : PARTE COMMENTATA IL 29 6 26 PER PROBLEMI COLORE CON PARAMENTRI CHE HANNO MIN E MAX 
+   // let valoreA = convertValueFromByte(param, memA[indirizzo]);
+  //  let valoreB = convertValueFromByte(param, memB[indirizzo]);
+  //  let valoreC = convertValueFromByte(param, memC[indirizzo]);
+// SOSTITUITA CON QUANTO SEGUE  :
+let valoreA = memA[indirizzo];
+let valoreB = memB[indirizzo];
+let valoreC = memC[indirizzo];
 
-    let valoreA = convertValueFromByte(param, memA[indirizzo]);
-    let valoreB = convertValueFromByte(param, memB[indirizzo]);
-    let valoreC = convertValueFromByte(param, memC[indirizzo]);
-
+    
     // -----------------------------
     // CALCOLO COLORE PREVISTO
     // -----------------------------
