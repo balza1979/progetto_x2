@@ -427,7 +427,7 @@ if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
     return;
 }
-} // aggiunta 
+//} // aggiunta 
 
 // fine blocco 4 29 6 26 
 
