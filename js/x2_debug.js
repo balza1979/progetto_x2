@@ -6,7 +6,7 @@
 // DESCRIZIONE:
 // - Ripristinata funzione x2_caricaJSON()
 // - Gestione errori fetch JSON
-// - Percorso json_tendine/<nome>.json
+// - Percorso json_tendine/<nome>.json 
 // ======================================================================
 
 // … codice loader …
