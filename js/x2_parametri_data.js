@@ -1,4 +1,3 @@
-x2_parametri_data.js
 
 // FILE GENERATO AUTOMATICAMENTE
 const x2_parametri = [
