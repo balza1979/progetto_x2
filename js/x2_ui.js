@@ -726,7 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
-        x2_aggiornaSottomenuButtons(selMenu.value, this.value);
+       // x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
     selParametro.addEventListener("change", function () {
