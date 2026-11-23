@@ -332,8 +332,8 @@ function x2_popolaValori(param) {
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
-       // let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim().toLowerCase();
-let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim();
+        let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim().toLowerCase();
+
         if (fonte.startsWith("json_tendine/")) {
             fonte = fonte.replace("json_tendine/", "");
         }
@@ -726,7 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
-      // x2_aggiornaSottomenuButtons(selMenu.value, this.value);
+        x2_aggiornaSottomenuButtons(selMenu.value, this.value);
     });
 
     selParametro.addEventListener("change", function () {
