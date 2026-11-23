@@ -332,8 +332,8 @@ function x2_popolaValori(param) {
     if (param.TIPO_ELENCO === "ELENCO_PREDEFINITO") {
 
         let nomeJSON = null;
-        let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim().toLowerCase();
-
+       // let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim().toLowerCase();
+let fonte = (param.JS_FONTE_ELENCO_VALORI || "").trim();
         if (fonte.startsWith("json_tendine/")) {
             fonte = fonte.replace("json_tendine/", "");
         }
