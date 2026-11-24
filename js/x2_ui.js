@@ -180,7 +180,38 @@ function x2_aggiornaMenuButtons(codMenu) {
         }
     }
 }
+function x2_aggiornaSottomenuButtons(codMenuCompleto) {
 
+    const record = x2_menu_struttura_data.find(
+        r => r.cod__menu === codMenuCompleto
+    );
+
+    for (let i = 1; i <= 8; i++) {
+
+        const btn = document.getElementById("sottomenu_btn" + i);
+        if (!btn) continue;
+
+        const file = record
+            ? record["file" + i + "_sottomenu"]
+            : "/";
+
+        if (file && file !== "/") {
+
+            btn.textContent = file;
+            btn.disabled = false;
+
+            btn.onclick = () => {
+                window.open("img/" + file, "_blank");
+            };
+
+        } else {
+
+            btn.textContent = "-";
+            btn.disabled = true;
+            btn.onclick = null;
+        }
+    }
+}
 // ------------------------------------------------------------
 // SOTTOMENU
 // ------------------------------------------------------------
@@ -727,6 +758,8 @@ document.addEventListener("DOMContentLoaded", function () {
         x2_popolaParametri(this.value);
         selParametro.dispatchEvent(new Event("change"));
        // x2_aggiornaSottomenuButtons(selMenu.value, this.value);
+        x2_aggiornaSottomenuButtons(this.value);
+
     });
 
     selParametro.addEventListener("change", function () {
